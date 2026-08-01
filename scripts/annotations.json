@@ -1,0 +1,348 @@
+{
+  "_readme": [
+    "Screenshot + annotation definitions. Shots are captured against live HA.",
+    "Fields: chapter, filename, url (relative to HA_URL), waitFor (CSS selector list),",
+    "waitMs (ms after nav), viewport, fresh (true=use context without login),",
+    "actions[] (pre-shot interactions: click/hover/press/type/wait/waitFor/url),",
+    "annotations[] (box/arrow/callout drawn on top of the screenshot).",
+    "SAFETY: never call save/delete actions. Only open dialogs to screenshot then Escape."
+  ],
+  "shots": [
+    {
+      "chapter": "ch1",
+      "filename": "01_login_page.png",
+      "fresh": true,
+      "url": "/",
+      "waitFor": "input[name=\"username\"]",
+      "waitMs": 3000,
+      "viewport": { "width": 1200, "height": 820 },
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 660, "y": 200 },
+          "number": 1,
+          "text": "帳號欄位"
+        },
+        {
+          "type": "callout",
+          "at": { "x": 660, "y": 320 },
+          "number": 2,
+          "text": "密碼欄位"
+        }
+      ]
+    },
+    {
+      "chapter": "ch1",
+      "filename": "02_keep_logged_in.png",
+      "fresh": true,
+      "url": "/",
+      "waitFor": "input[name=\"username\"]",
+      "waitMs": 3000,
+      "viewport": { "width": 1200, "height": 820 },
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 660, "y": 430 },
+          "number": 1,
+          "text": "個人裝置勾這個，30 天免重登"
+        }
+      ]
+    },
+    {
+      "chapter": "ch1",
+      "filename": "03_dashboard.png",
+      "url": "/dashboard-home/overview",
+      "waitFor": "home-assistant",
+      "waitMs": 6000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 40 },
+          "number": 1,
+          "text": "登入成功後的主控台"
+        }
+      ]
+    },
+
+    {
+      "chapter": "ch2",
+      "filename": "01_settings_entry.png",
+      "url": "/dashboard-home/overview",
+      "waitFor": "home-assistant",
+      "waitMs": 6000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 90, "y": 770 },
+          "number": 1,
+          "text": "左側最下方的「Settings」齒輪"
+        }
+      ]
+    },
+    {
+      "chapter": "ch2",
+      "filename": "02_general.png",
+      "url": "/config/general",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 500, "y": 160 },
+          "number": 1,
+          "text": "「家」的名稱與時區都在這裡"
+        }
+      ]
+    },
+    {
+      "chapter": "ch2",
+      "filename": "03_location.png",
+      "url": "/config/general",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 500, "y": 440 },
+          "number": 1,
+          "text": "拖曳定位針到你家"
+        }
+      ]
+    },
+    {
+      "chapter": "ch2",
+      "filename": "04_profile_language.png",
+      "url": "/profile",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 500, "y": 220 },
+          "number": 1,
+          "text": "使用者語言（可與系統不同）"
+        }
+      ]
+    },
+
+    {
+      "chapter": "ch3",
+      "filename": "01_areas_page.png",
+      "url": "/config/areas/dashboard",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 40 },
+          "number": 1,
+          "text": "樓層與區域一覽"
+        }
+      ]
+    },
+    {
+      "chapter": "ch3",
+      "filename": "02_create_floor_dialog.png",
+      "url": "/config/areas/dashboard",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "actions": [
+        { "click": "button:has-text(\"Create floor\")" },
+        { "wait": 3000 }
+      ],
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 80 },
+          "number": 1,
+          "text": "新增樓層 — 名稱、圖示、樓層編號"
+        }
+      ]
+    },
+    {
+      "chapter": "ch3",
+      "filename": "03_create_area_dialog.png",
+      "url": "/config/areas/dashboard",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "actions": [
+        { "click": "button:has-text(\"Create area\")" },
+        { "wait": 3000 }
+      ],
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 80 },
+          "number": 1,
+          "text": "新增區域 — 名稱、圖示、所屬樓層"
+        }
+      ]
+    },
+    {
+      "chapter": "ch3",
+      "filename": "04_devices_list.png",
+      "url": "/config/devices/dashboard",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 40 },
+          "number": 1,
+          "text": "所有已配對的裝置"
+        }
+      ]
+    },
+    {
+      "chapter": "ch3",
+      "filename": "06_done.png",
+      "url": "/config/areas/dashboard",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 40 },
+          "number": 1,
+          "text": "完成後每個區域都有裝置數量"
+        }
+      ]
+    },
+
+    {
+      "chapter": "ch4",
+      "filename": "01_entities_list.png",
+      "url": "/config/entities",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 40 },
+          "number": 1,
+          "text": "所有 entity — 用上方搜尋框最快"
+        }
+      ]
+    },
+    {
+      "chapter": "ch4",
+      "filename": "03_labels_page.png",
+      "url": "/config/labels",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 40 },
+          "number": 1,
+          "text": "標籤 — 跨區域分類設備"
+        }
+      ]
+    },
+
+    {
+      "chapter": "ch5",
+      "filename": "01_users_page.png",
+      "url": "/config/users",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 40 },
+          "number": 1,
+          "text": "使用者管理"
+        }
+      ]
+    },
+    {
+      "chapter": "ch5",
+      "filename": "02_new_user_dialog.png",
+      "url": "/config/users",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "actions": [
+        { "click": "text=Add user" },
+        { "wait": 1500 }
+      ],
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 80 },
+          "number": 1,
+          "text": "顯示名稱、帳號、密碼、管理員開關"
+        }
+      ]
+    },
+    {
+      "chapter": "ch5",
+      "filename": "03_persons_page.png",
+      "url": "/config/person",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 40 },
+          "number": 1,
+          "text": "「人員」— 追蹤位置的實體"
+        }
+      ]
+    },
+
+    {
+      "chapter": "ch6",
+      "filename": "01_default_dashboard.png",
+      "url": "/dashboard-home/overview",
+      "waitFor": "home-assistant",
+      "waitMs": 6000,
+      "annotations": []
+    },
+    {
+      "chapter": "ch6",
+      "filename": "04_multi_tabs.png",
+      "url": "/dashboard-home/overview",
+      "waitFor": "home-assistant",
+      "waitMs": 6000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 40 },
+          "number": 1,
+          "text": "頂端可切換多個分頁"
+        }
+      ]
+    },
+
+    {
+      "chapter": "ch7",
+      "filename": "01_mobile_sensors.png",
+      "url": "/config/devices/dashboard",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 40 },
+          "number": 1,
+          "text": "手機 App 註冊後會出現在裝置列表"
+        }
+      ]
+    },
+    {
+      "chapter": "ch7",
+      "filename": "02_dev_services.png",
+      "url": "/developer-tools/action",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 40 },
+          "number": 1,
+          "text": "開發者工具 → 動作（原「服務」）"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 7 章 · 通知</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">HA 新居入住指南</a>
+    <div class="brand-sub">從零到能用</div>
+    <h2>章節</h2>
+    <ol>
+      <li><a href="ch1_login.html">登入 HA</a></li>
+      <li><a href="ch2_system_settings.html">系統設定</a></li>
+      <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
+      <li><a href="ch4_naming_labels.html">命名與標籤</a></li>
+      <li><a href="ch5_users.html">用戶管理</a></li>
+      <li><a href="ch6_dashboard.html">儀表板</a></li>
+      <li><a href="ch7_notifications.html" class="active">通知</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要通知</a>
+      <a href="#app">裝 Companion App</a>
+      <a href="#login">用剛才建的帳號登入</a>
+      <a href="#test">送出第一則通知</a>
+      <a href="#advanced">進階：帶動作按鈕</a>
+      <a href="#faq">常見問題</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 7 章</div>
+      <h1>通知</h1>
+      <p class="lead">裝 Companion App、綁定手機、送出第一則測試通知。這一章做完，你就打通了「HA 想告訴你事情」的最後一哩。</p>
+    </div>
+
+    <section id="why">
+      <h2>為什麼要通知</h2>
+      <ul>
+        <li>洗衣機洗完 → 手機叮一下。</li>
+        <li>門沒關 → 出門 100 公尺就提醒。</li>
+        <li>停電回來了 → 上班中的你先知道。</li>
+        <li>攝影機拍到人 → 帶縮圖的通知。</li>
+      </ul>
+      <p>Companion App 就是這些通知的載體，同時也是你日常操作 HA 最方便的工具。</p>
+    </section>
+
+    <section id="app">
+      <h2>裝 Companion App</h2>
+      <ol class="steps">
+        <li>
+          <h3>手機商店搜「Home Assistant」</h3>
+          <p><strong>iOS</strong>：App Store 搜 <strong>Home Assistant</strong>（開發者是 Home Assistant）。<br><strong>Android</strong>：Play 商店搜 <strong>Home Assistant Companion</strong>。</p>
+        </li>
+        <li>
+          <h3>打開後選「登入 Home Assistant」</h3>
+          <p>App 會自動掃描區網有沒有 HA 主機。有掃到就直接點；沒掃到就手動輸入 <code>http://homeassistant.local:8123</code> 或你自己的網址。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="login">
+      <h2>用剛才建的帳號登入</h2>
+      <ol class="steps">
+        <li>
+          <h3>輸入帳號、密碼</h3>
+          <p>用<strong>第 5 章</strong>建立的個人帳號（不要用共用的管理員帳號）— 這樣通知才能點名發給你。</p>
+        </li>
+        <li>
+          <h3>允許 App 存取的權限</h3>
+          <p>會問要不要開<strong>通知</strong>、<strong>位置</strong>、<strong>藍牙</strong>、<strong>相機</strong> 等。建議至少開：</p>
+          <ul>
+            <li><strong>通知</strong> — 這是本章重點，一定要開。</li>
+            <li><strong>位置（永遠）</strong> — 「回到家」「離家」自動化的靈魂。</li>
+          </ul>
+          <div class="callout warn"><strong>iOS 提醒：</strong>iOS 的「位置：永遠」要在系統設定裡改，第一次登入只能給「使用 App 時」。之後回設定改成「永遠」。</div>
+        </li>
+        <li>
+          <h3>Home Assistant 端會自動出現一堆 sensor</h3>
+          <p>回 HA 網頁 → 設定 → 裝置與服務，會看到一個新裝置叫你的手機名稱（例如「小明的 iPhone」），裡面有幾十個 sensor：電量、充電中、WiFi 名稱、Focus 模式等。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch7/01_mobile_sensors.png" alt="手機自動註冊的 sensor" />
+            <figcaption><strong>圖 7-1</strong>手機 App 註冊後，HA 自動出現的 sensor。</figcaption>
+          </figure>
+        </li>
+      </ol>
+    </section>
+
+    <section id="test">
+      <h2>送出第一則通知</h2>
+      <ol class="steps">
+        <li>
+          <h3>開發者工具 → 服務</h3>
+          <p>HA 網頁左側「開發者工具」→ 「動作」（舊版是「服務」）分頁。</p>
+        </li>
+        <li>
+          <h3>服務欄選 <code>notify.mobile_app_XXX</code></h3>
+          <p>XXX 是你剛才登入的手機名稱。這個服務是 App 自動幫你建的。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch7/02_dev_services.png" alt="開發者工具 - 服務" />
+            <figcaption><strong>圖 7-2</strong>開發者工具的服務呼叫介面。</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>填 message 與 title</h3>
+          <p>簡單試一下：</p>
+          <pre style="background: var(--code-bg); padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto;">service: notify.mobile_app_xxx
+data:
+  title: "測試通知"
+  message: "從 HA 發來的第一則訊息 🎉"</pre>
+        </li>
+        <li>
+          <h3>按「呼叫服務」</h3>
+          <p>手機立刻叮！— 恭喜，你的智慧家庭有「嘴巴」了。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="advanced">
+      <h2>進階：帶動作按鈕的通知</h2>
+      <p>通知不只是靜態文字，可以帶按鈕讓你點：</p>
+      <pre style="background: var(--code-bg); padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto;">service: notify.mobile_app_xxx
+data:
+  title: "門口有人按電鈴"
+  message: "點下面決定要不要開門"
+  data:
+    actions:
+      - action: "OPEN_DOOR"
+        title: "開門"
+      - action: "IGNORE"
+        title: "不理"</pre>
+      <p>然後在自動化裡監聽事件 <code>mobile_app_notification_action</code>，拿到 <code>action: "OPEN_DOOR"</code> 就呼叫開門服務。之後不管你在世界哪裡都能遠端開門。</p>
+      <div class="callout"><strong>進階應用預告：</strong>攝影機動作 → 通知帶截圖 → 有動作按鈕「錄影 30 秒」／「打電話報警」。這些留給下一個系列教學。</div>
+    </section>
+
+    <section id="faq">
+      <h2>常見問題</h2>
+      <details class="faq">
+        <summary>通知沒收到？</summary>
+        <div class="body">依序檢查：（1）手機系統的 App 通知權限是不是開的；（2）App 內「設定 → Companion App → 通知」是不是開的；（3）呼叫的服務名稱有沒有寫對；（4）手機是不是在勿擾模式。</div>
+      </details>
+      <details class="faq">
+        <summary>能通知所有家人的手機嗎？</summary>
+        <div class="body">可以。有個特殊服務叫 <code>notify.notify</code>，會發到<strong>所有</strong>已登入的手機 App。也可以自己建 notify group 只發給部分人。</div>
+      </details>
+      <details class="faq">
+        <summary>Email、Line、Telegram 也能發嗎？</summary>
+        <div class="body">可以。SMTP、Telegram Bot、Line Notify（已停止服務改用 Messaging API）都有整合。不過建議先把手機 App 玩熟，其他管道是備援。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch6_dashboard.html">
+        <span class="label">← 上一章</span>
+        <span class="title">06 · 儀表板</span>
+      </a>
+      <a class="next" href="index.html">
+        <span class="label">回目錄 →</span>
+        <span class="title">完成！</span>
+      </a>
+    </div>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

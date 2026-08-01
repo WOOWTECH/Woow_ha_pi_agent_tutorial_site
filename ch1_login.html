@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 1 章 · 登入 Home Assistant</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">HA 新居入住指南</a>
+    <div class="brand-sub">從零到能用</div>
+    <h2>章節</h2>
+    <ol>
+      <li><a href="ch1_login.html" class="active">登入 HA</a></li>
+      <li><a href="ch2_system_settings.html">系統設定</a></li>
+      <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
+      <li><a href="ch4_naming_labels.html">命名與標籤</a></li>
+      <li><a href="ch5_users.html">用戶管理</a></li>
+      <li><a href="ch6_dashboard.html">儀表板</a></li>
+      <li><a href="ch7_notifications.html">通知</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要學這個</a>
+      <a href="#url">找到你的 HA 網址</a>
+      <a href="#steps">登入步驟</a>
+      <a href="#companion">網頁 vs. Companion App</a>
+      <a href="#faq">常見問題</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 1 章</div>
+      <h1>登入 Home Assistant</h1>
+      <p class="lead">先確定你能穩定進到後台，這是後面所有章節的前提。這一章教你認識登入頁、記住登入狀態，並理解「網頁後台」和「Companion App」的差別。</p>
+    </div>
+
+    <section id="why">
+      <h2>為什麼要學這個</h2>
+      <p>Home Assistant（下稱 HA）是一個「本地控制」的智慧家庭中樞：所有設備狀態、自動化、房間資料都存在你家中的那台小主機上，不會經過雲端。</p>
+      <p>因為它是自己家的伺服器，登入的方式和一般網路服務不太一樣：</p>
+      <ul>
+        <li>沒有「忘記密碼寄信」— 密碼只有主機知道。</li>
+        <li>有可能透過區網 IP 進入，也可能透過網域名稱（Nabu Casa / 自架 DDNS）。</li>
+        <li>手機和電腦的登入體驗不同 — 建議手機裝 Companion App、電腦用瀏覽器。</li>
+      </ul>
+    </section>
+
+    <section id="url">
+      <h2>找到你的 HA 網址</h2>
+      <p>你的網址通常是以下三種之一：</p>
+      <ul>
+        <li><strong>區網 IP</strong>：<code>http://homeassistant.local:8123</code> 或 <code>http://192.168.x.x:8123</code>。</li>
+        <li><strong>Nabu Casa 遠端</strong>：<code>https://xxxxx.ui.nabu.casa</code>（付費訂閱）。</li>
+        <li><strong>自架網域</strong>：例如 <code>https://ha.yourdomain.com</code>（本教學使用的網址是 <code>https://woowtech-ha.woowtech.io</code>）。</li>
+      </ul>
+      <div class="callout tip"><strong>提示：</strong>把網址加到瀏覽器書籤，並在手機主畫面「加入書籤到桌面」，之後點一下就打開。</div>
+    </section>
+
+    <section id="steps">
+      <h2>登入步驟</h2>
+      <ol class="steps">
+        <li>
+          <h3>打開登入頁</h3>
+          <p>在瀏覽器輸入 HA 網址，會看到一個藍白的登入卡片，中間有 Home Assistant 的 logo。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch1/01_login_page.png" alt="HA 登入頁" />
+            <figcaption><strong>圖 1-1</strong>登入頁：帳號、密碼、記住我三個欄位。</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>輸入帳號與密碼</h3>
+          <p>使用當初安裝 HA 時建立的管理員帳號。如果你是家人／房客，請向管理員索取專屬帳號（第 5 章會教怎麼建）。</p>
+        </li>
+        <li>
+          <h3>勾選「保持登入」</h3>
+          <p>勾了以後，這台瀏覽器 30 天內都不用重登。<strong>共用電腦請不要勾。</strong></p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch1/02_keep_logged_in.png" alt="勾選 Keep me logged in" />
+            <figcaption><strong>圖 1-2</strong>勾選「保持登入」— 個人裝置建議打勾。</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>進到主控台</h3>
+          <p>登入成功會直接跳到「總覽（Overview）」儀表板，顯示你家各區域的狀態卡片。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch1/03_dashboard.png" alt="登入後的主控台" />
+            <figcaption><strong>圖 1-3</strong>主控台：左側選單、上方標籤頁、中間卡片。</figcaption>
+          </figure>
+        </li>
+      </ol>
+    </section>
+
+    <section id="companion">
+      <h2>網頁 vs. Companion App</h2>
+      <p>兩者連到同一個後台，資料完全同步，差別在功能：</p>
+      <ul>
+        <li><strong>網頁</strong>：畫面大、適合改設定、寫自動化、看歷史圖表。</li>
+        <li><strong>Companion App</strong>（iOS/Android）：能收<strong>推播通知</strong>、回報手機的<strong>電量／位置／WiFi 名稱</strong>給 HA 當觸發條件、透過生物辨識快速登入。</li>
+      </ul>
+      <div class="callout"><strong>建議做法：</strong>電腦用瀏覽器改設定，手機裝 App 當日常控制與收通知。第 7 章會帶你裝 App。</div>
+    </section>
+
+    <section id="faq">
+      <h2>常見問題</h2>
+      <details class="faq">
+        <summary>密碼忘記了怎麼辦？</summary>
+        <div class="body">密碼存在主機上，沒有寄信重設。如果你是管理員，需要用 SSH 或 HA 的救援模式重設；如果你不是管理員，請聯絡管理員從第 5 章的「使用者」把你的密碼重設一次。</div>
+      </details>
+      <details class="faq">
+        <summary>登入頁一直轉圈圈進不去？</summary>
+        <div class="body">先確認網址對不對、你的手機／電腦有沒有連到家裡 WiFi（區網 IP 只能在家連）。如果是外網網址，檢查 HA 主機是否還開著、Nabu Casa 或 DDNS 有沒有失效。</div>
+      </details>
+      <details class="faq">
+        <summary>能用同一組帳號在多個裝置登入嗎？</summary>
+        <div class="body">可以，各裝置都是獨立 session，登出一個不影響其他。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev disabled" href="index.html">
+        <span class="label">← 上一章</span>
+        <span class="title">回目錄</span>
+      </a>
+      <a class="next" href="ch2_system_settings.html">
+        <span class="label">下一章 →</span>
+        <span class="title">02 · 系統設定</span>
+      </a>
+    </div>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

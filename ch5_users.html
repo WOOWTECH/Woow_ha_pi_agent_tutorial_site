@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 5 章 · 用戶管理</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">HA 新居入住指南</a>
+    <div class="brand-sub">從零到能用</div>
+    <h2>章節</h2>
+    <ol>
+      <li><a href="ch1_login.html">登入 HA</a></li>
+      <li><a href="ch2_system_settings.html">系統設定</a></li>
+      <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
+      <li><a href="ch4_naming_labels.html">命名與標籤</a></li>
+      <li><a href="ch5_users.html" class="active">用戶管理</a></li>
+      <li><a href="ch6_dashboard.html">儀表板</a></li>
+      <li><a href="ch7_notifications.html">通知</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要建多個帳號</a>
+      <a href="#concept">兩個名詞：Users vs. Persons</a>
+      <a href="#steps">建立帳號步驟</a>
+      <a href="#persons">建立「人」</a>
+      <a href="#faq">常見問題</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 5 章</div>
+      <h1>用戶管理</h1>
+      <p class="lead">幫家人、房客、訪客各自建帳號。管理員能改設定；一般用戶只能操作。同時建立「人」的實體，之後可以偵測「誰在家」。</p>
+    </div>
+
+    <section id="why">
+      <h2>為什麼要建多個帳號</h2>
+      <ul>
+        <li><strong>安全</strong>：家人共用一個管理員帳號，一個人手機掉了，全家都要換密碼。</li>
+        <li><strong>權限</strong>：小孩不小心刪掉自動化就慘了。給他「一般用戶」只能操作、不能改設定。</li>
+        <li><strong>手機通知</strong>：一個帳號在一支手機上登入，才能精準推播給那個人。</li>
+        <li><strong>「誰在家」</strong>：每個「人」對應一支手機的定位，才能寫「爸爸回到家自動開燈」。</li>
+      </ul>
+    </section>
+
+    <section id="concept">
+      <h2>兩個名詞：Users vs. Persons</h2>
+      <ul>
+        <li><strong>User（使用者）</strong>：可以登入 HA 的帳號，有密碼、有權限。</li>
+        <li><strong>Person（人）</strong>：家中的一個「人」實體，用來追蹤位置、當自動化條件。</li>
+      </ul>
+      <p>兩者可以綁定：例如「使用者 alice」對應「人 Alice」，Alice 手機裝了 App 登入後，就能把定位餵給那個「人」。</p>
+      <div class="callout"><strong>簡單原則：</strong>會用 HA 的家人 → 建 User + Person 綁定。<br>只需要被追蹤位置的（例如小孩沒有手機 App，用 GPS 標籤）→ 只建 Person。</div>
+    </section>
+
+    <section id="steps">
+      <h2>建立帳號步驟</h2>
+      <ol class="steps">
+        <li>
+          <h3>設定 → 使用者</h3>
+          <figure class="shot">
+            <img src="assets/screenshots/ch5/01_users_page.png" alt="使用者管理頁" />
+            <figcaption><strong>圖 5-1</strong>使用者管理頁 — 顯示所有可登入帳號。</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>右下「＋ 新增使用者」</h3>
+          <p>填顯示名稱、使用者名稱（登入用）、密碼。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch5/02_new_user_dialog.png" alt="新增使用者對話框" />
+            <figcaption><strong>圖 5-2</strong>新增使用者 — 注意「管理員」的開關。</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>決定是不是管理員</h3>
+          <p><strong>管理員</strong>：可以改所有設定、裝整合、建自動化。<br><strong>一般使用者</strong>：只能操作介面上看得到的東西。</p>
+          <div class="callout warn"><strong>建議：</strong>一家人裡最多 2 個管理員（你 + 另一半），其他人一般使用者就好。</div>
+        </li>
+        <li>
+          <h3>「僅限本地登入」</h3>
+          <p>開了之後這個帳號只能在家裡的區網登入，遠端網址進不來。<strong>訪客帳號建議打開。</strong></p>
+        </li>
+        <li>
+          <h3>把新帳號告訴對方</h3>
+          <p>告訴家人網址 + 帳號 + 密碼，讓他們用 App 登入（第 7 章）。之後他們可以自己在「使用者設定」改密碼。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="persons">
+      <h2>建立「人」並綁定</h2>
+      <ol class="steps">
+        <li>
+          <h3>設定 → 人員</h3>
+          <figure class="shot">
+            <img src="assets/screenshots/ch5/03_persons_page.png" alt="人員頁" />
+            <figcaption><strong>圖 5-3</strong>人員管理頁 — 每個人可以綁一個使用者、多個定位裝置。</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>「＋ 新增人員」→ 填名字、大頭照</h3>
+          <p>名字建議用暱稱，例如「爸爸」「妹妹」— 儀表板卡片會顯示這個。</p>
+        </li>
+        <li>
+          <h3>綁定使用者帳號</h3>
+          <p>下拉選單選剛才建的 user。綁定後，這個「人」的定位就會用他手機的 App 定位。</p>
+        </li>
+        <li>
+          <h3>其他定位方式</h3>
+          <p>沒 App 的家人（老人、小孩）可以用：GPS 標籤（AirTag / mi-tag）、路由器上線偵測、藍牙信標。都在「人員」頁下方的「追蹤裝置」加。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq">
+      <h2>常見問題</h2>
+      <details class="faq">
+        <summary>一個 User 能綁多個 Person 嗎？</summary>
+        <div class="body">不行，一對一。但一個 Person 可以有多個追蹤裝置（手機、GPS 標籤同時追蹤）。</div>
+      </details>
+      <details class="faq">
+        <summary>一般使用者能看到所有設備嗎？</summary>
+        <div class="body">預設可以看到所有儀表板。可以在儀表板設定裡限制「只有這些使用者可看」，做出各自不同的家用畫面。</div>
+      </details>
+      <details class="faq">
+        <summary>刪掉使用者，他做過的操作紀錄還在嗎？</summary>
+        <div class="body">歷史紀錄還在，但顯示成 <code>Deleted user</code>。想保留就別刪，只要拿掉管理員權限即可。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch4_naming_labels.html">
+        <span class="label">← 上一章</span>
+        <span class="title">04 · 命名與標籤</span>
+      </a>
+      <a class="next" href="ch6_dashboard.html">
+        <span class="label">下一章 →</span>
+        <span class="title">06 · 儀表板</span>
+      </a>
+    </div>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

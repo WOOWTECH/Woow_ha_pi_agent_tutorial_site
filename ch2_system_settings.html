@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 2 章 · 系統設定</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">HA 新居入住指南</a>
+    <div class="brand-sub">從零到能用</div>
+    <h2>章節</h2>
+    <ol>
+      <li><a href="ch1_login.html">登入 HA</a></li>
+      <li><a href="ch2_system_settings.html" class="active">系統設定</a></li>
+      <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
+      <li><a href="ch4_naming_labels.html">命名與標籤</a></li>
+      <li><a href="ch5_users.html">用戶管理</a></li>
+      <li><a href="ch6_dashboard.html">儀表板</a></li>
+      <li><a href="ch7_notifications.html">通知</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要先設定這裡</a>
+      <a href="#enter">進入設定</a>
+      <a href="#steps">動手設定</a>
+      <a href="#profile">個人偏好</a>
+      <a href="#faq">常見問題</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 2 章</div>
+      <h1>系統設定</h1>
+      <p class="lead">把時區、語言、單位、地理位置一次調對。這些是 HA 判斷「日出日落」「颱風接近」「開冷氣要幾度」的根據，設錯後面全錯。</p>
+    </div>
+
+    <section id="why">
+      <h2>為什麼要先設定這裡</h2>
+      <p>HA 的很多自動化仰賴「地理位置」和「時區」：</p>
+      <ul>
+        <li>「日落後 30 分鐘開玄關燈」— 需要知道你在台灣還是加州。</li>
+        <li>「颱風靠近時關窗」— 需要正確的座標抓氣象。</li>
+        <li>「27°C 開冷氣」— 攝氏還是華氏？單位錯就會判斷錯。</li>
+      </ul>
+      <p>這一章要做的事不多，但影響後面每一章。</p>
+    </section>
+
+    <section id="enter">
+      <h2>進入設定</h2>
+      <p>左側選單點「設定」（齒輪圖示），這是 HA 的所有系統設定入口。</p>
+      <figure class="shot">
+        <img src="assets/screenshots/ch2/01_settings_entry.png" alt="設定入口" />
+        <figcaption><strong>圖 2-1</strong>左側選單的「設定」齒輪。</figcaption>
+      </figure>
+    </section>
+
+    <section id="steps">
+      <h2>動手設定</h2>
+      <ol class="steps">
+        <li>
+          <h3>設定 → 系統 → 一般</h3>
+          <p>在設定頁點「系統」，再點「一般」。這頁就是本章的主戰場。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch2/02_general.png" alt="一般設定頁" />
+            <figcaption><strong>圖 2-2</strong>系統一般設定頁，有名稱、時區、單位、貨幣等欄位。</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>設定「家」的名稱與地理位置</h3>
+          <p><strong>名稱</strong>：例如「王家」「陳府」— 這個名字會顯示在手機通知標題。</p>
+          <p><strong>位置</strong>：直接在地圖上把針拖到你家門口。這是「在家／不在家」判斷的原點。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch2/03_location.png" alt="地理位置設定" />
+            <figcaption><strong>圖 2-3</strong>地圖上拖曳定位針。</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>時區與貨幣</h3>
+          <p><strong>時區</strong>：台灣選 <code>Asia/Taipei</code>。<strong>貨幣</strong>：<code>TWD</code>（新台幣）。這兩個影響時間戳與能源儀表板。</p>
+        </li>
+        <li>
+          <h3>單位系統</h3>
+          <p><strong>單位系統</strong>：選「公制」。<strong>溫度</strong>：攝氏。<strong>降雨</strong>：mm。<strong>風速</strong>：m/s 或 km/h。</p>
+        </li>
+        <li>
+          <h3>儲存</h3>
+          <p>右下角按「儲存」。改完之後有些設定要重整頁面才會生效。</p>
+          <div class="callout tip"><strong>提示：</strong>如果之後感覺日出日落時間怪怪的、通知時間不對，八成是這頁少了某個欄位。</div>
+        </li>
+      </ol>
+    </section>
+
+    <section id="profile">
+      <h2>個人偏好（自己的頭像、語言、佈景）</h2>
+      <p>剛才是「整個家」的設定，這裡是「你自己」的設定：右下角頭像 → 「使用者設定」。</p>
+      <ol class="steps">
+        <li>
+          <h3>語言</h3>
+          <p>選「繁體中文」，整個介面立刻中文化。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch2/04_profile_language.png" alt="使用者語言設定" />
+            <figcaption><strong>圖 2-4</strong>使用者設定的「語言」欄位。</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>時間格式與初始頁面</h3>
+          <p><strong>時間格式</strong>：24 小時或 12 小時看習慣。<strong>啟動頁面</strong>：你希望登入後看到哪一頁（預設是「總覽」）。</p>
+        </li>
+        <li>
+          <h3>佈景（Theme）</h3>
+          <p>下拉選單有幾個內建佈景，包括「Backend-selected」（跟隨系統深淺色）、「Default light/dark」等。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq">
+      <h2>常見問題</h2>
+      <details class="faq">
+        <summary>改了時區後，過去的圖表時間會不會跑掉？</summary>
+        <div class="body">會。歷史資料以 UTC 儲存，顯示時再套時區，所以改時區後看到的圖會平移。這是正確行為，不用擔心。</div>
+      </details>
+      <details class="faq">
+        <summary>「家」的位置一定要真實嗎？</summary>
+        <div class="body">最好是真實座標，因為日出日落、氣象、地震通知都靠它。如果你在乎隱私，可以設在方圓 1 公里內的一個地標點。</div>
+      </details>
+      <details class="faq">
+        <summary>不同使用者能各自選語言嗎？</summary>
+        <div class="body">可以。系統設定的語言只是「預設值」，每位使用者的「使用者設定」可以自己選。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch1_login.html">
+        <span class="label">← 上一章</span>
+        <span class="title">01 · 登入 HA</span>
+      </a>
+      <a class="next" href="ch3_floors_areas.html">
+        <span class="label">下一章 →</span>
+        <span class="title">03 · 樓層與區域</span>
+      </a>
+    </div>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

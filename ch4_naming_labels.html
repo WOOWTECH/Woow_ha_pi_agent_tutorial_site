@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 4 章 · 命名與標籤</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">HA 新居入住指南</a>
+    <div class="brand-sub">從零到能用</div>
+    <h2>章節</h2>
+    <ol>
+      <li><a href="ch1_login.html">登入 HA</a></li>
+      <li><a href="ch2_system_settings.html">系統設定</a></li>
+      <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
+      <li><a href="ch4_naming_labels.html" class="active">命名與標籤</a></li>
+      <li><a href="ch5_users.html">用戶管理</a></li>
+      <li><a href="ch6_dashboard.html">儀表板</a></li>
+      <li><a href="ch7_notifications.html">通知</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要重新命名</a>
+      <a href="#concept">實體 vs. 裝置 vs. 名字</a>
+      <a href="#rename">重新命名步驟</a>
+      <a href="#labels">用標籤分類</a>
+      <a href="#done">命名範例集</a>
+      <a href="#faq">常見問題</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 4 章</div>
+      <h1>命名與標籤</h1>
+      <p class="lead">把 <code>switch.0x00abc123_2</code> 改成「客廳主燈」。改完之後語音助理、儀表板、自動化通通看得懂。再學會「標籤」把同類設備群起來，之後管理省時 10 倍。</p>
+    </div>
+
+    <section id="why">
+      <h2>為什麼要重新命名</h2>
+      <p>剛配對進來的設備，名字是廠商給的技術代號，例如：</p>
+      <ul>
+        <li><code>light.aqara_light_group_2</code></li>
+        <li><code>switch.0x00158d000abcd1234</code></li>
+        <li><code>sensor.motion_sensor_ambient_temperature</code></li>
+      </ul>
+      <p>這些名字有兩個問題：</p>
+      <ol>
+        <li><strong>語音助理不會念</strong> — 你不會對 Google 說「請打開 aqara_light_group_2」。</li>
+        <li><strong>家人看不懂</strong> — 儀表板上一堆天書，沒人敢按。</li>
+      </ol>
+      <p>解法：全部改成「你會脫口而出的名字」。</p>
+    </section>
+
+    <section id="concept">
+      <h2>先分清楚三個名字</h2>
+      <p>HA 有三個層級的名字，容易搞混：</p>
+      <ul>
+        <li><strong>裝置名稱（Device name）</strong>：整個設備的名字，例如「客廳吸頂燈」。</li>
+        <li><strong>實體 ID（Entity ID）</strong>：程式用的內部 ID，例如 <code>light.living_room_ceiling</code>。<strong>寫自動化時用這個。</strong></li>
+        <li><strong>友善名稱（Friendly name）</strong>：使用者介面顯示的名字，例如「主燈」。<strong>顯示、語音用這個。</strong></li>
+      </ul>
+      <div class="callout"><strong>好習慣：</strong>裝置名稱寫全稱（「客廳吸頂燈」），友善名稱寫短版（「主燈」）— 因為友善名稱前面已經會加上區域，變成「客廳 主燈」剛好。</div>
+    </section>
+
+    <section id="rename">
+      <h2>重新命名步驟</h2>
+      <ol class="steps">
+        <li>
+          <h3>進「設定 → 裝置與服務 → 實體」</h3>
+          <p>看到一長串所有 entity，可以用上方搜尋框快速找到某個設備。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch4/01_entities_list.png" alt="實體列表" />
+            <figcaption><strong>圖 4-1</strong>實體列表 — 每一列是一個 entity，狀態、名稱、實體 ID。</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>點某個實體 → 齒輪（設定）</h3>
+          <p>打開實體詳情，右上角齒輪進入設定頁。</p>
+        </li>
+        <li>
+          <h3>改「名稱」欄位</h3>
+          <p>這裡改的是<strong>友善名稱</strong>。實體 ID 不會跟著改，因為 ID 是自動化的 key，改了會壞掉。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch4/02_rename_entity.png" alt="編輯實體名稱" />
+            <figcaption><strong>圖 4-2</strong>編輯實體 — 「名稱」是友善名稱，「實體 ID」動的時候會警告。</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>要不要一起改實體 ID？</h3>
+          <p><strong>建議改。</strong>如果這是剛裝的裝置、還沒被任何自動化引用，直接把 ID 改成有意義的英數，例如 <code>light.living_room_main</code>。之後看程式碼會很容易。</p>
+          <div class="callout warn"><strong>注意：</strong>已被自動化、腳本、儀表板引用的實體，改 ID 前先在「開發者工具 → 統計」搜一下有沒有被用到。</div>
+        </li>
+      </ol>
+    </section>
+
+    <section id="labels">
+      <h2>用標籤（Label）分類</h2>
+      <p>區域回答「這個燈在哪裡」，標籤回答「這個燈是哪一類」。例如：</p>
+      <ul>
+        <li>燈類設備都貼 <code>照明</code> 標籤 — 之後「關掉所有照明」一鍵搞定。</li>
+        <li>USB 供電的設備都貼 <code>不斷電</code> 標籤 — 停電時不用擔心。</li>
+        <li>房客會用到的設備都貼 <code>房客可控</code> 標籤 — 建儀表板時就過濾這個。</li>
+      </ul>
+      <ol class="steps">
+        <li>
+          <h3>建立標籤：設定 → 標籤 → 新增</h3>
+          <figure class="shot">
+            <img src="assets/screenshots/ch4/03_labels_page.png" alt="標籤頁" />
+            <figcaption><strong>圖 4-3</strong>標籤管理頁 — 每個標籤可以有顏色與圖示。</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>幫實體貼標籤</h3>
+          <p>實體列表左側勾多個 → 上方「加入標籤」— 一次貼上。</p>
+        </li>
+        <li>
+          <h3>之後怎麼用</h3>
+          <p>自動化的觸發條件、儀表板篩選、腳本引用，都可以用「標籤」代替一個個列實體。實體換了、標籤不變，維護超省事。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="done">
+      <h2>命名範例集（直接抄）</h2>
+      <table style="width:100%; border-collapse: collapse; font-size:14px; margin-top:12px;">
+        <thead style="background: var(--surface-alt);">
+          <tr>
+            <th style="text-align:left; padding:10px; border:1px solid var(--border);">類型</th>
+            <th style="text-align:left; padding:10px; border:1px solid var(--border);">友善名稱</th>
+            <th style="text-align:left; padding:10px; border:1px solid var(--border);">實體 ID</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:8px; border:1px solid var(--border);">燈</td><td style="padding:8px; border:1px solid var(--border);">主燈</td><td style="padding:8px; border:1px solid var(--border);"><code>light.living_room_main</code></td></tr>
+          <tr><td style="padding:8px; border:1px solid var(--border);">燈</td><td style="padding:8px; border:1px solid var(--border);">氣氛燈</td><td style="padding:8px; border:1px solid var(--border);"><code>light.living_room_ambient</code></td></tr>
+          <tr><td style="padding:8px; border:1px solid var(--border);">開關</td><td style="padding:8px; border:1px solid var(--border);">飲水機</td><td style="padding:8px; border:1px solid var(--border);"><code>switch.kitchen_water_dispenser</code></td></tr>
+          <tr><td style="padding:8px; border:1px solid var(--border);">感應器</td><td style="padding:8px; border:1px solid var(--border);">人在</td><td style="padding:8px; border:1px solid var(--border);"><code>binary_sensor.master_bedroom_occupancy</code></td></tr>
+          <tr><td style="padding:8px; border:1px solid var(--border);">冷氣</td><td style="padding:8px; border:1px solid var(--border);">冷氣</td><td style="padding:8px; border:1px solid var(--border);"><code>climate.master_bedroom_ac</code></td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="faq">
+      <h2>常見問題</h2>
+      <details class="faq">
+        <summary>改了實體 ID，舊自動化都要重寫嗎？</summary>
+        <div class="body">HA 有「重新命名時同步更新自動化引用」的功能，但只涵蓋 UI 建的自動化。YAML 手寫的、Node-RED 的要自己搜尋替換。</div>
+      </details>
+      <details class="faq">
+        <summary>「標籤」和「區域」有什麼區別？</summary>
+        <div class="body">區域是「地點」（在哪裡），標籤是「屬性」（是什麼類型 / 誰能控制 / 什麼用途）。一個設備只能屬於一個區域，但可以有多個標籤。</div>
+      </details>
+      <details class="faq">
+        <summary>友善名稱能重複嗎？</summary>
+        <div class="body">可以。同名不同區域不會衝突（HA 顯示時會帶區域前綴）。但語音助理下指令時會分不出來，所以還是建議避免。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch3_floors_areas.html">
+        <span class="label">← 上一章</span>
+        <span class="title">03 · 樓層與區域</span>
+      </a>
+      <a class="next" href="ch5_users.html">
+        <span class="label">下一章 →</span>
+        <span class="title">05 · 用戶管理</span>
+      </a>
+    </div>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

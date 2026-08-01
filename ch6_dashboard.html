@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 6 章 · 儀表板</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">HA 新居入住指南</a>
+    <div class="brand-sub">從零到能用</div>
+    <h2>章節</h2>
+    <ol>
+      <li><a href="ch1_login.html">登入 HA</a></li>
+      <li><a href="ch2_system_settings.html">系統設定</a></li>
+      <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
+      <li><a href="ch4_naming_labels.html">命名與標籤</a></li>
+      <li><a href="ch5_users.html">用戶管理</a></li>
+      <li><a href="ch6_dashboard.html" class="active">儀表板</a></li>
+      <li><a href="ch7_notifications.html">通知</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要自己排版</a>
+      <a href="#now">現況：自動生成的預設</a>
+      <a href="#steps">排出「首頁」</a>
+      <a href="#tabs">多分頁與檢視</a>
+      <a href="#tips">3 個小訣竅</a>
+      <a href="#faq">常見問題</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 6 章</div>
+      <h1>儀表板</h1>
+      <p class="lead">把家人最常用的燈、窗簾、冷氣拉到「一打開就看到」的位置。做完之後，全家人不用學就會用。</p>
+    </div>
+
+    <section id="why">
+      <h2>為什麼要自己排版</h2>
+      <p>HA 預設會自動生成一個「總覽」儀表板，包含所有設備 — 這對「認識家裡有什麼」很好，但對「日常操作」爆炸多。</p>
+      <p>你要的是一個「早上打開、按 3 下就搞定所有事」的畫面。要達到這個目標，得做兩件事：</p>
+      <ul>
+        <li><strong>刪</strong>不常用的卡片。</li>
+        <li><strong>排</strong>常用的到最上面。</li>
+      </ul>
+    </section>
+
+    <section id="now">
+      <h2>現況：預設儀表板</h2>
+      <p>登入後看到的第一頁就是預設儀表板。它會自動：</p>
+      <ul>
+        <li>每個區域一張卡片。</li>
+        <li>裡面塞該區域所有實體。</li>
+        <li>順序按 HA 內部排序，沒什麼章法。</li>
+      </ul>
+      <figure class="shot">
+        <img src="assets/screenshots/ch6/01_default_dashboard.png" alt="預設儀表板" />
+        <figcaption><strong>圖 6-1</strong>預設儀表板 — 全部設備都在，但排列亂。</figcaption>
+      </figure>
+    </section>
+
+    <section id="steps">
+      <h2>排出你自己的「首頁」</h2>
+      <ol class="steps">
+        <li>
+          <h3>右上角三個點 → 「編輯儀表板」</h3>
+          <p>進入編輯模式，每張卡片右上角會出現筆刷圖示。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch6/02_edit_mode.png" alt="編輯模式" />
+            <figcaption><strong>圖 6-2</strong>編輯模式的入口。</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>刪掉不需要的區域卡片</h3>
+          <p>點卡片的筆刷 → 垃圾桶 → 確認刪除。<br>刪除的是「卡片」不是「設備」— 設備還在，只是這張卡片不顯示。</p>
+        </li>
+        <li>
+          <h3>加入「常用設備」卡片</h3>
+          <p>右下角「＋ 新增卡片」→ 選「實體」或「按鈕」卡片 → 選你要的實體（例如客廳主燈）→ 儲存。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch6/03_add_card.png" alt="新增卡片對話框" />
+            <figcaption><strong>圖 6-3</strong>新增卡片 — 內建近 30 種卡片類型。</figcaption>
+          </figure>
+        </li>
+        <li>
+          <h3>推薦的「首頁」卡片組合</h3>
+          <ul>
+            <li><strong>天氣</strong>（Weather 卡片）— 判斷今天要不要帶傘、開除濕。</li>
+            <li><strong>「誰在家」</strong>（Person 卡片）— 一眼看誰在誰不在。</li>
+            <li><strong>常用場景按鈕</strong>（Button 卡片）— 例如「回家」「離家」「睡覺」。</li>
+            <li><strong>各區域全開／全關</strong>（Button 卡片打服務）— 一鍵開關一樓所有燈。</li>
+          </ul>
+        </li>
+        <li>
+          <h3>拖曳排序</h3>
+          <p>按住卡片拖到想要的位置。最常用的放最上面。</p>
+        </li>
+        <li>
+          <h3>右上角「完成」離開編輯模式</h3>
+          <p>沒按完成，設定不會存！</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="tabs">
+      <h2>多分頁與檢視</h2>
+      <p>一個儀表板可以有多個分頁（View）：</p>
+      <ul>
+        <li><strong>首頁</strong>：常用操作。</li>
+        <li><strong>各樓層</strong>：一樓、二樓分頁，每頁詳細。</li>
+        <li><strong>能源</strong>：用電、太陽能。</li>
+        <li><strong>安防</strong>：監視器、門鎖、感應器。</li>
+      </ul>
+      <p>編輯模式右上角「＋」新增分頁。每個分頁可以獨立設「哪些使用者可看」。</p>
+      <figure class="shot">
+        <img src="assets/screenshots/ch6/04_multi_tabs.png" alt="多分頁範例" />
+        <figcaption><strong>圖 6-4</strong>多分頁儀表板。</figcaption>
+      </figure>
+    </section>
+
+    <section id="tips">
+      <h2>3 個排版小訣竅</h2>
+      <div class="callout tip"><strong>訣竅 1：用 Section 分組。</strong>新版 HA 有「Section」檢視類型，可以把「照明」「冷氣」「窗簾」用區塊分開，比長長一整條清楚。</div>
+      <div class="callout tip"><strong>訣竅 2：手機版另外排。</strong>編輯模式右上角有「檢視 → 桌面／手機」預覽，可以看到手機版長什麼樣。手機版建議一欄式、少 3-5 張卡片。</div>
+      <div class="callout tip"><strong>訣竅 3：善用「條件顯示」。</strong>卡片有「Visibility」設定，可以做到「只有下雨天才顯示除濕機卡」「訪客帳號看不到主臥燈」。</div>
+    </section>
+
+    <section id="faq">
+      <h2>常見問題</h2>
+      <details class="faq">
+        <summary>不小心刪錯卡片能救嗎？</summary>
+        <div class="body">如果還沒離開編輯模式，右上角「復原」；離開了就要重建。所以建議大改前先「三點選單 → 原始編輯器」把 YAML 複製到記事本備份。</div>
+      </details>
+      <details class="faq">
+        <summary>能把儀表板整個複製一份給小孩用嗎？</summary>
+        <div class="body">可以。「設定 → 儀表板 → 新增儀表板」→ 從模板複製 → 指定給某使用者。這樣爸媽和小孩各有各的首頁。</div>
+      </details>
+      <details class="faq">
+        <summary>想裝 HACS 上更漂亮的卡片可以嗎？</summary>
+        <div class="body">可以，例如 mushroom-cards、button-card 都很流行。但先用內建卡片走一遍，理解概念之後再裝，比較不會迷路。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch5_users.html">
+        <span class="label">← 上一章</span>
+        <span class="title">05 · 用戶管理</span>
+      </a>
+      <a class="next" href="ch7_notifications.html">
+        <span class="label">下一章 →</span>
+        <span class="title">07 · 通知</span>
+      </a>
+    </div>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>
