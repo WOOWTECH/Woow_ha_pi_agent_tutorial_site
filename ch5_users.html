@@ -67,10 +67,6 @@
       <li><strong>Device Tracker（設備追蹤器）</strong>：偵測位置的來源，例如 Companion App 的手機追蹤器。</li>
       </ul>
       一個 User 可以綁一個 Person（讓他既能登入、也能被追蹤位置）；也可以只有 Person 沒 User（例如小孩不需要登入但需要被偵測在家）；反之亦可（幫忙看家的鄰居只需要登入不需要被追蹤）。</div>
-      <ul>
-        <li><strong>User（使用者）</strong>：可以登入 HA 的帳號，有密碼、有權限。</li>
-        <li><strong>Person（人）</strong>：家中的一個「人」實體，用來追蹤位置、當自動化條件。</li>
-      </ul>
       <p>兩者可以綁定：例如「使用者 alice」對應「人 Alice」，Alice 手機裝了 App 登入後，就能把定位餵給那個「人」。</p>
       <div class="callout"><strong>簡單原則：</strong>會用 HA 的家人 → 建 User + Person 綁定。<br>只需要被追蹤位置的（例如小孩沒有手機 App，用 GPS 標籤）→ 只建 Person。</div>
     </section>

@@ -2,3 +2,5 @@
 node_modules/
 storage_state.json
 assets/screenshots/**/*.raw.png
+package.json
+package-lock.json

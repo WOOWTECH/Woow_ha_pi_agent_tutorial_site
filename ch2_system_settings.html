@@ -57,7 +57,7 @@
         <li>「27°C 開冷氣」— 攝氏還是華氏？單位錯就會判斷錯。</li>
       </ul>
       <p>這一章要做的事不多，但影響後面每一章。</p>
-      <div class="callout warn"><strong>時區設錯的後果比想像大</strong>：歷史圖表時間會歪、日出日落觸發會錯、能源儀表板會歸錯天。設定完地理位置後 HA 會自動設定時區、單位、貨幣，並在你家座標建立一個半徑 100 公尺的「home」zone。</div>
+      <div class="callout warn"><strong>時區設錯的後果比想像大</strong>：歷史圖表時間會歪、日出日落觸發會錯、能源儀表板會歸錯天。地理位置本身只影響日出日落與 <code>zone.home</code>（HA 會依你標記的座標建一個半徑 100 公尺的「home」zone），<strong>時區、單位、貨幣要另外手動選</strong>，不會自動猜。</div>
     </section>
 
     <section id="enter">

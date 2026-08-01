@@ -81,8 +81,8 @@
       <p><strong>什麼時候該裝 HACS？</strong>當你發現「官方整合裡沒有我這台設備」或「內建的卡片不夠好看 / 不夠強」時，八成 HACS 上有解。裝之前不用急，先確認官方沒有支援再考慮。</p>
       <p><strong>安裝流程重點（詳細看官方文件）：</strong></p>
       <ol>
-        <li>裝 HACS 本身需要 SSH / Studio Code Server 進 HA 執行一段安裝腳本。</li>
-        <li>然後在 HA 加入一個新的整合「HACS」，會要求你到 GitHub 產生一個個人 access token 貼進去。這是讓 HACS 能查詢 GitHub 上的套件版本用的。</li>
+        <li>裝 HACS 本身需要 SSH / Studio Code Server 進 HA 執行一段安裝腳本（近期版本也支援用 Add-on「HACS Bootstrap」一鍵處理）。</li>
+        <li>然後在 HA 加入一個新的整合「HACS」，會顯示一組 GitHub 裝置碼（device code）與網址；瀏覽器打開網址、登入 GitHub、貼上裝置碼授權即可（不用再手動產生 personal access token）。</li>
         <li>完成後左側選單會多一個 HACS 圖示，裡面就是社群套件市集。</li>
       </ol>
       <p>官方安裝文件：<a href="https://hacs.xyz" target="_blank" rel="noopener">https://hacs.xyz</a>。步驟隨版本會變，請以官方為準。</p>

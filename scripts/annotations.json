@@ -44,7 +44,7 @@
           "type": "callout",
           "at": { "x": 660, "y": 430 },
           "number": 1,
-          "text": "個人裝置勾這個，30 天免重登"
+          "text": "個人裝置勾這個，10 天免重登"
         }
       ]
     },
@@ -341,6 +341,221 @@
           "at": { "x": 720, "y": 40 },
           "number": 1,
           "text": "開發者工具 → 動作（原「服務」）"
+        }
+      ]
+    },
+
+    {
+      "chapter": "ch3",
+      "filename": "05_assign_area.png",
+      "url": "/config/devices/dashboard",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 40 },
+          "number": 1,
+          "text": "點任一裝置 → 頂端「Area」欄位就是分派區域的地方"
+        }
+      ]
+    },
+
+    {
+      "chapter": "ch4",
+      "filename": "02_rename_entity.png",
+      "url": "/config/entities",
+      "waitFor": "home-assistant",
+      "waitMs": 4000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 40 },
+          "number": 1,
+          "text": "點任一 entity → 齒輪 → 改「Name」與「Entity ID」"
+        }
+      ]
+    },
+
+    {
+      "chapter": "ch6",
+      "filename": "02_edit_mode.png",
+      "url": "/dashboard-home/overview",
+      "waitFor": "home-assistant",
+      "waitMs": 6000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 40 },
+          "number": 1,
+          "text": "右上三點 → Edit dashboard，進入編輯模式"
+        }
+      ]
+    },
+    {
+      "chapter": "ch6",
+      "filename": "03_add_card.png",
+      "url": "/dashboard-home/overview",
+      "waitFor": "home-assistant",
+      "waitMs": 6000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 720, "y": 40 },
+          "number": 1,
+          "text": "編輯模式下右下藍色「+」按鈕可加入新卡片"
+        }
+      ]
+    },
+
+    {
+      "chapter": "ch8",
+      "filename": "01_step.png",
+      "url": "/config/automation/edit/new",
+      "waitFor": "home-assistant",
+      "waitMs": 5000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 700, "y": 40 },
+          "number": 1,
+          "text": "空白自動化編輯器 — 命名先寫清楚"
+        }
+      ]
+    },
+    {
+      "chapter": "ch8",
+      "filename": "02_step.png",
+      "url": "/config/automation/edit/new",
+      "waitFor": "home-assistant",
+      "waitMs": 5000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 700, "y": 40 },
+          "number": 1,
+          "text": "點「Add trigger」→ 選「Sun」→ 選 Sunset 或 Sunrise"
+        }
+      ]
+    },
+    {
+      "chapter": "ch8",
+      "filename": "03_step.png",
+      "url": "/config/automation/edit/new",
+      "waitFor": "home-assistant",
+      "waitMs": 5000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 700, "y": 40 },
+          "number": 1,
+          "text": "「Add condition」→ State → 選 person.xxx 是 home"
+        }
+      ]
+    },
+    {
+      "chapter": "ch8",
+      "filename": "04_step.png",
+      "url": "/config/automation/edit/new",
+      "waitFor": "home-assistant",
+      "waitMs": 5000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 700, "y": 40 },
+          "number": 1,
+          "text": "「Add action」→ Perform action → light.turn_on + 選 entity"
+        }
+      ]
+    },
+    {
+      "chapter": "ch8",
+      "filename": "05_step.png",
+      "url": "/config/automation/edit/new",
+      "waitFor": "home-assistant",
+      "waitMs": 5000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 700, "y": 40 },
+          "number": 1,
+          "text": "再新增第二個動作：notify.mobile_app_xxx"
+        }
+      ]
+    },
+    {
+      "chapter": "ch8",
+      "filename": "06_step.png",
+      "url": "/config/automation/dashboard",
+      "waitFor": "home-assistant",
+      "waitMs": 5000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 700, "y": 40 },
+          "number": 1,
+          "text": "自動化列表 — 每列右側可手動執行 / 開關 / 進入追蹤"
+        }
+      ]
+    },
+
+    {
+      "chapter": "ch9",
+      "filename": "01_step.png",
+      "url": "/config/backup",
+      "waitFor": "home-assistant",
+      "waitMs": 5000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 700, "y": 40 },
+          "number": 1,
+          "text": "備份主頁面 — 右下角「Backup now」按鈕"
+        }
+      ]
+    },
+    {
+      "chapter": "ch9",
+      "filename": "02_step.png",
+      "url": "/config/backup",
+      "waitFor": "home-assistant",
+      "waitMs": 5000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 700, "y": 40 },
+          "number": 1,
+          "text": "點右下「Backup now」→ 對話框跳出後選「完整備份」"
+        }
+      ]
+    },
+    {
+      "chapter": "ch9",
+      "filename": "03_step.png",
+      "url": "/config/backup",
+      "waitFor": "home-assistant",
+      "waitMs": 5000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 700, "y": 40 },
+          "number": 1,
+          "text": "對話框中：命名 + 加密密碼（密碼務必存進密碼管理器）"
+        }
+      ]
+    },
+    {
+      "chapter": "ch9",
+      "filename": "04_step.png",
+      "url": "/config/backup",
+      "waitFor": "home-assistant",
+      "waitMs": 5000,
+      "annotations": [
+        {
+          "type": "callout",
+          "at": { "x": 700, "y": 40 },
+          "number": 1,
+          "text": "完成後回到主頁 → 點備份卡片右側可下載到電腦"
         }
       ]
     }
