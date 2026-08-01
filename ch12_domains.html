@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 12 章 · Domain 控制圖鑑 · Home Assistant 新居入住指南</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">HA 新居入住指南</a>
+    <div class="brand-sub">從零到能用</div>
+    <h2>章節</h2>
+    <ol>
+      <li><a href="ch1_login.html">登入 HA</a></li>
+      <li><a href="ch2_system_settings.html">系統設定</a></li>
+      <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
+      <li><a href="ch4_naming_labels.html">命名與標籤</a></li>
+      <li><a href="ch5_users.html">用戶管理</a></li>
+      <li><a href="ch6_dashboard.html">儀表板</a></li>
+      <li><a href="ch7_notifications.html">通知</a></li>
+      <li><a href="ch8_first_automation.html">第一個自動化</a></li>
+      <li><a href="ch9_backups.html">備份</a></li>
+      <li><a href="ch10_scripts.html">腳本 Scripts</a></li>
+      <li><a href="ch11_devices.html">裝置詳細設定</a></li>
+      <li><a href="ch12_domains.html" class="active">Domain 控制圖鑑</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#concept">Domain 是什麼</a>
+      <a href="#light">light · 燈</a>
+      <a href="#switch">switch · 開關</a>
+      <a href="#climate">climate · 冷暖氣</a>
+      <a href="#cover">cover · 窗簾/車庫</a>
+      <a href="#media">media_player · 媒體</a>
+      <a href="#lock">lock · 智慧鎖</a>
+      <a href="#vacuum">vacuum · 掃地機</a>
+      <a href="#fan">fan · 風扇</a>
+      <a href="#camera">camera · 攝影機</a>
+      <a href="#sensor">sensor / binary_sensor</a>
+      <a href="#notify">notify · 通知</a>
+      <a href="#input">input_* · 輔助元件</a>
+      <a href="#tools">共通工具與心法</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_hacs_addons.html">A · 生態圈：HACS/Add-ons/遠端</a>
+      <a href="appendix_scenes_helpers_groups.html">B · 場景/輔助元件/群組</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 12 章</div>
+      <h1>Domain 控制圖鑑</h1>
+      <p class="lead">HA 把所有東西按「類別（Domain）」歸類：燈是 <code>light</code>、冷氣是 <code>climate</code>、窗簾是 <code>cover</code>。同一 domain 的所有裝置<em>接受同一套服務</em>，學會一個就會全部。這一章是每個常用 domain 的速查表。</p>
+    </div>
+
+    <section id="concept">
+      <h2 data-icon="concept">Domain 是什麼？為什麼要理解它</h2>
+      <p>每個 entity_id 都長成 <code>domain.name</code>，前面那半就是 domain：</p>
+      <ul>
+        <li><code>light.livingroom_main</code> → domain 是 <code>light</code></li>
+        <li><code>climate.bedroom_ac</code> → domain 是 <code>climate</code></li>
+        <li><code>sensor.outdoor_temperature</code> → domain 是 <code>sensor</code></li>
+      </ul>
+      <p><strong>為什麼重要？</strong>因為 HA 的「呼叫服務」是以 domain 為單位。<code>light.turn_on</code> 可以打開<em>任何品牌任何協定的燈</em>—飛利浦 Hue、宜家 Tradfri、小米 Yeelight、Zigbee 通用燈、DIY WLED 燈條—都吃同一個服務。這是 HA 抽象化的強大之處。</p>
+      <div class="callout tip"><strong>心法：</strong>買新設備前先查它會被 HA 認成哪個 domain。如果認成 <code>light</code>，你就知道所有現有燈的自動化都可以直接吃它，不用重寫。認成 <code>switch</code> 就沒亮度、色溫可調。</div>
+    </section>
+
+    <!-- ================ LIGHT ================ -->
+    <section id="light">
+      <h2 data-icon="steps"><code>light</code> · 燈</h2>
+      <p>可調亮度、色溫、顏色的照明設備。開關型（只有開/關）也可能被歸類到 light，端看整合。</p>
+      <h3>常用服務</h3>
+      <ul>
+        <li><code>light.turn_on</code> — 支援參數：<code>brightness_pct: 60</code>、<code>color_temp_kelvin: 3000</code>、<code>rgb_color: [255, 100, 50]</code>、<code>transition: 5</code>（漸變秒數）、<code>effect: "colorloop"</code></li>
+        <li><code>light.turn_off</code> — 也支援 <code>transition</code>（漸暗）</li>
+        <li><code>light.toggle</code> — 開關切換</li>
+      </ul>
+      <h3>常用 UI 卡片</h3>
+      <ul>
+        <li><strong>Light card</strong>：內建，滑動調亮度、按住開色板</li>
+        <li><strong>Tile card</strong>：小圖磚，適合排一整片</li>
+        <li><strong>Mushroom Light card</strong>（HACS）：更漂亮，滑條 + 色板整合</li>
+      </ul>
+      <h3>常見坑</h3>
+      <ul>
+        <li><strong>燈被實體開關斷電</strong>：Zigbee 燈斷電就離線，開燈自動化跑不到。解法：裝<em>不斷電</em>的智慧開關，或把牆壁開關綁死開。</li>
+        <li><strong>色溫單位</strong>：新版用 <code>color_temp_kelvin</code>（3000K 暖白 / 6500K 冷白）；舊版用 <code>color_temp</code>（mired，數字越小越冷）。UI 選哪個看整合，寫 YAML 時 kelvin 比較直覺。</li>
+        <li><strong>轉場（transition）小心</strong>：<code>transition: 30</code> 讓燈從當前 30 秒淡到目標亮度，如果同時來另一個 turn_on 會打斷，用 <code>restart</code> 模式的腳本包起來比較穩。</li>
+      </ul>
+    </section>
+
+    <!-- ================ SWITCH ================ -->
+    <section id="switch">
+      <h2 data-icon="steps"><code>switch</code> · 開關 / 智慧插座</h2>
+      <p>純粹的通斷電。插座、繼電器、簡單牆壁開關都是這一類。</p>
+      <h3>常用服務</h3>
+      <ul>
+        <li><code>switch.turn_on</code> / <code>switch.turn_off</code> / <code>switch.toggle</code> — 沒別的參數，就是這麼單純。</li>
+      </ul>
+      <h3>常見用途</h3>
+      <ul>
+        <li>控制非智慧家電：飲水機、除濕機、風扇（老式）、聖誕燈</li>
+        <li>控制電磁閥：熱水器、灑水系統、瓦斯</li>
+        <li>控制電動窗簾馬達（但更建議認成 <code>cover</code>）</li>
+      </ul>
+      <h3>常見坑</h3>
+      <ul>
+        <li><strong>斷電記憶</strong>：很多插座沒設「上電後恢復先前狀態」，跳電後全關。優先在 App 或 HA 設「Power on state = Last / On」。</li>
+        <li><strong>能耗實體</strong>：許多智慧插座同時有 <code>sensor.*_power</code>、<code>sensor.*_energy</code>，可以拿去做能源儀表板，或當「洗衣機洗完了」的訊號（見範例）。</li>
+      </ul>
+      <div class="callout tip"><strong>神奇範例：偵測洗衣機/烘衣機完成</strong>。用智慧插座量功率，寫自動化「當 <code>sensor.washer_power</code> 從 &gt;10W 掉到 &lt;5W 持續 3 分鐘 → 推播」。比原廠 App 還好用。</div>
+    </section>
+
+    <!-- ================ CLIMATE ================ -->
+    <section id="climate">
+      <h2 data-icon="steps"><code>climate</code> · 冷暖氣 / 空調 / 恆溫器</h2>
+      <h3>常用服務</h3>
+      <ul>
+        <li><code>climate.turn_on</code> / <code>climate.turn_off</code></li>
+        <li><code>climate.set_temperature</code> — 參數：<code>temperature: 26</code>（單一目標溫度），或 <code>target_temp_high / target_temp_low</code>（區間，恆溫器）</li>
+        <li><code>climate.set_hvac_mode</code> — 參數 <code>hvac_mode: cool / heat / auto / dry / fan_only / off</code></li>
+        <li><code>climate.set_fan_mode</code> — <code>fan_mode: auto / low / medium / high / on / off</code>（值依廠牌）</li>
+        <li><code>climate.set_preset_mode</code> — 廠商預設模式（節能、睡眠、離家）</li>
+        <li><code>climate.set_swing_mode</code> — 掃風方向</li>
+      </ul>
+      <h3>UI 卡片</h3>
+      <ul>
+        <li><strong>Thermostat card</strong>：內建圓形溫度盤，最直觀</li>
+        <li><strong>Tile card</strong>：緊湊，適合多台空調並列</li>
+        <li><strong>simple-thermostat</strong>（HACS）：更多控制細節</li>
+      </ul>
+      <h3>常見坑</h3>
+      <ul>
+        <li><strong>紅外冷氣的狀態不準</strong>：走 IR blaster 的冷氣（Broadlink、SwitchBot Hub）HA 只知道「發射過什麼指令」，不知道冷氣真的收到沒。加一顆溫度感測器對比實際溫度變化才靠譜。</li>
+        <li><strong>Preset 覆寫溫度</strong>：切到 preset「eco」通常會強制設定溫度，回 <code>none</code> preset 才能自由設。</li>
+        <li><strong>單位</strong>：確認第 2 章的單位系統設「攝氏」，否則 <code>temperature: 26</code> 會被當成華氏（很冷 XD）。</li>
+      </ul>
+    </section>
+
+    <!-- ================ COVER ================ -->
+    <section id="cover">
+      <h2 data-icon="steps"><code>cover</code> · 窗簾 / 車庫門 / 百葉窗</h2>
+      <h3>常用服務</h3>
+      <ul>
+        <li><code>cover.open_cover</code> / <code>cover.close_cover</code> / <code>cover.stop_cover</code> / <code>cover.toggle</code></li>
+        <li><code>cover.set_cover_position</code> — 參數 <code>position: 50</code>（0 全關、100 全開）</li>
+        <li><code>cover.set_cover_tilt_position</code> — 百葉窗葉片角度</li>
+        <li><code>cover.open_cover_tilt</code> / <code>cover.close_cover_tilt</code></li>
+      </ul>
+      <h3>常見坑</h3>
+      <ul>
+        <li><strong>方向反了</strong>：有些馬達的「開」跟你的直覺相反。到裝置頁「Reconfigure」或直接在設備 App 校準，不要在 HA 用 <code>position: 100 - x</code> 反著寫。</li>
+        <li><strong>沒 position 支援</strong>：便宜的窗簾馬達只有 open/close/stop 三段，設 <code>set_cover_position</code> 會直接失敗。查裝置頁看 supported_features。</li>
+        <li><strong>車庫門要 <code>lock</code> 保險</strong>：<code>cover.open_cover</code> 沒防呆，自動化寫錯可能半夜開車庫。用 <code>input_boolean</code> 當開關 + 條件檢查。</li>
+      </ul>
+    </section>
+
+    <!-- ================ MEDIA_PLAYER ================ -->
+    <section id="media">
+      <h2 data-icon="steps"><code>media_player</code> · 電視 / 音響 / 串流盒</h2>
+      <h3>常用服務</h3>
+      <ul>
+        <li><code>media_player.turn_on / turn_off / toggle</code></li>
+        <li><code>media_player.volume_set</code>（<code>volume_level: 0.3</code>，0-1）、<code>volume_up / volume_down / volume_mute</code></li>
+        <li><code>media_player.media_play / media_pause / media_stop / media_next_track / media_previous_track</code></li>
+        <li><code>media_player.play_media</code> — 播特定內容（<code>media_content_id</code> + <code>media_content_type</code>）</li>
+        <li><code>media_player.select_source</code> — 換輸入源（HDMI1、Netflix、Spotify）</li>
+        <li><code>media_player.select_sound_mode</code> — 音場模式</li>
+      </ul>
+      <h3>整合差異大</h3>
+      <ul>
+        <li><strong>Google Cast</strong>：可推 URL 到 Nest Hub / Chromecast，適合廣播「洗衣機洗完了」的 TTS 語音</li>
+        <li><strong>Apple TV / Sonos / HEOS</strong>：支援豐富，含歌單、群組</li>
+        <li><strong>Samsung / LG TV</strong>：關機通常 OK，開機常常需要 Wake-on-LAN 額外設定</li>
+        <li><strong>Spotify / Plex</strong>：可以 <code>play_media</code> 指定歌單 / 影片</li>
+      </ul>
+      <h3>常見坑</h3>
+      <ul>
+        <li>電視開機後 3-5 秒才接受指令，自動化寫「開機 + 換源」要中間加 <code>delay</code>。</li>
+        <li>Cast 群組（好幾支喇叭群播）是<em>額外</em>的 media_player 實體，不是任一支喇叭的屬性。</li>
+      </ul>
+    </section>
+
+    <!-- ================ LOCK ================ -->
+    <section id="lock">
+      <h2 data-icon="steps"><code>lock</code> · 智慧門鎖</h2>
+      <h3>常用服務</h3>
+      <ul>
+        <li><code>lock.lock</code> / <code>lock.unlock</code></li>
+        <li><code>lock.open</code>（如果是可電控門把，會實際打開）</li>
+      </ul>
+      <h3>常見坑</h3>
+      <ul>
+        <li><strong>安全第一</strong>：門鎖自動化務必<em>雙重保險</em>。例：「離家自動上鎖」加條件「沒有人在家 + 過去 5 分鐘沒開門」。不要單純用時間觸發。</li>
+        <li><strong>雲端延遲</strong>：品牌雲端整合（Yale、August、Aqara 雲端）常有 5-15 秒延遲。想低延遲用 Matter over Thread 或 Z-Wave。</li>
+        <li><strong>Unavailable 時不能鎖</strong>：如果門鎖跟主機斷線就無法遠端操作，走本地協定（Matter、Zigbee、Z-Wave）比純雲端可靠。</li>
+      </ul>
+      <div class="callout warn"><strong>提醒：</strong>如果沒手機、沒鑰匙備份就自動鎖門，你會被鎖在門外。永遠準備一個機械鑰匙或 PIN 碼備援。</div>
+    </section>
+
+    <!-- ================ VACUUM ================ -->
+    <section id="vacuum">
+      <h2 data-icon="steps"><code>vacuum</code> · 掃地機器人</h2>
+      <h3>常用服務</h3>
+      <ul>
+        <li><code>vacuum.start</code> / <code>vacuum.pause</code> / <code>vacuum.stop</code></li>
+        <li><code>vacuum.return_to_base</code> — 回充電座</li>
+        <li><code>vacuum.locate</code> — 響鈴找位置</li>
+        <li><code>vacuum.set_fan_speed</code> — 吸力等級</li>
+        <li><code>vacuum.send_command</code> — 傳自訂指令（各品牌不一，如 Roborock 的房間指定清掃）</li>
+      </ul>
+      <h3>常見用法</h3>
+      <ul>
+        <li>「大家都離家 30 分鐘 → 開始打掃」— 出門自動化</li>
+        <li>「Zigbee 動作感應器全部無動作 15 分鐘 + 平日下午」— 條件觸發</li>
+        <li>「客廳有訪客要來（Google Calendar 事件）→ 30 分鐘前打掃客廳」— 事件驅動</li>
+      </ul>
+      <h3>常見坑</h3>
+      <ul>
+        <li><strong>雲端 API 限流</strong>：某些品牌雲端 API 每天呼叫次數有限制，別把自動化寫成每 1 分鐘查狀態。</li>
+        <li><strong>房間 ID 是隱藏的</strong>：想「只掃客廳」得先在原廠 App 分區，然後從 HA 用 <code>send_command</code> 傳房間 ID。ID 通常在裝置屬性或整合日誌找。</li>
+      </ul>
+    </section>
+
+    <!-- ================ FAN ================ -->
+    <section id="fan">
+      <h2 data-icon="steps"><code>fan</code> · 電風扇 / 天花板吊扇 / 空氣清淨機</h2>
+      <h3>常用服務</h3>
+      <ul>
+        <li><code>fan.turn_on</code> / <code>fan.turn_off</code> / <code>fan.toggle</code></li>
+        <li><code>fan.set_percentage</code>（0-100 風速）</li>
+        <li><code>fan.set_preset_mode</code>（<code>auto / sleep / turbo</code>，依裝置）</li>
+        <li><code>fan.oscillate</code>（左右擺頭）</li>
+        <li><code>fan.set_direction</code>（吊扇順逆時針）</li>
+      </ul>
+      <h3>常見坑</h3>
+      <ul>
+        <li>空氣清淨機常同時屬 <code>fan</code>（風量）+ <code>sensor</code>（PM2.5）+ <code>switch</code>（負離子）三個 domain 分開的實體。</li>
+        <li><code>set_percentage: 0</code> 通常等於關機，要開回來記得先 <code>turn_on</code>。</li>
+      </ul>
+    </section>
+
+    <!-- ================ CAMERA ================ -->
+    <section id="camera">
+      <h2 data-icon="steps"><code>camera</code> · 攝影機</h2>
+      <h3>常用服務</h3>
+      <ul>
+        <li><code>camera.snapshot</code> — 拍一張存檔（參數 <code>filename: /media/snap_{{ now().timestamp() }}.jpg</code>）</li>
+        <li><code>camera.turn_on / turn_off</code>（有些相機支援）</li>
+        <li><code>camera.enable_motion_detection / disable_motion_detection</code></li>
+        <li><code>camera.record</code> — 錄一段影片</li>
+      </ul>
+      <h3>UI 卡片</h3>
+      <ul>
+        <li><strong>Picture entity</strong>：內建，最單純</li>
+        <li><strong>Picture glance</strong>：影像 + 上方小 icon 顯示相關實體（門鎖、燈）</li>
+        <li><strong>WebRTC card</strong>（HACS）：低延遲串流，適合門鈴</li>
+      </ul>
+      <h3>常見坑</h3>
+      <ul>
+        <li><strong>雲端相機（Ring、Wyze、TP-Link Kasa）</strong>：畫面延遲 5-30 秒是常態，想即時要走 ONVIF / RTSP 本地流。</li>
+        <li><strong>Snapshot 檔案位置</strong>：預設 <code>/config/www/</code> 才能被儀表板讀到；存 <code>/media/</code> 要另外配 media_source。</li>
+      </ul>
+    </section>
+
+    <!-- ================ SENSOR ================ -->
+    <section id="sensor">
+      <h2 data-icon="steps"><code>sensor</code> / <code>binary_sensor</code> · 感測器</h2>
+      <p><code>sensor</code> 是<em>有數值</em>的感測器（溫度 25.3、電量 87%），<code>binary_sensor</code> 是<em>只有兩態</em>的（門開/關、有人/沒人、下雨/沒雨）。</p>
+      <h3>它們不接受控制服務</h3>
+      <p>感測器是唯讀。你不能「turn_on」一顆溫度感測器。感測器的價值在<strong>當觸發或條件</strong>：</p>
+      <ul>
+        <li>觸發：「當 <code>binary_sensor.motion_livingroom</code> 變 on → 開燈」</li>
+        <li>條件：「當日落時，如果 <code>binary_sensor.someone_home</code> 是 on 才做事」</li>
+        <li>數值：「當 <code>sensor.pm25</code> &gt; 35 → 開清淨機」</li>
+      </ul>
+      <h3>常用 device_class（決定圖示與行為）</h3>
+      <ul>
+        <li><code>sensor</code>：<code>temperature / humidity / pressure / illuminance / power / energy / battery / co2 / pm25</code></li>
+        <li><code>binary_sensor</code>：<code>motion / occupancy / door / window / smoke / moisture / opening / battery / connectivity</code></li>
+      </ul>
+      <div class="callout tip"><strong>技巧：</strong>如果一顆感測器判斷 device_class 錯了（例如 opening 判成 door），實體齒輪頁可覆寫 device_class，儀表板圖示會跟著換。</div>
+      <h3>常見坑</h3>
+      <ul>
+        <li><strong>Binary sensor 抖動</strong>：動作感應器常「亮 → 秒關 → 亮」，自動化寫「on → 開燈」跟「off → 關燈」會抖到頭暈。改用「for: 5 minutes」條件，狀態穩定 5 分鐘才動作。</li>
+        <li><strong>battery 是 sensor 不是 binary_sensor</strong>：想「電量低於 20% 提醒」用 <code>sensor.*_battery</code> + numeric_state 觸發器。</li>
+      </ul>
+    </section>
+
+    <!-- ================ NOTIFY ================ -->
+    <section id="notify">
+      <h2 data-icon="steps"><code>notify</code> · 通知</h2>
+      <p>第 7 章講過，這裡補充參數細節。</p>
+      <h3>Companion App 推播完整參數</h3>
+<pre style="background:var(--surface-alt);padding:12px;border-radius:8px;overflow:auto;font-size:13px;"><code>service: notify.mobile_app_iphone
+data:
+  title: 洗衣機洗完了
+  message: 記得拿出來
+  data:
+    push:
+      sound: US-EN-Alexa-Laundry-Ready.wav  # iOS 音效
+      badge: 1
+    actions:                                # 可點按動作
+      - action: LAUNDRY_DONE
+        title: 好，我來拿
+      - action: LAUNDRY_SNOOZE
+        title: 10 分鐘後提醒
+    image: /api/camera_proxy/camera.laundry # 直接顯示相機截圖
+    tag: laundry                            # 相同 tag 會覆蓋前一則
+    channel: laundry                        # Android 通知通道
+    ttl: 0                                  # Android 高優先</code></pre>
+      <h3>其他常用 notify.*</h3>
+      <ul>
+        <li><code>notify.persistent_notification</code> — HA 內部通知（右上鈴鐺），不推手機</li>
+        <li><code>notify.notify</code> — 預設通知群組（發送到所有已設定的通道）</li>
+        <li><code>tts.*</code> — 語音朗讀（配合 <code>media_player</code>），詳見第 12 章附錄語音章節</li>
+      </ul>
+    </section>
+
+    <!-- ================ INPUT ================ -->
+    <section id="input">
+      <h2 data-icon="steps"><code>input_*</code> · 輔助元件 Helpers</h2>
+      <p>Helpers 是 HA 內建的「假實體」，讓你在自動化裡有東西可以「翻」— 詳見附錄 B。這裡列 domain 對照：</p>
+      <table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:14px;">
+        <thead>
+          <tr style="background:rgba(0,0,0,0.04);">
+            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">Domain</th>
+            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">是什麼</th>
+            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">常用場景</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);"><code>input_boolean</code></td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">開/關</td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">「訪客模式」「渡假模式」開關</td></tr>
+          <tr><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);"><code>input_number</code></td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">可調數字</td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">「自動開燈的照度門檻」用滑桿調</td></tr>
+          <tr><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);"><code>input_select</code></td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">下拉選單</td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">「家庭模式」= 在家/離家/睡覺</td></tr>
+          <tr><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);"><code>input_text</code></td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">字串</td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">記錄事件、當標籤</td></tr>
+          <tr><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);"><code>input_datetime</code></td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">日期/時間</td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">「起床時間」讓家人自己在儀表板改</td></tr>
+          <tr><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);"><code>timer</code></td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">倒數計時器</td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">「亮燈 5 分鐘後自動關」</td></tr>
+          <tr><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);"><code>counter</code></td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">整數計數器</td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">「今日開門次數」</td></tr>
+          <tr><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);"><code>schedule</code></td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">週排程</td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">「上班時段」以週為單位畫時間表</td></tr>
+        </tbody>
+      </table>
+      <p>每個都有對應服務，例：<code>input_boolean.turn_on</code>、<code>input_number.set_value</code>、<code>timer.start</code>。附錄 B 有完整教學。</p>
+    </section>
+
+    <!-- ================ COMMON TOOLS ================ -->
+    <section id="tools">
+      <h2 data-icon="tips">共通工具與心法</h2>
+      <h3>用「開發者工具」試服務</h3>
+      <p>設定側邊選單→「開發者工具」→「服務」頁籤。可以選任何服務、填參數、按執行。這是你學新 domain 最快的方式：不用寫自動化，直接試。</p>
+      <figure class="shot">
+        <img src="assets/screenshots/ch12/01_dev_services.png" alt="開發者工具 服務" />
+        <figcaption><strong>圖 12-1</strong>「開發者工具 → 服務」— 學新 domain 就在這裡玩。</figcaption>
+      </figure>
+      <h3>用「狀態」看實體屬性</h3>
+      <p>開發者工具 → 「狀態」頁籤 → 貼實體 ID → 看它有哪些 <code>attributes</code>。例如 <code>light.livingroom</code> 的屬性會有 <code>supported_color_modes</code>、<code>min_color_temp_kelvin</code>、<code>max_color_temp_kelvin</code>，這些決定你能設什麼參數。</p>
+      <h3>心法總結</h3>
+      <div class="callout"><strong>買設備 → 先查 domain：</strong>能被認成 <code>light / switch / cover / climate</code> 這種「有名有姓」的 domain 通常後續體驗最好；如果只能認成一堆 <code>sensor</code> + <code>switch</code>（例如某些山寨 Tuya 電動窗簾），寫自動化會很痛。這一點在買設備前 Google「品牌 Home Assistant integration」就能查到。</div>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch11_devices.html">
+        <span class="label">← 上一章</span>
+        <span class="title">11 · 裝置詳細設定</span>
+      </a>
+      <a class="next" href="appendix_hacs_addons.html">
+        <span class="label">附錄 A →</span>
+        <span class="title">生態圈：HACS/Add-ons/遠端</span>
+      </a>
+    </div>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

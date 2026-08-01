@@ -26,6 +26,9 @@
       <li><a href="ch7_notifications.html">通知</a></li>
       <li><a href="ch8_first_automation.html">第一個自動化</a></li>
       <li><a href="ch9_backups.html">備份</a></li>
+      <li><a href="ch10_scripts.html">腳本 Scripts</a></li>
+      <li><a href="ch11_devices.html">裝置詳細設定</a></li>
+      <li><a href="ch12_domains.html">Domain 控制圖鑑</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -33,11 +36,14 @@
       <a href="#concept">兩個名詞：Users vs. Persons</a>
       <a href="#steps">建立帳號步驟</a>
       <a href="#persons">建立「人」</a>
+      <a href="#companion_flow">家人手機端到端流程</a>
+      <a href="#zone_tune">Zone 半徑校準</a>
       <a href="#faq">常見問題</a>
     </div>
     <div class="toc-in-chapter">
       <h2>附錄</h2>
-      <a href="appendix_hacs_addons.html">生態圈：HACS/Add-ons/遠端</a>
+      <a href="appendix_hacs_addons.html">A · 生態圈：HACS/Add-ons/遠端</a>
+      <a href="appendix_scenes_helpers_groups.html">B · 場景/輔助元件/群組</a>
     </div>
   </aside>
 
@@ -185,6 +191,73 @@
         <summary>Person 一直顯示「離家」但人在家？</summary>
         <div class="body">Companion App 位置權限沒開，或家裡 zone 半徑太小（預設 100m）。到「設定 → 區域 → home」把半徑調大到 150-200m。</div>
       </details>
+    </section>
+
+    <section id="companion_flow">
+      <h2 data-icon="steps">家人手機端到端流程（Companion App）</h2>
+      <p>剛才在 HA 建了 user + person，接下來要在家人手機端完成綁定，這一節從安裝到收到第一則推播完整走一次。</p>
+      <ol class="steps">
+        <li>
+          <h3>家人下載 App</h3>
+          <p>iOS：App Store 搜「Home Assistant」；Android：Play Store 或 F-Droid（無 Google 依賴版本）。名字都叫 <strong>Home Assistant</strong>，圖示是藍色房子。</p>
+        </li>
+        <li>
+          <h3>App 掃 QR / 手動輸網址</h3>
+          <p>首次開啟會問「Home Assistant Server URL」。三種輸入方式：</p>
+          <ul>
+            <li><strong>同一 WiFi</strong>：App 通常會自動發現，點列表裡的即可</li>
+            <li><strong>手動</strong>：輸 <code>http://192.168.x.x:8123</code>（家裡 IP）或 Nabu Casa / 自架反向代理的公網網址</li>
+            <li><strong>QR</strong>：長輩用的話你直接在自己手機開 <code>URL → QR 產生器</code> 給他掃</li>
+          </ul>
+        </li>
+        <li>
+          <h3>登入用「他自己的帳號」，不是你的</h3>
+          <p>用剛才在第 5 章步驟為他建的 user 登入。<strong>這一步決定了他的手機是「他的」，通知服務會叫 <code>notify.mobile_app_家人使用者名</code>。</strong>用錯帳號登入是常見的「推播跑到別人手機」根因。</p>
+        </li>
+        <li>
+          <h3>允許位置權限「一律允許」</h3>
+          <p>iOS 選「一律」、Android 選「一律允許」，不要選「使用時」。因為進出家門的判斷是背景執行；只允許前景等於失效。</p>
+          <div class="callout warn"><strong>常見坑：</strong>iOS 15 之後預設「使用時」，一定要進「設定 → App → Home Assistant → 位置」手動改成「一律」，才能背景回報位置。</div>
+        </li>
+        <li>
+          <h3>允許通知權限 + 電池最佳化排除</h3>
+          <p>Android 特別重要：把 Home Assistant 從「省電模式管理」排除，否則深夜通知會延遲 15-60 分鐘。iOS 開通知即可。</p>
+        </li>
+        <li>
+          <h3>驗證：位置有回傳嗎</h3>
+          <p>回 HA「設定 → 裝置與服務 → 行動 App」看得到那支手機，點進去有一堆 <code>sensor.手機_battery / sensor.手機_geocoded_location</code> 等實體。裝置頁地圖應該顯示<em>當下</em>位置。如果空白，回頭檢查位置權限。</p>
+        </li>
+        <li>
+          <h3>發第一則測試通知</h3>
+          <p>「開發者工具 → 服務」→ 選 <code>notify.mobile_app_家人使用者名</code> → 訊息「測試」→ 執行。家人手機應在 1-3 秒內收到。收不到就查通知權限。</p>
+        </li>
+      </ol>
+      <div class="callout"><strong>手機 App 常用實體</strong>（都自動出現）：<code>device_tracker.手機</code>（在家/離家）、<code>sensor.手機_battery_level</code>、<code>sensor.手機_battery_state</code>（充電中/放電中）、<code>sensor.手機_geocoded_location</code>（人話地址）。想開更多感測器：App「設定 → Companion App → 管理感測器」開你要的（步數、活動類型、藍牙裝置、電池溫度⋯）。</div>
+    </section>
+
+    <section id="zone_tune">
+      <h2 data-icon="steps">Zone 半徑校準（避免「一直誤判離家」）</h2>
+      <p><code>zone.home</code> 是判斷「在家 / 離家」的圓形範圍，預設半徑 100 公尺。100m 對透天厚牆或大公寓常常太小，導致有人在家但被判成離家（GPS 飄移就出圓）。</p>
+      <ol class="steps">
+        <li>
+          <h3>設定 → 區域（Areas 的隔壁頁籤）</h3>
+          <p><strong>注意</strong>：Zone 和 Area（區域）是<em>不同東西</em>。Area 是家裡的房間；Zone 是地圖上的圓圈範圍（家、公司、學校）。這裡點的是後者。</p>
+        </li>
+        <li>
+          <h3>點 home → 調半徑</h3>
+          <p>建議 <strong>150-200 公尺</strong>。地圖上會即時顯示圈圈，看你家整個涵蓋到就對了。</p>
+          <div class="callout warn"><strong>不要開太大</strong>：500m 以上會把整個社區包進去，「在家 / 離家」判斷就變模糊 — 你去便利店 100 公尺外還算在家。</div>
+        </li>
+        <li>
+          <h3>加公司 / 學校 zone</h3>
+          <p>「＋ 新增區域」→ 打字搜地址或直接點地圖 → 命名「公司」「小孩學校」。之後可寫「小孩到校自動通知媽媽」的自動化。</p>
+        </li>
+        <li>
+          <h3>「passive zone」用途</h3>
+          <p>zone 有一個「passive」開關。開啟後，該 zone 不會影響 person 的 state（不會顯示「在公司」），但仍可被自動化查詢。用在「路過的地標」不希望污染 state 但想追蹤的場景。</p>
+        </li>
+      </ol>
+      <div class="callout tip"><strong>雙重定位策略</strong>：手機 GPS + WiFi（連家用 WiFi = 在家）+ 藍牙信標（進門玄關 iBeacon）三管齊下，判斷最準。單靠 GPS 在室內、地下室、電梯裡都會失準。Companion App 可以綁 WiFi SSID 判斷「連家用 WiFi = 在家」，準確度 95% 以上。</div>
     </section>
 
     <div class="pager">
