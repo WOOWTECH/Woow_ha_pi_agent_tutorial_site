@@ -4,6 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>第 7 章 · 通知</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
@@ -40,7 +44,7 @@
     </div>
 
     <section id="why">
-      <h2>為什麼要通知</h2>
+      <h2 data-icon="why">為什麼要通知</h2>
       <ul>
         <li>洗衣機洗完 → 手機叮一下。</li>
         <li>門沒關 → 出門 100 公尺就提醒。</li>
@@ -51,7 +55,7 @@
     </section>
 
     <section id="app">
-      <h2>裝 Companion App</h2>
+      <h2 data-icon="app">裝 Companion App</h2>
       <ol class="steps">
         <li>
           <h3>手機商店搜「Home Assistant」</h3>
@@ -65,7 +69,7 @@
     </section>
 
     <section id="login">
-      <h2>用剛才建的帳號登入</h2>
+      <h2 data-icon="login">用剛才建的帳號登入</h2>
       <ol class="steps">
         <li>
           <h3>輸入帳號、密碼</h3>
@@ -92,7 +96,7 @@
     </section>
 
     <section id="test">
-      <h2>送出第一則通知</h2>
+      <h2 data-icon="test">送出第一則通知</h2>
       <ol class="steps">
         <li>
           <h3>開發者工具 → 服務</h3>
@@ -109,10 +113,10 @@
         <li>
           <h3>填 message 與 title</h3>
           <p>簡單試一下：</p>
-          <pre style="background: var(--code-bg); padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto;">service: notify.mobile_app_xxx
+          <pre class="code-block">service: notify.mobile_app_xxx
 data:
   title: "測試通知"
-  message: "從 HA 發來的第一則訊息 🎉"</pre>
+  message: "從 HA 發來的第一則訊息"</pre>
         </li>
         <li>
           <h3>按「呼叫服務」</h3>
@@ -122,9 +126,9 @@ data:
     </section>
 
     <section id="advanced">
-      <h2>進階：帶動作按鈕的通知</h2>
+      <h2 data-icon="advanced">進階：帶動作按鈕的通知</h2>
       <p>通知不只是靜態文字，可以帶按鈕讓你點：</p>
-      <pre style="background: var(--code-bg); padding: 12px; border-radius: 6px; font-size: 13px; overflow-x: auto;">service: notify.mobile_app_xxx
+      <pre class="code-block">service: notify.mobile_app_xxx
 data:
   title: "門口有人按電鈴"
   message: "點下面決定要不要開門"
@@ -139,7 +143,7 @@ data:
     </section>
 
     <section id="faq">
-      <h2>常見問題</h2>
+      <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>通知沒收到？</summary>
         <div class="body">依序檢查：（1）手機系統的 App 通知權限是不是開的；（2）App 內「設定 → Companion App → 通知」是不是開的；（3）呼叫的服務名稱有沒有寫對；（4）手機是不是在勿擾模式。</div>

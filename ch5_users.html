@@ -4,6 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>第 5 章 · 用戶管理</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
@@ -39,7 +43,7 @@
     </div>
 
     <section id="why">
-      <h2>為什麼要建多個帳號</h2>
+      <h2 data-icon="why">為什麼要建多個帳號</h2>
       <ul>
         <li><strong>安全</strong>：家人共用一個管理員帳號，一個人手機掉了，全家都要換密碼。</li>
         <li><strong>權限</strong>：小孩不小心刪掉自動化就慘了。給他「一般用戶」只能操作、不能改設定。</li>
@@ -49,7 +53,7 @@
     </section>
 
     <section id="concept">
-      <h2>兩個名詞：Users vs. Persons</h2>
+      <h2 data-icon="concept">兩個名詞：Users vs. Persons</h2>
       <ul>
         <li><strong>User（使用者）</strong>：可以登入 HA 的帳號，有密碼、有權限。</li>
         <li><strong>Person（人）</strong>：家中的一個「人」實體，用來追蹤位置、當自動化條件。</li>
@@ -59,7 +63,7 @@
     </section>
 
     <section id="steps">
-      <h2>建立帳號步驟</h2>
+      <h2 data-icon="steps">建立帳號步驟</h2>
       <ol class="steps">
         <li>
           <h3>設定 → 使用者</h3>
@@ -93,7 +97,7 @@
     </section>
 
     <section id="persons">
-      <h2>建立「人」並綁定</h2>
+      <h2 data-icon="persons">建立「人」並綁定</h2>
       <ol class="steps">
         <li>
           <h3>設定 → 人員</h3>
@@ -118,7 +122,7 @@
     </section>
 
     <section id="faq">
-      <h2>常見問題</h2>
+      <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>一個 User 能綁多個 Person 嗎？</summary>
         <div class="body">不行，一對一。但一個 Person 可以有多個追蹤裝置（手機、GPS 標籤同時追蹤）。</div>

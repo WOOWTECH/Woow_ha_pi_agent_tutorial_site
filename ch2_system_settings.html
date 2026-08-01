@@ -4,6 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>第 2 章 · 系統設定</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
@@ -39,7 +43,7 @@
     </div>
 
     <section id="why">
-      <h2>為什麼要先設定這裡</h2>
+      <h2 data-icon="why">為什麼要先設定這裡</h2>
       <p>HA 的很多自動化仰賴「地理位置」和「時區」：</p>
       <ul>
         <li>「日落後 30 分鐘開玄關燈」— 需要知道你在台灣還是加州。</li>
@@ -50,7 +54,7 @@
     </section>
 
     <section id="enter">
-      <h2>進入設定</h2>
+      <h2 data-icon="enter">進入設定</h2>
       <p>左側選單點「設定」（齒輪圖示），這是 HA 的所有系統設定入口。</p>
       <figure class="shot">
         <img src="assets/screenshots/ch2/01_settings_entry.png" alt="設定入口" />
@@ -59,7 +63,7 @@
     </section>
 
     <section id="steps">
-      <h2>動手設定</h2>
+      <h2 data-icon="steps">動手設定</h2>
       <ol class="steps">
         <li>
           <h3>設定 → 系統 → 一般</h3>
@@ -95,7 +99,7 @@
     </section>
 
     <section id="profile">
-      <h2>個人偏好（自己的頭像、語言、佈景）</h2>
+      <h2 data-icon="profile">個人偏好（自己的頭像、語言、佈景）</h2>
       <p>剛才是「整個家」的設定，這裡是「你自己」的設定：右下角頭像 → 「使用者設定」。</p>
       <ol class="steps">
         <li>
@@ -118,7 +122,7 @@
     </section>
 
     <section id="faq">
-      <h2>常見問題</h2>
+      <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>改了時區後，過去的圖表時間會不會跑掉？</summary>
         <div class="body">會。歷史資料以 UTC 儲存，顯示時再套時區，所以改時區後看到的圖會平移。這是正確行為，不用擔心。</div>

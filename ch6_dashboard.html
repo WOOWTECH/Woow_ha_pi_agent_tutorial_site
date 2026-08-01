@@ -4,6 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>第 6 章 · 儀表板</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
@@ -40,7 +44,7 @@
     </div>
 
     <section id="why">
-      <h2>為什麼要自己排版</h2>
+      <h2 data-icon="why">為什麼要自己排版</h2>
       <p>HA 預設會自動生成一個「總覽」儀表板，包含所有設備 — 這對「認識家裡有什麼」很好，但對「日常操作」爆炸多。</p>
       <p>你要的是一個「早上打開、按 3 下就搞定所有事」的畫面。要達到這個目標，得做兩件事：</p>
       <ul>
@@ -50,7 +54,7 @@
     </section>
 
     <section id="now">
-      <h2>現況：預設儀表板</h2>
+      <h2 data-icon="now">現況：預設儀表板</h2>
       <p>登入後看到的第一頁就是預設儀表板。它會自動：</p>
       <ul>
         <li>每個區域一張卡片。</li>
@@ -64,7 +68,7 @@
     </section>
 
     <section id="steps">
-      <h2>排出你自己的「首頁」</h2>
+      <h2 data-icon="steps">排出你自己的「首頁」</h2>
       <ol class="steps">
         <li>
           <h3>右上角三個點 → 「編輯儀表板」</h3>
@@ -107,7 +111,7 @@
     </section>
 
     <section id="tabs">
-      <h2>多分頁與檢視</h2>
+      <h2 data-icon="tabs">多分頁與檢視</h2>
       <p>一個儀表板可以有多個分頁（View）：</p>
       <ul>
         <li><strong>首頁</strong>：常用操作。</li>
@@ -123,14 +127,14 @@
     </section>
 
     <section id="tips">
-      <h2>3 個排版小訣竅</h2>
+      <h2 data-icon="tips">3 個排版小訣竅</h2>
       <div class="callout tip"><strong>訣竅 1：用 Section 分組。</strong>新版 HA 有「Section」檢視類型，可以把「照明」「冷氣」「窗簾」用區塊分開，比長長一整條清楚。</div>
       <div class="callout tip"><strong>訣竅 2：手機版另外排。</strong>編輯模式右上角有「檢視 → 桌面／手機」預覽，可以看到手機版長什麼樣。手機版建議一欄式、少 3-5 張卡片。</div>
       <div class="callout tip"><strong>訣竅 3：善用「條件顯示」。</strong>卡片有「Visibility」設定，可以做到「只有下雨天才顯示除濕機卡」「訪客帳號看不到主臥燈」。</div>
     </section>
 
     <section id="faq">
-      <h2>常見問題</h2>
+      <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>不小心刪錯卡片能救嗎？</summary>
         <div class="body">如果還沒離開編輯模式，右上角「復原」；離開了就要重建。所以建議大改前先「三點選單 → 原始編輯器」把 YAML 複製到記事本備份。</div>

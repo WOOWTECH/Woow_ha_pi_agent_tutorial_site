@@ -4,6 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>第 4 章 · 命名與標籤</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
@@ -40,7 +44,7 @@
     </div>
 
     <section id="why">
-      <h2>為什麼要重新命名</h2>
+      <h2 data-icon="why">為什麼要重新命名</h2>
       <p>剛配對進來的設備，名字是廠商給的技術代號，例如：</p>
       <ul>
         <li><code>light.aqara_light_group_2</code></li>
@@ -56,7 +60,7 @@
     </section>
 
     <section id="concept">
-      <h2>先分清楚三個名字</h2>
+      <h2 data-icon="concept">先分清楚三個名字</h2>
       <p>HA 有三個層級的名字，容易搞混：</p>
       <ul>
         <li><strong>裝置名稱（Device name）</strong>：整個設備的名字，例如「客廳吸頂燈」。</li>
@@ -67,7 +71,7 @@
     </section>
 
     <section id="rename">
-      <h2>重新命名步驟</h2>
+      <h2 data-icon="rename">重新命名步驟</h2>
       <ol class="steps">
         <li>
           <h3>進「設定 → 裝置與服務 → 實體」</h3>
@@ -98,7 +102,7 @@
     </section>
 
     <section id="labels">
-      <h2>用標籤（Label）分類</h2>
+      <h2 data-icon="labels">用標籤（Label）分類</h2>
       <p>區域回答「這個燈在哪裡」，標籤回答「這個燈是哪一類」。例如：</p>
       <ul>
         <li>燈類設備都貼 <code>照明</code> 標籤 — 之後「關掉所有照明」一鍵搞定。</li>
@@ -125,7 +129,7 @@
     </section>
 
     <section id="done">
-      <h2>命名範例集（直接抄）</h2>
+      <h2 data-icon="done">命名範例集（直接抄）</h2>
       <table style="width:100%; border-collapse: collapse; font-size:14px; margin-top:12px;">
         <thead style="background: var(--surface-alt);">
           <tr>
@@ -145,7 +149,7 @@
     </section>
 
     <section id="faq">
-      <h2>常見問題</h2>
+      <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>改了實體 ID，舊自動化都要重寫嗎？</summary>
         <div class="body">HA 有「重新命名時同步更新自動化引用」的功能，但只涵蓋 UI 建的自動化。YAML 手寫的、Node-RED 的要自己搜尋替換。</div>

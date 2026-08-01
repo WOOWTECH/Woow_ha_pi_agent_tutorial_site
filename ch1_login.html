@@ -4,6 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>第 1 章 · 登入 Home Assistant</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
   <link rel="stylesheet" href="assets/css/style.css" />
 </head>
 <body>
@@ -39,7 +43,7 @@
     </div>
 
     <section id="why">
-      <h2>為什麼要學這個</h2>
+      <h2 data-icon="why">為什麼要學這個</h2>
       <p>Home Assistant（下稱 HA）是一個「本地控制」的智慧家庭中樞：所有設備狀態、自動化、房間資料都存在你家中的那台小主機上，不會經過雲端。</p>
       <p>因為它是自己家的伺服器，登入的方式和一般網路服務不太一樣：</p>
       <ul>
@@ -50,7 +54,7 @@
     </section>
 
     <section id="url">
-      <h2>找到你的 HA 網址</h2>
+      <h2 data-icon="url">找到你的 HA 網址</h2>
       <p>你的網址通常是以下三種之一：</p>
       <ul>
         <li><strong>區網 IP</strong>：<code>http://homeassistant.local:8123</code> 或 <code>http://192.168.x.x:8123</code>。</li>
@@ -61,7 +65,7 @@
     </section>
 
     <section id="steps">
-      <h2>登入步驟</h2>
+      <h2 data-icon="steps">登入步驟</h2>
       <ol class="steps">
         <li>
           <h3>打開登入頁</h3>
@@ -95,7 +99,7 @@
     </section>
 
     <section id="companion">
-      <h2>網頁 vs. Companion App</h2>
+      <h2 data-icon="companion">網頁 vs. Companion App</h2>
       <p>兩者連到同一個後台，資料完全同步，差別在功能：</p>
       <ul>
         <li><strong>網頁</strong>：畫面大、適合改設定、寫自動化、看歷史圖表。</li>
@@ -105,7 +109,7 @@
     </section>
 
     <section id="faq">
-      <h2>常見問題</h2>
+      <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>密碼忘記了怎麼辦？</summary>
         <div class="body">密碼存在主機上，沒有寄信重設。如果你是管理員，需要用 SSH 或 HA 的救援模式重設；如果你不是管理員，請聯絡管理員從第 5 章的「使用者」把你的密碼重設一次。</div>
