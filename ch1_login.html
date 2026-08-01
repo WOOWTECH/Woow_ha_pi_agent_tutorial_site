@@ -24,6 +24,8 @@
       <li><a href="ch5_users.html">用戶管理</a></li>
       <li><a href="ch6_dashboard.html">儀表板</a></li>
       <li><a href="ch7_notifications.html">通知</a></li>
+      <li><a href="ch8_first_automation.html">第一個自動化</a></li>
+      <li><a href="ch9_backups.html">備份</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -32,6 +34,10 @@
       <a href="#steps">登入步驟</a>
       <a href="#companion">網頁 vs. Companion App</a>
       <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_hacs_addons.html">生態圈：HACS/Add-ons/遠端</a>
     </div>
   </aside>
 
@@ -51,6 +57,7 @@
         <li>有可能透過區網 IP 進入，也可能透過網域名稱（Nabu Casa / 自架 DDNS）。</li>
         <li>手機和電腦的登入體驗不同 — 建議手機裝 Companion App、電腦用瀏覽器。</li>
       </ul>
+      <p><strong>兩個常被搞混的角色：擁有者 (Owner) vs 管理員 (Administrator)</strong>：安裝時建立的第一個帳號是「擁有者」，權限最大且<strong>密碼一旦忘記無法找回</strong>（HA 官方文件明講）。之後你在 ch5 建的管理員帳號權限接近，但不是擁有者。擁有者只能有一個。</p>
     </section>
 
     <section id="url">
@@ -59,7 +66,7 @@
       <ul>
         <li><strong>區網 IP</strong>：<code>http://homeassistant.local:8123</code> 或 <code>http://192.168.x.x:8123</code>。</li>
         <li><strong>Nabu Casa 遠端</strong>：<code>https://xxxxx.ui.nabu.casa</code>（付費訂閱）。</li>
-        <li><strong>自架網域</strong>：例如 <code>https://ha.yourdomain.com</code>（本教學使用的網址是 <code>https://woowtech-ha.woowtech.io</code>）。</li>
+        <li><strong>自架網域</strong>：例如 <code>https://ha.yourdomain.com</code>（例如作者用的是自架網域 <code>https://woowtech-ha.woowtech.io</code>）。</li>
       </ul>
       <div class="callout tip"><strong>提示：</strong>把網址加到瀏覽器書籤，並在手機主畫面「加入書籤到桌面」，之後點一下就打開。</div>
     </section>
@@ -81,7 +88,7 @@
         </li>
         <li>
           <h3>勾選「保持登入」</h3>
-          <p>勾了以後，這台瀏覽器 30 天內都不用重登。<strong>共用電腦請不要勾。</strong></p>
+          <p>勾了以後，這台瀏覽器預設 10 天內都不用重登（HA 的 refresh token 有效期）。<strong>共用電腦請不要勾。</strong></p>
           <figure class="shot">
             <img src="assets/screenshots/ch1/02_keep_logged_in.png" alt="勾選 Keep me logged in" />
             <figcaption><strong>圖 1-2</strong>勾選「保持登入」— 個人裝置建議打勾。</figcaption>
@@ -106,6 +113,7 @@
         <li><strong>Companion App</strong>（iOS/Android）：能收<strong>推播通知</strong>、回報手機的<strong>電量／位置／WiFi 名稱</strong>給 HA 當觸發條件、透過生物辨識快速登入。</li>
       </ul>
       <div class="callout"><strong>建議做法：</strong>電腦用瀏覽器改設定，手機裝 App 當日常控制與收通知。第 7 章會帶你裝 App。</div>
+      <div class="callout tip"><strong>下一步</strong>：第 5 章教你怎麼幫家人開專屬帳號、第 7 章教手機收通知。</div>
     </section>
 
     <section id="faq">
@@ -122,6 +130,29 @@
         <summary>能用同一組帳號在多個裝置登入嗎？</summary>
         <div class="body">可以，各裝置都是獨立 session，登出一個不影響其他。</div>
       </details>
+    </section>
+
+    <section id="troubleshoot">
+      <h2 data-icon="advanced">登入失敗排錯</h2>
+      <p>照下面清單一條一條試：</p>
+      <ol class="steps">
+        <li>
+          <h3>網址對嗎</h3>
+          <p>先在同一個 WiFi 下用瀏覽器打 <code>http://homeassistant.local:8123</code>。這是 HAOS 預設 mDNS 網址。</p>
+        </li>
+        <li>
+          <h3>SSL 憑證警告？</h3>
+          <p>如果用區網 IP 而看到「不安全」警告，那是正常的（沒憑證），點「進階 → 繼續前往」即可。</p>
+        </li>
+        <li>
+          <h3>忘記擁有者密碼</h3>
+          <p>沒辦法找回。要嘛用 SSH 進主機重設，要嘛從備份還原（ch9 會教）。這也是為什麼要<strong>盡快建立備份</strong>。</p>
+        </li>
+        <li>
+          <h3>Companion App 一直登入失敗</h3>
+          <p>App 版的登入用的是外網網址；家裡沒對外設定就會失敗。ch7 會裝 App，附錄講遠端連線方案。</p>
+        </li>
+      </ol>
     </section>
 
     <div class="pager">

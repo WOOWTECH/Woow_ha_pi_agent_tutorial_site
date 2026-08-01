@@ -24,6 +24,8 @@
       <li><a href="ch5_users.html">用戶管理</a></li>
       <li><a href="ch6_dashboard.html">儀表板</a></li>
       <li><a href="ch7_notifications.html">通知</a></li>
+      <li><a href="ch8_first_automation.html">第一個自動化</a></li>
+      <li><a href="ch9_backups.html">備份</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -32,6 +34,10 @@
       <a href="#steps">動手設定</a>
       <a href="#profile">個人偏好</a>
       <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_hacs_addons.html">生態圈：HACS/Add-ons/遠端</a>
     </div>
   </aside>
 
@@ -47,10 +53,11 @@
       <p>HA 的很多自動化仰賴「地理位置」和「時區」：</p>
       <ul>
         <li>「日落後 30 分鐘開玄關燈」— 需要知道你在台灣還是加州。</li>
-        <li>「颱風靠近時關窗」— 需要正確的座標抓氣象。</li>
+        <li>（例如：若你未來寫「太陽下山自動開燈」的自動化，這裡設錯經緯度會讓燈開錯時間。）</li>
         <li>「27°C 開冷氣」— 攝氏還是華氏？單位錯就會判斷錯。</li>
       </ul>
       <p>這一章要做的事不多，但影響後面每一章。</p>
+      <div class="callout warn"><strong>時區設錯的後果比想像大</strong>：歷史圖表時間會歪、日出日落觸發會錯、能源儀表板會歸錯天。設定完地理位置後 HA 會自動設定時區、單位、貨幣，並在你家座標建立一個半徑 100 公尺的「home」zone。</div>
     </section>
 
     <section id="enter">
@@ -96,10 +103,12 @@
           <div class="callout tip"><strong>提示：</strong>如果之後感覺日出日落時間怪怪的、通知時間不對，八成是這頁少了某個欄位。</div>
         </li>
       </ol>
+      <div class="callout tip"><strong>驗證</strong>：儲存後回到「設定 → 概觀」，右下角的日期時間應該顯示台北時區；「設定 → 區域 → home」的地圖應該框住你家。</div>
     </section>
 
     <section id="profile">
       <h2 data-icon="profile">個人偏好（自己的頭像、語言、佈景）</h2>
+      <p><strong>觀念：系統設定 vs 個人設定</strong>。時區、單位、貨幣是<strong>系統級</strong>（所有人共用）；語言、日期格式、每週第一天是<strong>個人級</strong>（每個帳號各自設）。這也是為什麼家人登入常常看到不同語言，別以為壞掉。</p>
       <p>剛才是「整個家」的設定，這裡是「你自己」的設定：右下角頭像 → 「使用者設定」。</p>
       <ol class="steps">
         <li>
@@ -135,6 +144,12 @@
         <summary>不同使用者能各自選語言嗎？</summary>
         <div class="body">可以。系統設定的語言只是「預設值」，每位使用者的「使用者設定」可以自己選。</div>
       </details>
+    </section>
+
+    <section id="backup_early">
+      <h2 data-icon="tips">下一步：先備份</h2>
+      <p>你已經完成了 HA 最關鍵的設定。接下來繼續配置房間與設備之前，<strong>強烈建議先做一次備份</strong>：這樣後面亂試整合時，隨時可以還原乾淨的初始狀態。</p>
+      <p>備份 3 分鐘可以做完，教學在 <a href="ch9_backups.html">第 9 章</a>。</p>
     </section>
 
     <div class="pager">

@@ -24,6 +24,8 @@
       <li><a href="ch5_users.html">用戶管理</a></li>
       <li><a href="ch6_dashboard.html">儀表板</a></li>
       <li><a href="ch7_notifications.html">通知</a></li>
+      <li><a href="ch8_first_automation.html">第一個自動化</a></li>
+      <li><a href="ch9_backups.html">備份</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -33,6 +35,10 @@
       <a href="#labels">用標籤分類</a>
       <a href="#done">命名範例集</a>
       <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_hacs_addons.html">生態圈：HACS/Add-ons/遠端</a>
     </div>
   </aside>
 
@@ -96,9 +102,10 @@
         <li>
           <h3>要不要一起改實體 ID？</h3>
           <p><strong>建議改。</strong>如果這是剛裝的裝置、還沒被任何自動化引用，直接把 ID 改成有意義的英數，例如 <code>light.living_room_main</code>。之後看程式碼會很容易。</p>
-          <div class="callout warn"><strong>注意：</strong>已被自動化、腳本、儀表板引用的實體，改 ID 前先在「開發者工具 → 統計」搜一下有沒有被用到。</div>
+          <div class="callout warn"><strong>注意：</strong>已被自動化、腳本、儀表板引用的實體，改 ID 前先在「開發者工具 → 狀態（States）」搜一下有沒有被用到。</div>
         </li>
       </ol>
+      <div class="callout"><strong>驗證</strong>：改完後，「開發者工具 → 狀態」搜尋新名字應該找得到；舊 entity_id 應該從清單消失。<strong>警告</strong>：如果這個實體有被自動化用到，改 entity_id 會讓自動化壞掉——第 8 章會講為什麼要一開始就想好命名。</div>
     </section>
 
     <section id="labels">
@@ -123,6 +130,7 @@
         </li>
         <li>
           <h3>之後怎麼用</h3>
+          <p><strong>Labels 可以貼在的東西比你想的多</strong>：區域、設備、實體、自動化、腳本、場景、helper 都能貼；一個東西可以有多個 Label（不像區域只能屬於一個）。這是 HA 裡最靈活的分類工具。</p>
           <p>自動化的觸發條件、儀表板篩選、腳本引用，都可以用「標籤」代替一個個列實體。實體換了、標籤不變，維護超省事。</p>
         </li>
       </ol>
@@ -146,6 +154,27 @@
           <tr><td style="padding:8px; border:1px solid var(--border);">冷氣</td><td style="padding:8px; border:1px solid var(--border);">冷氣</td><td style="padding:8px; border:1px solid var(--border);"><code>climate.master_bedroom_ac</code></td></tr>
         </tbody>
       </table>
+      <div class="callout"><strong>下一步</strong>：命名想好了，第 6 章讓你把常用實體拉到儀表板；第 8 章教你用這些名字寫第一個自動化。</div>
+    </section>
+
+    <section id="categories">
+      <h2 data-icon="labels">Categories：第四種分類（進階）</h2>
+      <p>2024.04 之後 HA 引入了 <strong>Categories</strong>（分類），跟 Labels 常常被搞混，這裡幫你分清楚：</p>
+      <table style="width:100%; border-collapse:collapse; margin:12px 0; font-size:14px;">
+        <thead style="background: var(--surface-alt);">
+          <tr>
+            <th style="text-align:left; padding:10px; border-bottom:1px solid var(--hairline);">維度</th>
+            <th style="text-align:left; padding:10px; border-bottom:1px solid var(--hairline);">Labels 標籤</th>
+            <th style="text-align:left; padding:10px; border-bottom:1px solid var(--hairline);">Categories 分類</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td style="padding:8px 10px;">能貼在哪</td><td style="padding:8px 10px;">區域／設備／實體／自動化／腳本／場景／helper</td><td style="padding:8px 10px;">只有自動化／腳本／場景／helper</td></tr>
+          <tr><td style="padding:8px 10px;">能當自動化目標嗎</td><td style="padding:8px 10px;">可以</td><td style="padding:8px 10px;">不行，純粹是後台清單分類</td></tr>
+          <tr><td style="padding:8px 10px;">典型用法</td><td style="padding:8px 10px;">「所有客廳燈」「所有安全設備」</td><td style="padding:8px 10px;">「照明類」「氛圍類」「安全類」（清單好找）</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><strong>一句話：</strong>要在自動化裡用就選 Labels，只是想在後台清單裡收好就選 Categories。</div>
     </section>
 
     <section id="faq">
@@ -161,6 +190,22 @@
       <details class="faq">
         <summary>友善名稱能重複嗎？</summary>
         <div class="body">可以。同名不同區域不會衝突（HA 顯示時會帶區域前綴）。但語音助理下指令時會分不出來，所以還是建議避免。</div>
+      </details>
+    </section>
+
+    <section id="troubleshoot">
+      <h2 data-icon="advanced">常見卡關</h2>
+      <details class="faq">
+        <summary>改了 entity_id 後某個自動化不動了？</summary>
+        <div class="body">因為那個自動化裡引用的是舊 entity_id。到「設定 → 自動化」逐一檢查，或用「開發者工具 → 範本」搜尋舊名字。這也是為什麼第 8 章會教「一律用 entity_id 而不是 device_id」——換 entity_id 至少你會馬上發現壞了，device_id 換設備才壞就更難查。</div>
+      </details>
+      <details class="faq">
+        <summary>Friendly name 和 entity_id 差在哪？</summary>
+        <div class="body">friendly name 是 UI 顯示的中文名（例：客廳主燈），可以隨便改不會壞任何東西；entity_id 是系統識別碼（例：<code>light.living_room_main</code>），改了會影響所有引用它的自動化、儀表板、腳本。<strong>平常只改 friendly name 就好</strong>。</div>
+      </details>
+      <details class="faq">
+        <summary>可以整批改名字嗎？</summary>
+        <div class="body">HA 本身沒有批次改名 UI。可以直接編輯 <code>.storage/core.entity_registry</code>（不推薦，容易壞）或用 HACS 上的「Bulk Rename」自訂卡片。安全的做法：新設備一次改好再繼續下一個。</div>
       </details>
     </section>
 

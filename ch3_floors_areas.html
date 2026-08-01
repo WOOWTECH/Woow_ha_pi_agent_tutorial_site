@@ -24,6 +24,8 @@
       <li><a href="ch5_users.html">用戶管理</a></li>
       <li><a href="ch6_dashboard.html">儀表板</a></li>
       <li><a href="ch7_notifications.html">通知</a></li>
+      <li><a href="ch8_first_automation.html">第一個自動化</a></li>
+      <li><a href="ch9_backups.html">備份</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -34,6 +36,10 @@
       <a href="#assign">把設備放進區域</a>
       <a href="#done">完成對照</a>
       <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_hacs_addons.html">生態圈：HACS/Add-ons/遠端</a>
     </div>
   </aside>
 
@@ -58,11 +64,19 @@
         <li>儀表板：自動生成「以區域分頁」的視圖。</li>
         <li>自動化：「主臥室有人動作」的條件寫得出來。</li>
       </ul>
+      <p><strong>四層階梯（記住這個結構）</strong>：</p>
+      <ul>
+        <li><strong>樓層 (Floor)</strong>：只能裝區域，不能直接裝設備。例：1 樓、2 樓。</li>
+        <li><strong>區域 (Area)</strong>：房間單位，屬於一個樓層。例：客廳、主臥。</li>
+        <li><strong>設備 (Device)</strong>：屬於一個區域（可覆寫）。例：小米燈泡。</li>
+        <li><strong>實體 (Entity)</strong>：設備能被操作的一個角度，也只屬於一個區域（預設跟著設備走）。例：<code>light.living_room_main</code>。</li>
+      </ul>
+      <p>一個設備／實體<strong>只能屬於一個區域</strong>，一個區域<strong>只能屬於一個樓層</strong>。</p>
     </section>
 
     <section id="now">
       <h2 data-icon="now">現況檢查</h2>
-      <p>先進「設定 → 區域、樓層與區塊」看目前的狀態。你可能會看到三種情況：</p>
+      <p>先進「設定 → 區域、標籤和區塊」看目前的狀態。你可能會看到三種情況：</p>
       <ol>
         <li><strong>全空</strong> — 全新安裝，最單純，跟著本章從頭做。</li>
         <li><strong>只有區域沒有樓層</strong> — 舊版 HA 沒樓層概念，跟著本章補上樓層。</li>
@@ -91,7 +105,7 @@
       <ol class="steps">
         <li>
           <h3>新增樓層</h3>
-          <p>頁面右上角「＋ 建立樓層」→ 輸入「一樓」→ 選一個圖示（例如 <code>mdi:home-floor-1</code>）→ 儲存。重複建立「二樓」「地下室」等。</p>
+          <p>頁面右上角「＋ 建立樓層」→ 輸入「一樓」→ 點圖示欄，會跳出圖示選擇器，搜尋 <code>floor</code> 就可以看到樓層相關圖示 → 儲存。重複建立「二樓」「地下室」等。</p>
           <figure class="shot">
             <img src="assets/screenshots/ch3/02_create_floor_dialog.png" alt="新增樓層對話框" />
             <figcaption><strong>圖 3-2</strong>新增樓層對話框 — 名稱、圖示、樓層編號。</figcaption>
@@ -117,6 +131,7 @@
           <div class="callout tip"><strong>提示：</strong>「戶外」建成一個沒有指定樓層的區域也可以，或是自己開一個「戶外」樓層。</div>
         </li>
       </ol>
+      <div class="callout tip"><strong>驗證</strong>：回到「設定 → 概觀」，你應該看到剛建的樓層／區域出現在左側篩選；隨便點一個區域，右邊會列出這個區域的設備數量。</div>
     </section>
 
     <section id="assign">
@@ -144,6 +159,7 @@
           <p>裝置列表右上角有「批次選取」— 勾多個之後可以一次「移到區域」。剛裝完一整個房間的燈，這功能很省時間。</p>
         </li>
       </ol>
+      <div class="callout tip"><strong>下一步</strong>：區域指派好後，第 4 章教你把每個設備從 <code>switch.0x00abc123</code> 改成看得懂的名字，並用標籤（Label）跨區域群組。</div>
     </section>
 
     <section id="done">
@@ -173,6 +189,22 @@
       <details class="faq">
         <summary>不是每個房間都要建區域嗎？</summary>
         <div class="body">不是。只有你會「用到」的房間才需要。儲藏室裡沒有任何智慧設備就不必建。之後有新設備要放時再補。</div>
+      </details>
+    </section>
+
+    <section id="troubleshoot">
+      <h2 data-icon="advanced">常見卡關</h2>
+      <details class="faq">
+        <summary>不小心把設備放錯區域怎麼辦？</summary>
+        <div class="body">回「設定 → 設備」找到那個設備，點進去右上角有「區域」下拉可以改。實體也可以個別覆寫（覆寫後就跟設備分家了）。</div>
+      </details>
+      <details class="faq">
+        <summary>刪掉一個區域後，裡面的設備會不見嗎？</summary>
+        <div class="body">不會，設備會變成「未分類」。重新指派區域即可。</div>
+      </details>
+      <details class="faq">
+        <summary>已經有一堆設備，重新規劃區域來得及嗎？</summary>
+        <div class="body">來得及，區域分類不會影響自動化（只要自動化寫的是 entity_id，不是 device_id）。ch4 會講命名，ch8 會講為什麼用 entity_id 才安全。</div>
       </details>
     </section>
 

@@ -24,6 +24,8 @@
       <li><a href="ch5_users.html">用戶管理</a></li>
       <li><a href="ch6_dashboard.html">儀表板</a></li>
       <li><a href="ch7_notifications.html" class="active">通知</a></li>
+      <li><a href="ch8_first_automation.html">第一個自動化</a></li>
+      <li><a href="ch9_backups.html">備份</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -33,6 +35,10 @@
       <a href="#test">送出第一則通知</a>
       <a href="#advanced">進階：帶動作按鈕</a>
       <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_hacs_addons.html">生態圈：HACS/Add-ons/遠端</a>
     </div>
   </aside>
 
@@ -52,6 +58,7 @@
         <li>攝影機拍到人 → 帶縮圖的通知。</li>
       </ul>
       <p>Companion App 就是這些通知的載體，同時也是你日常操作 HA 最方便的工具。</p>
+      <p>本章示範的通知是<strong>觸發它</strong>（手動測試）；下一章 (ch8) 教你把通知<strong>塞進自動化</strong>——例如「洗衣機停止時發通知」「有人回家時開燈並通知」。</p>
     </section>
 
     <section id="app">
@@ -66,6 +73,7 @@
           <p>App 會自動掃描區網有沒有 HA 主機。有掃到就直接點；沒掃到就手動輸入 <code>http://homeassistant.local:8123</code> 或你自己的網址。</p>
         </li>
       </ol>
+      <p><strong>裝完 App 你會多拿到什麼</strong>：除了推播通知之外，Companion App 會自動把手機的<strong>電池電量、位置、WiFi 名稱、藍牙感測器</strong>等資料上傳到 HA，變成 <code>sensor.你的名字_battery_level</code>、<code>device_tracker.你的名字_phone</code> 等 entity。這些就是後面「回家自動開燈」、「電池低於 20% 提醒」自動化的原料。</p>
     </section>
 
     <section id="login">
@@ -99,36 +107,38 @@
       <h2 data-icon="test">送出第一則通知</h2>
       <ol class="steps">
         <li>
-          <h3>開發者工具 → 服務</h3>
-          <p>HA 網頁左側「開發者工具」→ 「動作」（舊版是「服務」）分頁。</p>
+          <h3>開發者工具 → 動作</h3>
+          <p>HA 網頁左側「開發者工具」→ 「動作 (Actions)」分頁。</p>
         </li>
         <li>
-          <h3>服務欄選 <code>notify.mobile_app_XXX</code></h3>
-          <p>XXX 是你剛才登入的手機名稱。這個服務是 App 自動幫你建的。</p>
+          <h3>動作欄選 <code>notify.mobile_app_XXX</code></h3>
+          <p>XXX 是你剛才登入的手機名稱。這個動作是 App 自動幫你建的。</p>
           <figure class="shot">
-            <img src="assets/screenshots/ch7/02_dev_services.png" alt="開發者工具 - 服務" />
-            <figcaption><strong>圖 7-2</strong>開發者工具的服務呼叫介面。</figcaption>
+            <img src="assets/screenshots/ch7/02_dev_services.png" alt="開發者工具 - 動作" />
+            <figcaption><strong>圖 7-2</strong>開發者工具的動作呼叫介面。</figcaption>
           </figure>
+          <p><strong>通知服務命名規則</strong>：<code>notify.mobile_app_&lt;裝置名&gt;</code>，裝置名裡的非英數字元會變成底線。例如 iPhone 13 Pro Max 會變成 <code>notify.mobile_app_iphone_13_pro_max</code>。到「開發者工具 → 動作」下拉裡搜尋 <code>notify.mobile_app</code> 就能看到你的手機。</p>
         </li>
         <li>
           <h3>填 message 與 title</h3>
           <p>簡單試一下：</p>
-          <pre class="code-block">service: notify.mobile_app_xxx
+          <pre class="code-block">action: notify.mobile_app_xxx
 data:
   title: "測試通知"
   message: "從 HA 發來的第一則訊息"</pre>
         </li>
         <li>
-          <h3>按「呼叫服務」</h3>
+          <h3>按「呼叫動作」</h3>
           <p>手機立刻叮！— 恭喜，你的智慧家庭有「嘴巴」了。</p>
         </li>
       </ol>
+      <div class="callout"><strong>驗證</strong>：手機應該在 5 秒內跳出「測試通知」。沒收到的話：(1) App 通知權限有開嗎，(2) 手機不在勿擾模式，(3) HA 主機聯外正常。</div>
     </section>
 
     <section id="advanced">
       <h2 data-icon="advanced">進階：帶動作按鈕的通知</h2>
       <p>通知不只是靜態文字，可以帶按鈕讓你點：</p>
-      <pre class="code-block">service: notify.mobile_app_xxx
+      <pre class="code-block">action: notify.mobile_app_xxx
 data:
   title: "門口有人按電鈴"
   message: "點下面決定要不要開門"
@@ -138,7 +148,18 @@ data:
         title: "開門"
       - action: "IGNORE"
         title: "不理"</pre>
-      <p>然後在自動化裡監聽事件 <code>mobile_app_notification_action</code>，拿到 <code>action: "OPEN_DOOR"</code> 就呼叫開門服務。之後不管你在世界哪裡都能遠端開門。</p>
+      <p>然後在自動化裡監聽事件 <code>mobile_app_notification_action</code>，拿到 <code>action: "OPEN_DOOR"</code> 就呼叫開門動作。之後不管你在世界哪裡都能遠端開門。</p>
+      <div class="callout warn"><strong>兩個很容易踩的坑：</strong>
+      <ol style="margin:8px 0 0 20px;">
+      <li><strong>Android 一則通知最多 3 個動作按鈕</strong>；iOS 可以放到約 10 個但超過會需要下滑。跨平台就以 3 個為上限。</li>
+      <li><strong>action ID 是全域唯一的</strong>。如果你有兩個門鈴、都用同一個 <code>action: OPEN_DOOR</code>，點任一則都會觸發同一個自動化。想避免，用 <code>{{ context.id }}</code> 或設備名做前綴，例如 <code>action: OPEN_DOOR_FRONT</code>。</li>
+      </ol></div>
+
+      <h3>tag 和 group：管理多則通知</h3>
+      <ul>
+        <li><code>tag: laundry</code>：後一則相同 tag 的通知會<strong>取代</strong>前一則（例如洗衣進度：洗中 → 脫水中 → 完成）。</li>
+        <li><code>group: security</code>：相同 group 的通知會<strong>堆疊在一起</strong>（門鈴＋警報全部收在同一堆）。</li>
+      </ul>
       <div class="callout"><strong>進階應用預告：</strong>攝影機動作 → 通知帶截圖 → 有動作按鈕「錄影 30 秒」／「打電話報警」。這些留給下一個系列教學。</div>
     </section>
 
@@ -146,15 +167,31 @@ data:
       <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>通知沒收到？</summary>
-        <div class="body">依序檢查：（1）手機系統的 App 通知權限是不是開的；（2）App 內「設定 → Companion App → 通知」是不是開的；（3）呼叫的服務名稱有沒有寫對；（4）手機是不是在勿擾模式。</div>
+        <div class="body">依序檢查：（1）手機系統的 App 通知權限是不是開的；（2）App 內「設定 → Companion App → 通知」是不是開的；（3）呼叫的動作名稱有沒有寫對；（4）手機是不是在勿擾模式。</div>
       </details>
       <details class="faq">
         <summary>能通知所有家人的手機嗎？</summary>
-        <div class="body">可以。有個特殊服務叫 <code>notify.notify</code>，會發到<strong>所有</strong>已登入的手機 App。也可以自己建 notify group 只發給部分人。</div>
+        <div class="body">可以。有個特殊動作叫 <code>notify.notify</code>，會發到<strong>所有</strong>已登入的手機 App。也可以自己建 notify group 只發給部分人。</div>
       </details>
       <details class="faq">
         <summary>Email、Line、Telegram 也能發嗎？</summary>
         <div class="body">可以。SMTP、Telegram Bot、Line Notify（已停止服務改用 Messaging API）都有整合。不過建議先把手機 App 玩熟，其他管道是備援。</div>
+      </details>
+    </section>
+
+    <section id="troubleshoot">
+      <h2 data-icon="tips">常見卡關</h2>
+      <details class="faq">
+        <summary>手機收不到通知</summary>
+        <div class="body">照順序檢查：(1) Companion App 開過通知權限；(2) 手機不在飛航／勿擾／省電模式；(3) HA 對外網路 OK（App 需要連 Firebase/APNs）；(4) 動作名對嗎，去「開發者工具 → 動作」搜 <code>notify.mobile_app</code> 有沒有你的手機。</div>
+      </details>
+      <details class="faq">
+        <summary>iOS 收到通知但無聲</summary>
+        <div class="body">iOS 需要在 App 裡設「Notification Sounds」，並在通知 data 裡指定 <code>push:</code> <code>sound:</code>。不設就是靜音顯示。</div>
+      </details>
+      <details class="faq">
+        <summary>離家在外收不到（家裡收得到）</summary>
+        <div class="body">Companion App 通知是走 Firebase/APNs，只要手機能上網就會收到，跟你有沒有 Nabu Casa 或 DDNS 無關。但要用 App「操作」HA（不是收通知），才需要遠端連線——見附錄。</div>
       </details>
     </section>
 

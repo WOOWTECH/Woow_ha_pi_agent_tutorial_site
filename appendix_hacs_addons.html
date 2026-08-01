@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>附錄 · 生態圈：HACS、附加元件與遠端連線 · Home Assistant 新居入住指南</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">HA 新居入住指南</a>
+    <div class="brand-sub">從零到能用</div>
+    <h2>章節</h2>
+    <ol>
+      <li><a href="ch1_login.html">登入 HA</a></li>
+      <li><a href="ch2_system_settings.html">系統設定</a></li>
+      <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
+      <li><a href="ch4_naming_labels.html">命名與標籤</a></li>
+      <li><a href="ch5_users.html">用戶管理</a></li>
+      <li><a href="ch6_dashboard.html">儀表板</a></li>
+      <li><a href="ch7_notifications.html">通知</a></li>
+      <li><a href="ch8_first_automation.html">第一個自動化</a></li>
+      <li><a href="ch9_backups.html">備份</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#addons">官方附加元件商店</a>
+      <a href="#hacs">HACS 社群商店</a>
+      <a href="#remote">遠端連線四條路</a>
+      <a href="#warning">資安警告</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_hacs_addons.html" class="active">生態圈：HACS/Add-ons/遠端</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">附錄</div>
+      <h1>生態圈：HACS、附加元件與遠端連線</h1>
+      <p class="lead">這三個題目不屬於「從零到能用」的必修課，但幾乎每個 HA 玩家最後都會碰到。這裡給你一份可以按需要跳讀的地圖。</p>
+    </div>
+
+    <section id="addons">
+      <h2 data-icon="addons">官方附加元件商店（Add-on Store）</h2>
+      <p>附加元件（Add-on）是跑在 HA OS 上的<strong>獨立容器程式</strong>，可以想成 HA 主機順便幫你開的一台小伺服器。<em>只有 HA OS 和 HA Supervised 有 Add-on Store</em>，HA Container / HA Core 沒有。</p>
+      <p>路徑：「設定 → 附加元件 → 附加元件商店」。</p>
+      <p>會用到附加元件的時機：</p>
+      <ul>
+        <li>要跑 Zigbee2MQTT / ESPHome 等本地服務。</li>
+        <li>要 SSH 進主機除錯。</li>
+        <li>要用 Node-RED 這種視覺化流程工具。</li>
+      </ul>
+      <p>幾個最常裝的官方 Add-on：</p>
+      <ul>
+        <li><strong>File editor</strong>——瀏覽器裡直接改 YAML 檔，適合輕度編輯。</li>
+        <li><strong>Studio Code Server</strong>——完整 VS Code 網頁版，寫大量 YAML 或 template 首選。</li>
+        <li><strong>Samba share</strong>——把 HA 的 <code>/config</code> 開成網芳，讓你用電腦的檔案總管操作。</li>
+        <li><strong>Terminal &amp; SSH</strong>——SSH 進 HA OS，做進階排錯。</li>
+        <li><strong>Node-RED</strong>——拖拉式的視覺化自動化工具，複雜流程比 UI 好維護。</li>
+        <li><strong>ESPHome</strong>——燒錄 ESP32 / ESP8266 韌體，DIY 感應器必備。</li>
+        <li><strong>Zigbee2MQTT</strong>——比 ZHA 支援更多 Zigbee 設備，社群更新快。</li>
+        <li><strong>Mosquitto broker</strong>——MQTT 訊息代理，Z2M / 很多 DIY 裝置的通訊底層。</li>
+      </ul>
+      <div class="callout tip"><strong>建議做法：</strong>先確定你有明確需求再裝。每裝一個 add-on 就多一份要維護、要更新、要占資源的服務。</div>
+    </section>
+
+    <section id="hacs">
+      <h2 data-icon="hacs">HACS（Home Assistant Community Store）</h2>
+      <p>HACS 是<strong>社群維護</strong>的第三方套件商店，跟官方 Add-on Store 是<em>兩件不同的事</em>：</p>
+      <ul>
+        <li><strong>官方 Add-on Store</strong>：管的是「跑在 HA OS 上的獨立容器程式」，官方審核。</li>
+        <li><strong>HACS</strong>：管的是「塞進 HA 本體裡跑的東西」——自訂整合（integrations）、自訂儀表板卡片（Lovelace cards）、主題、python_script、AppDaemon 應用。無官方審核，作者自負品質。</li>
+      </ul>
+      <p><strong>什麼時候該裝 HACS？</strong>當你發現「官方整合裡沒有我這台設備」或「內建的卡片不夠好看 / 不夠強」時，八成 HACS 上有解。裝之前不用急，先確認官方沒有支援再考慮。</p>
+      <p><strong>安裝流程重點（詳細看官方文件）：</strong></p>
+      <ol>
+        <li>裝 HACS 本身需要 SSH / Studio Code Server 進 HA 執行一段安裝腳本。</li>
+        <li>然後在 HA 加入一個新的整合「HACS」，會要求你到 GitHub 產生一個個人 access token 貼進去。這是讓 HACS 能查詢 GitHub 上的套件版本用的。</li>
+        <li>完成後左側選單會多一個 HACS 圖示，裡面就是社群套件市集。</li>
+      </ol>
+      <p>官方安裝文件：<a href="https://hacs.xyz" target="_blank" rel="noopener">https://hacs.xyz</a>。步驟隨版本會變，請以官方為準。</p>
+      <p><strong>裝完常見套件方向：</strong></p>
+      <ul>
+        <li><strong>自訂儀表板卡片</strong>：<code>mushroom-cards</code>（現代簡潔）、<code>button-card</code>（自訂到極致）、<code>mini-graph-card</code>（漂亮的歷史曲線）、<code>swipe-card</code>（手機用左右滑動）。</li>
+        <li><strong>社群整合</strong>：小米 / Aqara localized、Tuya localized（避開國際版雲端）、SwitchBot API、台電電費、氣象局預報。</li>
+        <li><strong>主題</strong>：Google Home、Graphite、Noctis 等社群主題。</li>
+      </ul>
+      <div class="callout warn"><strong>提醒：</strong>HACS 套件是<em>無審核</em>的第三方程式碼，選 star 數多、最近有更新（3 個月內）的作者。不要一次裝一大堆，HA 更新時容易一起壞。</div>
+    </section>
+
+    <section id="remote">
+      <h2 data-icon="remote">遠端連線的四條路</h2>
+      <p>在家連 HA 用區網 IP 就夠了，但一旦出門想遠端看攝影機、關燈、收通知，就需要外網連線。有四種主流方案：</p>
+      <table style="width:100%; border-collapse:collapse; margin:16px 0;">
+        <thead>
+          <tr style="background:rgba(0,0,0,0.04);">
+            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">方案</th>
+            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">成本</th>
+            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">安全性</th>
+            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">難度</th>
+            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">適合</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);"><strong>Nabu Casa</strong></td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">USD $6.5/月</td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">高</td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">很低</td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">大部分人。順便支持 HA 官方</td>
+          </tr>
+          <tr>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);"><strong>DuckDNS + Let's Encrypt</strong></td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">免費</td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">中（暴露公網）</td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">中</td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">要免費 + 有公網 IP + 願意設路由器</td>
+          </tr>
+          <tr>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);"><strong>Tailscale / ZeroTier</strong></td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">免費（個人）</td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">最高</td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">低</td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">技術玩家、在意隱私、不需要分享給非家人</td>
+          </tr>
+          <tr>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);"><strong>Cloudflare Tunnel</strong></td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">免費</td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">中高</td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">中</td>
+            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">沒公網 IP（電信 CGNAT）也能對外</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <p><strong>1. Nabu Casa（Home Assistant Cloud）</strong>——官方付費雲端。最省心，付了錢裝好整合就通了。額外送 Google Assistant / Alexa 連動、Cloud TTS（雲端語音合成）。不想折騰的第一首選，也是唯一能<em>順便贊助 HA 開發</em>的方案。</p>
+
+      <p><strong>2. DuckDNS + Let's Encrypt</strong>——用免費的動態 DNS 服務把家裡浮動 IP 綁一個網址（如 <code>myhome.duckdns.org</code>），再用 Let's Encrypt 拿免費 SSL 憑證。需要在路由器做 port forward。缺點是把 HA 暴露到公開網路，是攻擊面最大的方案。</p>
+
+      <p><strong>3. Tailscale / ZeroTier</strong>——這是「VPN 到你家」的做法。手機裝 Tailscale App，家裡 HA 也裝，兩者形成一個私人區網，出門也能像在家一樣用區網 IP 連 HA。<strong>最安全</strong>因為完全不暴露到公網。缺點：家人也要裝 App、無法分享給外人（不能像貼網址一樣傳給水電工）。</p>
+
+      <p><strong>4. Cloudflare Tunnel</strong>——Cloudflare 幫你在 HA 和它的 CDN 之間建立一條加密隧道，你不用有公網 IP、不用開路由器 port，Cloudflare 會提供一個網址讓你連進來。適合家裡是電信業者 CGNAT（沒公網 IP）的環境，還能順便用 Cloudflare 的 WAF 防護。</p>
+    </section>
+
+    <section id="warning">
+      <h2 data-icon="warning">資安警告</h2>
+      <div class="callout danger">
+        <strong>絕對不要</strong>直接把 HA 的 8123 port 轉發（port forward）到公網、也不套用 HTTPS 憑證。
+        HA 預設沒開兩步驟驗證、也沒 IP 白名單。網路上的爬蟲天天在掃 8123 port，只要暴露就是被攻擊。
+        真的要走 DDNS 路線的話，<em>必須</em>：(1) 前面掛 Nginx 反向代理處理 HTTPS、(2) 開啟 HA 的兩步驟驗證（MFA）、(3) 用強密碼、(4) 有可能的話加 Cloudflare / fail2ban 擋暴力破解。
+      </div>
+      <p>如果你不知道上面這些是什麼，請直接用 Nabu Casa 或 Tailscale，不要自己開 port。這不是折騰技術能省下的錢，是把家裡整套智慧家庭 + 攝影機 + 門鎖權限公開在網路上的風險。</p>
+    </section>
+
+    <p style="margin-top:32px;"><a href="index.html">← 回首頁</a></p>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>
