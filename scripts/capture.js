@@ -3,9 +3,9 @@
 // per shot, then saves an annotated PNG to assets/screenshots/<chapter>/<filename>.
 //
 // Usage:
-//   node run.js /tmp/ha_tutorial/scripts/capture.js              # all shots
-//   node run.js /tmp/ha_tutorial/scripts/capture.js --chapter=3  # one chapter
-//   node run.js /tmp/ha_tutorial/scripts/capture.js --shot=00_home.png
+//   node scripts/capture.js                # all shots
+//   node scripts/capture.js --chapter=ch3   # one chapter (comma separated ok)
+//   node scripts/capture.js --shot=01_login_page.png
 //
 // Login cache: first run does UI login and saves storage_state.json; later runs
 // reuse it. Delete the file to force re-login.
@@ -14,7 +14,8 @@ const fs = require('fs');
 const path = require('path');
 const { chromium } = require('playwright');
 
-const ROOT = '/tmp/ha_tutorial';
+// 專案根目錄 = 這個檔案的上一層，clone 到哪都能跑
+const ROOT = path.resolve(__dirname, '..');
 const ENV_PATH = path.join(ROOT, '.env');
 const STATE_PATH = path.join(ROOT, 'storage_state.json');
 const SHOTS_JSON = path.join(ROOT, 'scripts', 'annotations.json');
