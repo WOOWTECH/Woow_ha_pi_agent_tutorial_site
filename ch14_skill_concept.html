@@ -144,7 +144,7 @@
           <tr><td>誰執行</td><td>手機 CPU 直接跑</td><td>HA Python runtime 跑</td><td>沒人「執行」，AI 讀了自己想怎麼做</td></tr>
           <tr><td>啟動方式</td><td>你按圖示才動</td><td>裝好就常駐，遇條件觸發</td><td>AI 判斷「這個問題該用哪份手冊」自動翻</td></tr>
           <tr><td>檔案類型</td><td>APK / IPA 二進位</td><td>Python 檔案 + manifest</td><td>Markdown 文字（<code>SKILL.md</code>）</td></tr>
-          <tr><td>需要重灌會不會消失</td><td>會，要重新裝</td><td>會，要重新裝</td><td>備份在 HA snapshot 裡，還原就回來（<a href="ch20_backup.html">第 20 章</a>會講）</td></tr>
+          <tr><td>需要重灌會不會消失</td><td>會，要重新裝</td><td>會，要重新裝</td><td>檔案躺在 add-on 的 <code>/data/</code>，只要 HA 有排 snapshot／backup 就會被收到備份裡，還原就回來（<a href="ch20_backup.html">第 20 章</a>會講）</td></tr>
           <tr><td>誰能寫</td><td>要會 Kotlin / Swift</td><td>要會 Python + HA 架構</td><td>會寫 Markdown 就行（<a href="ch16_write_skill.html">第 16 章</a>教）</td></tr>
           <tr><td>安全風險</td><td>App Store 有審核</td><td>HACS 部分有社群把關</td><td>完全沒審核，裝之前要自己看內容</td></tr>
         </tbody>
@@ -175,7 +175,7 @@
         <li><strong>一個 skill = 一個資料夾</strong>。資料夾名字就是這個 skill 的識別，例如 <code>fridge-check</code>。</li>
         <li>資料夾裡<strong>一定要有一個 <code>SKILL.md</code></strong>——這是 AI 會讀的主檔，缺這個 Pi Agent 掃描時會跳過。</li>
         <li>其他檔（YAML 範本、範例照片、輔助說明）都可以放進來，AI 需要時會被指引去讀。這叫「漸進揭露」（progressive disclosure）——主檔給摘要，細節分散在檔案裡按需展開，避免每次都把幾百 KB 塞進 context。</li>
-        <li>資料夾位置在 <code>/data/pi-agent/skills/</code>，這個 <code>/data/</code> 是 HA add-on 的持久化資料區。<strong>會跟 HA 的每日 snapshot 一起被備份</strong>，所以 HA 崩壞還原後 Skill 都回得來（video-tools 那個 720MB 快取則不會被備份，兩者要分開）。</li>
+        <li>資料夾位置在 <code>/data/pi-agent/skills/</code>，這個 <code>/data/</code> 是 HA add-on 的持久化資料區（在容器內另有 <code>~/.pi/agent/skills</code> 的符號連結指到同一位置，CLI 跟 UI 才不會各寫各的）。<strong>HA add-on 的 <code>/data/</code> 預設會被 HA 完整備份收錄</strong>，所以只要你有排 HA snapshot／backup，Skill 就會跟著回來（video-tools 那個 720MB 快取按設計是不進備份的，兩者要分開想）。</li>
       </ul>
       <p>你其實不用手動去這個資料夾操作——Pi Agent 有 Skills 面板可以裝、可以移除（<a href="ch15_install_skill.html">第 15 章</a>詳講）。但知道底下長這樣，遇到問題時比較好排查。</p>
       <div class="callout"><strong>觀念：</strong>Skill 全存在你本機的 HA add-on 資料區，<strong>不會傳到雲端</strong>。就算你的 Skill 裡寫了「我家 Wi-Fi 密碼是 xxx」給 AI 參考（不建議這樣做啦），這段字也只會在你按送出把它連同 prompt 打包給 AI provider 時才離開你家。沒開對話就完全躺在你機器裡。</div>
@@ -185,19 +185,19 @@
       <h2 data-icon="protocol">Pi Agent 怎麼把 Skill「餵」給 AI 讀</h2>
       <p>知道 Skill 是什麼、存哪裡之後，下一個關鍵問題：<strong>AI 怎麼會知道我裝了哪些 Skill？</strong>又不是它自己去掃我的資料夾。答案在 pi-web 每次開新對話時做的「開場動作」。</p>
       <h3>第一步：pi-web 掃描 skills 資料夾</h3>
-      <p>你每按一次「新對話」，pi-web 後端會做一件事——去 <code>/data/pi-agent/skills/</code> 底下把所有 <code>*/SKILL.md</code> 讀一遍。它不是讀整份，只讀開頭的 <em>frontmatter</em>（YAML 開頭區塊），把每個 skill 的 <code>name</code> 跟 <code>description</code> 抽出來。</p>
-      <h3>第二步：組成 available_skills 塊塞進 system prompt</h3>
-      <p>抽出來的清單會被組成一段類似這樣的文字（實際格式看 Pi Agent 版本，這是示意）：</p>
+      <p>當你需要新的 skill 清單生效時（通常是按「新對話」開新 session；某些版本會在你打開對話面板或按 reload skills 時做），pi-web 後端會去 <code>/data/pi-agent/skills/</code> 底下把所有 <code>*/SKILL.md</code> 讀一遍。它不是讀整份，只讀開頭的 <em>frontmatter</em>（YAML 開頭區塊），把每個 skill 的 <code>name</code> 跟 <code>description</code> 抽出來。<strong>目前版本沒有可靠的即時檔案監聽</strong>，所以你在檔案系統改了 SKILL.md 後，最保險是開新對話讓它重掃一次。</p>
+      <h3>第二步：組成一段「可用 skill 清單」塞進 system prompt</h3>
+      <p>抽出來的清單會被組成一段類似下面的文字，塞進 <em>system prompt</em>（AI 每次對話最一開始收到的「開場指示」）。<strong>實際的區塊標籤與格式會隨 Pi Agent／pi-coding-agent 版本變動</strong>，下面只是示意——你自己實際看到的可能是 <code>&lt;available_skills&gt;</code>、<code>&lt;skills&gt;</code>、或另一種 Markdown 標題包起來的區塊，重點是清單本身：</p>
       <pre class="code-block"><code>&lt;available_skills&gt;
 - fridge-check: 給冰箱食材照片，幫使用者列出臨期食材、建議晚餐菜色
 - ha-automation-templates: 常見 HA 自動化模板（動作偵測開燈、到家開空調等）
 - video-pitch: 產出 60 秒帶字幕的產品介紹影片
 &lt;/available_skills&gt;</code></pre>
-      <p>這段會被塞到 <em>system prompt</em>（AI 每次對話最一開始收到的「開場指示」）的前面。所以 AI 一睜眼就看到「這台機器有這三個手藝可用」。</p>
+      <p>AI 一睜眼就看到「這台機器有這三個手藝可用」。要看你這台實際塞進去的長什麼樣，去打開 System prompt 面板往上滑（下一節會講）。</p>
       <h3>第三步：AI 判斷該不該用</h3>
-      <p>你問「幫我看冰箱裡的照片列出快過期的」時，AI 掃過 <code>available_skills</code> 就會發現「有 <code>fridge-check</code> 這個手藝」，然後主動去讀 <code>fridge-check/SKILL.md</code> 的完整內容（含操作步驟、注意事項、範例參考），照著做。</p>
+      <p>你問「幫我看冰箱裡的照片列出快過期的」時，AI 掃過清單就會發現「有 <code>fridge-check</code> 這個手藝」，然後主動去讀 <code>fridge-check/SKILL.md</code> 的完整內容（含操作步驟、注意事項、範例參考），照著做。</p>
       <p>你問「今天台北天氣怎樣」的時候，AI 掃一遍發現沒有相關的 skill，就照它自己的一般知識回答，不會硬要用哪個 skill。</p>
-      <div class="callout tip"><strong>提示：</strong>這就是為什麼 skill 的 <code>description</code> 一定要寫得<strong>具體、有觸發詞、有情境</strong>。寫「處理食物相關的問題」太模糊，AI 不知道什麼時候該用；寫「使用者傳冰箱食材照片時，列出臨期品並建議晚餐菜色」清清楚楚，AI 一秒就抓得到。</div>
+      <div class="callout tip"><strong>提示：</strong>這就是為什麼 skill 的 <code>description</code> 一定要寫得<strong>具體、有觸發詞、有情境</strong>。寫「處理食物相關的問題」太模糊，AI 不知道什麼時候該用；寫「使用者傳冰箱食材照片時，列出臨期品並建議晚餐菜色」清清楚楚，AI 一秒就抓得到。這個機制本身跟 <a href="https://github.com/mattpocock/skills" rel="noopener">mattpocock/skills</a> 的 SKILL.md discovery 慣例一致，pi-web 是照這套做的實作。</div>
     </section>
 
     <section id="records" data-nav="常見的 5 種 Skill">
@@ -221,26 +221,26 @@
 
     <section id="tabs" data-nav="怎麼看目前裝了什麼">
       <h2 data-icon="tabs">怎麼看目前這個 session 讀到哪些 Skill</h2>
-      <p>裝完 skill 之後，你可能會想確認一下「AI 這次對話到底有沒有看到它」。Pi Agent 有兩個地方可以確認：</p>
+      <p>裝完 skill 之後，你可能會想確認一下「AI 這次對話到底有沒有看到它」。Pi Agent 有幾個地方可以確認（實際按鈕文字可能因 pi-web 版本略有差異，找語意相符的就對了）：</p>
       <ol class="steps">
         <li>
-          <h3>方法 A：右上角的 System prompt 面板</h3>
-          <p>在 pi-web 工作區右上角有一排按鈕（<a href="ch4_ui_tour.html">第 4 章</a>導覽過）。找到「System prompt」或「系統提示」那個，點開。裡面會顯示這次 session 完整的開場指示，往上滑就能看到 <code>&lt;available_skills&gt;</code> 那一段，列出所有目前生效的 skill 名字＋描述。<strong>唯讀，不能在這裡改。</strong></p>
+          <h3>方法 A：System prompt 面板</h3>
+          <p>在 pi-web 工作區的操作列上找「System prompt」／「System」／「系統提示」之類語意的按鈕（<a href="ch4_ui_tour.html">第 4 章</a>導覽過工作區位置）點開。裡面會顯示這次 session 完整的開場指示，往上滑就能看到列出可用 skill 的那一段，包含所有目前生效的 skill 名字＋描述。<strong>唯讀，不能在這裡改內容。</strong></p>
         </li>
         <li>
           <h3>方法 B：Skills 面板（管理用）</h3>
-          <p>同一排按鈕找「Skills」，這個面板是給你管理的：可以看清單、按裝新的、按移除。列出來的東西跟 System prompt 裡的 <code>available_skills</code> 應該一致（除非你剛裝完還沒開新 session，那還沒生效）。</p>
+          <p>同一區操作列找「Skills」入口，這個面板是給你管理的：可以看清單、裝新的、移除。按鈕文字（例如「Install / Add from URL / Remove」還是換成中文的「安裝／從網址新增／移除」）看你的 pi-web 版本，功能是一樣的。列出來的東西跟 System prompt 那段應該一致，除非你剛裝完還沒開新 session。</p>
         </li>
         <li>
           <h3>方法 C：直接問 AI</h3>
-          <p>最偷懶但也最直觀——在對話裡打「你這次看得到哪些 skill？」AI 會照著它讀到的 <code>&lt;available_skills&gt;</code> 唸給你聽。適合快速確認又不想離開對話畫面時。</p>
+          <p>最偷懶但也最直觀——在對話裡打「你這次看得到哪些 skill？」AI 會照著它讀到的清單唸給你聽。適合快速確認又不想離開對話畫面時。</p>
         </li>
       </ol>
-      <p>如果 System prompt 面板打開<strong>看不到 <code>available_skills</code> 那段</strong>，通常是兩個原因：（1）你完全沒裝任何 skill，Pi Agent 這時候會省略這一塊，AI 就完全依賴一般知識回答，一樣能用；（2）你的 pi-web 版本比較舊，那時候還沒把 available_skills 塊獨立顯示，升級 Pi Agent add-on 就有了（<a href="ch21_upgrade.html">第 21 章</a>會講升級）。</p>
+      <p>如果 System prompt 面板打開<strong>看不到列出 skill 的那一段</strong>，通常是兩個原因：（1）你完全沒裝任何 skill，Pi Agent 這時候可能會省略這一塊，AI 就完全依賴一般知識回答，一樣能用；（2）你的 pi-web 版本比較舊，那時候還沒把這段獨立顯示，升級 Pi Agent 就有了（<a href="ch21_upgrade.html">第 21 章</a>會講升級）。</p>
       <div class="callout tip"><strong>提示：</strong>看 System prompt 面板是排查「AI 為什麼沒用我剛裝的 skill」最快的方法。九成問題出在「其實 session 開得比裝 skill 早，所以那次沒吃到」——關掉開新對話就解決了。</div>
       <figure class="shot">
-        <img src="assets/screenshots/ch14/01_system_prompt.png" alt="System prompt 面板中的 available_skills 塊" />
-        <figcaption><strong>圖 14-1</strong>System prompt 面板：把往上滑就能看到 <code>&lt;available_skills&gt;</code> 塊，裡面列出這個 session 讀到的每一個 skill 名稱與描述。</figcaption>
+        <img src="assets/screenshots/ch14/01_system_prompt.png" alt="System prompt 面板中列出可用 skill 的區塊" />
+        <figcaption><strong>圖 14-1</strong>System prompt 面板：往上滑就能看到列出可用 skill 的那一段（區塊標籤與外觀會依 Pi Agent 版本略異），裡面是這個 session 讀到的每一個 skill 名稱與描述。</figcaption>
       </figure>
     </section>
 
@@ -269,9 +269,10 @@ description: 使用者傳冰箱食材照片時，列出臨期食材（3 天內�
 - 使用者沒問就不要主動推銷食譜網站</code></pre>
       <p>拆解一下：</p>
       <ul>
-        <li><strong>三橫線包起來的 YAML 前綴</strong>（叫 frontmatter）是給 pi-web 掃的。<code>name</code> 決定這個 skill 的識別、<code>description</code> 決定 AI 什麼時候會想到用它。這兩個欄位<strong>必填</strong>。</li>
+        <li><strong>三橫線包起來的 YAML 前綴</strong>（叫 frontmatter）是給 pi-web 掃的。<code>name</code> 決定這個 skill 的識別、<code>description</code> 決定 AI 什麼時候會想到用它。這兩個欄位是 mattpocock/skills 慣例裡的核心欄位，實務上都寫；缺 <code>description</code> 的 skill AI 幾乎不會主動想到用。</li>
         <li>三橫線後面全部是 Markdown 純文字，寫給 AI 看的操作步驟、注意事項、範例。愛寫多長就多長。</li>
         <li>沒有任何程式碼、沒有 API 呼叫、沒有 Python——這就是為什麼「會寫中文就會寫 skill」。</li>
+        <li>資料夾內<strong>最小只要一個 <code>SKILL.md</code></strong> 就會被掃到；其它檔（範例、YAML 範本、子文件）都是可選，主檔會指引 AI 什麼時候該去讀哪個。</li>
       </ul>
       <p>這樣一個檔案存進 <code>/data/pi-agent/skills/fridge-check/SKILL.md</code>，開新對話，AI 就會知道自己會「冰箱盤點」這件事。就這樣。</p>
       <div class="callout"><strong>觀念：</strong>Skill 的所有威力都來自「你把作業程序想清楚、寫下來」這件事。AI 不會替你想 SOP，它只會照你寫的做。所以寫 skill 的本質是<strong>你自己的知識整理</strong>——這也是為什麼寫過幾個 skill 的人會反過來更懂自己家怎麼運作。</div>
@@ -313,15 +314,15 @@ description: 使用者傳冰箱食材照片時，列出臨期食材（3 天內�
         </li>
         <li>
           <h3>兩個 skill 的 name 撞了</h3>
-          <p>Pi Agent 掃描時如果遇到兩個 SKILL.md 都寫 <code>name: fridge-check</code>，後掃到的會覆蓋前一個（實際順序看檔名字母序，行為可能因版本略異）。解法：把資料夾名字或 <code>name</code> 欄位改掉，例如一個叫 <code>fridge-check</code> 一個叫 <code>fridge-check-strict</code>，就分得開了。</p>
+          <p>Pi Agent 掃描時如果遇到兩個 SKILL.md 都寫 <code>name: fridge-check</code>，行為<strong>沒有正式保證</strong>——實務觀察到有些版本是後掃到的覆蓋前一個、有些版本是兩個都塞進去讓 AI 自己猜、也可能直接跳出錯誤日誌。掃描順序也不一定是檔名字母序。<strong>不要依賴任何一種行為</strong>；解法只有一個：把資料夾名字或 <code>name</code> 欄位改掉不衝突，例如一個叫 <code>fridge-check</code> 一個叫 <code>fridge-check-strict</code>，然後開新對話重掃。</p>
         </li>
         <li>
           <h3>我改了 SKILL.md 但 AI 還是照舊行為</h3>
-          <p>Pi Agent 是「開新對話時才重新掃 skill」，不是「即時監聽檔案變更」。所以你改完 SKILL.md 要按「新對話」（不是重新整理頁面）才會生效。想確認新版有沒有進 context，開新對話後打開 System prompt 面板看 description 是不是你剛改的那句。</p>
+          <p>Pi Agent 目前<strong>沒有可靠的即時檔案監聽</strong>——你在檔案系統修改 SKILL.md 後，多半要等到「開新對話」或「重新載入 skills」那個時機才會被重掃進 context。實務保險做法：直接按新對話（不是重新整理頁面），然後打開 System prompt 面板看 description 是不是你剛改的那句，確認新版真的進去了。</p>
         </li>
         <li>
           <h3>裝了別人的 skill 之後 AI 做出奇怪的事</h3>
-          <p>八成是 SKILL.md 裡有你沒注意到的「額外指令」。第三方 skill 的內容你有義務先讀過——就跟裝陌生 HACS 元件之前該讀一下 README 一樣。移除方式：到 Skills 面板按 Remove，或去 <code>/data/pi-agent/skills/</code> 直接砍那個資料夾（SSH 進 HA 或用 File editor add-on）。</p>
+          <p>八成是 SKILL.md 裡有你沒注意到的「額外指令」。第三方 skill 的內容你有義務先讀過——就跟裝陌生 HACS 元件之前該讀一下 README 一樣。移除方式：到 Skills 面板點該 skill 對應的移除按鈕（版本不同顯示可能是 Remove／Uninstall／移除），或走 CLI 用 <code>podman exec -it pi-web pi uninstall &lt;name&gt;</code>，最後手段是 SSH 進 HA 直接砍 <code>/data/pi-agent/skills/&lt;那個資料夾&gt;</code>。</p>
         </li>
       </ol>
     </section>
@@ -334,11 +335,11 @@ description: 使用者傳冰箱食材照片時，列出臨期食材（3 天內�
       </details>
       <details class="faq">
         <summary>Skill 跟 Claude Code 的 skill 是同一個東西嗎？</summary>
-        <div class="body">底層規範是同一套（都源自社群工程師 Matt Pocock 的 <em>mattpocock/skills</em> 生態）。Anthropic Claude Code 有 skill 機制、Pi Agent 也有 skill 機制、其他一些 AI 工具也在跟進。所以你在 Claude Code 用過的 skill，改一下路徑放進 <code>/data/pi-agent/skills/</code> 通常就能在 Pi Agent 用（frontmatter 相容度高，細節看那個 skill 有沒有依賴 Claude Code 專屬工具）。反之亦然。</div>
+        <div class="body">底層慣例來自同一個社群生態——Matt Pocock 的 <em>mattpocock/skills</em> 專案把 SKILL.md ＋ frontmatter ＋ 漸進揭露的做法整理出來，之後很多 AI 工具（包含 Anthropic Claude Code、Pi Agent 等）都採用這套形態。所以你在 Claude Code 用過的 skill，改一下路徑放進 <code>/data/pi-agent/skills/</code> <strong>常常</strong>就能在 Pi Agent 用，但不能一概保證：實際能不能跑要看那個 skill 有沒有依賴 Claude Code 專屬工具或 subagent，也要看 Pi Agent 這一版對 frontmatter 額外欄位的處理。反之亦然。</div>
       </details>
       <details class="faq">
         <summary>Skill 裡面的內容會被傳到雲端 AI provider 嗎？</summary>
-        <div class="body">SKILL.md 本身放在你本機 <code>/data/pi-agent/skills/</code>，靜態時完全不會離開你家。但當你開新對話，pi-web 會把 <code>available_skills</code> 摘要（名字＋description）塞進 system prompt 送給 AI provider——這時候那段摘要會離開你家。如果 AI 真的要用某個 skill，它會請求讀完整的 SKILL.md，那時候整份主檔內容也會被送過去。所以：<strong>敏感資訊不要寫進 SKILL.md 的 description，主檔內容則會在觸發時上雲</strong>。真的很敏感的東西（帳號密碼）別放 skill 裡，放 HA 的 <code>secrets.yaml</code>。</div>
+        <div class="body">SKILL.md 本身放在你本機 <code>/data/pi-agent/skills/</code>，靜態時完全不會離開你家。但當你開新對話，pi-web 會把可用 skill 的摘要（名字＋description）塞進 system prompt 送給 AI provider——這時候那段摘要會離開你家。如果 AI 真的要用某個 skill，它會請求讀完整的 SKILL.md，那時候整份主檔內容也會被送過去。所以：<strong>敏感資訊不要寫進 SKILL.md 的 description，主檔內容則會在觸發時上雲</strong>。真的很敏感的東西（帳號密碼）別放 skill 裡，放 HA 的 <code>secrets.yaml</code>。</div>
       </details>
       <details class="faq">
         <summary>別人做的 skill 有安全風險嗎？</summary>
@@ -354,11 +355,11 @@ description: 使用者傳冰箱食材照片時，列出臨期食材（3 天內�
       </details>
       <details class="faq">
         <summary>Skill 會不會拖慢 AI 的回應速度？</summary>
-        <div class="body">影響很小但不是零。<code>available_skills</code> 塊會加到 system prompt 開頭，每一輪對話都要重新處理這段（幾百到幾千個 token），對第一個 token 出來的延遲有一點點影響，主要是花錢上多幾毛。真正拖慢的是 AI 主動去讀完整 SKILL.md 的時候——如果那份主檔幾千行，那一輪 tool call 會多花幾秒。所以 skill 主檔控制在 200-500 行內是好習慣，超長的內容拆成子檔按需引用。</div>
+        <div class="body">影響很小但不是零。可用 skill 的清單會加到 system prompt 開頭，每一輪對話都要重新處理這段（幾百到幾千個 token），對第一個 token 出來的延遲有一點點影響，主要是花錢上多幾毛。真正拖慢的是 AI 主動去讀完整 SKILL.md 的時候——如果那份主檔幾千行，那一輪 tool call 會多花幾秒。所以 skill 主檔控制在 200-500 行內是好習慣，超長的內容拆成子檔按需引用。</div>
       </details>
       <details class="faq">
         <summary>我可以把 skill 分享給朋友嗎？</summary>
-        <div class="body">當然可以，這也是社群 skill 生態的來源。最常見的分享方式是把你的 skill 資料夾丟到 GitHub 一個 repo 裡，朋友用 Pi Agent 的 Skills 面板「從 URL 安裝」貼你的 repo 網址就能裝。<a href="ch15_install_skill.html">第 15 章</a>會實際教怎麼裝、<a href="ch16_write_skill.html">第 16 章</a>會教怎麼寫並且推到 GitHub 讓別人裝。你也可以只在家庭群組裡分享 SKILL.md 檔案，家人自己丟進 <code>/data/pi-agent/skills/</code> 也一樣能用。</div>
+        <div class="body">當然可以，這也是社群 skill 生態的來源。最常見的分享方式是把你的 skill 資料夾丟到 GitHub 一個 repo 裡，朋友用 Pi Agent 的 Skills 面板「從網址安裝」（或用 CLI <code>pi install &lt;git-url&gt;</code>）貼你的 repo 網址就能裝。<a href="ch15_install_skill.html">第 15 章</a>會實際教怎麼裝、<a href="ch16_write_skill.html">第 16 章</a>會教怎麼寫並推到 GitHub 讓別人裝。你也可以只在家庭群組裡分享 SKILL.md 檔案，家人自己丟進 <code>/data/pi-agent/skills/&lt;資料夾&gt;/SKILL.md</code> 也一樣能用。</div>
       </details>
     </section>
 

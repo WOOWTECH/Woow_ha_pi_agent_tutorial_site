@@ -91,6 +91,7 @@
       <div class="kicker">附錄 C</div>
       <h1>底層架構好奇者向</h1>
       <p class="lead">平常用 Pi Agent 你不需要看這篇——這裡講的是「掀開引擎蓋看裡面在跑什麼」。當 <a href="ch22_troubleshoot.html">第 22 章</a>的 Logs 出現看不懂的錯、當你想自己 debug 而不是等下一版、當你想知道為什麼一個對話介面要跑那麼多背景服務——這篇一次講清楚。技術詞第一次會標「中文（English）」，但不會要你寫程式。看完你會知道：s6-overlay 是什麼、nginx 為什麼要擋在前面、<code>/data/pi-agent/</code> 底下每個資料夾裝什麼、Watchdog 探針怎麼探、Skill 是怎麼被「發現」的。像看家裡的水電配置圖——不用你動手，但知道總開關在哪就是安心。</p>
+      <div class="callout warn"><strong>本文引用的原始碼（都是公開 repo）：</strong>add-on 打包 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on">WOOWTECH/Woow_ha_pi_agent_add_on</a>（<code>config.yaml</code>、<code>Dockerfile</code>、<code>rootfs/etc/nginx/nginx.conf</code>、<code>CHANGELOG.md</code>、<code>DOCS.md</code>），pi-web 上游 <a href="https://github.com/agegr/pi-web">agegr/pi-web</a>（HA add-on 把版本鎖在 <code>0.8.4</code>，可看該 tag 的 <code>package.json</code>），agent SDK <a href="https://github.com/earendil-works/pi">earendil-works/pi</a>。若下文哪一句你覺得可疑，直接去那三個 repo 對原始檔——比這裡的敘述準。</div>
     </div>
 
     <section id="why" data-nav="為什麼要看架構">
@@ -170,7 +171,7 @@
       <p>當 HA Supervisor 按下 Pi Agent 的「啟動」，容器內部發生的事其實有明確順序。<strong>s6-overlay（有時寫 s6）</strong>是這棟家管系統的核心——它是一套「行程監督工具（process supervisor）」，負責把家人一個個依序叫起來。</p>
       <table class="data-table">
         <thead>
-          <tr><th>順序</th><th>服務名稱</th><th>類型</th><th>做的事</th><th>典型耗時</th></tr>
+          <tr><th>階段（見下方細節）</th><th>服務名稱</th><th>類型</th><th>做的事</th><th>典型耗時</th></tr>
         </thead>
         <tbody>
           <tr>
@@ -184,7 +185,7 @@
             <td>2</td>
             <td><code>video-tools-init</code></td>
             <td>一次性任務（oneshot）</td>
-            <td>檢查儲藏室有沒有 <code>.video-tools-installed</code> sentinel 檔——有就跳過；沒有就下載 Playwright、Chromium、edge-tts 那 720 MB，裝到 <code>/data/pi-agent/venv/</code> 與 <code>/data/pi-agent/playwright-cache/</code>；裝完在儲藏室放一張 sentinel 說「裝好了下次別再裝」</td>
+            <td>檢查儲藏室有沒有 <code>.video-tools-installed</code> sentinel 檔<strong>且</strong> venv 裡的 python3 真的存在——兩個都通過就跳過；否則下載 Playwright、edge-tts、pyyaml、mutagen 加上 Chromium（~720 MB 合計），裝到 <code>/data/pi-agent/venv/</code> 與 <code>/data/pi-agent/playwright-cache/</code>；裝完放 sentinel 說「裝好了下次別再裝」。<strong>失敗是 non-fatal</strong>——退出時對話介面還能用</td>
             <td>首次 3-8 分鐘，之後 &lt; 1 秒</td>
           </tr>
           <tr>
@@ -203,8 +204,8 @@
           </tr>
         </tbody>
       </table>
-      <p>依序啟動很重要——如果 nginx 先起來但 pi-web 還沒好，nginx 收到請求會回 502 給你。所以 s6-overlay 的設定告訴它：<strong>先看 video-tools-init 有沒有跑完，再啟動 nginx 跟 pi-web；pi-web 要有「準備好接收請求」的訊號 nginx 才會真正把 traffic 轉過去</strong>。</p>
-      <p>另外，Supervisor 從外面也會定期打 <strong>Watchdog</strong> 探針（下一節詳說）——如果 pi-web 卡住、hang 住、或應答變得很慢，Supervisor 會下令重啟整個容器。s6-overlay 這時會按同樣順序再走一次 1→2→3→4，只不過第 2 步會直接跳過（因為 sentinel 已經有了）。</p>
+      <p>這裡有一件<strong>看原始碼才發現的細節</strong>：實際上 <code>video-tools-init</code> oneshot <strong>沒有</strong>被列進 nginx/pi-web 的 <code>dependencies.d</code>——換句話說，s6-overlay 開機時把三個服務<strong>平行啟動</strong>：video-tools-init 一邊下 720MB Chromium，nginx 跟 pi-web 一邊已經在收請求。所以裝機那 3-8 分鐘的等待時，你其實已經可以打開對話介面聊天，只是影片管線暫時不能用。這是作者刻意的設計取捨（看 <code>rootfs/etc/s6-overlay/scripts/video-tools-init</code> 開頭的註解「Parallel with pi-web」），為了「chat UI 立刻能用、影片工具慢慢裝」，非「等一切齊全才給你進門」。</p>
+      <p>另外，Supervisor 從外面也會定期打 <strong>Watchdog</strong> 探針（下一節詳說）——如果 pi-web 卡住、hang 住、或應答變得很慢，Supervisor 會下令重啟整個容器。s6-overlay 這時會按同樣順序再走一次，只不過第 2 步會秒退（sentinel 存在＋<code>${VENV}/bin/python3</code> 可執行都通過才會 skip，這是雙重檢查，避免第一次裝到一半掉線的殘骸誤判成裝好）。</p>
       <div class="callout tip"><strong>對照日常經驗：</strong>你可能會問「為什麼要這麼麻煩，不能一個服務搞定嗎？」——因為每個 process 有各自的職責：video-tools-init 是<strong>只跑一次</strong>的（不是常駐）、nginx 是<strong>擋在前面</strong>的（跟後端不同崗位）、pi-web 是<strong>本體</strong>。混在一起寫會變成一個超大程式很難維護。s6-overlay 就是幫你把這些「不同壽命的角色」分開管理。</div>
     </section>
 
@@ -229,16 +230,20 @@
           <p>nginx 把請求轉發到 <code>http://127.0.0.1:30141</code>（pi-web 內部埠），pi-web 產出 HTML 回覆。</p>
         </li>
         <li>
-          <h3>用 sub_filter 改寫 HTML</h3>
-          <p>nginx 用一個叫 <code>sub_filter</code> 的濾鏡（filter），把 HTML 裡的相對路徑（像 <code>href=&quot;/settings&quot;</code>）改成完整的 Ingress 路徑（<code>href=&quot;/api/hassio_ingress/A1b2.../settings&quot;</code>）。這樣瀏覽器點連結就對得到。</p>
+          <h3>白名單防禦：先驗證 header 合法</h3>
+          <p>為了避免有人偽造 <code>X-Ingress-Path</code> 亂射，nginx 用 <code>map $http_x_ingress_path $safe_ingress_path</code> 區塊配合 regex（正則表達式）驗證，只讓格式為 <code>^/api/hassio_ingress/[A-Za-z0-9_-]&#123;16,128&#125;$</code> 的過（<strong>直接從 nginx.conf 抄的，不是推測</strong>）。不符合就強制設成空字串——之後所有 body-rewrite 都變成 no-op，關閉「透過偽造 header 打 XSS」的可能。這是 v0.7.0 為了修 F-01 安全審計加的。</p>
         </li>
         <li>
-          <h3>白名單防禦：只放行合法的 header</h3>
-          <p>為了避免有人偽造 <code>X-Ingress-Path</code> 亂射，nginx 會用 regex（正則表達式）驗證 header 內容，只讓 <code>^/api/hassio_ingress/[A-Za-z0-9_-]&#123;16,128&#125;$</code> 這個格式的過。不符合就當成沒有這個 header——避免注入。</p>
+          <h3>用 sub_filter 改寫 HTML 裡的絕對路徑</h3>
+          <p>nginx 用 <code>sub_filter</code> 逐字節改寫傳出的 HTML/CSS/JS：把 <code>href=&quot;/_next/</code>、<code>src=&quot;/_next/</code>、<code>href=&quot;/manifest</code>、<code>href=&quot;/icons/</code>、CSS 裡的 <code>url(/_next/</code>、還有 RSC flight payload 裡 JSON-escape 的 <code>\&quot;/_next/</code>，通通加上 Ingress 前綴。</p>
+        </li>
+        <li>
+          <h3>但 sub_filter 蓋不到執行期的 JS 呼叫——所以又塞了一個 client-side shim</h3>
+          <p><strong>這才是這個檔案裡最麻煩的一段</strong>。pi-web 的前端 bundle 有 40+ 個絕對路徑的 <code>/api/*</code> 呼叫（fetch、EventSource、XMLHttpRequest），加上 Next.js App Router 的 RSC prefetch（<code>?_rsc=&lt;token&gt;</code>）、<code>history.pushState/replaceState</code>、以及 <code>ReactDOM.preinit()</code>／<code>next/font</code> 執行期塞進 DOM 的 <code>&lt;link&gt;</code>——這些 sub_filter 都攔不到。所以 nginx 額外用 <code>sub_filter</code> 在 <code>&lt;/head&gt;</code> 前塞一段 JS，猴子補丁（monkey-patch）<code>window.fetch</code>、<code>EventSource</code>、<code>XMLHttpRequest.prototype.open</code>、<code>history.pushState/replaceState</code>、<code>Element.prototype.setAttribute</code>、<code>HTMLLinkElement/HTMLScriptElement/HTMLImageElement</code> 的 <code>href/src</code> setter，全部繞去補上 <code>window.__INGRESS_PATH__</code>。順便把 <code>navigator.serviceWorker.register</code> stub 成回傳空的假 registration（HA Ingress 底下 PWA service worker 沒意義還會噴 console 錯誤）。這段補丁的迭代史看 <code>CHANGELOG.md</code> v0.5.0～v0.10.4 就知道有多痛。</p>
         </li>
       </ol>
-      <p>這一層看起來很囉唆，實際上是<strong>把「pi-web 完全不需要知道 HA Ingress」這件事變成真的</strong>。pi-web 只管好好當一個 Next.js 應用；nginx 負責把它塞進 HA 的路由架構。這種設計叫 <em>Ingress shim</em>——就像插頭的轉接器，兩邊規格不同時中間放一片。</p>
-      <div class="callout"><strong>對比 podman/k3s 版：</strong>如果你看過 <a href="https://github.com/WOOWTECH/Woow_podman_pi_agent_package">Woow_podman_pi_agent_package</a> 的 nginx.conf，那邊 nginx 也存在，但工作不太一樣——podman 版沒有 HA Ingress，nginx 是為了改 <code>Host</code> 跟 <code>Origin</code> 頭部（因為 pi-web 的 <code>isApiRequestAllowed()</code> 只認 loopback）。HA 版的 nginx 主要工作是 Ingress path 改寫；podman 版是 header 改寫。看到「都是 nginx」但角色略有差異，就是這個道理。</div>
+      <p>這一層看起來很囉唆，實際上是<strong>把「pi-web 完全不需要知道 HA Ingress」這件事變成真的</strong>。pi-web 只管好好當一個 Next.js 應用；nginx 加 sub_filter 加 client-side shim 三層合力把它塞進 HA 的路由架構。這種設計叫 <em>Ingress shim</em>——就像插頭的轉接器，兩邊規格不同時中間放好幾片。</p>
+      <div class="callout warn"><strong>更正一件事：</strong>初版這篇曾說「HA 版 nginx 主要工作是 path 改寫，podman 版是 header 改寫」——這<strong>不準確</strong>。HA 版 nginx <strong>兩件都做</strong>：<code>Host</code> 改成 <code>localhost</code> 加 <code>Origin</code> 清空（v0.6.0 修 pi-web 的 <code>isApiRequestAllowed()</code> 403 用的，跟 podman 版同一招），<strong>再</strong> 疊上 Ingress path 改寫加 client-side shim。差異不是「做的事不同」，是「HA 版比 podman 版多做兩層 Ingress 相關的東西」。</div>
     </section>
 
     <section id="records" data-nav="/data/pi-agent 目錄地圖">
@@ -250,9 +255,9 @@
         </thead>
         <tbody>
           <tr>
-            <td><code>sessions/&lt;encoded-cwd&gt;/&lt;timestamp&gt;_&lt;uuid&gt;.jsonl</code></td>
-            <td>每個對話 session 一個 JSONL 檔（每一行一個訊息）；<code>&lt;encoded-cwd&gt;</code> 是把工作目錄的路徑 URL-encode 之後當作資料夾名——同一個工作目錄下的對話會分到同一個資料夾</td>
-            <td>會（是<strong>對話存檔</strong>）</td>
+            <td><code>sessions/</code> 下的 <code>.jsonl</code> 檔</td>
+            <td>每個對話 session 一個 JSONL 檔（每一行一個訊息）。DOCS.md 只寫「one per conversation」；子目錄結構（依 cwd 分資料夾或不分）是上游 pi coding agent SDK 決定的，若你要準確路徑<strong>SSH 進容器 <code>ls /data/pi-agent/sessions/</code> 看實況為準</strong>，別信本文猜的樹狀圖</td>
+            <td>會（是<strong>對話存檔</strong>，per-addon 掛載、HA snapshot 涵蓋）</td>
           </tr>
           <tr>
             <td><code>models.json</code></td>
@@ -265,9 +270,9 @@
             <td>會</td>
           </tr>
           <tr>
-            <td><code>home/pi-cwd-&lt;uuid&gt;/</code></td>
-            <td>pi coding agent 的工作目錄。容器內的 <code>$HOME</code> 環境變數被 pin 到這裡，所以 <code>pi install ...</code> 之類的 CLI 指令產物會寫在這裡不會丟</td>
-            <td>會</td>
+            <td><code>home/pi-cwd-*/</code></td>
+            <td>pi coding agent 的工作目錄。v0.10.0 把容器內 <code>HOME</code> 環境變數 pin 到 <code>/data/pi-agent/home</code>，所以 <code>pi</code> CLI 產出的 <code>pi-cwd-*</code> worktree 不會像 v0.9.x 以前那樣每次升級都被吃掉。<strong>命名慣例是上游決定的</strong>（DOCS.md 只寫 <code>pi-cwd-*/</code>，實際是 <code>pi-cwd-&lt;date&gt;</code> 或別的 suffix 以容器內為準）</td>
+            <td>會（<code>node_modules/</code> 跟 <code>.cache/</code> 被 <code>backup_exclude</code> 排除以壓 snapshot 大小）</td>
           </tr>
           <tr>
             <td><code>skills/&lt;skill-name&gt;/</code></td>
@@ -311,7 +316,7 @@
         <li><strong>值錢的（不能重生的）都在 <code>/data/pi-agent/</code></strong>——sessions、models.json、skills、rclone conf。這也是 HA snapshot 抓的核心。</li>
         <li><strong>大而可重生的（venv、playwright-cache）刻意被 exclude</strong>——如果 snapshot 抓 venv，一個 backup 檔就 500MB 起跳，實務上很痛苦。所以政策是「刪掉這些，還原後首次啟動 video-tools-init 會自動重下載」。</li>
       </ul>
-      <div class="callout warn"><strong>注意：</strong>如果你想在 HA 主機的 host 端（不是 container 內）看 <code>/data/pi-agent/</code>，實際位置在 <code>/mnt/data/supervisor/addon_configs/&lt;addon-slug&gt;/</code>（或某些 HA 版本是 <code>/usr/share/hassio/addon_configs/&lt;addon-slug&gt;/</code>）——SSH 進 HA host 之後才看得到。這一段是進階 debug 手法，一般用戶不用碰。</div>
+      <div class="callout warn"><strong>誠實聲明：</strong>如果你想在 HA 主機的 host 端（不是 container 內）看這個目錄，實際位置在 HAOS 大概是 <code>/mnt/data/supervisor/addon_configs/&lt;addon-slug&gt;/</code>、Supervised 大概是 <code>/usr/share/hassio/addon_configs/&lt;addon-slug&gt;/</code>——但<strong>這兩條路徑本文沒有從 add-on 原始碼裡驗證過</strong>（source 只寫「per-addon mount」，實際 host 路徑是 HA Supervisor 決定的，跨版本會變）。要動就 SSH 進 HA host 然後 <code>ls /mnt/data/supervisor/addon_configs/</code> 跟 <code>ls /usr/share/hassio/addon_configs/</code> 兩處都試——哪個看得到就是哪個。<strong>比較穩的做法是 <code>docker exec -it addon_&lt;hash&gt;_woow_ha_pi_agent bash</code> 進到 container 內直接看 <code>/data/pi-agent/</code></strong>（其中 <code>&lt;hash&gt;</code> 依 add-on 註冊 repo 而定，DOCS.md 舉的例子是 <code>b9cf5676_woow_ha_pi_agent</code>；<code>local_woow_ha_pi_agent</code> 只有你把 repo 用 local override 加進來才會出現）。一般用戶不用碰。</div>
     </section>
 
     <section id="test" data-nav="Watchdog 探針">
@@ -324,11 +329,15 @@
         <tbody>
           <tr>
             <td><strong>探針端點（endpoint）</strong></td>
-            <td><code>http://[HOST]:[PORT:30142]/api/home</code>——Supervisor 用容器內部 IP 打 30142，經 nginx 轉給 pi-web 的 <code>/api/home</code> API</td>
+            <td><code>http://[HOST]:[PORT:30142]/api/home</code>——直接抄自 <code>config.yaml</code> 的 <code>watchdog:</code> 欄位。Supervisor 打 30142，經 nginx 轉給 pi-web 的 <code>/api/home</code>。作者選這個端點的原因：全新裝的 pi-web 在<strong>沒有 session context 下唯一會回 200</strong> 的路由就是 <code>/api/home</code>（CHANGELOG v0.10.0 有記錄）</td>
+          </tr>
+          <tr>
+            <td><strong>啟用方式</strong></td>
+            <td><code>config.yaml</code> 直接寫成完整 URL（<code>watchdog: "http://[HOST]:[PORT:30142]/api/home"</code>）——<strong>不是 <code>watchdog: true</code> 的形式</strong>（本文初版寫錯，這是 HA add-on 特有的 URL 型 watchdog 語法）</td>
           </tr>
           <tr>
             <td><strong>頻率</strong></td>
-            <td>由 HA Supervisor 決定，通常 60 秒一次（在 <code>config.yaml</code> 裡設 <code>watchdog: true</code> 就啟用）</td>
+            <td>由 HA Supervisor 決定，實際數字（30 秒？60 秒？）Supervisor 沒公開，跟 HA 版本會有微調——想確定看你的 add-on Log 分頁裡「Watchdog」出現的間隔就是實測值</td>
           </tr>
           <tr>
             <td><strong>成功條件</strong></td>
@@ -336,7 +345,7 @@
           </tr>
           <tr>
             <td><strong>失敗動作</strong></td>
-            <td>Supervisor 呼叫 <code>docker restart addon_local_woow_ha_pi_agent</code>——整個容器重啟；s6-overlay 從第 1 步重走一次</td>
+            <td>Supervisor 呼叫 <code>docker restart addon_&lt;hash&gt;_woow_ha_pi_agent</code>——整個容器重啟；s6-overlay 從頭再走一次</td>
           </tr>
           <tr>
             <td><strong>對 session 的影響</strong></td>
@@ -355,7 +364,8 @@
     <section id="ai" data-nav="Skill 發現流程">
       <h2 data-icon="ai">Skill 發現流程：AI 怎麼知道有哪些工具</h2>
       <p><a href="ch14_skill_concept.html">第 14 章</a>講過 Skill 的心智模型（給 AI 讀的工作手冊），這裡講「AI 怎麼發現」——這是很多人納悶的地方：「我 <code>pi install</code> 裝了新 skill，為什麼要重開 session 才生效？」</p>
-      <p>整段流程是這樣的，發生在<strong>每次你按「新對話」的瞬間</strong>：</p>
+      <div class="callout warn"><strong>這一節是<u>合理推論</u>而非源碼引用：</strong>Skill 發現邏輯住在 <a href="https://github.com/earendil-works/pi">earendil-works/pi</a> SDK 內部（HA add-on repo 只是把它裝起來，不決定發現流程），add-on 的 DOCS.md 也沒有明文描述。本節根據 Claude/Anthropic 生態的 <em>SKILL.md + progressive disclosure</em> 通用模式推論——上游 SDK 有可能用不一樣的實作。「重開 session 才生效」這個現象<u>是實測結論</u>，但下面的六步流程可能有細節出入。要 100% 確定就去讀 <code>@earendil-works/pi-coding-agent</code> 的原始碼。</div>
+      <p>可能的流程是這樣，發生在<strong>每次你按「新對話」的瞬間</strong>：</p>
       <ol class="steps">
         <li>
           <h3>Session 建立</h3>
@@ -414,27 +424,27 @@ description: 幫使用者盤點冰箱食材、找出快過期的東西
           <tr>
             <td><strong>Node.js 22</strong></td>
             <td>JavaScript 執行環境（runtime）</td>
-            <td>Pi Agent 的 Docker 映像檔基於 Node 22 LTS 版</td>
+            <td>Dockerfile 從 nodesource 裝 <code>node_22.x</code>；pi-web 的 <code>package.json</code> 明寫 <code>"node": "&gt;=22.19.0"</code></td>
           </tr>
           <tr>
-            <td><strong>Next.js 16</strong></td>
+            <td><strong>Next.js 16.2.12</strong></td>
             <td>網頁框架——同時處理前端 React 與後端 API routes</td>
-            <td>App Router 架構；用 <code>pages/</code> 跟 <code>app/</code> 混合</td>
+            <td>抄自 pi-web 0.8.4 tag 的 <code>package.json</code>。App Router 架構（<code>app/</code> 底下）；本文<strong>沒</strong>驗證有沒有 legacy <code>pages/</code> 混合，看 pi-web repo 為準</td>
           </tr>
           <tr>
-            <td><strong>React 19</strong></td>
+            <td><strong>React ^19.2.4</strong></td>
             <td>前端 UI 元件框架</td>
-            <td>Server Components 有用；stream 對話用 Suspense</td>
+            <td>抄自同一份 <code>package.json</code>。Server Components / Suspense 都是預期有用，但實際哪個路徑用什麼<strong>本文沒進 pi-web 原始碼確認</strong></td>
           </tr>
           <tr>
             <td><strong>pino</strong></td>
             <td>結構化 JSON logger</td>
-            <td>Log 分頁看到的是它產出的——每行是一個 JSON 物件，方便解析</td>
+            <td>Log 分頁看到的 JSON 行是它產出的。<strong>DOCS.md 的 <code>log_level</code> 欄位描述明寫「exported as <code>LOG_LEVEL</code> for pi-web's Next.js pino logger」</strong>，但 pino 不在 pi-web 0.8.4 <code>package.json</code> 直接列的 deps 裡——是透過 Next.js / 上游 SDK 引入的間接依賴</td>
           </tr>
           <tr>
             <td><strong>@earendil-works/pi-coding-agent</strong></td>
             <td>coding agent 的 SDK——AI 邏輯、tool call、skill 管理都由它處理</td>
-            <td>pi-web <strong>in-process</strong> 呼叫它（同個 Node 進程），不是另開 daemon</td>
+            <td>pi-web 0.8.4 直接把 <code>@earendil-works/pi-coding-agent@0.83.0</code> 列為 dep，<strong>in-process</strong> 呼叫（同個 Node 進程），不是另開 daemon——DOCS.md 也明寫「there is no separate agent daemon」</td>
           </tr>
           <tr>
             <td><strong>內部埠 30141</strong></td>
@@ -454,7 +464,7 @@ description: 幫使用者盤點冰箱食材、找出快過期的東西
         <li><strong>沒有資料庫</strong>——對話存 JSONL 檔案、設定存 JSON 檔案，一切都是檔案系統。這是刻意的簡化設計（也讓備份很好處理）。</li>
         <li><strong>chat 走 SSE（Server-Sent Events）</strong>——AI 回覆邊產生邊 stream 給你看那種效果，是用 SSE 傳的。這也是為什麼 <a href="#network">nginx 那節</a>的 <code>proxy_buffering</code> 一定要關掉——不然回覆會被 nginx 緩到 AI 生完才一次吐出來。</li>
       </ul>
-      <div class="callout tip"><strong>對想貢獻上游的：</strong>pi-web 開源在 <a href="https://github.com/agegr/pi-web">github.com/agegr/pi-web</a>，pi coding agent SDK 在 <a href="https://github.com/earendil-works/pi">github.com/earendil-works/pi</a>；Woow HA Pi Agent 這個 add-on 只是把它們打包成 HA add-on 的殼——加 nginx shim、加 s6-overlay 設定、加 video-tools-init 腳本。想改 UI 或 agent 邏輯要去 upstream 兩個 repo 提 PR。</div>
+      <div class="callout tip"><strong>對想貢獻上游的：</strong>pi-web 開源在 <a href="https://github.com/agegr/pi-web">github.com/agegr/pi-web</a>，pi coding agent SDK 在 <a href="https://github.com/earendil-works/pi">github.com/earendil-works/pi</a>；<a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on">Woow_ha_pi_agent_add_on</a> 這個 add-on 只是把它們打包成 HA add-on 的殼——加 nginx shim（三層：Host/Origin 改寫、sub_filter path 前綴、client-side JS 補丁）、加 s6-overlay 設定、加 video-tools-init 腳本。想改 UI 或 agent 邏輯要去 upstream 兩個 repo 提 PR。<strong>特別提醒：add-on 把 pi-web pin 在 <code>0.8.4</code> 不是 <code>@latest</code></strong>（<code>Dockerfile</code> 的 <code>ARG PI_WEB_VERSION=0.8.4</code>），因為 nginx 的 sub_filter 跟 shim 綁到當時的 <code>_next</code> chunk 命名/RSC prefetch 行為，上游隨便一次 refactor 都可能悄悄回歸。改 pi-web 之前<strong>先看該版 nginx.conf</strong>再動。</div>
     </section>
 
     <section id="theme" data-nav="v0.13.0 API key 搬家">
@@ -512,8 +522,8 @@ description: 幫使用者盤點冰箱食材、找出快過期的東西
         <li>不用重啟 add-on</li>
         <li>UI 上可以做「按這家的 provider 只想用其中某幾個 model」這種細節控制</li>
       </ul>
-      <p><strong>遷移路徑</strong>：升到 v0.13 之後第一次開 add-on，pi-web 會自動讀舊的環境變數幫你 seed 一次到 <code>models.json</code>（讓你不用手動搬）。之後 add-on config 的舊欄位就不再有用，Documentation 頁面會標「deprecated」。</p>
-      <div class="callout warn"><strong>陷阱：</strong>如果你升級後看不到你的舊 provider 出現在 Models 面板，代表 seed 沒跑成功。手動辦法是自己在 Models 面板 Add Provider 重加一次——舊 key 還在（Supervisor 沒清），你貼進去就好。實在找不到舊 key 可以到 add-on Documentation 頁的舊 Configuration 段落複製回來。</div>
+      <p><strong>遷移路徑（更正！）</strong>：作者原本以為 v0.13.0 會自動幫你 seed 舊 key 進去<code>models.json</code>——去讀 <code>CHANGELOG.md</code> 跟 <code>DOCS.md</code> 才發現是 <strong>hard cut，沒有 auto-migration</strong>（原文兩處講兩次「No auto-import」）。升上 v0.13.0 之後<strong>每一個 provider 都要你在 pi-web Models 面板重新貼一次 key 加按 Test</strong>——舊 <code>options.json</code> 裡的欄位 Supervisor 依新 schema 直接丟掉。<code>models.json</code> 裡舊的 <code>$GLM_API_KEY</code> 之類的環境變數 placeholder 會 resolve 成空字串，每個 chat 都會 401 直到你重貼——這是預期的過渡狀態。</p>
+      <div class="callout warn"><strong>升級前該做的準備：</strong>因為沒有 auto-migration，升級前<u>先</u>把你在舊 Configuration 分頁的每一把 key 抄下來（貼進備忘錄）。升級完成打開 pi-web Models 面板一把一把重貼加 Test。少貼哪家哪家就 401；補上就好。<strong>對 v0.12.x → v0.13.x 升級來說，這是唯一的實質工作</strong>——<a href="ch21_upgrade.html">第 21 章</a>那條「升級前備份」的重點對 v0.13 就是「先備份 key 到你自己記得的地方」。</div>
     </section>
 
     <section id="advanced" data-nav="debug 進階技巧">
@@ -527,7 +537,8 @@ description: 幫使用者盤點冰箱食材、找出快過期的東西
         <li>
           <h3>SSH 進 HA host 再 exec 進容器</h3>
           <p>裝 <em>SSH &amp; Web Terminal</em> add-on，或用 HA 的 <em>Advanced SSH</em>。連進去之後跑：</p>
-          <pre class="code-block">docker exec -it addon_local_woow_ha_pi_agent bash</pre>
+          <pre class="code-block">docker ps | grep pi_agent   # 先看容器實際叫什麼
+docker exec -it addon_&lt;hash&gt;_woow_ha_pi_agent bash</pre>
           <p>就進到 Pi Agent 容器內部了。可以 <code>ls /data/pi-agent</code>、<code>cat /etc/nginx/nginx.conf</code>、<code>ps aux</code> 看有哪些 process 在跑。<strong>注意這是 read-only 心態</strong>——別亂改容器內的檔案（重啟會消失，除非改在 <code>/data</code> 底下）。</p>
         </li>
         <li>
@@ -559,14 +570,14 @@ description: 幫使用者盤點冰箱食材、找出快過期的東西
         <li>
           <h3>想在 HA host 上直接動 <code>/data/pi-agent/</code> 的檔</h3>
           <p><strong>症狀</strong>：你想在 HA host 用 File Editor 或 SSH 直接 <code>vi</code> 一份 <code>models.json</code>，但找不到那個路徑。<br>
-          <strong>原因</strong>：HA add-on 的 <code>/data</code> 在 host 端不是 <code>/data</code>，而是 <code>/mnt/data/supervisor/addon_configs/&lt;addon-slug&gt;/</code>（HA OS）或 <code>/usr/share/hassio/addon_configs/&lt;addon-slug&gt;/</code>（Supervised）。slug 是 add-on 的內部名稱，Pi Agent 通常是 <code>local_woow_ha_pi_agent</code> 或 <code>xxxxxxxx_woow_ha_pi_agent</code>（前綴依 repo 而定）。<br>
-          <strong>解法</strong>：SSH 進 HA host → <code>ls /mnt/data/supervisor/addon_configs/</code> 找出實際 slug → 進去操作。改完存檔<strong>不用重啟 add-on</strong>，pi-web 下次 read 就吃到（但影響大的檔改完最好重啟保險）。</p>
+          <strong>原因</strong>：HA add-on 的 <code>/data</code> 在 host 端不是 <code>/data</code>——實際路徑<strong>本文沒從 add-on 原始碼確認</strong>（source 只寫「per-addon mount」），大概候選是 <code>/mnt/data/supervisor/addon_configs/&lt;slug&gt;/</code>（HA OS）或 <code>/usr/share/hassio/addon_configs/&lt;slug&gt;/</code>（Supervised）——但這是 Supervisor 決定的、跨版本會變。<br>
+          <strong>解法</strong>：SSH 進 HA host → 兩個路徑都 <code>ls</code> 一下，哪個存在就進去。<strong>更穩的做法：直接進 container</strong> <code>docker exec -it addon_&lt;hash&gt;_woow_ha_pi_agent bash</code> 然後 <code>vi /data/pi-agent/models.json</code>——容器內的 <code>/data</code> 才是 add-on API 直接綁定的位置，不用猜 host 側 mount point。改完存檔<strong>不用重啟 add-on</strong>，pi-web 下次 read 就吃到（但影響大的檔改完最好重啟保險）。</p>
         </li>
         <li>
           <h3>Ingress 掛：nginx 一直回 403</h3>
           <p><strong>症狀</strong>：側邊欄按 Pi Agent 按鈕，畫面出現一片空白或 nginx 的 403 錯誤頁。<br>
           <strong>原因</strong>：nginx 的白名單 regex 沒讓 <code>X-Ingress-Path</code> header 過。可能是 HA 版本更新後 header 格式微改（多了字元、少了 <code>_</code>），或 HA 那邊沒送這個 header 進來。<br>
-          <strong>解法</strong>：容器內 <code>tail -f /var/log/nginx/access.log</code> 看實際請求的 header；如果格式明顯不同（例如 slug 突然有大寫或全形），去 GitHub <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_package/issues">Woow_ha_pi_agent_package</a> 開 issue 貼給作者。臨時解法：重啟 HA 本體讓 Ingress 重發新的 slug。</p>
+          <strong>解法</strong>：容器內 <code>tail -f /var/log/nginx/access.log</code> 看實際請求的 header；如果格式明顯不同（例如 slug 突然有大寫或全形），去 GitHub <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on/issues">Woow_ha_pi_agent_add_on</a> 開 issue 貼給作者。臨時解法：重啟 HA 本體讓 Ingress 重發新的 slug。</p>
         </li>
         <li>
           <h3>pi-web hang：Watchdog 一直 restart</h3>
@@ -593,7 +604,7 @@ description: 幫使用者盤點冰箱食材、找出快過期的東西
       <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>我可以自己 fork Pi Agent add-on 改嗎？授權允許嗎？</summary>
-        <div class="body">可以。Pi Agent add-on 是 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_package">MIT 或 Apache 之類的開源授權</a>（以 repo 的 LICENSE 為準），你可以 fork、改、發自己的 repo 讓別人裝。<strong>但要注意兩件事</strong>：（1）上游的 pi-web 跟 pi-coding-agent 是不同 repo（<code>agegr/pi-web</code> 跟 <code>earendil-works/pi</code>）的授權，如果你打算改它們也要看那邊的 LICENSE；（2）你 fork 後改的部分建議另外命名（例如 <code>Woow_ha_pi_agent_myfork</code>）不要蓋原始 slug，不然升級時 HA 會混淆。</div>
+        <div class="body">可以。Pi Agent add-on 是 <strong>MIT 授權</strong>（<code>Dockerfile</code> 的 <code>org.opencontainers.image.licenses="MIT"</code> label 有明文，以 repo 的 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on">LICENSE</a> 為準），你可以 fork、改、發自己的 repo 讓別人裝。<strong>但要注意兩件事</strong>：（1）上游的 pi-web（<code>agegr/pi-web</code>，<code>package.json</code> 寫 MIT）跟 pi-coding-agent（<code>earendil-works/pi</code>）是不同 repo 的授權，改它們也要看那邊的 LICENSE；（2）你 fork 後改的部分建議另外命名（例如 <code>Woow_ha_pi_agent_myfork</code>）不要沿用原始 slug <code>woow_ha_pi_agent</code>，不然升級時 HA 會混淆。</div>
       </details>
       <details class="faq">
         <summary>Home Assistant Container 版（不是 Supervised／HA OS）能不能跑 Pi Agent？</summary>
@@ -603,7 +614,7 @@ description: 幫使用者盤點冰箱食材、找出快過期的東西
         <summary>有 K3s 或 Podman 版本嗎？我想跑在 Kubernetes 上</summary>
         <div class="body">有。三個平行版本：
         <ul>
-          <li><a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_package">Woow_ha_pi_agent_package</a>——HA add-on 版（就是這本教學的主角）</li>
+          <li><a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on">Woow_ha_pi_agent_add_on</a>——HA add-on 版（就是這本教學的主角）</li>
           <li><a href="https://github.com/WOOWTECH/Woow_k3s_pi_agent_package">Woow_k3s_pi_agent_package</a>——K3s（輕量 Kubernetes）部署</li>
           <li><a href="https://github.com/WOOWTECH/Woow_podman_pi_agent_package">Woow_podman_pi_agent_package</a>——podman/docker 部署</li>
         </ul>
@@ -615,7 +626,7 @@ description: 幫使用者盤點冰箱食材、找出快過期的東西
         <ul>
           <li><strong>UI 元件、對話介面、Models 面板、Skills 面板</strong>：改 <a href="https://github.com/agegr/pi-web">github.com/agegr/pi-web</a>（Next.js 應用本體）。</li>
           <li><strong>AI 邏輯、tool call、skill 呼叫、streaming 行為</strong>：改 <a href="https://github.com/earendil-works/pi">github.com/earendil-works/pi</a>（pi coding agent SDK）。</li>
-          <li><strong>HA add-on 打包（Dockerfile、nginx.conf、s6-overlay 服務、config.yaml）</strong>：改 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_package">github.com/WOOWTECH/Woow_ha_pi_agent_package</a>。</li>
+          <li><strong>HA add-on 打包（Dockerfile、nginx.conf、s6-overlay 服務、config.yaml）</strong>：改 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on">github.com/WOOWTECH/Woow_ha_pi_agent_add_on</a>。</li>
         </ul>
         改上游要照他們的 PR 流程；改 add-on 直接在 WOOWTECH repo 開 issue/PR 就好。改之前建議先開 issue 聊過再動手，免得白工。</div>
       </details>

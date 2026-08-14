@@ -115,7 +115,7 @@
 
     <section id="what" data-nav="哪些是 reasoning">
       <h2 data-icon="what">哪些模型是 reasoning、哪些不是</h2>
-      <p>Pi Agent 支援的六家 provider 都有 reasoning 和非 reasoning 兩類模型。下面這張速查表（截至 2026 年 8 月）幫你分清楚哪個是哪個：</p>
+      <p>Pi Agent 支援的六家 provider 都有 reasoning 和非 reasoning 兩類模型。下面這張速查表（截至 2026 年 8 月）幫你分清楚哪個是哪個。<strong>模型清單與價格變動很頻繁</strong>——DeepSeek 已把 R1／Reasoner 併進 <code>deepseek-v4-pro</code>、Anthropic 從 4.7 起把 <code>budget_tokens</code>／extended thinking 全面收掉改成 adaptive，本章底下的估算數字都當「量級參考」看，正式付費前請以各家 provider 的定價頁為準：</p>
       <table class="data-table">
         <thead>
           <tr>
@@ -139,52 +139,52 @@
             <td>沒有思考塊</td>
           </tr>
           <tr>
-            <td>DeepSeek-R1</td>
+            <td>DeepSeek-v4-pro（含前身 R1／Reasoner）</td>
             <td>DeepSeek</td>
             <td>是</td>
-            <td>會（用 native reasoning 欄位）</td>
+            <td>會（放在 <code>reasoning_content</code> 欄位）</td>
           </tr>
           <tr>
-            <td>DeepSeek-Chat（V3）</td>
+            <td>DeepSeek-v4-flash（V3／Chat 併入）</td>
             <td>DeepSeek</td>
+            <td>否（可視為輕量 chat 走非 reasoning 路線）</td>
+            <td>沒有</td>
+          </tr>
+          <tr>
+            <td>Claude Opus 4.7 / 4.8</td>
+            <td>Anthropic</td>
+            <td>是（<strong>只支援 adaptive thinking</strong>，模型自己決定要不要想；官方已停用 <code>type:"enabled"</code>／<code>budget_tokens</code>）</td>
+            <td>預設 <code>display: "omitted"</code>——只回空的 thinking block（有 signature 沒明文），要看得先在 provider 端把 display 改成 <code>summarized</code></td>
+          </tr>
+          <tr>
+            <td>Claude Sonnet 4.6 / Opus 4.6</td>
+            <td>Anthropic</td>
+            <td>是（可設 adaptive；舊 <code>budget_tokens</code> 已 deprecated，仍能跑但不建議）</td>
+            <td>會，預設 <code>summarized</code>（Anthropic 官方摘要過）</td>
+          </tr>
+          <tr>
+            <td>Claude Sonnet 4.5 / Haiku 4.5 及更早 Claude 4 系列</td>
+            <td>Anthropic</td>
+            <td>只支援舊式 extended thinking（<code>type:"enabled"</code> + <code>budget_tokens</code>），沒有 adaptive</td>
+            <td>會（summarized）；Haiku 4.5 屬「keep last turn only」，多輪後前面思考塊會被自動剝掉</td>
+          </tr>
+          <tr>
+            <td>OpenAI o1 / o3-mini（或 o4 系列）</td>
+            <td>OpenAI</td>
+            <td>是</td>
+            <td>不給你看原文（OpenAI 政策；2026 年開始新的 o 系有 <em>reasoning summary</em> 摘要選項，但完整 CoT 仍不公開）</td>
+          </tr>
+          <tr>
+            <td>GPT-4o / GPT-4.1 / GPT-5-chat</td>
+            <td>OpenAI</td>
             <td>否</td>
             <td>沒有</td>
           </tr>
           <tr>
-            <td>Claude Opus 4.7</td>
-            <td>Anthropic</td>
-            <td>是</td>
-            <td>會（thinking content block）</td>
-          </tr>
-          <tr>
-            <td>Claude Sonnet 4.6</td>
-            <td>Anthropic</td>
-            <td>是（可開可關）</td>
-            <td>會，但只顯示 summary（Anthropic 官方會摘要過）</td>
-          </tr>
-          <tr>
-            <td>Claude Haiku 4.5</td>
-            <td>Anthropic</td>
-            <td>否（輕量款）</td>
-            <td>沒有</td>
-          </tr>
-          <tr>
-            <td>OpenAI o1 / o3-mini</td>
-            <td>OpenAI</td>
-            <td>是</td>
-            <td>不給你看（OpenAI 政策；只給你看最後答案跟 token 用量）</td>
-          </tr>
-          <tr>
-            <td>GPT-4o / GPT-4.1</td>
-            <td>OpenAI</td>
-            <td>否</td>
-            <td>沒有</td>
-          </tr>
-          <tr>
-            <td>Kimi K2（走 Groq）</td>
+            <td>Kimi K2-Instruct-0905（走 Groq）</td>
             <td>Groq</td>
-            <td>是（看 provider 有沒有暴露）</td>
-            <td>視 provider 而定</td>
+            <td><strong>否</strong>（Groq 只上架 K2 <em>Instruct</em> 版；K2-Thinking 只有 Moonshot 官方 API 有，Groq 沒有）</td>
+            <td>沒有</td>
           </tr>
           <tr>
             <td>Llama 3.3 70B（走 Groq）</td>
@@ -200,7 +200,7 @@
           </tr>
         </tbody>
       </table>
-      <div class="callout warn"><strong>注意：</strong>「OpenAI o1 有 reasoning 但不給你看」這件事很多新人踩雷——你在 Pi Agent 選了 o1，覺得「怎麼沒有思考塊、是不是我設錯了」，其實是 OpenAI 官方就不吐這一段給任何 client（他們把思考內容當成商業機密）。你在對話介面看不到思考塊，但錢還是照樣算了那一大堆思考 tokens。這是這章後面「隱藏思考塊不等於省錢」的活教材。</p></div>
+      <div class="callout warn"><strong>注意：</strong>「OpenAI o 系有 reasoning 但不給你看」這件事很多新人踩雷——你在 Pi Agent 選了 o1／o3-mini，覺得「怎麼沒有思考塊、是不是我設錯了」，其實是 OpenAI 官方就不吐完整 chain-of-thought 給任何 client（2026 年之後新版 API 可以要 <em>reasoning summary</em>，是摘要不是原文）。你在對話介面看不到思考塊，但錢還是照樣算了那一大堆思考 tokens。這是這章後面「隱藏思考塊不等於省錢」的活教材。<br><br>Claude Opus 4.7／4.8 也類似——官方預設 <code>display: "omitted"</code>，就是「返回空的 thinking block、但 signature 帶著加密思考給下一輪」。想看內容要在 Pi Agent 對應的 provider 設定把 display 改成 <code>summarized</code>。</div>
     </section>
 
     <section id="protocol" data-nav="thinking format">
@@ -219,21 +219,21 @@
         <tbody>
           <tr>
             <td><code>zai</code></td>
-            <td>智譜（Zhipu）家</td>
-            <td>思考文字包在 <code>&lt;think&gt;…&lt;/think&gt;</code> 這類特殊 tag 裡，藏在 message content 前段</td>
+            <td>智譜（Zhipu／z.ai）家</td>
+            <td>典型作法是把思考文字包在 <code>&lt;think&gt;…&lt;/think&gt;</code> 這類 tag 裡（GLM-Zero／GLM-4.5-air 的 open-weight 版本明確用這個 tag；GLM-4.6 官方 API 有時是 <code>reasoning_content</code>、有時是 tag）；Pi Agent 用 <code>zai</code> 這個標籤觸發它內部的智譜家專用拆解邏輯，實作細節你不用管，記得選對就好</td>
             <td>GLM-4.6、GLM-Zero、glm-4-plus</td>
           </tr>
           <tr>
             <td><code>deepseek</code></td>
-            <td>DeepSeek 家（MiniMax 相容格式也吃這個）</td>
-            <td>思考文字放在 API 回應的 <code>reasoning_content</code> 欄位，跟正式答案 <code>content</code> 分開放</td>
-            <td>DeepSeek-R1、DeepSeek-Reasoner、部分 MiniMax reasoning 模型</td>
+            <td>DeepSeek 家（許多 OpenAI-compatible reasoning 模型也吃這個）</td>
+            <td>思考文字放在 API 回應的 <code>message.reasoning_content</code> 欄位，跟正式答案 <code>message.content</code> 分開放</td>
+            <td>DeepSeek-v4-pro（含前身 R1／Reasoner），以及部分走 OpenAI-compatible 的其他家 reasoning 模型</td>
           </tr>
           <tr>
             <td><code>native</code></td>
             <td>Anthropic（走 Messages API）</td>
-            <td>思考變成一個獨立的 content block（<code>type: "thinking"</code>），跟 <code>type: "text"</code> 平行擺</td>
-            <td>Claude Opus 4.7 / Sonnet 4.6 / Sonnet 4.5 / Opus 4.5，只要開了 thinking</td>
+            <td>思考變成一個獨立的 content block（<code>type: "thinking"</code>），跟 <code>type: "text"</code> 平行擺；4.7 以後預設 <code>display: "omitted"</code>，thinking 欄位是空的、signature 帶加密內容</td>
+            <td>Claude Opus 4.5 / Sonnet 4.5 / Haiku 4.5（extended）；Sonnet 4.6 / Opus 4.6 / Opus 4.7 / Opus 4.8（adaptive）</td>
           </tr>
           <tr>
             <td>空白（不填）</td>
@@ -275,6 +275,7 @@
 
     <section id="cost" data-nav="有想的花多少">
       <h2 data-icon="cost">有想的到底比沒想的貴多少</h2>
+      <div class="callout warn"><strong>價格免責聲明：</strong>下面所有台幣估算都是 <strong>2026 年 8 月的量級參考</strong>，是「用來直覺感受差距」不是報價。實際帳單以各家 provider 的官方 pricing 頁為準（Anthropic、DeepSeek、OpenAI、智譜、Groq、MiniMax 的價格每兩三個月就會動）。特別提醒：DeepSeek 已把 R1／Reasoner 併進 <code>deepseek-v4-pro</code>，本表用「DeepSeek-R1」是為了跟第 11 章保持一致的稱呼，實際計費是 v4-pro 的價。</div>
       <p>抽象講「貴 10 倍」沒感覺，我們拿同一個問題，實地比一次。假設你問這個問題（很典型的家庭自動化題目）：</p>
       <pre class="code-block"><code>幫我寫一個自動化：晚上 10 點開始，慢慢把客廳燈調暗到 20%，
 到 10 點半完全變成夜燈色溫，過程要平滑，不要突然變暗。</code></pre>
@@ -335,7 +336,7 @@
         </tbody>
       </table>
       <p>看得出來：同樣一個問題，<strong>最貴（Claude Opus）是最便宜（GLM-4-Flash）的 1,500 倍</strong>。差 1,500 倍能買什麼？1,500 個問題 vs 1 個問題。所以這件事真的不能亂選。</p>
-      <div class="callout warn"><strong>注意：</strong>思考 tokens 全部都算成「輸出 tokens」在跟你收費，不管是 Anthropic、DeepSeek 還是 GLM 都一樣。你在 Anthropic 官方文件會看到一段話「thinking tokens count toward the max_tokens limit for the turn」——直接明說思考塊算在 max_tokens 裡，跟正式回答共用同一個計費池子。DeepSeek 那邊的 API 回應則會用 <code>usage.completion_tokens_details.reasoning_tokens</code> 這個欄位單獨顯示你這輪花了多少思考 tokens，方便你事後查帳。</p></div>
+      <div class="callout warn"><strong>注意：</strong>思考 tokens 全部都算成「輸出 tokens」在跟你收費，不管是 Anthropic、DeepSeek 還是 GLM 都一樣。你在 Anthropic 官方文件會看到一段話「thinking tokens count toward the <code>max_tokens</code> limit for the turn」——直接明說思考塊算在 max_tokens 裡，跟正式回答共用同一個計費池子；回應裡透過 <code>usage.output_tokens_details.thinking_tokens</code> 這個欄位可以查這一輪 Anthropic 幫你計費的 thinking token 數。DeepSeek 那邊走 OpenAI-compatible 介面，reasoning 用量通常對應 <code>usage.completion_tokens_details.reasoning_tokens</code>（依 provider／版本略有差異），方便事後查帳。</div>
     </section>
 
     <section id="plan" data-nav="什麼時候值得">
@@ -426,8 +427,8 @@
             <td>沒開 thinking 確實比較便宜（沒思考 tokens），但答案品質就退回普通模型水準</td>
           </tr>
           <tr>
-            <td>把 thinking budget 設 1024（最小）= 幾乎不花錢</td>
-            <td>是有省一點，但 AI 只想那一點通常也答不出好答案，這錢等於白花</td>
+            <td>把 thinking budget 設 1024（Anthropic 硬性最小值）= 幾乎不花錢</td>
+            <td>是有省一點，但 AI 只想那一點通常也答不出好答案，這錢等於白花；而且這招只對 Claude 4.5／4.6 有效，Opus 4.7 以上根本不吃 <code>budget_tokens</code>（直接回 400），只能用 adaptive + effort 檔位</td>
           </tr>
         </tbody>
       </table>
@@ -469,15 +470,15 @@
         </li>
         <li>
           <h3>明明是 reasoning 模型但答案品質很爛</h3>
-          <p>兩個可能：（a）思考 token budget 太小——如果你的 provider 支援手動設 budget（Anthropic Claude 4.5 那代還有 <code>budget_tokens</code>、DeepSeek 有隱含上限），試著調高一點。Anthropic 官方建議：簡單題目從 1,024 開始加、複雜題目從 16,000 起跳。（b）題目本身就不適合 reasoning——如果你問的是「客廳燈叫什麼名字」這種查資料題，reasoning 模型答得比普通模型還慢還囉唆，因為它會「想不必要的東西」。這種題目換 GLM-4-Flash 反而更好。</p>
+          <p>兩個可能：（a）思考 token budget 太小——如果你的 provider／模型還吃 <code>budget_tokens</code>（Anthropic Claude Sonnet 4.5／Haiku 4.5／Opus 4.5 這代還在支援；4.6 已 deprecated 但仍能跑；<strong>4.7 以後直接回 400 錯誤，不能設</strong>），可以試著調高。Anthropic 官方硬性下限是 <code>1,024</code>，官方建議：簡單題目從 1,024 開始加、複雜題目從 16,000 起跳。DeepSeek-v4-pro 有隱含上限、通常不用手動調。（b）題目本身就不適合 reasoning——如果你問的是「客廳燈叫什麼名字」這種查資料題，reasoning 模型答得比普通模型還慢還囉唆，因為它會「想不必要的東西」。這種題目換 GLM-4-Flash 反而更好。</p>
         </li>
         <li>
           <h3>從有想切成沒想後 AI 好像「變笨」了</h3>
           <p>正常，你少了那張草稿紙。GLM-4.6 切成 GLM-4-Flash、Opus 切成 Haiku，答案深度會下降。如果你剛才問的問題本來就需要深想（比如規劃自動化），切回便宜模型之後它可能給你比較平面、少考慮邊角情境的答案。如果你切回便宜的之後感覺失望，就是該切回貴的訊號——說明這個問題確實需要 reasoning。</p>
         </li>
         <li>
-          <h3>DeepSeek-R1 一直觸發 rate limit 或超時</h3>
-          <p>DeepSeek-R1 在中國白天／傍晚 peak 時段常常伺服器爆滿，request 會被排隊、甚至超時。解法（優先順序）：（a）暫時切成 GLM-4.6 頂替，一樣是會思考的模型，中文品質也好。（b）晚一點再試（台灣時間深夜通常暢通）。（c）在 Pi Agent 的 Session 設定裡加 fallback 模型，讓主模型失敗自動切到備援，這樣不會整個對話卡住。</p>
+          <h3>DeepSeek 的 reasoning（v4-pro，前身 R1）一直觸發 rate limit 或超時</h3>
+          <p>DeepSeek 官方 API 在中國白天／傍晚 peak 時段常常伺服器爆滿，request 會被排隊、甚至超時。解法（優先順序）：（a）暫時切成 GLM-4.6 頂替，一樣是會思考的模型，中文品質也好。（b）晚一點再試（台灣時間深夜通常暢通）。（c）在 Pi Agent 的 Session 設定裡加 fallback 模型，讓主模型失敗自動切到備援，這樣不會整個對話卡住。（模型名稱小提醒：舊教學稱「DeepSeek-R1」，2026 年官方已改稱 <code>deepseek-v4-pro</code>，是同一條 reasoning 路線的後代。）</p>
         </li>
         <li>
           <h3>思考塊超級長，跑了 30 秒還在轉</h3>
@@ -498,7 +499,7 @@
       </details>
       <details class="faq">
         <summary>Reasoning 模型可以叫它「不要想、直接答」嗎？</summary>
-        <div class="body">看是誰家的模型：（1）Claude Sonnet 4.6 可以——Anthropic 支援 <code>thinking: {type: "enabled"}</code> 開關，不開就是普通模型模式，也比較便宜。（2）Claude Opus 4.7 不行——這代的 Opus 只支援 adaptive thinking，模型自己決定要不要想、想多深。（3）DeepSeek-R1、GLM-4.6 主要靠 provider 一鍵決定，你在 client 端很難精確控制。（4）OpenAI o1／o3-mini 一定會想，這是它的設計本質。所以答案是「多數場合是 provider 決定的，你只能決定要不要選 reasoning 模型」。</div>
+        <div class="body">看是誰家的模型：（1）Claude Sonnet 4.6／Opus 4.6 可以間接控制——舊的 <code>thinking: {type: "enabled", budget_tokens: N}</code> 官方已標 deprecated 但還能跑，或改用 <code>type: "adaptive"</code> 搭 <code>output_config: {effort: "low"}</code>，effort 低時 Claude 會自動略過簡單題的思考。（2）Claude Opus 4.7／4.8／5 系列<strong>只有</strong> adaptive、且 <code>type:"enabled"</code> 直接回 400 錯誤——只能靠 effort 調深淺，不能硬關。（3）DeepSeek-v4-pro、GLM-4.6 主要靠 provider 一鍵決定，client 端很難精確控制。（4）OpenAI o1／o3-mini 一定會想，這是設計本質；GPT-5-chat 不會。結論是「多數場合是 provider／模型自己決定的，你能做的主要是選對模型跟 effort 檔位」。</div>
       </details>
       <details class="faq">
         <summary>思考塊裡的內容可以直接複製給別人看嗎？</summary>
@@ -514,7 +515,7 @@
       </details>
       <details class="faq">
         <summary>思考塊會佔用 context window（上下文長度）嗎？</summary>
-        <div class="body">會，但看 provider 怎麼處理。Anthropic 官方文件說明得很清楚：Claude 4.6 以上的模型，前幾輪的 thinking blocks 會被保留在 context 裡當作 input tokens 計費；Sonnet 4.5、Haiku 4.5、更早的 Claude 4 系列則會把前幾輪的 thinking blocks 從 context 裡拿掉（節省 context 空間）。DeepSeek-R1 的 <code>reasoning_content</code> 通常不會被自動放進下一輪 context（除非你程式端手動塞回去）。實務影響：長對話配 reasoning 模型，context 消耗速度會顯著快於非 reasoning 模型。發現對話跑到後面 AI 開始「忘記前面說什麼」的時候，這是原因之一——這時候該 fork 一個新 Session 從關鍵訊息重來（<a href="ch8_session.html">第 8 章</a>教過 fork）。</div>
+        <div class="body">會，但看 provider 怎麼處理。Anthropic 官方文件說明得很清楚：<strong>keep-all</strong> 模型（Claude Opus 4.5 及以上所有 Opus、Sonnet 4.6 及以上所有 Sonnet、Fable 5、Mythos 5、Mythos Preview）會把前幾輪的 thinking blocks 保留在 context 裡當 input tokens 計費；<strong>keep-last-turn-only</strong> 模型（Sonnet 4.5、更早的 Opus／Sonnet，以及<strong>所有 Haiku 一路到 Haiku 4.5</strong>）則會在你發下一個非 tool-result 的 user message 時，把之前所有 thinking blocks 從 context 裡剝掉（節省 context 空間）。DeepSeek 的 <code>reasoning_content</code> 通常不會被自動放進下一輪 context（除非你程式端手動塞回去）。實務影響：長對話配 keep-all 的 reasoning 模型，context 消耗會顯著快於非 reasoning 模型。發現對話跑到後面 AI 開始「忘記前面說什麼」的時候，這是原因之一——這時候該 fork 一個新 Session 從關鍵訊息重來（<a href="ch8_session.html">第 8 章</a>教過 fork）。</div>
       </details>
       <details class="faq">
         <summary>下一步該做什麼？</summary>

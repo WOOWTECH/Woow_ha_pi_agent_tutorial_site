@@ -90,7 +90,7 @@
     <div class="chapter-header">
       <div class="kicker">第 18 章</div>
       <h1>為什麼首次要下載 720 MB、之後就秒開</h1>
-      <p class="lead">第 <a href="ch2_install.html">2 章</a>叫你按下啟動之後別緊張，等 3-8 分鐘不是壞了；第 <a href="ch17_video_pipeline.html">17 章</a>又講了影片管線需要一整套工具才能跑。這章就是要把「那個 720 MB 到底裝了什麼、放在哪、什麼時候會再裝一次」講清楚，順便教你 <code>reset_video_tools</code> 那個一次性開關該什麼時候翻、翻完會發生什麼。看完之後你在 Logs 分頁看到 <code>[video-tools]</code> 訊息時就不會再心跳加速。</p>
+      <p class="lead">第 <a href="ch2_install.html">2 章</a>叫你按下啟動之後別緊張，等 3-8 分鐘不是壞了；第 <a href="ch17_video_pipeline.html">17 章</a>又講了影片管線需要一整套工具才能跑。這章就是要把「那個 720 MB 到底裝了什麼、放在哪、什麼時候會再裝一次」講清楚，順便教你 <code>reset_video_tools</code> 那個一次性開關該什麼時候翻、翻完會發生什麼。看完之後你在 Logs 分頁看到 <code>video-tools-init:</code> 訊息時就不會再心跳加速。</p>
     </div>
 
     <section id="why" data-nav="兩件事一起講清楚">
@@ -162,10 +162,10 @@
         </li>
         <li>
           <h3>之後每次啟動：跳過</h3>
-          <p>下次你重啟 add-on、重開 HA、甚至重開機，<code>video-tools-init</code> 一啟動就檢查 sentinel 檔，看到「有欸」就 exit 0 什麼也不做。log 只會出現一行 <code>[video-tools] already installed (sentinel present) — skipping</code>，秒過。這就是為什麼<b>首次要幾分鐘、之後秒開</b>。</p>
+          <p>下次你重啟 add-on、重開 HA、甚至重開機，<code>video-tools-init</code> 一啟動就檢查 sentinel 檔（跟 <code>venv/bin/python3</code>），看到兩個都在就 exit 0 什麼也不做。log 只會出現一行 <code>video-tools-init: already installed (sentinel present) — skipping</code>，秒過。這就是為什麼<b>首次要幾分鐘、之後秒開</b>。</p>
         </li>
       </ol>
-      <div class="callout warn"><strong>注意：</strong>「pi-web 立刻起來、video-tools 在背景」這個設計，代表你<b>看 UI 完全看不出來後面還在下載</b>。這也是為什麼很多人以為「已經好了」就開始玩，玩到一半才發現「咦，這個影片管線的 skill 怎麼跑失敗」——因為 Chromium 還沒下完。要確定影片管線 ready，去 Logs 分頁看 <code>install complete — sentinel written</code> 這一行，看到才算完全 OK。</div>
+      <div class="callout warn"><strong>注意：</strong>「pi-web 立刻起來、video-tools 在背景」這個設計，代表你<b>看 UI 完全看不出來後面還在下載</b>。這也是為什麼很多人以為「已經好了」就開始玩，玩到一半才發現「咦，這個影片管線的 skill 怎麼跑失敗」——因為 Chromium 還沒下完。要確定影片管線 ready，去 Logs 分頁看 <code>video-tools-init: install complete — sentinel written</code> 這一行，看到才算完全 OK。</div>
     </section>
 
     <section id="records" data-nav="裝在哪三個位置">
@@ -190,7 +190,7 @@
           </tr>
           <tr>
             <td><code>/data/pi-agent/.video-tools-installed</code></td>
-            <td>Sentinel 檔（哨兵檔）。一個<b>零 byte 的空檔</b>，存在只有一個意義：「上面兩個都裝好了，別再裝」。啟動腳本靠它判斷要不要跑安裝流程。</td>
+            <td>Sentinel 檔（哨兵檔）。一個<b>零 byte 的空檔</b>，存在只有一個意義：「上面兩個都裝好了，別再裝」。啟動腳本靠它加上「<code>venv/bin/python3</code> 是不是可執行」<b>兩個條件同時成立</b>才跳過安裝——所以就算只還原 sentinel、venv 沒還原，腳本一樣會重跑。</td>
             <td>0 byte</td>
             <td>能刪，刪了下次啟動會重跑安裝</td>
           </tr>
@@ -202,12 +202,15 @@
 
     <section id="restore" data-nav="不會被 snapshot 備份">
       <h2 data-icon="restore">重要：這 720 MB 不會被 HA snapshot 備份</h2>
-      <p>這是本章<b>最容易踩雷</b>的一件事，講清楚：Pi Agent 有一份 <code>backup_exclude</code> 清單，明講「這幾個目錄不要放進 HA snapshot」。清單裡有這幾個：</p>
+      <p>這是本章<b>最容易踩雷</b>的一件事，講清楚：Pi Agent 的 <code>config.yaml</code> 有一份 <code>backup_exclude</code> 清單，明講「這幾個 glob pattern 不要放進 HA snapshot」。清單裡有七條，跟本章 720 MB 相關的是這幾個：</p>
       <ul>
-        <li><code>venv/</code> ← 就是這 720 MB 的 Python venv</li>
-        <li><code>playwright-cache/</code> ← 就是這 720 MB 的 Chromium</li>
-        <li><code>clips/</code>、<code>segments/</code> ← 影片管線產出的中間檔（很大、可重生）</li>
+        <li><code>**/venv/**</code> ← 就是這 720 MB 的 Python venv</li>
+        <li><code>**/playwright-cache/**</code> ← 就是這 720 MB 的 Chromium</li>
+        <li><code>**/projects/**/clips/**</code>、<code>**/projects/**/segments/**</code> ← 影片管線產出的中間檔（很大、可重生）</li>
+        <li><code>**/home/**/node_modules/**</code>、<code>**/home/**/.cache/**</code> ← AI 工作目錄的 npm 快取</li>
+        <li><code>**/sessions/*.jsonl.tmp</code> ← 對話寫到一半的暫存檔</li>
       </ul>
+      <p><b>特別注意</b>：<code>rclone.conf</code>（Google Drive 授權 token）<b>沒</b>在排除清單裡——它會被備份進 snapshot。這是刻意的：如果 rclone 授權掉了，你 restore 之後所有 <code>push_drive.sh</code> 都會 silently 失敗，很難察覺。所以那個檔案值得那 300 byte 的備份空間。</p>
       <p>為什麼要故意排除？兩個原因：</p>
       <ol class="steps">
         <li>
@@ -216,7 +219,7 @@
         </li>
         <li>
           <h3>原因二：還原後 s6-overlay 會自動再裝一次</h3>
-          <p>假設你今天整台 HA 掛了、拿 snapshot 還原到新硬體，Pi Agent 那份 snapshot 裡沒有 venv 也沒有 playwright-cache——但也<b>沒有 sentinel 檔</b>。所以還原完 Pi Agent 首次啟動時，看到 sentinel 不在，就會自動再跑一次那 3-8 分鐘的下載，等於「新機重新裝一份」，環境跟原本完全等價。<b>備份少 700 MB、還原多等 5 分鐘</b>，這筆帳很划算。</p>
+          <p>假設你今天整台 HA 掛了、拿 snapshot 還原到新硬體，Pi Agent 那份 snapshot 裡沒有 venv 也沒有 playwright-cache——雖然 sentinel 檔本身<em>有</em>被還原回來，但 <code>video-tools-init</code> 的判斷條件是「sentinel 檔存在 <b>而且</b> <code>venv/bin/python3</code> 是可執行檔」，兩個要同時成立才跳過安裝。venv 沒了 python3 就沒了，判斷失敗，腳本會照樣重跑那 3-8 分鐘的下載，等於「新機重新裝一份」，環境跟原本完全等價。<b>備份少 700 MB、還原多等 5 分鐘</b>，這筆帳很划算。</p>
         </li>
       </ol>
       <p>那什麼<b>會</b>放進 snapshot？<b>你真正產生的東西</b>：</p>
@@ -227,9 +230,10 @@
         <tbody>
           <tr><td><code>models.json</code>（金鑰、provider 設定）</td><td><code>venv/</code>（720 MB 中的 Python 部分）</td></tr>
           <tr><td><code>sessions/</code>（你的對話歷史）</td><td><code>playwright-cache/</code>（720 MB 中的 Chromium）</td></tr>
-          <tr><td><code>skills/</code>（你裝的、你寫的 skill）</td><td><code>clips/</code>、<code>segments/</code>（影片中間檔）</td></tr>
-          <tr><td><code>home/pi-cwd-*/</code>（AI 的工作目錄）</td><td><code>.video-tools-installed</code>（sentinel）</td></tr>
-          <tr><td><code>rclone/rclone.conf</code>（Google Drive 授權）</td><td>—</td></tr>
+          <tr><td><code>skills/</code>（你裝的、你寫的 skill）</td><td><code>projects/**/clips/</code>、<code>projects/**/segments/</code>（影片中間檔）</td></tr>
+          <tr><td><code>home/pi-cwd-*/</code>（AI 的工作目錄）</td><td><code>home/**/node_modules/</code>、<code>home/**/.cache/</code>（npm 快取）</td></tr>
+          <tr><td><code>rclone/rclone.conf</code>（Google Drive 授權）</td><td><code>sessions/*.jsonl.tmp</code>（半寫入的暫存）</td></tr>
+          <tr><td><code>auth.json</code>（OAuth token）跟 <code>.video-tools-installed</code>（sentinel）也在裡面</td><td>—</td></tr>
         </tbody>
       </table>
       <p>換句話說：<b>你花心血產生的都在、機器自己下載的都不在</b>。這個切分很乾淨。<a href="ch20_backup.html">第 20 章</a>會把備份還原的完整流程講一次。</p>
@@ -254,11 +258,11 @@
         </li>
         <li>
           <h3>回 Info 分頁按 RESTART</h3>
-          <p>重啟時 <code>pi-web-start.sh</code> 讀到 <code>RESET_VIDEO_TOOLS=true</code>，先跑 <code>rm -rf .video-tools-installed venv playwright-cache</code>，log 會冒一行 <code>[pi-web] RESET_VIDEO_TOOLS=true — clearing venv, playwright cache and sentinel</code>。清完就進入正常啟動流程，然後因為 sentinel 沒了，<code>video-tools-init</code> 又會跑一次 3-8 分鐘的下載。</p>
+          <p>重啟時 s6-overlay 的 <code>pi-web/run</code> 讀到 <code>reset_video_tools: true</code>，先跑 <code>rm -rf /data/pi-agent/.video-tools-installed /data/pi-agent/venv /data/pi-agent/playwright-cache</code>，log 會冒一行 <code>reset_video_tools=true — clearing venv + playwright-cache + sentinel</code>。清完就進入正常啟動流程，然後因為 sentinel 沒了，<code>video-tools-init</code> 這個 s6 oneshot 又會跑一次 3-8 分鐘的下載。</p>
         </li>
         <li>
-          <h3>下載完成後回 Configuration 手動把開關關回 false</h3>
-          <p><b>這一步<em>目前</em>要你手動做</b>。開關沒有自動變回 false 的機制（腳本本身沒改 add-on config 的權限）。如果你留在 <code>true</code>，下次每次重啟都會重刪重下 720 MB，非常浪費——所以裝完務必回來把它關掉。log 也會提醒你這件事：<code>set it back to false once the reinstall completes, or every restart re-downloads ~720MB</code>。</p>
+          <h3>不用回去手動關——add-on 會自動幫你翻回 false</h3>
+          <p>這是 v0.13.0 版加進來的重要行為，很多網路上的舊教學（包括本站早期版本）都寫錯：<b>啟動腳本刪完檔案後，會馬上打一支 Supervisor API（<code>POST /addons/self/options</code> 帶 <code>{"options": {"reset_video_tools": false}}</code>）把這個選項翻回 false</b>，你下次重啟就是正常流程、不會又重下 720 MB。log 會出現一行 <code>reset_video_tools auto-reverted to false</code> 代表成功。如果 <b>Supervisor API 呼叫失敗</b>（例如 <code>SUPERVISOR_TOKEN</code> 沒注入、或 curl 5 秒逾時），log 會冒警告 <code>Could not auto-revert reset_video_tools — turn it OFF manually to avoid re-clearing next boot</code>——這時候才需要你回 Configuration 手動關。多數情況下你完全不用碰。</p>
         </li>
       </ol>
       <div class="callout danger"><strong>危險：</strong>reset 期間不要按停止／重啟，讓它跑完。720 MB 下載到一半被打斷，會留下半殘的 venv 或半下載的 Chromium 檔案，下次啟動有可能因為「檔案存在但不完整」而出各種怪錯。真的中斷了，唯一乾淨的作法就是——再 reset 一次。</div>
@@ -314,19 +318,19 @@
 
     <section id="advanced" data-nav="不用影片管線能省嗎">
       <h2 data-icon="advanced">不打算用影片管線，可以省下這 720 MB 嗎</h2>
-      <p>老實答：<b>目前不能簡單省下</b>。原因跟 Pi Agent 的設計有關：</p>
+      <p>老實答：<b>不能省下</b>。原因跟 Pi Agent 的設計有關：</p>
       <ol class="steps">
         <li>
-          <h3>video-tools-init 是啟動時自動跑的服務</h3>
-          <p>add-on 啟動腳本 <code>pi-web-start.sh</code> 預設會在背景 fork <code>video-tools-init.sh</code>。這個行為<b>沒有一個給普通使用者的開關</b>可以關（Configuration 分頁看不到相關選項）。</p>
+          <h3>video-tools-init 是 s6-overlay 的 oneshot，沒有 config 開關可以關</h3>
+          <p>HA add-on 版把 <code>video-tools-init</code> 註冊成 s6-overlay 的一個 oneshot 服務（放在 <code>rootfs/etc/s6-overlay/s6-rc.d/video-tools-init/</code>），跟 pi-web / nginx 三個服務<b>平行啟動</b>——這是刻意的設計，讓 chat 立刻能用、video-tools 在背景慢慢裝。但既然是 s6 oneshot，Configuration 分頁就<b>沒有一個開關可以叫它不要跑</b>。腳本本身也沒有 <code>if VIDEO_PIPELINE_ENABLED</code> 之類的條件檢查（那是 k3s 部署版才有的分支）。</p>
         </li>
         <li>
-          <h3>底層是有環境變數可以關的，但不對外</h3>
-          <p>啟動腳本裡有段條件是 <code>if [ "${VIDEO_PIPELINE_ENABLED:-true}" = "true" ]</code>——意思是如果環境變數 <code>VIDEO_PIPELINE_ENABLED</code> 被設成 false，就不會跑 video-tools-init。但 add-on Configuration 分頁沒把這個變數暴露給你切，要改就得改 add-on 原始碼或用進階手法（<code>env_vars</code> 選項，看<a href="appendix_config_ref.html">附錄 A</a>）。</p>
+          <h3>硬要不裝，只有兩條路，都不建議一般使用者走</h3>
+          <p>（a）自己 fork <code>Woow_ha_pi_agent_add_on</code>，把 <code>rootfs/etc/s6-overlay/s6-rc.d/user/contents.d/video-tools-init</code> 這個檔刪掉，重新 build 一份 image 塞進自己的 add-on repository。（b）不進入 pi-web 就完全不會用到 venv/chromium，等於你「保留檔案但不使用」——720 MB 就在那裡占位不動。這兩條都比想像的麻煩，多數人不會這樣做。</p>
         </li>
         <li>
-          <h3>就算關了 init，映像檔本身還是含 400-500 MB 的 ffmpeg / 字型 / rclone</h3>
-          <p>那一塊是烤進 Docker image 的（Containerfile 裡的 <code>VIDEO_TOOLS=1</code> ARG），你在 add-on 這一端<b>完全無法選擇不裝</b>。要真的省，得改 <code>VIDEO_TOOLS=0</code> 自己重 build，這已經是自製 fork 了。</p>
+          <h3>就算跳過 init，映像檔本身還是含 300 MB 的 ffmpeg / 字型 / rclone</h3>
+          <p>那一塊是烤進 Docker image 的（Dockerfile 直接 <code>apt install</code> 進去），你在 add-on 這一端<b>完全無法選擇不裝</b>。要真的省，得自己 fork 改 Dockerfile 拿掉那些 package，這已經是自製 fork 了。</p>
         </li>
         <li>
           <h3>實務建議：就讓它裝一次</h3>
@@ -338,23 +342,23 @@
 
     <section id="now" data-nav="看下載進度">
       <h2 data-icon="now">怎麼看下載進度、判斷卡住還是慢</h2>
-      <p>下載這 720 MB 期間，你不用瞎等，可以在 Logs 分頁看它跑到哪。Add-on Logs 分頁進去，找開頭是 <code>[video-tools]</code> 或 <code>[pi-web]</code> 的行。正常的進度大概像這樣：</p>
-      <pre class="code-block"><code>[pi-web] video pipeline enabled — bootstrapping in background
-[pi-web] starting pi-web on 127.0.0.1:30141
-[video-tools] first-run install starting (~720MB, several minutes; pi-web is already serving)
-[video-tools] creating venv at /data/pi-agent/venv
-[video-tools] installing python packages (playwright, edge-tts, pyyaml, mutagen)
-[video-tools] downloading Chromium into /data/pi-agent/playwright-cache (~600MB)
-[video-tools] install complete — sentinel written to /data/pi-agent/.video-tools-installed</code></pre>
+      <p>下載這 720 MB 期間，你不用瞎等，可以在 Logs 分頁看它跑到哪。Add-on Logs 分頁進去，找開頭是 <code>video-tools-init:</code> 的行（那是 bashio 印的，跟 pi-web 的 log 混在一起顯示）。正常的進度大概像這樣：</p>
+      <pre class="code-block"><code>[INFO] Starting pi-web on 0.0.0.0:30141 (data: /data/pi-agent, home: /data/pi-agent/home)
+[INFO] video-tools-init: first-run install starting (~720MB, may take several minutes)
+[INFO] video-tools-init: creating venv at /data/pi-agent/venv
+[INFO] video-tools-init: installing python packages into venv
+[INFO] video-tools-init: downloading Chromium into /data/pi-agent/playwright-cache (~600MB)
+[INFO] video-tools-init: install complete — sentinel written to /data/pi-agent/.video-tools-installed</code></pre>
       <p>每一行的意義：</p>
       <table class="data-table">
         <thead>
           <tr><th>看到這行</th><th>意義</th><th>大概還要等</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>bootstrapping in background</code></td><td>啟動腳本已 fork 出安裝進程，pi-web 也起來了</td><td>約 3-8 分鐘</td></tr>
-          <tr><td><code>creating venv</code></td><td>正在建 Python 虛擬環境</td><td>再 3-8 分鐘</td></tr>
-          <tr><td><code>installing python packages</code></td><td>pip 在裝 playwright、edge-tts 那些</td><td>再 2-6 分鐘</td></tr>
+          <tr><td><code>Starting pi-web on 0.0.0.0:30141</code></td><td>pi-web 已經起來，可以開始聊天；video-tools-init 這個 s6 oneshot 跟它平行跑</td><td>video-tools 還要 3-8 分鐘</td></tr>
+          <tr><td><code>first-run install starting</code></td><td>安裝流程開始，sentinel 目前不存在</td><td>約 3-8 分鐘</td></tr>
+          <tr><td><code>creating venv</code></td><td>正在建 Python 虛擬環境</td><td>再 2-7 分鐘</td></tr>
+          <tr><td><code>installing python packages into venv</code></td><td>pip 在裝 playwright、edge-tts、pyyaml、mutagen</td><td>再 2-6 分鐘</td></tr>
           <tr><td><code>downloading Chromium</code></td><td>最大隻的來了，500-600 MB</td><td>再 2-5 分鐘</td></tr>
           <tr><td><code>install complete — sentinel written</code></td><td><b>全部完成</b>，影片管線可用</td><td>0，可以開始用</td></tr>
         </tbody>
@@ -414,7 +418,7 @@
           <tr>
             <td>HA 整台掛掉，restore 一份 snapshot 到新硬體</td>
             <td><b>會</b></td>
-            <td>snapshot 沒帶 venv/playwright-cache/sentinel（見<a href="#restore">第 5 段</a>），還原後啟動就重下。你不用做任何事，自動的。</td>
+            <td>snapshot 沒帶 venv/playwright-cache（見<a href="#restore">第 5 段</a>）；sentinel 雖然有還原，但腳本的雙重檢查會偵測到 venv 沒了，還原後啟動就自動重下。你不用做任何事。</td>
           </tr>
           <tr>
             <td>HA host 換 SSD、把整個 /data 目錄 rsync 過去</td>
@@ -450,8 +454,12 @@
           <p>Chromium + venv 加起來要 700 MB，加上下載暫存還要多一點，<b>建議自由空間至少 2 GB</b>。第 <a href="ch2_install.html">2 章</a>建議整個 HA host 留 3 GB。空間不夠時 pip 會報 <code>No space left on device</code>。解法：（a）先清 <code>/backup/</code> 底下舊 snapshot；（b）清 <code>/data/pi-agent/clips/</code> 跟 <code>segments/</code>（影片中間檔，看<a href="ch17_video_pipeline.html">第 17 章</a>）；（c）清 <code>/data/pi-agent/sessions/</code> 老對話。清完再 reset 一次重來。</p>
         </li>
         <li>
-          <h3>開了 <code>reset_video_tools</code> 忘記關回 false</h3>
-          <p>症狀：每次重啟 add-on 都等 3-8 分鐘。你會覺得「怎麼比首次還慢還這麼久」。判斷：<b>去 Configuration 分頁看 <code>reset_video_tools</code> 是不是還在 true</b>。是就翻回 false 存檔，下次重啟就秒過了。這個雷幾乎每個第一次用這個開關的人都會踩一次，別問我怎麼知道。</p>
+          <h3>reset_video_tools 的自動翻回機制失敗了（每次重啟都重下 720 MB）</h3>
+          <p>正常情況下 add-on 會呼叫 Supervisor API 把這個開關自動翻回 false，但極少數狀況會失敗——例如某個 Supervisor 版本 bug、或 <code>SUPERVISOR_TOKEN</code> 沒注入（罕見）。判斷：<b>去 Configuration 分頁看 <code>reset_video_tools</code> 是不是還在 true，同時去 Logs 看有沒有 <code>Could not auto-revert reset_video_tools</code> 這行警告</b>。有就手動撥回 false 存檔，下次重啟就秒過了。如果反覆發生，去 Info 分頁看 add-on 版本是不是 &lt; 0.13.0（更舊的版本沒有自動翻回機制），有的話升級。</p>
+        </li>
+        <li>
+          <h3>不想動 config，只想「乾脆清 sentinel 讓它重跑」</h3>
+          <p>DOCS.md 官方 troubleshoot 段講的比較低科技的做法：<b>不用開 reset_video_tools 開關</b>，直接進 add-on 的 Terminal 分頁（或 <code>docker exec -it addon_woow_ha_pi_agent bash</code>）跑 <code>rm /data/pi-agent/.video-tools-installed</code>，再回 Info 按 RESTART。因為腳本的 sentinel 檢查會失敗，就會重跑一次 3-8 分鐘的安裝。這個方法不會動到 venv/playwright-cache 目錄本身，如果只是 sentinel 檔被誤刪或 corrupted 的救援場景，比 reset 更精準（reset 會連 venv 整個砍掉）。</p>
         </li>
       </ol>
     </section>
@@ -472,7 +480,7 @@
       </details>
       <details class="faq">
         <summary>reset_video_tools 開關開了以後，我要按什麼「確認」它會做事？</summary>
-        <div class="body">兩步：<b>SAVE 存檔 + 回 Info 分頁按 RESTART</b>。光在 Configuration 分頁把開關撥到 true 是不會發生任何事的，因為 HA 只在 add-on 啟動時把設定注入到容器裡當環境變數。沒重啟就沒新的環境變數、腳本也讀不到。所以流程一律是：撥開關 → 按 SAVE → 回 Info → 按 RESTART → 觀察 Logs → <b>下載完務必再把開關撥回 false</b>。忘記撥回會導致每次重啟都重下。</div>
+        <div class="body">兩步：<b>SAVE 存檔 + 回 Info 分頁按 RESTART</b>。光在 Configuration 分頁把開關撥到 true 是不會發生任何事的，因為 HA 只在 add-on 啟動時把設定注入。沒重啟就沒新設定、腳本也讀不到。所以流程是：撥開關 → 按 SAVE → 回 Info → 按 RESTART → 觀察 Logs。<b>不需要手動撥回 false</b>——add-on 會透過 Supervisor API 自動把它翻回來，log 會顯示 <code>reset_video_tools auto-reverted to false</code>。只有在極少數 Supervisor API 呼叫失敗的情況下（log 會警告 <code>Could not auto-revert</code>），你才需要親自回 Configuration 撥回 false。</div>
       </details>
       <details class="faq">
         <summary>video-tools-init 跑到一半我把 HA 關機了，會壞掉嗎？</summary>

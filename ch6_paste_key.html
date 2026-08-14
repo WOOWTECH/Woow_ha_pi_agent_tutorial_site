@@ -103,7 +103,7 @@
       <p>回想<a href="ch4_ui_tour.html">第 4 章</a>介紹的 pi-web 主畫面：中間是聊天區、右上角有幾顆小圖示（Sessions、Skills、Models、Settings…）。<strong>Models</strong> 就是「所有 AI 大腦的登記本」——你把哪一家、走哪個地址、用哪把鑰匙、想開哪幾個模型，全部登記在這裡。</p>
       <p>把它想成家裡冰箱門上那張「電話簿」磁貼：水電行、鎖匠、瓦斯行、外送店家。你打電話叫水電時翻冰箱看號碼，Pi Agent 要問 AI 時也翻這本登記簿。差別是：一家 provider 可以列很多支不同的模型（就像一家水電行有三個師傅可以叫）。</p>
       <div class="callout"><strong>觀念：</strong>面板裡看到的每一張卡片＝一個 provider（供應商）。一個 provider 底下可以再列很多個 model（模型）。GLM 這家 provider 目前主要就用 <code>glm-4.6</code> 一顆，之後 GLM 出新模型你再回來 Add Model 就好。</div>
-      <p>這個面板背後對應的檔案是 <code>/data/pi-agent/models.json</code>——你在面板點 Save，pi-web 就把最新內容寫進這個 JSON。要看檔案本人，可以進 HA 的 File Editor add-on 打開它（權限被鎖成 <code>600</code>，只有 root 讀得到）。你完全不需要手動編這個檔，UI 幫你搞定；<strong>知道它存在的意義是</strong>：HA 的備份（snapshot）會連帶這個檔案一起打包，之後換主機、還原 snapshot，金鑰不用重申請。第 <a href="ch20_backup.html">20</a> 章會細講。</p>
+      <p>這個面板背後對應的檔案是 <code>/data/pi-agent/models.json</code>——你在面板點 Save，pi-web 就把最新內容寫進這個 JSON。要看檔案本人，可以進 HA 的 File Editor add-on 打開它（存在 add-on 專屬的 persistent volume，只有 HA 主機的 root 帳號摸得到，一般 HA 使用者從網頁 UI 看不到內容）。你完全不需要手動編這個檔，UI 幫你搞定；<strong>知道它存在的意義是</strong>：HA 的備份（snapshot）會連帶這個檔案一起打包，之後換主機、還原 snapshot，金鑰不用重申請。第 <a href="ch20_backup.html">20</a> 章會細講。</p>
       <figure class="shot">
         <img src="assets/screenshots/ch6/01_models_panel.png" alt="Pi Agent Models 面板" />
         <figcaption><strong>圖 6-1</strong>Models 面板：一張卡片一家 provider，右上 Add Provider 加新家、每張卡上的 Test 綠燈就代表金鑰通。</figcaption>
@@ -146,7 +146,7 @@
         <li><strong>點錯菜</strong>（<code>models[].name</code> 打成 <code>glm-4</code>、少了 <code>.6</code>）：門開了、菜單沒有這一道，回 404 model not found。</li>
       </ul>
       <div class="callout warn"><strong>注意：</strong>複製金鑰時最常見的坑是「多了頭尾空白字元」——特別是在網頁選字段時多選到一格空白。貼進 Pi Agent 前，可以先貼到記事本檢查一下前後有沒有多餘空格。</div>
-      <p>還有一個小欄位叫 <strong>API mode</strong>（API 模式），下拉可以選 <code>openai-completions</code>、<code>anthropic-messages</code> 等等。GLM 相容 OpenAI 的請求格式，所以選 <code>openai-completions</code>。這一格代表「Pi Agent 要用哪種語言跟這家講話」——選錯了對方會聽不懂，同樣 400/404。</p>
+      <p>還有一個小欄位叫 <strong>API mode</strong>（API 模式），下拉一共四個選項：<code>openai-completions</code>、<code>openai-responses</code>、<code>anthropic-messages</code>、<code>google-generative-ai</code>。GLM 相容 OpenAI Chat Completions 的請求格式，所以選 <code>openai-completions</code>。這一格代表「Pi Agent 要用哪種語言跟這家講話」——選錯了對方會聽不懂，同樣 400/404。</p>
     </section>
 
     <section id="steps" data-nav="8 步貼完到綠燈">
@@ -159,7 +159,7 @@
         </li>
         <li>
           <h3>找到右上角 Models 圖示</h3>
-          <p>畫面右上角一排小圖示裡，找像是「幾個方塊疊起來」的那顆——就是 Models。滑鼠移上去會顯示 tooltip「Models」確認。點它，右邊會滑出一個抽屜（drawer）。第一次打開，裡面是空的，只有一顆大大的「Add Provider」按鈕。</p>
+          <p>畫面右上角一排小圖示裡，找那顆「中間一個小方框、外面一個大方框、四邊各伸出兩根短短小腳」的圖示（設計上是模仿 CPU／晶片的外觀）——就是 Models。滑鼠移上去會顯示 tooltip「Models」確認。點它，右邊會滑出一個抽屜（drawer）。第一次打開，裡面是空的，只有一顆大大的「Add Provider」按鈕。</p>
         </li>
         <li>
           <h3>按 Add Provider（新增供應商）</h3>
@@ -171,13 +171,13 @@
         </li>
         <li>
           <h3>API mode 選 openai-completions</h3>
-          <p>下拉裡會列幾個選項：<code>openai-completions</code>、<code>anthropic-messages</code>、<code>google-generative</code>… GLM 是「OpenAI 相容」的供應商，選 <strong><code>openai-completions</code></strong>。之後如果加 Anthropic 的 Claude，就選 <code>anthropic-messages</code>；每家對應哪一個，第 <a href="ch11_provider_map.html">11</a> 章有完整對照。</p>
+          <p>下拉一共四個選項：<code>openai-completions</code>、<code>openai-responses</code>、<code>anthropic-messages</code>、<code>google-generative-ai</code>。GLM 是「OpenAI Chat Completions 相容」的供應商，選 <strong><code>openai-completions</code></strong>。之後如果加 Anthropic 的 Claude，就選 <code>anthropic-messages</code>；加 Google Gemini 就選 <code>google-generative-ai</code>；OpenAI 官方新式端點才選 <code>openai-responses</code>。每家對應哪一個，第 <a href="ch11_provider_map.html">11</a> 章有完整對照。</p>
         </li>
         <li>
           <h3>baseUrl 填 GLM 的地址</h3>
           <p>整段一字不差複製貼上：</p>
           <pre class="code-block"><code>https://open.bigmodel.cn/api/paas/v4</code></pre>
-          <p>注意：<strong>結尾不要多一個斜線</strong>（<code>/v4/</code> 會 404）、<strong>開頭一定要 https</strong>（http 會被智譜拒絕）。這是 GLM 官方公告的 API 端點，只有這一個地址，不會有第二個。</p>
+          <p>注意：<strong>結尾不要多一個斜線</strong>（<code>/v4/</code> 會 404）、<strong>開頭一定要 https</strong>（http 會被智譜拒絕）。這是 GLM 開放平台官方 OpenAI 相容端點；<strong>但是</strong>如果你後來加入的是「GLM Coding Plan」（月訂閱制的程式碼專用方案），端點會換成 <code>https://open.bigmodel.cn/api/coding/paas/v4</code>（中間多一段 <code>/coding</code>），別搞混了。本章先用一般開放平台這條。</p>
         </li>
         <li>
           <h3>apiKey 貼上上一章的金鑰</h3>
@@ -187,14 +187,14 @@
           <h3>加一個模型 entry：glm-4.6</h3>
           <p>下半段的 Models 區塊按「Add Model」，會多出一列欄位：</p>
           <ul>
-            <li><code>name</code>：填 <code>glm-4.6</code>（一字不差，這是 GLM 現在的旗艦模型）</li>
-            <li><code>contextWindow</code>：填 <code>200000</code>（GLM-4.6 的上下文窗口，代表一次對話能塞多少字進去，第 <a href="ch9_thinking_diff.html">9</a> 章會解釋這個數字的實際意義）</li>
+            <li><code>name</code>：填 <code>glm-4.6</code>（一字不差，這是 GLM 現在的旗艦模型；官方文件也常寫成 <code>GLM-4.6</code>，API 呼叫用小寫版本）</li>
+            <li><code>contextWindow</code>：填 <code>200000</code>（GLM-4.6 官方公告的上下文窗口是 200K，比前代 GLM-4.5 的 128K 有提升。代表一次對話能塞多少字進去，第 <a href="ch9_thinking_diff.html">9</a> 章會解釋這個數字的實際意義）</li>
           </ul>
-          <p>接下來滑到「進階（Advanced）」區塊，找到 <strong>thinkingFormat</strong> 欄位，下拉選 <code>zai</code>。這是告訴 Pi Agent「這家會回思考塊（reasoning block），格式用智譜（zhipu-ai／zai）的規格解析」。不設也能對話，只是你會看不到 AI 「內心話」，體驗差很多。</p>
-          <p>最後按表單底部的 <strong>Test</strong>。Pi Agent 會用你剛剛填的資料真的打一次 GLM，發一句「Hi」看能不能拿到回覆。等 3-5 秒，出現綠色勾勾（<span aria-label="check">✔</span>）就成功。按 Save 存起來，Models 面板關掉，這一章的動手部分就完成。</p>
+          <p>接下來滑到「進階（Advanced）」區塊，把 <strong>reasoning</strong> 打勾——這是告訴 Pi Agent「這顆模型會回思考塊（reasoning block），請把它顯示出來」。GLM-4.6 支援思考模式，勾了以後你會看到 AI 回答前先展開一段「內心話」；不勾也能對話，只是體驗差很多。<strong>不用</strong>去動 <code>deepSeekThinkingCompat</code> 那個開關（那是 DeepSeek R1 專用的相容 flag），也<strong>不用</strong>去動 <code>thinkingLevelMap</code>（那是 OpenAI o-series／Anthropic thinking 才需要的欄位）——GLM 走預設就好。</p>
+          <p>最後按表單底部的 <strong>Test</strong>。Pi Agent 會用你剛剛填的資料真的打一次 GLM，發一句短短的 ping 看能不能拿到回覆。第一次通常等 2-8 秒，出現綠色勾勾（<span aria-label="check">✔</span>）就成功。按 Save 存起來，Models 面板關掉，這一章的動手部分就完成。</p>
         </li>
       </ol>
-      <div class="callout tip"><strong>提示：</strong>Test 按下去大部分只等 3-5 秒。如果超過 15 秒都沒動靜，多半是網路卡住或 baseUrl 拼錯；直接看下一節的「Test 沒過怎麼辦」對照。</div>
+      <div class="callout tip"><strong>提示：</strong>Test 按下去正常會在 2-8 秒內回結果（第一次因為要建連線可能偏長，之後同一顆 provider 再測會快一點）。如果超過 15 秒都沒動靜，多半是網路卡住或 baseUrl 拼錯；直接看下一節的「Test 沒過怎麼辦」對照。</div>
     </section>
 
     <section id="troubleshoot" data-nav="Test 沒過怎麼辦">
@@ -265,7 +265,7 @@
       <h2 data-icon="security">金鑰存哪、備份怎麼帶</h2>
       <p>這是最多人第二個問的問題（第一個是「這個要多少錢」）。一次講完：</p>
       <ul>
-        <li><strong>金鑰在硬碟哪裡？</strong> <code>/data/pi-agent/models.json</code>，權限被鎖成 <code>600</code>（只有 root 讀得到）。這是 pi-web add-on 的 volume 掛載目錄，也是 HA snapshot 會備份的位置。</li>
+        <li><strong>金鑰在硬碟哪裡？</strong> <code>/data/pi-agent/models.json</code>。這是 pi-web add-on 的 persistent volume 掛載目錄，僅 add-on 容器內部（root）讀得到，也是 HA snapshot 會備份的位置。</li>
         <li><strong>會不會傳給 Woow？</strong> 不會。Pi Agent add-on 不會把 <code>models.json</code> 上傳到任何地方。它只在你打字問問題時，把「金鑰＋你這一句話」丟到 <code>baseUrl</code>（也就是 GLM 那邊），拿到回覆再顯示給你。</li>
         <li><strong>會不會出現在 add-on 記錄檔？</strong> 不會。<a href="appendix_provider_keys.html">附錄 B</a> 有提到，log_level 就算開到 <code>debug</code>，金鑰欄位在寫 log 前也會被 redact 成 <code>***</code>。</li>
         <li><strong>換 HA 主機怎麼辦？</strong> 建 snapshot（HA → 設定 → 系統 → 備份 → 建立備份）→ 把 <code>.tar</code> 檔搬到新主機 → Restore。金鑰＋所有對話一起回來，不用重申請。</li>
@@ -300,7 +300,7 @@
         <tbody>
           <tr>
             <td><strong>Edit</strong>（編輯）</td>
-            <td>重新打開這張表單，你可以改 baseUrl、換 apiKey、增減 models 清單、調 thinkingFormat</td>
+            <td>重新打開這張表單，你可以改 baseUrl、換 apiKey、增減 models 清單、切換 reasoning</td>
             <td>金鑰洩漏要換、GLM 出新模型（<code>glm-4.7</code>）要加、調整 contextWindow 上限</td>
           </tr>
           <tr>
@@ -321,24 +321,24 @@
         <div class="body">不會。整個流程是「你的瀏覽器 → 你家 HA 主機的 pi-web → GLM 官方端點（<code>open.bigmodel.cn</code>）」，中間沒有經過 Woow 的伺服器。add-on 本身也是開源的（MIT）——你可以自己去 GitHub 上讀 <code>pi-web-start.sh</code>、<code>models.json</code> 的處理邏輯，沒有任何一行程式碼會把金鑰上傳到外面。這也是「Bring Your Own Key」的核心承諾：鑰匙留在你家。</div>
       </details>
       <details class="faq">
-        <summary>一定要設 thinkingFormat 嗎？不設會怎樣？</summary>
-        <div class="body">不設也能用，回答一樣正確。差別只在對話介面——設了 <code>zai</code>，GLM 回覆前會多一個可以展開的「思考塊（reasoning block）」，你點開能看到它推理的過程，很像老師寫解題步驟；不設，那段思考會被吃掉，你只看到最後答案。<strong>建議一開始就設 <code>zai</code></strong>，看它怎麼想是最快學會怎麼問問題的方式，第 <a href="ch9_thinking_diff.html">9</a> 章會整章講怎麼讀思考塊。之後若嫌介面吵，隨時 Edit 拿掉。</div>
+        <summary>一定要打勾 reasoning 嗎？不打勾會怎樣？</summary>
+        <div class="body">不打勾也能用，回答一樣正確。差別只在對話介面——打勾以後 GLM 回覆前會多一個可以展開的「思考塊（reasoning block）」，你點開能看到它推理的過程，很像老師寫解題步驟；不打勾，那段思考會被吃掉，你只看到最後答案。<strong>建議一開始就打勾</strong>，看它怎麼想是最快學會怎麼問問題的方式，第 <a href="ch9_thinking_diff.html">9</a> 章會整章講怎麼讀思考塊。之後若嫌介面吵，隨時 Edit 拿掉。（旁邊的 <code>deepSeekThinkingCompat</code> 是 DeepSeek R1 專用的傳輸相容 flag、<code>thinkingLevelMap</code> 是 OpenAI o-series／Anthropic 才要填的等級對照——用 GLM 都不用碰。）</div>
       </details>
       <details class="faq">
         <summary>Models 面板改的東西存到哪個檔案？</summary>
-        <div class="body">存在 HA 主機的 <code>/data/pi-agent/models.json</code>，權限鎖 <code>600</code>。這是 pi-web add-on 的 persistent volume，HA snapshot 會一起備份走。你不用手動編這個 JSON，UI 存檔時 pi-web 會即時寫入。想看檔案內容可以用 File Editor add-on 打開，會看到一個 providers 陣列，每個元素長得像：<code>{"name":"GLM","baseUrl":"...","apiKey":"...","models":[...]}</code>。</div>
+        <div class="body">存在 HA 主機的 <code>/data/pi-agent/models.json</code>。這是 pi-web add-on 的 persistent volume，只有 add-on 內部（root）讀得到，HA snapshot 會一起備份走。你不用手動編這個 JSON，UI 存檔時 pi-web 會即時寫入。想看檔案內容可以用 File Editor add-on 打開，會看到一個 <code>providers</code> 物件（key 是你取的 provider 名字），每個 provider 底下有 <code>baseUrl</code>／<code>api</code>／<code>apiKey</code>／<code>models[]</code> 這幾個欄位——跟 UI 上表單一對一。</div>
       </details>
       <details class="faq">
         <summary>同一個 provider 可以塞很多不同的模型嗎？</summary>
-        <div class="body">可以。Models 面板編輯 provider 時，Models 區塊按 <strong>Add Model</strong> 就多一列。GLM 你可以同時加 <code>glm-4.6</code>（旗艦，會思考、貴一點）、<code>glm-4-air</code>（輕量版，便宜快）、<code>glm-4-flashx</code>（極速版，適合日常閒聊）。三個共用同一支 apiKey，對話下拉會顯示 <code>GLM ／ glm-4.6</code>、<code>GLM ／ glm-4-air</code>、<code>GLM ／ glm-4-flashx</code> 三個選項——想省錢用便宜的、想思考用旗艦的。第 <a href="ch13_switch_model.html">13</a> 章會示範怎麼一句話切換。</div>
+        <div class="body">可以。Models 面板編輯 provider 時，Models 區塊按 <strong>Add Model</strong> 就多一列。GLM 目前線上可用的常見文字模型（2026 年 8 月官方目錄）：<code>glm-4.6</code>（最新旗艦，會思考、200K 上下文）、<code>glm-4.5</code>（前代旗艦，128K）、<code>glm-4.5-air</code>（中量、平價）、<code>glm-4.5-airx</code>（air 的加速版）、<code>glm-4.5-x</code>（旗艦加速版）、<code>glm-4.5-flash</code>（輕量、目前免費）。三個共用同一支 apiKey，對話下拉會顯示 <code>GLM ／ glm-4.6</code>、<code>GLM ／ glm-4.5-air</code> 這樣並列——想省錢用 <code>-flash</code>／<code>-air</code>、想思考用 <code>glm-4.6</code>。名字要用 GLM 官方目錄上的字串（在 <code>docs.bigmodel.cn</code> 找得到），別自己拼；第 <a href="ch13_switch_model.html">13</a> 章會示範怎麼一句話切換。</div>
       </details>
       <details class="faq">
         <summary>API mode 有這麼多選項，我怎麼知道哪家配哪個？</summary>
-        <div class="body">記三個大原則：GLM／DeepSeek／Groq／OpenRouter／MiniMax 都是「相容 OpenAI 格式」的，選 <code>openai-completions</code>；Anthropic Claude 自己一套，選 <code>anthropic-messages</code>；OpenAI 官方也選 <code>openai-completions</code>。<a href="appendix_provider_keys.html">附錄 B</a> 有七家 provider 一家一頁的完整對照，包含每家的 baseUrl、API mode、常見模型名，你之後照著抄就對了。</div>
+        <div class="body">下拉一共四個：<code>openai-completions</code>、<code>openai-responses</code>、<code>anthropic-messages</code>、<code>google-generative-ai</code>。三個大原則：GLM／DeepSeek／Groq／OpenRouter／MiniMax／Moonshot／Qwen 都是「相容 OpenAI Chat Completions」的，選 <code>openai-completions</code>；Anthropic Claude 自己一套，選 <code>anthropic-messages</code>；Google Gemini 選 <code>google-generative-ai</code>；<code>openai-responses</code> 只有 OpenAI 官方新式端點（如 GPT-5、o-series）才用得到。<a href="appendix_provider_keys.html">附錄 B</a> 有七家 provider 一家一頁的完整對照。</div>
       </details>
       <details class="faq">
         <summary>我可以直接手動編 <code>models.json</code> 嗎？</summary>
-        <div class="body">可以，但不建議。你要用 File Editor 打開、改 JSON、存檔，然後刷新 pi-web 頁面才會生效。手動編最容易踩兩個坑：（1）JSON 逗號漏掉／多一個，整個檔案壞掉，pi-web 就打不開了；（2）權限被你改動變成 <code>644</code>，下次 add-on 重啟會被自動修回 <code>600</code>——這個沒事，只是 pi-web 有個 chmod loop。所以能用 UI 就用 UI，除非你要一次批次改 20 個 provider（那種情境去看第 <a href="appendix_internals.html">附錄 C</a> 的內部結構）。</div>
+        <div class="body">可以，但不建議。你要用 File Editor 打開、改 JSON、存檔，然後刷新 pi-web 頁面才會生效。手動編最容易踩的坑就是 JSON 逗號漏掉／多一個，整個檔案壞掉，pi-web 面板一打開就空的、log 會噴 parse error。所以能用 UI 就用 UI；除非你要一次批次改 20 個 provider（那種情境去看第 <a href="appendix_internals.html">附錄 C</a> 的內部結構）。</div>
       </details>
       <details class="faq">
         <summary>金鑰不見了、後台也刪掉了、還有救嗎？</summary>
@@ -346,7 +346,7 @@
       </details>
       <details class="faq">
         <summary>Test 綠燈，可是我還沒付錢，這樣會被扣款嗎？</summary>
-        <div class="body">Test 這一下確實會消耗你的 GLM 額度——它是真的送一句 ping 到 GLM 拿回覆才判斷成功的。但這句話只有幾個 token，用 <code>glm-4.6</code> 大概花你 0.001 元台幣，可以忽略。GLM 新戶通常送幾千 tokens 或幾十塊人民幣的免費額度，Test 完你儲值頁的餘額幾乎不會動。真的擔心可以先加一個便宜模型（<code>glm-4-flashx</code>）Test，那個一次不到 0.0001 元。</div>
+        <div class="body">Test 這一下確實會消耗你的 GLM 額度——它是真的送一句短短的 ping 到 GLM 拿回覆才判斷成功的。但這句話只有幾個 token，用 <code>glm-4.6</code> 大概花你不到 0.01 元台幣，可以忽略。GLM 新戶註冊會送一批免費額度（實際數字以官網當下公告為準，歷史上通常足夠測試個幾百次），Test 完你儲值頁的餘額幾乎不會動。真的擔心可以先加一個免費／輕量模型（<code>glm-4.5-flash</code>）Test，那個目前在 GLM 是免費層。</div>
       </details>
     </section>
 

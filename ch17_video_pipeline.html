@@ -97,7 +97,7 @@
       <h2 data-icon="why">為什麼要用這條影片管線</h2>
       <p>先講一個很現實的痛點：<strong>你有想分享的東西，但影片沒人看你不會做</strong>。</p>
       <p>家裡買了一台新的掃地機器人，你想拍個開箱給朋友或 Line 群分享——但你要剪片、要配音、要打字幕，光學 CapCut 就先勸退你三小時。想錄一段「HA 儀表板一鍵離家自動化」給老爸看，你要一邊操作、一邊講、一邊怕手抖，錄五次都不順。想給小孩錄一支「怎麼用平板控制客廳燈」的教學，字幕還要自己聽打——直接放棄。</p>
-      <p>Pi Agent 的 <strong>pitch_video 管線（video pipeline）</strong>就是為這個痛點設計的。你只要用白話跟 AI 講「我要什麼樣的影片、多長、給誰看」，管線背後會依序做這些事：</p>
+      <p>Pi Agent 內建的<strong>影片管線（video pipeline）</strong>就是為這個痛點設計的——底層工具（ffmpeg、Playwright-Chromium、edge-tts、rclone）由 add-on 內建，實際「把它們串起來」是靠一支 skill 出面（社群通稱 pitch_video 或 pi-video 這類名字，實際 slug 依你安裝的版本為準——見<a href="ch15_install_skill.html">第 15 章</a>）。你只要用白話跟 AI 講「我要什麼樣的影片、多長、給誰看」，管線背後會依序做這些事：</p>
       <ul>
         <li><strong>AI 幫你寫腳本</strong>——分成開場、主體、收尾，每一段幾秒都算好。</li>
         <li><strong>免費 TTS 幫你配音</strong>——用微軟的 edge-tts 引擎，繁中男聲女聲都有，念得很自然。</li>
@@ -137,8 +137,8 @@
           </tr>
           <tr>
             <td><strong>4. 對齊字幕</strong></td>
-            <td>依配音時間軸產生 SRT 字幕檔（每一行對應到幾秒到幾秒）</td>
-            <td>edge-tts 的時間戳輸出</td>
+            <td>依配音的每字時間戳（word boundary）產生 SRT 字幕檔（每一行對應到幾秒到幾秒）</td>
+            <td>edge-tts 的 <code>SubMaker</code>（word boundary event → SRT）</td>
             <td>幾秒</td>
           </tr>
           <tr>
@@ -161,46 +161,37 @@
 
     <section id="what" data-nav="為什麼要 720MB">
       <h2 data-icon="what">為什麼首次啟動要下載 720 MB</h2>
-      <p>你可能已經注意到，Pi Agent 剛裝完（<a href="ch2_install.html">第 2 章</a>）只有幾十 MB。但當你第一次觸發 pitch_video 管線，它會安靜下載大約 <strong>720 MB</strong> 的東西——這對用 100M 家用網路的人大概是 1-2 分鐘的事，對用 4G 熱點的可能就有感了。這些東西具體是什麼？</p>
+      <p>你可能已經注意到，Pi Agent 剛裝完（<a href="ch2_install.html">第 2 章</a>）只有幾十 MB。但當你第一次啟動 add-on，它會在背景下載大約 <strong>600-720 MB</strong> 的東西——這對用 100M 家用網路的人大概是 1-2 分鐘的事，對用 4G 熱點的可能就有感了。<strong>先把一個常見誤解講清楚</strong>：這 720 MB <strong>不是</strong>觸發影片管線才下載，而是 add-on 首次啟動 <code>video-tools-init</code> 就會在背景抓；且這 720 MB 也<strong>不是</strong>整條管線的全部工具，是「下載到 <code>/data/pi-agent/</code> 這顆 volume 的那一半」。另一半（ffmpeg、libass、字型、rclone）早就烤進 add-on 的容器映像檔裡，你「下載映像檔」那 300 MB 就順便拉下來了。</p>
       <table class="data-table">
         <thead>
-          <tr><th>下載的東西</th><th>用來做什麼</th><th>大約大小</th></tr>
+          <tr><th>下載到 volume 的東西</th><th>用來做什麼</th><th>大約大小</th></tr>
         </thead>
         <tbody>
           <tr>
-            <td><strong>Chromium 瀏覽器</strong></td>
-            <td>Playwright 拿來錄畫面用；它需要一個「跑起來但看不到視窗」的瀏覽器</td>
-            <td>約 200 MB</td>
+            <td><strong>Chromium 瀏覽器（Playwright 版）</strong></td>
+            <td>Playwright 拿來錄畫面；它需要一個「跑起來但看不到視窗」的瀏覽器。這一塊佔絕大多數。</td>
+            <td>約 500-600 MB</td>
           </tr>
           <tr>
-            <td><strong>Playwright 本體與相依函式庫</strong></td>
-            <td>控制 Chromium 的自動化工具（點按鈕、輸入文字、截圖）</td>
-            <td>約 100 MB</td>
-          </tr>
-          <tr>
-            <td><strong>edge-tts Python 套件與虛擬環境（venv）</strong></td>
-            <td>叫用微軟免費 TTS 產生配音</td>
-            <td>約 50 MB</td>
-          </tr>
-          <tr>
-            <td><strong>ffmpeg + libass + 濾鏡</strong></td>
-            <td>剪接、加轉場、燒字幕的核心工具</td>
-            <td>約 250 MB（含各種編碼器與字幕引擎）</td>
-          </tr>
-          <tr>
-            <td><strong>rclone 二進位檔</strong></td>
-            <td>推到 Google Drive、Dropbox、OneDrive 等雲端</td>
-            <td>約 50 MB</td>
-          </tr>
-          <tr>
-            <td><strong>繁中字型（Noto Sans CJK 之類）</strong></td>
-            <td>字幕燒錄時繁中不變亂碼、不變豆腐</td>
-            <td>約 70 MB</td>
+            <td><strong>Python venv + 4 個套件</strong></td>
+            <td>虛擬環境加上 <code>playwright</code>（Python 端控制程式）、<code>edge-tts</code>（TTS 配音）、<code>pyyaml</code>（讀腳本檔）、<code>mutagen</code>（讀音檔長度）</td>
+            <td>約 40-60 MB</td>
           </tr>
         </tbody>
       </table>
-      <p>合計約 720 MB。<strong>這些不是 Pi Agent 平常會佔的空間</strong>——你如果從頭到尾都不做影片，這 720 MB 永遠不會下載，Pi Agent 本體依舊小小的。這叫「懶載入（lazy load）」——用到才裝。</p>
-      <div class="callout warn"><strong>注意：</strong>首次啟動的下載細節（觸發時機、進度提示、失敗怎麼辦、要不要重來）第 18 章專章講。這章你只要知道「有這回事、佔 720 MB、下一次就不用再下」就好。</div>
+      <p>合計就是常聽到的「約 720 MB」——實際落在 600-720 MB 之間，看 Playwright 版本跟 pip 依賴而定。<strong>底下這些不會另外下載，它們是映像檔的一部分</strong>：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>已烤進映像檔的工具</th><th>用來做什麼</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>ffmpeg + libass</strong></td><td>剪接、加 xfade 轉場、燒字幕的核心工具</td></tr>
+          <tr><td><strong>fonts-noto-cjk / fonts-noto-color-emoji / fontconfig</strong></td><td>字幕燒錄時繁中不變豆腐、彩色 emoji 能顯示</td></tr>
+          <tr><td><strong>rclone</strong></td><td>推到 Google Drive、Dropbox、OneDrive 等雲端</td></tr>
+        </tbody>
+      </table>
+      <p><strong>「未安裝 pi-agent 就永遠不佔這 720 MB」</strong>——這句話成立；但一旦你啟動了 add-on，即使不做影片這 720 MB 也會下載到 volume（目前沒有「純聊天模式」開關）。詳情第 18 章講。</p>
+      <div class="callout warn"><strong>注意：</strong>首次啟動的下載細節（觸發時機、進度提示、失敗怎麼辦、要不要重來）第 18 章專章講。這章你只要知道「有這回事、佔 600-720 MB、下一次就不用再下」就好。</div>
     </section>
 
     <section id="assign" data-nav="典型用途">
@@ -305,7 +296,7 @@
           </tr>
         </tbody>
       </table>
-      <div class="callout warn"><strong>誠實原則：</strong>影片是 AI 產生的，別假裝是你辛苦剪的。<strong>YouTube 已經開始要求 AI 生成內容要標示</strong>（相關規則叫「合成／變造內容揭露」），Facebook、Threads、TikTok 都有類似規定。標一句「本影片由 AI 協助製作」不會扣分，反而顯得你誠實。假裝是真人剪的被抓到（現在有工具偵測 AI 語音）掉粉更慘。</div>
+      <div class="callout warn"><strong>誠實原則（把 YouTube 規則講清楚）：</strong>YouTube 2024 起的 <em>Altered / Synthetic content</em> 揭露規則，<strong>強制</strong>揭露的其實是「<strong>會讓觀眾誤以為是真實事件</strong>」的內容——像換臉、把真人聲音合成成他沒講過的話、竄改真實事件的畫面。YouTube 明確<strong>把「AI 幫你寫腳本、自動字幕、寫大綱」這類生產力用途排除在強制揭露之外</strong>；純機器 TTS 配自己的 dashboard 畫面通常也不落在強制揭露範圍。<strong>但這不代表可以隱瞞</strong>——TikTok / Meta（Facebook、Threads / Instagram）的規則不同，且觀眾看得出來就是看得出來。<strong>建議做法</strong>：影片描述加一句「本影片旁白由 AI 語音（Microsoft edge-tts）生成、腳本由 AI 協助撰寫」，一秒鐘寫完，各平台通吃、不會被判違規也不用擔心誤導。</div>
     </section>
 
     <section id="steps" data-nav="跑第一支影片">
@@ -342,7 +333,7 @@
 
     <section id="records" data-nav="成品跟中間檔">
       <h2 data-icon="records">成品跟中間檔案放在哪、可以拿來幹嘛</h2>
-      <p>管線跑完不只給你一支 MP4，還會留下一堆<strong>中間檔案</strong>——這些是你的資產，之後可以編輯、可以再剪、可以獨立用。全部放在 <code>/data/pi-agent/projects/&lt;專案名&gt;/</code> 底下，結構大致像這樣：</p>
+      <p>管線跑完不只給你一支 MP4，還會留下一堆<strong>中間檔案</strong>——這些是你的資產，之後可以編輯、可以再剪、可以獨立用。全部放在 <code>/data/pi-agent/projects/&lt;專案名&gt;/</code> 底下（<code>projects/</code> 目錄由 add-on 首次啟動時建立，這一點可以直接進 File editor 驗證）。以下的檔名與副檔名是社群 pitch_video skill 的<strong>典型佈局</strong>（<code>webm</code>/<code>wav</code>/<code>srt</code> 等副檔名跟 Playwright、edge-tts、ffmpeg 的預設輸出一致）；你裝到的版本、或改過設定，可能略有不同——實際以你資料夾裡看到的為準：</p>
       <table class="data-table">
         <thead>
           <tr><th>檔案</th><th>是什麼</th><th>能拿來做什麼</th></tr>
@@ -432,7 +423,7 @@
           <tr>
             <td><strong>AI 寫腳本</strong></td>
             <td>你在<a href="ch5_first_key.html">第 5 章</a>接的 provider</td>
-            <td>用 GLM-4.6 或 DeepSeek-R1：NT$ 1-3；用 Claude Sonnet：NT$ 3-8</td>
+            <td>用 GLM-4.6 或 DeepSeek-R1：NT$ 0.1-1；用 Claude Sonnet：NT$ 1-4（一支 90 秒影片腳本大約 1-3K tokens，實際依你反覆改幾次而定；價目換算見<a href="ch10_why_multi.html">第 10 章</a>）</td>
           </tr>
           <tr>
             <td><strong>TTS 配音</strong></td>
@@ -451,8 +442,8 @@
           </tr>
           <tr>
             <td><strong>Google Drive 上傳</strong></td>
-            <td>rclone 免費、Google Drive 給你 15 GB 免費配額</td>
-            <td>0 元（除非你 15 GB 用完想升級到 Google One，那是月費 65 元起跳）</td>
+            <td>rclone 免費、Google 帳號有 15 GB 免費配額（Gmail/Drive/Photos 共用；<strong>2026 年 5 月起，部分地區新開的帳號初始只有 5 GB，要驗證手機號碼才解鎖 15 GB</strong>——舊帳號不受影響）</td>
+            <td>0 元（除非配額用完想升級到 Google One，台灣月費 65 元起跳）</td>
           </tr>
           <tr>
             <td><strong>電費</strong></td>
@@ -461,7 +452,7 @@
           </tr>
         </tbody>
       </table>
-      <p>加起來一支 90 秒影片<strong>約 2 到 8 塊台幣</strong>，主要是腳本那次 AI 呼叫。想再省？用便宜的 provider（GLM-Flash）寫腳本，一支不到 1 塊；但腳本會弱一點，取捨看你。</p>
+      <p>加起來一支 90 秒影片<strong>大概 0.5 到 4 塊台幣</strong>（幾乎只是腳本那次 AI 呼叫）。想再省？用便宜的 provider（GLM-Flash）寫腳本，一支不到 1 毛；但腳本會弱一點，取捨看你。</p>
       <div class="callout"><strong>觀念：</strong>市面上有 AI 影片產生服務（Synthesia、HeyGen、Pictory）月費動輒 800-3000 塊台幣，才能做這條管線在做的事——而且畫面是他們選的模板，不能任意錄你自己的 HA 儀表板。<strong>你自己用 pitch_video 一個月做 30 支影片可能不到 100 塊</strong>，還沒外部服務被鎖定的問題。這是「自建管線」對「訂閱雲端」的典型優勢。</div>
     </section>
 
@@ -477,7 +468,7 @@
         <li><strong>轉場長度</strong>：xfade 濾鏡預設 0.5 秒。想快剪改 0.2；想電影感改 1 秒。</li>
         <li><strong>字幕位置</strong>：預設下方置中。可改上方、左下、大字置中等等（走 libass 的 ASS 樣式）。</li>
       </ul>
-      <p>這些全部在 pitch_video skill 的 config 檔裡調（安裝在 <code>/data/pi-agent/skills/pitch_video/</code> 底下），用 File Editor add-on 打開改存檔就生效。<strong>強烈建議先跑三、五支影片熟悉再動</strong>——不然改到什麼會崩你不知道，一崩你也不知道回哪個版本。</p>
+      <p>這些全部在你裝的影片 skill 的設定檔裡調（安裝在 <code>/data/pi-agent/skills/&lt;skill 名稱&gt;/</code> 底下，設定檔通常是 <code>config.yaml</code> 或 <code>SKILL.md</code> 內的 YAML frontmatter，實際看該 skill 的 README），用 File Editor add-on 打開改存檔就生效。<strong>強烈建議先跑三、五支影片熟悉再動</strong>——不然改到什麼會崩你不知道，一崩你也不知道回哪個版本。</p>
       <div class="callout warn"><strong>注意：</strong>skill 內部細節（YAML 結構、ffmpeg 完整參數、Playwright 選擇器）不是這系列教學的範圍。你如果想深入客製，去看 pitch_video 的 <code>README.md</code> 與範例 config；那已經算「開發者領域」，跟這本書的定位不同。</div>
     </section>
 
@@ -490,11 +481,11 @@
         </li>
         <li>
           <h3>錄出來的畫面是黑色的、或整支影片沒有畫面</h3>
-          <p>Playwright 環境沒裝好。這是最常見的第 18 章卡關——首次啟動下載一半斷線、Chromium 沒解壓完、缺共用函式庫。<strong>解法：回<a href="ch18_video_tools.html">第 18 章</a>的「重新觸發下載」段落</strong>，把 <code>/data/pi-agent/tools/chromium/</code> 刪掉，讓管線下次執行時自動重新下載。第 18 章有完整重來的指令。</p>
+          <p>Playwright 環境沒裝好。這是最常見的第 18 章卡關——首次啟動下載一半斷線、Chromium 沒解壓完、缺共用函式庫。<strong>解法：回<a href="ch18_video_tools.html">第 18 章</a>的「重新觸發下載」段落</strong>，把 <code>/data/pi-agent/playwright-cache/</code>（Playwright 下載 Chromium 的位置）跟 sentinel 檔 <code>/data/pi-agent/.video-tools-installed</code> 一起刪掉，重啟 add-on 就會重新裝一次。</p>
         </li>
         <li>
-          <h3>成品有畫面有配音，但沒字幕、或字幕是問號</h3>
-          <p>兩種可能：（a）SRT 沒有被 ffmpeg 燒進去——回 pitch_video skill 的 config 看 <code>subtitles.enabled</code> 是不是 <code>true</code>；（b）字幕燒進去了但字型缺——這是 720 MB 下載沒抓到 Noto Sans CJK 或系統找不到，畫面就變豆腐/問號。<strong>解法：確認第 18 章的字型下載</strong>；或用 File Editor 打開 skill config，把 <code>subtitle_font</code> 改成系統一定有的字型（例如 <code>DejaVu Sans</code>，缺點是不支援繁中）。</p>
+          <h3>成品有畫面有配音，但沒字幕、或字幕是豆腐/問號</h3>
+          <p>兩種可能：（a）SRT 沒有被 ffmpeg 燒進去——去 skill 的設定檔看有沒有「字幕/subtitle/burn」相關開關（實際欄位名依 skill 版本，看 SKILL.md）；（b）字幕燒進去了但字型缺——這條 add-on 的 <code>fonts-noto-cjk</code> 是烤在映像檔裡的，理論上不會缺；如果 ffmpeg 報找不到字型，通常是 skill 指定了非預設字型檔路徑而該檔不存在。<strong>解法</strong>：把 skill 設定裡的字型改回 <code>Noto Sans CJK TC</code>，或先跑 <code>fc-list :lang=zh-tw</code>（在 ttyd 終端）確認系統認得哪些繁中字型。</p>
         </li>
         <li>
           <h3>成品做完了，Google Drive 沒收到</h3>
@@ -531,7 +522,7 @@
       </details>
       <details class="faq">
         <summary>我可以只用管線做配音，不要影片嗎？（Podcast 用途）</summary>
-        <div class="body">可以，但 pitch_video 本來就是「影片」導向。想做 Podcast 建議<strong>直接叫 edge-tts</strong>——這個工具本身能單獨用（第 18 章會提到 <code>/data/pi-agent/tools/edge-tts/</code> 底下的 venv），你寫個 script 給它腳本檔就吐 MP3。或者你就跑 pitch_video 一次，拿產物 <code>voice/</code> 資料夾底下的音檔用就好，剪接階段的畫面成品當作副產物丟掉。<strong>未來版本可能會出 pitch_podcast 這種專門的 skill</strong>，等一下 pi-agent 官方 changelog。</div>
+        <div class="body">可以，但這條影片 skill 本來就是「影片」導向。想做 Podcast 建議<strong>直接叫 edge-tts</strong>——這個工具本身能單獨用；在 ttyd 終端跑 <code>/data/pi-agent/venv/bin/edge-tts --voice zh-TW-HsiaoChenNeural --text "你的稿" --write-media out.mp3</code> 就吐一段 MP3。或者你就跑影片 skill 一次，拿產物裡的音檔用就好，剪接階段的畫面成品當副產物丟掉。<strong>未來 pi-agent 生態可能會出專門的 podcast skill</strong>，關注官方 changelog。</div>
       </details>
       <details class="faq">
         <summary>做出來的影片可以直接上 YouTube 賺錢嗎？</summary>
@@ -551,7 +542,7 @@
       </details>
       <details class="faq">
         <summary>如果我改壞了 skill config，怎麼還原？</summary>
-        <div class="body">最保險：<strong>改前先備份 config 檔</strong>（用 File Editor 開檔 → 另存成 <code>config.yaml.bak</code>）。壞了直接把 <code>.bak</code> 改回去。<strong>如果連 .bak 也忘了</strong>：pitch_video skill 通常在它自己的 GitHub 或 Pi Agent 資源包裡有預設 <code>config.default.yaml</code>，可以照抄回去。實在都沒了就把整個 <code>/data/pi-agent/skills/pitch_video/</code> 刪掉，用<a href="ch15_install_skill.html">第 15 章</a>的方法重裝一次——resource 大約 1MB，重裝很快，只是你要重新設一些偏好。</div>
+        <div class="body">最保險：<strong>改前先備份設定檔</strong>（用 File Editor 開檔 → 另存 <code>.bak</code>）。壞了直接把 <code>.bak</code> 改回去。<strong>如果連 .bak 也忘了</strong>：多數 skill 會在自己的 repo 附一份預設設定（檔名常見的有 <code>config.yaml</code> / <code>config.default.yaml</code> / <code>SKILL.md</code> 內嵌範例，實際看你裝的版本），照原檔抄回去即可。實在都沒了就把整個 <code>/data/pi-agent/skills/&lt;skill 名稱&gt;/</code> 刪掉，用<a href="ch15_install_skill.html">第 15 章</a>的方法重裝一次——skill 本體通常只有幾 MB，重裝很快，只是你要重新設一些偏好。</div>
       </details>
     </section>
 

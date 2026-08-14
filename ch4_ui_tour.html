@@ -71,9 +71,9 @@
       <a href="#steps">五個區塊逐一認識</a>
       <a href="#modes">模型下拉細節</a>
       <a href="#records">Session 三件事</a>
-      <a href="#tabs">右上四個面板</a>
+      <a href="#tabs">右上幾個面板</a>
       <a href="#ai">對話串三種特殊塊</a>
-      <a href="#advanced">Settings 有什麼</a>
+      <a href="#advanced">Settings 分佈在哪</a>
       <a href="#troubleshoot">常見卡關</a>
       <a href="#faq">常見問題</a>
     </div>
@@ -128,14 +128,14 @@
         <tbody>
           <tr><td>左邊直欄</td><td>Session 歷史（過去每一次對話）</td><td>要接續之前聊到一半的話題</td></tr>
           <tr><td>中間主區</td><td>對話串（上）＋ 打字區 composer（下）</td><td>絕大部分時間都在這</td></tr>
-          <tr><td>右上工具列</td><td>面板切換（Models／Skills／System prompt／Settings）</td><td>要換模型、裝技能、看設定時</td></tr>
+          <tr><td>右上工具列</td><td>面板切換（Models／Skills／Plugins／System 等；實際數量與外觀依 pi-web 版本而定）</td><td>要換模型、裝技能、看目前 system prompt 時</td></tr>
         </tbody>
       </table>
       <p>右上還有一顆你的頭像／字母圖示——那是 HA 傳過來的登入身份（第 3 章有講）。看到你自己的字母，就代表 Ingress cookie 有跟上。</p>
       <div class="callout warn"><strong>注意：</strong>「面板（panel）」在 pi-web 裡是指「跳出來的一個抽屜視窗」，跟 HA 側邊欄那個「Panel」是不同東西，別搞混。以下講到 panel 都是指 pi-web 的抽屜。</div>
       <figure class="shot">
         <img src="assets/screenshots/ch4/01_workspace.png" alt="Pi Agent 主工作區" />
-        <figcaption><strong>圖 4-1</strong>Pi Agent 主工作區：左邊 Session 歷史、中間對話串加 composer、右上工具列切換 Models／Skills／System prompt／Settings。</figcaption>
+        <figcaption><strong>圖 4-1</strong>Pi Agent 主工作區：左邊 Session 歷史、中間對話串加 composer、右上工具列可切到 Models／Skills／Plugins／System（面板組合會隨 pi-web 版本略有調整）。</figcaption>
       </figure>
     </section>
 
@@ -160,11 +160,11 @@
           <p>剛裝好一片空白。之後 AI 回應、思考塊、工具卡、diff（修改對照）通通會出現在這。頁面會自動往下滾，最新的訊息在最下面，最上面是這次對話的第一則。</p>
         </li>
         <li>
-          <h3>把右上四個面板按鈕都認一遍（先別點）</h3>
-          <p>由左至右通常是：<strong>Models</strong>（模型與金鑰管理）、<strong>Skills</strong>（技能包管理）、<strong>System prompt</strong>（唯讀，看目前這 session 讀了哪些指示）、<strong>Settings</strong>（進階設定，日常不用碰）。滑鼠移上去會出現 tooltip 提示名稱。</p>
+          <h3>把右上那排面板按鈕都認一遍（先別點）</h3>
+          <p>常見的幾顆是：<strong>Models</strong>（模型與金鑰管理）、<strong>Skills</strong>（技能包管理）、<strong>Plugins</strong>（擴充外掛，日常不用碰）、<strong>System</strong>（唯讀，看目前這 session 的 system prompt 內容）。另外還有語言切換與 session 統計等小按鈕。實際數量、順序、圖示會隨 pi-web 版本改變，這裡不列固定圖示位置；滑鼠移上去多半會看到 aria-label 或提示字。</p>
         </li>
       </ol>
-      <div class="callout tip"><strong>省時提示：</strong>五個區塊全部認完了嗎？下次別人問你「Models 面板在哪」，你要能立刻指著右上說「這一顆」——這就是這一章的目標。</div>
+      <div class="callout tip"><strong>省時提示：</strong>五個區塊都掃過了嗎？下次別人問你「Models 面板在哪」，你要能立刻指著右上說「大概這一區」——這就是這一章的目標。細部按鈕位置以你當下 pi-web 版本為準。</div>
     </section>
 
     <section id="modes" data-nav="模型下拉細節">
@@ -191,22 +191,22 @@
       <ol class="steps">
         <li>
           <h3>檔案存在哪</h3>
-          <p>每個 session 是一個 <code>.jsonl</code> 檔（每行一則訊息的 JSON），位置在 add-on 的 <code>/data/pi-agent/sessions/&lt;工作目錄的編碼&gt;/&lt;時間戳&gt;_&lt;uuid&gt;.jsonl</code>。你不用手動去讀它，但要知道「session 是可以被搬走／備份的檔案」。</p>
+          <p>每個 session 是一個 <code>.jsonl</code> 檔（每行一則訊息的 JSON）。pi-web 上游的預設路徑是 <code>~/.pi/agent/sessions/&lt;encoded-cwd&gt;/&lt;timestamp&gt;_&lt;uuid&gt;.jsonl</code>；Woow 這顆 add-on 把 <code>HOME</code> 導到 <code>/data/pi-agent/home</code>，所以實際位置會落在 <code>/data/pi-agent/sessions/…</code> 下（也就是 add-on 的持久儲存區，被 HA snapshot 帶走）。你不用手動去讀，只要知道「session 是可以被搬走／備份的檔案」就行。</p>
         </li>
         <li>
           <h3>每個 Session 帶自己的快照</h3>
           <p>你在 session 一開始選了 GLM，之後就算換去別的 session 用 OpenRouter，回到這個 session 它還是記得原本用 GLM。skills（技能）也是類似的邏輯：session 開頭裝了什麼 skill，就吃那份清單。</p>
         </li>
         <li>
-          <h3>每一列右邊的三點選單能做什麼</h3>
-          <p>把游標移到某一列，右邊會冒出 <strong>⋮</strong>（三點選單）。點開常見選項：<strong>Rename</strong>（重新命名，讓你之後找得到這則對話）、<strong>Duplicate</strong>（複製一份繼續改）、<strong>Export</strong>（匯出成檔案）、<strong>Delete</strong>（刪除，會問你一次）。</p>
+          <h3>每一列右邊的操作按鈕能做什麼</h3>
+          <p>把游標移到某一列，右邊會冒出小按鈕（不同版本外觀可能是文字按鈕，也可能是 <strong>⋮</strong> 收合選單）。目前 pi-web 上游至少會提供 <strong>Rename</strong>（重新命名，讓你之後找得到這則對話）和 <strong>Delete</strong>（刪除；<kbd>Shift</kbd>+點按可跳過確認）兩項；<strong>Export</strong>／<strong>Duplicate</strong> 這類進階動作有些下游整合（例如 Electron 包裝）才會補上，Woow HA add-on 版目前沒有另外掛。想搬走某則對話，最保險是直接複製上一段講的 <code>.jsonl</code> 檔案。</p>
         </li>
       </ol>
     </section>
 
-    <section id="tabs" data-nav="右上四個面板">
-      <h2 data-icon="tabs">右上四個面板入口是幹嘛的</h2>
-      <p>右上工具列那幾顆按鈕，每一顆點下去會從右邊滑出一個抽屜（panel）。這章先講「這是什麼、什麼時候會用」，操作細節在後面的章節：</p>
+    <section id="tabs" data-nav="右上幾個面板">
+      <h2 data-icon="tabs">右上那幾個面板入口是幹嘛的</h2>
+      <p>右上工具列那幾顆按鈕，每一顆點下去會從右邊滑出一個抽屜（panel）或彈出視窗（modal）。這章先講「這是什麼、什麼時候會用」，操作細節在後面的章節：</p>
       <table class="data-table">
         <thead>
           <tr><th>面板名</th><th>做什麼</th><th>哪一章細講</th></tr>
@@ -214,11 +214,13 @@
         <tbody>
           <tr><td><strong>Models</strong>（模型）</td><td>加 provider、貼 API key、按 Test 測連線、切換預設模型</td><td><a href="ch6_paste_key.html">第 6 章</a></td></tr>
           <tr><td><strong>Skills</strong>（技能）</td><td>從 GitHub 網址或 <code>owner/repo</code> 縮寫裝技能包，讓 AI 學新招</td><td>第 14–15 章</td></tr>
-          <tr><td><strong>System prompt</strong>（系統提示）</td><td>唯讀，攤開來看目前這個 session 讀了哪些技能、哪些指示</td><td>第 9 章</td></tr>
-          <tr><td><strong>Settings</strong>（設定）</td><td>語言切換（英/簡中）、字體大小、鍵位、進階選項</td><td>本章下段簡介</td></tr>
+          <tr><td><strong>Plugins</strong>（外掛）</td><td>掛擴充；日常不用碰</td><td>—</td></tr>
+          <tr><td><strong>System</strong>（系統提示）</td><td>唯讀，攤開來看目前這個 session 的 system prompt（含載入了哪些 skill 的敘述）</td><td>第 9 章</td></tr>
+          <tr><td>語言切換（top bar）</td><td>目前只有英文與簡體中文兩種</td><td>本章</td></tr>
         </tbody>
       </table>
-      <div class="callout"><strong>觀念：</strong>四個面板<strong>不是四個頁面</strong>——你不會離開對話。它們是「從右邊滑出來蓋在對話上」的抽屜，關掉之後對話還在原本的位置。</div>
+      <div class="callout"><strong>觀念：</strong>這些入口<strong>不是把你切到另一個頁面</strong>——你不會離開對話。它們是抽屜或 modal，關掉之後對話還在原本的位置。</div>
+      <div class="callout warn"><strong>注意：</strong>pi-web 目前<strong>沒有一顆叫「Settings」的主面板</strong>——這章早期版本這樣寫是錯的。語言在 top bar 直接切、模型的細部參數在 Models 面板內每個 model 的「Advanced settings」區塊改、進階容器層設定則在 HA 的 add-on Configuration 分頁。下面「Settings 有什麼」那段講的是「上面這些設定分別在哪」，不是一個叫 Settings 的抽屜。</div>
     </section>
 
     <section id="ai" data-nav="對話串三種特殊塊">
@@ -237,17 +239,17 @@
       <div class="callout tip"><strong>看得懂三種塊 = 看得懂 AI 在做事，而不是黑箱吐答案。</strong>這是 Pi Agent 跟一般 ChatGPT 網頁最大的差別。</div>
     </section>
 
-    <section id="advanced" data-nav="Settings 有什麼">
-      <h2 data-icon="advanced">Settings 面板裡有什麼（先看看不用改）</h2>
-      <p>Settings 面板打開，日常會用到的其實只有兩三個，其他都是進階：</p>
+    <section id="advanced" data-nav="Settings 分佈在哪">
+      <h2 data-icon="advanced">「Settings」分散在哪幾個地方（先看看不用改）</h2>
+      <p>pi-web 沒有集中的 Settings 面板，各種可調的東西分散在幾個位置。實務上會用到的其實只有兩三處，其他都是進階：</p>
       <ul>
-        <li><strong>Language（語言）</strong>：pi-web 上游支援英文 + 簡體中文。目前繁中未上，強迫症可以選簡中至少有中文，或維持英文（本書一律標註中英對照）。</li>
-        <li><strong>Appearance / Theme</strong>：深淺色主題。多半會跟隨系統，也可以強制指定。</li>
-        <li><strong>字體大小 / 密度</strong>：老花看不清就調大。</li>
-        <li><strong>Keyboard shortcuts</strong>：內建快捷鍵清單，最常用是 <kbd>Cmd/Ctrl</kbd>+<kbd>Enter</kbd> 送出訊息、<kbd>Cmd/Ctrl</kbd>+<kbd>K</kbd> 開 command palette。</li>
-        <li><strong>Advanced（進階）</strong>：例如壓縮策略、context 用量顯示——沒事別碰。</li>
+        <li><strong>Language（語言）</strong>：在 top bar 的語言按鈕直接切。pi-web 上游目前<strong>只支援英文與簡體中文</strong>兩種，繁中未上；強迫症可以選簡中至少有中文，或維持英文（本書一律標註中英對照）。</li>
+        <li><strong>Appearance / Theme</strong>：top bar 也有主題切換按鈕（亮／暗／跟隨系統）。</li>
+        <li><strong>Model 進階參數</strong>：在 Models 面板點進某個 model，展開「Advanced settings」，可改 headers、compatibility、thinking levels 等。</li>
+        <li><strong>Keyboard shortcuts</strong>：pi-web 目前只綁定<strong>兩個</strong>全域快捷鍵——<kbd>Esc</kbd>（中斷正在跑的 agent）與 <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>N</kbd>（在目前工作目錄開新 session）。<strong>沒有 command palette、也沒有 <kbd>Cmd</kbd>+<kbd>K</kbd>／<kbd>Cmd</kbd>+<kbd>N</kbd>／<kbd>Cmd</kbd>+<kbd>Enter</kbd> 這類 shortcut</strong>——這章早期版本寫的是錯的。送出訊息就用 composer 右下角的送出鈕，或依 ChatInput 元件當下的行為（多半是 <kbd>Enter</kbd> 送、<kbd>Shift</kbd>+<kbd>Enter</kbd> 換行）。</li>
+        <li><strong>Advanced（進階）</strong>：例如 tool preset、壓縮策略、context 用量顯示——散落在對話上方的 tool selector、context bar、下拉選項等地方，沒事別碰。</li>
       </ul>
-      <div class="callout warn"><strong>注意：</strong>pi-web 的 Settings 跟 add-on 的 Configuration 是兩回事。前者在 pi-web 抽屜裡調 UI、模型行為；後者在 HA 的「Settings → Add-ons → Woow HA Pi Agent → Configuration」，只管 log 等級、時區、video-tools 重灌那種容器級開關。</div>
+      <div class="callout warn"><strong>注意：</strong>「pi-web 這邊可以調的東西」跟「HA add-on 的 Configuration 頁」是兩回事。前者在瀏覽器裡調 UI、模型行為；後者在 HA 的「Settings → Add-ons → Woow HA Pi Agent → Configuration」，只管 <code>log_level</code>、<code>timezone</code>、<code>reset_video_tools</code>、<code>env_vars</code> 這類容器級開關（v0.13.0 之後所有 provider 金鑰都改在 pi-web 的 Models 面板裡管）。</div>
     </section>
 
     <section id="troubleshoot" data-nav="常見卡關">
@@ -270,8 +272,8 @@
           <p>Settings → Language 可以切成簡體中文，繁中還沒上線（roadmap）。本書所有重要按鈕都會標中英對照，習慣後你會發現版面就那幾個區塊，其實不需要中文也記得住。</p>
         </li>
         <li>
-          <h3>右上四顆面板圖示只看到兩三顆</h3>
-          <p>視窗太窄時 pi-web 會把後面的圖示收進 <strong>⋮</strong>（三點更多）選單。把瀏覽器視窗拉寬到 1200px 以上，四顆就會全部展開。</p>
+          <h3>右上面板圖示比預期少幾顆</h3>
+          <p>視窗太窄時 pi-web 會把後面的按鈕收進行動裝置版的「更多」（mobile toolbar more）選單。把瀏覽器視窗拉寬到 1200px 以上，多數按鈕就會全部展開。實際會出現哪幾顆按鈕依你當下的 pi-web 版本而定，別預設一定要看到某個固定數字。</p>
         </li>
       </ol>
     </section>
@@ -284,15 +286,15 @@
       </details>
       <details class="faq">
         <summary>深色模式怎麼開？</summary>
-        <div class="body">兩層開關：一是 HA 本身的主題（在 HA 個人資料）；二是 pi-web 的 Appearance 設定。多半 pi-web 會自動跟隨 HA 主題，如果沒有，去 Settings → Appearance 手動選 Dark。手機版建議用「跟隨系統」，晚上護眼。</div>
+        <div class="body">兩層開關：一是 HA 本身的主題（在 HA 個人資料）；二是 pi-web top bar 的主題按鈕（亮／暗／跟隨系統，滑鼠移上去會顯示目前狀態）。pi-web 沒有集中的 Appearance 面板——點 top bar 那顆主題按鈕就是全部了。手機版建議選「跟隨系統」，晚上護眼。</div>
       </details>
       <details class="faq">
         <summary>有沒有快捷鍵可以背？</summary>
-        <div class="body">最實用的三個：<kbd>Cmd/Ctrl</kbd>+<kbd>Enter</kbd> 送出訊息（打完不用滑鼠去點紙飛機）、<kbd>Cmd/Ctrl</kbd>+<kbd>K</kbd> 開 command palette（快速搜尋 session）、<kbd>Cmd/Ctrl</kbd>+<kbd>N</kbd> 新開 session。完整清單在 Settings → Keyboard shortcuts。Mac 用 Cmd、Win/Linux 用 Ctrl。</div>
+        <div class="body">實際上非常少——pi-web 目前只綁定兩個全域快捷鍵：<kbd>Esc</kbd>（中斷正在跑的 agent；在對話框內不會攔截，讓 ChatInput 自己處理）與 <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>N</kbd>（在目前工作目錄開一個新 session）。<strong>沒有 command palette、沒有 <kbd>Cmd</kbd>+<kbd>K</kbd> 這類搜尋快捷鍵</strong>，送出訊息也沒有 <kbd>Cmd/Ctrl</kbd>+<kbd>Enter</kbd> 的全域綁定（送出就點右下角按鈕、或依 ChatInput 當下的 Enter 行為）。日後上游若補上，這頁會更新。</div>
       </details>
       <details class="faq">
         <summary>Session 開太多會不會拖慢？</summary>
-        <div class="body">Session 檔案是 <code>.jsonl</code>（一行一則），純文字，一個 session 通常幾十到幾百 KB。累積幾百個都不會有感。真的破幾千個嫌側欄捲不動的話，用三點選單 → Delete 或 Export 出來備份再刪，都是安全的（只會影響那一個檔）。</div>
+        <div class="body">Session 檔案是 <code>.jsonl</code>（一行一則），純文字，一個 session 通常幾十到幾百 KB。累積幾百個都不會有感。真的破幾千個嫌側欄捲不動的話，用該列的 Delete 按鈕刪掉即可（<kbd>Shift</kbd>+點按可跳過確認）；想備份就直接把 <code>/data/pi-agent/sessions/…</code> 底下的 <code>.jsonl</code> 檔複製走——目前 pi-web 上游沒有內建 Export 動作，靠檔案系統搬最直接。</div>
       </details>
       <details class="faq">
         <summary>模型下拉是空的（沒 provider）也能打字嗎？</summary>

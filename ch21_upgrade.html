@@ -125,12 +125,12 @@
           </tr>
           <tr>
             <td><code>v0.9.x</code></td>
-            <td>Provider 從 GLM+MiniMax 擴充到 GLM/MiniMax/OpenAI/OpenRouter 四家，並補上一堆 PWA 相關的資源 404 修正（<code>manifest.webmanifest</code>、<code>/icons/*</code>、字型檔）。</td>
-            <td>用戶端沒感覺，是背景清乾淨。</td>
+            <td>Provider 從 GLM+MiniMax 擴充到 <strong>GLM / MiniMax / OpenAI / OpenRouter</strong> 四家（不用再擔心中國儲值餘額不足直接卡住），並在 <code>v0.9.1</code> 補上字型 <code>.woff2</code>、CSS、<code>favicon.ico</code> 這些後注入 DOM 的資源 404 修正。</td>
+            <td>從舊版升上來可以多接兩家非中國 provider，聊天不會卡在「餘額不足」。</td>
           </tr>
           <tr>
             <td><code>v0.10.0</code></td>
-            <td>再加三家 provider：Anthropic 直連、DeepSeek 直連、Groq——整套提升到 <strong>7 家</strong>。更重要的是加了 <strong>Supervisor watchdog</strong>（pi-web 卡死會自動被重啟）跟 <strong>worktree 持久化</strong>（<code>HOME</code> 改指 <code>/data/pi-agent/home</code>，你的 pi coding agent 對話與檔案不會因為升級被清掉）。</td>
+            <td>這一版做了四件事：（1）再加三家 provider——Anthropic 直連、DeepSeek 直連、Groq——整套提升到 <strong>7 家</strong>；（2）加 <strong>Supervisor watchdog</strong>（探 <code>/api/home</code>，pi-web 卡死會自動重啟）；（3）<strong>worktree 持久化</strong>（<code>HOME</code> 改指 <code>/data/pi-agent/home</code>，pi coding agent 的檔案不再因為升級被清掉）；（4）把 pi-web 版本從 <code>@latest</code> pin 到特定版（避免上游改動偷偷讓 shim 失效）。之後幾版 <code>v0.10.1~v0.10.4</code> 都是修 pi-web <code>0.8.4</code> 新加的 PWA / ServiceWorker 相關 404 與 console error。</td>
             <td>從 <code>v0.9.x</code> 或更早升上來的人這一版是里程碑——你的對話終於在升級之間保住了。</td>
           </tr>
           <tr>
@@ -262,7 +262,7 @@ groq_api_key:         &lt;Groq 金鑰&gt;</code></pre>
         </li>
         <li>
           <h3>進階做法：安裝指定版本</h3>
-          <p>Add-on → Pi Agent → 資訊分頁最下面通常有「安裝特定版本」的三點選單。填舊版號（例如 <code>0.12.0</code>），Supervisor 會去 GHCR 拉那個 tag 重新裝一次。<strong>但</strong>——你的 <code>/data/pi-agent/</code> 目錄不會變，還是新版寫進去的狀態，可能有相容性問題（新版寫的 <code>models.json</code> schema 舊版讀不動之類）。這條路只推薦給熟系統的人，一般人優先走 restore snapshot。</p>
+          <p>Add-on → Pi Agent → 資訊分頁右上角的三點選單（不同 HA 版本 UI 位置略有差異，有的在資訊分頁右上、有的要先開「進階模式」才會出現）通常會有「Install a specific version / 安裝特定版本」選項。填舊版號（例如 <code>0.12.0</code>），Supervisor 會去 GHCR 拉那個 tag 重新裝一次。<strong>但</strong>——你的 <code>/data/pi-agent/</code> 目錄不會變，還是新版寫進去的狀態，可能有相容性問題（新版寫的 <code>models.json</code> schema 舊版讀不動之類）。這條路只推薦給熟系統的人，一般人優先走 restore snapshot。</p>
         </li>
         <li>
           <h3>還原後新對話會不會不見？</h3>
@@ -355,7 +355,7 @@ groq_api_key:         &lt;Groq 金鑰&gt;</code></pre>
 
     <section id="auto" data-nav="要不要自動更新">
       <h2 data-icon="warning">要不要打開自動更新</h2>
-      <p>HA 的 Add-on 頁面有一個 <strong>Auto update</strong> 開關，打開之後 Supervisor 會自己去拉新版裝上。理論上很方便，但對 Pi Agent 這種還在快速演進（<code>0.x</code>）的 add-on，<strong>不建議</strong>——原因三個：</p>
+      <p>HA 的 Add-on 資訊分頁上通常有一個 <strong>Auto update / 自動更新</strong> 開關（新版 HA 在資訊分頁頂端；舊版 HA 或未啟用「進階模式」時可能不會顯示，需要到「使用者設定」把進階模式打開才會出現），打開之後 Supervisor 會自己去拉新版裝上。理論上很方便，但對 Pi Agent 這種還在快速演進（<code>0.x</code>）的 add-on，<strong>不建議</strong>——原因三個：</p>
       <table class="data-table">
         <thead>
           <tr><th>原因</th><th>說明</th></tr>
@@ -403,8 +403,8 @@ groq_api_key:         &lt;Groq 金鑰&gt;</code></pre>
           <p><code>v0.11.0</code> 或 <code>v0.13.0</code>（其中一次你觸發了 <code>reset_video_tools</code>）之後首次開機都要重新下載 720MB 的 Chromium + venv。這期間 pi-web 本身可以用（聊天不會壞），但影片管線相關功能會等到裝完。Logs 分頁裡搜 <code>video-tools-init</code> 看進度。裝完會建一個 sentinel 檔 <code>/data/pi-agent/.video-tools-installed</code>，之後每次開機它看到 sentinel 就 100 毫秒內結束不會再拖。詳細在<a href="ch18_video_tools.html">第 18 章</a>。</p>
         </li>
         <li>
-          <h3>Watchdog 一直重啟 add-on 每 5 分鐘一次</h3>
-          <p><code>v0.10.0</code> 之後有 Supervisor watchdog 探 <code>/api/home</code>，pi-web 如果一直回 5xx 或不回，Supervisor 每分鐘會重啟一次。你在 Logs 分頁會看到「Watchdog restart of add-on pi-agent」不斷刷。這代表 pi-web 開機真的有問題（不是網路），跟第 1 條一起看第一個 error 訊息。無限重啟的解法：先把 add-on 手動關掉（Add-on 資訊分頁），再從第 1 條的方向 diagnose。</p>
+          <h3>Watchdog 一直重啟 add-on</h3>
+          <p><code>v0.10.0</code> 之後有 Supervisor watchdog 探 <code>/api/home</code>，pi-web 如果一直回 5xx 或不回，Supervisor 就會依 watchdog 探測週期反覆重啟。你在 Logs 分頁會看到「Watchdog restart of add-on pi-agent」不斷刷。這代表 pi-web 開機真的有問題（不是網路），跟第 1 條一起看第一個 error 訊息。無限重啟的解法：先把 add-on 手動關掉（Add-on 資訊分頁），再從第 1 條的方向 diagnose。</p>
         </li>
       </ol>
     </section>

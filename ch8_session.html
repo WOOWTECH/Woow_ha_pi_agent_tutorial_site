@@ -169,8 +169,8 @@
         </thead>
         <tbody>
           <tr><td>想連續問同一個主題（例如一路把客廳燈自動化寫完）</td><td><strong>同一個 Session</strong>，一路問下去</td><td>AI 需要前面的上下文，切開反而要重講一次</td></tr>
-          <tr><td>換題目（從「家電為什麼壞」跳到「怎麼寫自動化」）</td><td><strong>開新 Session</strong>（左上 <kbd>+ New session</kbd>）</td><td>舊主題留在原地方便回頭找，新主題不會被舊上下文污染</td></tr>
-          <tr><td>想試「同一個問題不同模型會怎麼答」</td><td><strong>Fork</strong>（Duplicate），一份切給 GLM、一份切給 Claude</td><td>兩邊起點完全一樣，比較才公平；不用把問題複製貼上兩次</td></tr>
+          <tr><td>換題目（從「家電為什麼壞」跳到「怎麼寫自動化」）</td><td><strong>開新 Session</strong>（左上「新增／New」那個按鈕，實際字樣依 pi-web 版本而定）</td><td>舊主題留在原地方便回頭找，新主題不會被舊上下文污染</td></tr>
+          <tr><td>想試「同一個問題不同模型會怎麼答」</td><td>把 Session <strong>複製一份</strong>（版本不同會標成 Fork 或 Duplicate），一份切給 GLM、一份切給 Claude</td><td>兩邊起點完全一樣，比較才公平；不用把問題複製貼上兩次</td></tr>
           <tr><td>對話已經一百多則，AI 開始忘前面、送訊息也變慢</td><td>叫 AI「幫我摘要目前重點」，把摘要當第一句<strong>開新 Session</strong> 繼續</td><td>把長歷史壓成一段短摘要，token 用量瞬間降回可管理的水位</td></tr>
           <tr><td>要跟朋友分享一段解決過程</td><td>Export 出 Markdown，直接貼</td><td>不用截圖也不用把朋友拉進你家 HA</td></tr>
           <tr><td>一場實驗性的嘗試，結果不好想全部丟掉</td><td>Delete，乾淨</td><td>Session 太多反而是干擾</td></tr>
@@ -184,62 +184,62 @@
       <p>照這個順序做一次，之後你會很自然地在每個新主題開頭就先把這一套跑完。</p>
       <ol class="steps">
         <li>
-          <h3>點左上角的 <kbd>+ New session</kbd></h3>
-          <p>按鈕在左邊 Session 歷史欄的最上方。點下去中間對話串會清空、composer 打字區也清空，等於你面前是一張新的白紙。左欄會多出一列<strong>暫時沒標題</strong>的 Session（因為你還沒打字）。</p>
+          <h3>點左上角「新增 Session」的按鈕</h3>
+          <p>按鈕在左邊 Session 歷史欄的最上方，字樣依 pi-web 版本可能是 <em>+ New</em>、<em>New session</em> 或加號圖示。點下去中間對話串會清空、composer 打字區也清空，等於你面前是一張新的白紙。左欄會多出一列<strong>暫時沒標題</strong>的 Session（因為你還沒打字）。</p>
         </li>
         <li>
           <h3>打你的第一句話</h3>
-          <p>第一句很重要——它決定 AI 的方向，也決定這個 Session 的<strong>自動生成標題</strong>。建議直接把主題講清楚，例如「幫我看客廳三顆燈為什麼有一顆連不上」比「幫我看看燈」好很多。送出後 pi-web 會用第一句話（截前 30～40 字）當側欄的標題。</p>
+          <p>第一句很重要——它決定 AI 的方向，也決定這個 Session 的<strong>自動生成標題</strong>。建議直接把主題講清楚，例如「幫我看客廳三顆燈為什麼有一顆連不上」比「幫我看看燈」好很多。送出後 pi-web 通常會用第一句話當側欄的標題（實際截取長度依版本而定，太長會被裁掉）。</p>
         </li>
         <li>
-          <h3>覺得標題不好？用 Rename 改</h3>
-          <p>把游標移到左欄那一列，右邊會冒出 <strong>⋮</strong>（三點選單）。點開選 <strong>Rename</strong>，改成你未來搜尋時想得到的關鍵字。例如把「幫我看客廳三顆燈為什麼有一顆連不上」改成「客廳燈 3 號離線 debug」。</p>
+          <h3>覺得標題不好？改標題</h3>
+          <p>把游標移到左欄那一列，右邊通常會冒出 <strong>⋮</strong>（三點選單）或右鍵可叫出動作選單。裡面找「Rename／重新命名／編輯標題」之類選項（版本不同字樣略有差異），改成你未來搜尋時想得到的關鍵字。例如把「幫我看客廳三顆燈為什麼有一顆連不上」改成「客廳燈 3 號離線 debug」。若你的版本沒有這個選項，也可以先跳到方式二用 Export 備份、Delete 再開一個標題較好的新 Session。</p>
         </li>
         <li>
-          <h3>加標籤方便之後篩選</h3>
-          <p>三點選單裡通常還有 <strong>Add tag / 標籤</strong>。常用的分法：<code>家電</code>、<code>自動化</code>、<code>問答</code>、<code>影片</code>、<code>備份/維護</code>。標籤打上去之後，左欄上方的搜尋框可以用 <code>tag:家電</code> 過濾出所有相關 Session。</p>
+          <h3>加標籤（若你的版本支援）</h3>
+          <p>部分 pi-web 版本在三點選單裡有 <strong>Tag / Label / 標籤</strong> 之類功能，允許你打上 <code>家電</code>、<code>自動化</code>、<code>問答</code>、<code>影片</code>、<code>備份/維護</code> 等分類；有些版本則只支援搜尋標題內文，沒有獨立的標籤欄位。<strong>找不到就跳過這步</strong>，改成把標題本身寫成「家電/客廳燈 3 號離線」這種前綴式命名，用搜尋框搜「家電/」一樣可以達到分類效果。</p>
         </li>
         <li>
           <h3>結束時再回頭看一眼</h3>
           <p>問題解掉、對話收尾時，回頭看一次標題／標籤有沒有需要修。「當下開頭以為的主題」跟「最後真正解決的問題」常常不一樣（例如以為是燈壞了，最後發現是 Wi-Fi 訊號），這時就把標題改成真的方便未來 you 找到的字。</p>
         </li>
       </ol>
-      <div class="callout warn"><strong>注意：</strong>pi-web 上游有些版本標籤欄叫「Labels」不叫「Tags」。找不到就在三點選單裡整個掃一遍，通常都在 Rename 附近。</div>
+      <div class="callout warn"><strong>注意：</strong>本章寫到的所有按鈕字樣（New session、Rename、Duplicate、Fork、Delete、Export、Tag／Label 等）都<strong>可能因 pi-web 版本而異</strong>。找不到某個字樣時，先在該 Session 那列的三點選單或右鍵選單裡整個掃過一遍，通常功能都在但字面不同。真的沒有，就走這章寫的替代路徑（用 Export＋Delete＋新開 Session 湊出效果）。</div>
     </section>
 
     <section id="advanced" data-nav="Fork 是什麼">
-      <h2 data-icon="advanced">Fork（Duplicate）是什麼、什麼時候用</h2>
-      <p>Fork 是 Pi Agent 一個很好用但常被忽略的功能。<strong>它會從你目前這個 Session 的當下位置分岔出一個副本</strong>——包括所有訊息、模型設定、Skills、System prompt 通通複製。之後你在副本上繼續講什麼，都不會影響原本那個 Session。</p>
+      <h2 data-icon="advanced">「複製一份 Session」（Fork／Duplicate）是什麼、什麼時候用</h2>
+      <p>pi-web 有個很好用但常被忽略的功能：<strong>把目前這個 Session 的當下狀態整份複製一份出來</strong>——所有訊息、模型設定、Skills、System prompt 通通一起複製。之後你在副本上繼續講什麼，都不會影響原本那個 Session。這個功能在不同 pi-web 版本可能叫 <strong>Fork</strong>、<strong>Duplicate</strong>、或「複製 Session」，行為都是這一種。若你在選單裡完全找不到，可以走替代方案：Export <code>.jsonl</code> 出來，之後有需要再重跑一次（但無法完美還原分岔那一刻的狀態）。</p>
       <p>什麼時候會用到？</p>
       <table class="data-table">
         <thead>
           <tr><th>情境</th><th>怎麼 Fork</th><th>好處</th></tr>
         </thead>
         <tbody>
-          <tr><td>AI 給了兩個方案 A/B，你想分別追問「A 的缺點」「B 的缺點」</td><td>三點選單 → Duplicate 兩次，一份追 A、一份追 B</td><td>兩條追問不會互相干擾，比較起來清楚</td></tr>
-          <tr><td>對話進行到一半想試「換另一家模型會怎麼答」</td><td>Duplicate 一份，在副本上把模型下拉換成別的</td><td>原本 Session 不動，副本是新一家模型接手</td></tr>
-          <tr><td>寫自動化寫到 80% 覺得可能踩雷，想保留備份</td><td>Duplicate 一份當「安全存檔」，在原本繼續改</td><td>踩雷了就跳去副本繼續，不用重來</td></tr>
-          <tr><td>想教別人看你怎麼一步一步問，但不想連自己後面的失敗嘗試也給對方</td><td>Duplicate 到某個乾淨點，Export 副本</td><td>對方看到的是清爽的教學版</td></tr>
+          <tr><td>AI 給了兩個方案 A/B，你想分別追問「A 的缺點」「B 的缺點」</td><td>複製兩次，一份追 A、一份追 B</td><td>兩條追問不會互相干擾，比較起來清楚</td></tr>
+          <tr><td>對話進行到一半想試「換另一家模型會怎麼答」</td><td>複製一份，在副本上把模型下拉換成別的</td><td>原本 Session 不動，副本是新一家模型接手</td></tr>
+          <tr><td>寫自動化寫到 80% 覺得可能踩雷，想保留備份</td><td>複製一份當「安全存檔」，在原本繼續改</td><td>踩雷了就跳去副本繼續，不用重來</td></tr>
+          <tr><td>想教別人看你怎麼一步一步問，但不想連自己後面的失敗嘗試也給對方</td><td>複製到某個乾淨點，把副本 Export 出來</td><td>對方看到的是清爽的教學版</td></tr>
         </tbody>
       </table>
-      <p>操作路徑：<strong>左欄該 Session → ⋮（三點選單）→ Duplicate</strong>。有些 pi-web 版本這個項目叫 <strong>Fork</strong>，名字不同但功能一樣。副本會出現在列表最上面，標題會加「(copy)」或「(fork)」字樣，你可以馬上 Rename。</p>
-      <div class="callout"><strong>觀念：</strong>Fork 完之後兩個 Session <strong>完全獨立</strong>。原本改了，副本不會跟著改；副本改了，原本也不會知道。就像影印一份紙本文件——之後在其中一份上塗鴉，另一份不受影響。</div>
+      <p>操作路徑（大致）：<strong>左欄該 Session → ⋮（三點選單／右鍵選單）→ 找 Fork／Duplicate／複製 之類項目</strong>。字樣依 pi-web 版本而異。副本一般會出現在列表最上面或緊接原 Session 之後，標題可能會加類似「(copy)」的後綴（也可能直接沿用原標題，得自己判斷是哪一個），可以馬上改標題。</p>
+      <div class="callout"><strong>觀念：</strong>複製完之後兩個 Session <strong>應該是完全獨立</strong>的：原本改了，副本不會跟著改；副本改了，原本也不會知道。就像影印一份紙本文件——之後在其中一份上塗鴉，另一份不受影響。不放心的話可以做一次小實驗：複製後在副本回一句，回來看原本 Session 有沒有多出那句訊息（正常情況下不會）。</div>
     </section>
 
     <section id="export" data-nav="匯出 Session">
       <h2 data-icon="records">匯出 Session（Export）</h2>
       <p>Export 是把 Session 存成一個可以拿到 pi-web 以外看的檔案。用途很多：貼給朋友、貼進部落格、寄 email 問人、或單純想保留一份離線副本。</p>
-      <p>操作路徑：<strong>左欄該 Session → ⋮（三點選單）→ Export</strong>，會問你要哪一種格式。</p>
+      <p>操作路徑（大致）：<strong>左欄該 Session → ⋮（三點選單／右鍵選單）→ Export／匯出／下載 之類項目</strong>；有的版本會直接下載，有的會先問要哪一種格式。若你的版本完全沒有 Export，可以直接從 <code>/data/pi-agent/sessions/&lt;cwd&gt;/</code> 底下把對應的 <code>.jsonl</code> 檔複製出來（見下一段），效果一樣。</p>
       <table class="data-table">
         <thead>
           <tr><th>格式</th><th>內容</th><th>適合場合</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>.jsonl</code>（原始格式）</td><td>每則訊息一行 JSON，含 role（user / assistant）、內容、思考塊、工具呼叫等所有欄位</td><td>要備份完整資料、之後想匯回、或給程式讀</td></tr>
-          <tr><td><code>.md</code>（Markdown）</td><td>只留人看的部分：「你講的話」＋「AI 回的話」，格式乾淨</td><td>貼部落格、寄 email、放進筆記軟體、給非技術朋友看</td></tr>
+          <tr><td><code>.jsonl</code>（原始格式）</td><td>每則訊息一行 JSON，含 role（user / assistant）、內容、思考塊、工具呼叫等所有欄位——就是磁碟上原本那份檔</td><td>要備份完整資料、之後想匯回、或給程式讀</td></tr>
+          <tr><td><code>.md</code>（Markdown，若你的版本支援）</td><td>只留人看的部分：「你講的話」＋「AI 回的話」，格式乾淨。<strong>不是每個 pi-web 版本都有這個匯出格式</strong>，沒有就用 <code>.jsonl</code>＋自己寫個小腳本轉，或請 AI 幫你做</td><td>貼部落格、寄 email、放進筆記軟體、給非技術朋友看</td></tr>
         </tbody>
       </table>
-      <p>Markdown 匯出出來大概長這樣：</p>
+      <p>Markdown 匯出出來大概像下面這樣（具體排版、欄位順序、有沒有標頭都依 pi-web 版本而異，這只是示意）：</p>
       <pre class="code-block"><code># 客廳燈 3 號離線 debug
 Model: glm-4.6
 Exported: 2025-08-14
@@ -268,19 +268,19 @@ Exported: 2025-08-14
       <p>Session 累積到某個程度就該清。清的方式有三種，各有適用場合：</p>
       <ol class="steps">
         <li>
-          <h3>方式一：一個一個 Delete（最常用、最安全）</h3>
-          <p>三點選單 → <strong>Delete</strong>。pi-web 會跳確認框問你「確定嗎」，按確定就沒了。適合逐個檢視、確認「這個真的用不到」才砍。日常整理都用這招。</p>
+          <h3>方式一：一個一個刪（最常用、最安全）</h3>
+          <p>三點選單裡找 <strong>Delete／刪除</strong>。pi-web 一般會跳確認框問你「確定嗎」，按確定就沒了。適合逐個檢視、確認「這個真的用不到」才砍。日常整理都用這招。</p>
         </li>
         <li>
-          <h3>方式二：多選批次刪</h3>
-          <p>在左欄按住 <kbd>Ctrl</kbd>（Mac 用 <kbd>Cmd</kbd>）點選多列，可以一次選中多個 Session；或用 <kbd>Shift</kbd>＋點擊選一整段區間。選好之後上面會出現批次動作按鈕，其中就有 <strong>Delete selected</strong>。適合「清掉一整批舊測試」的場合。</p>
+          <h3>方式二：多選批次刪（若你的版本支援）</h3>
+          <p>部分 pi-web 版本在左欄支援多選，方式類似作業系統的 <kbd>Ctrl</kbd>／<kbd>Cmd</kbd> ＋點擊選多列、<kbd>Shift</kbd>＋點擊選區間，或是先按一個「多選模式」按鈕再逐一勾。選好之後上方會出現批次動作。<strong>若試不出來就代表你這版沒開這功能</strong>，只能一個一個刪，或走方式三。</p>
         </li>
         <li>
-          <h3>方式三：直接刪 <code>/data/pi-agent/sessions/</code> 底下的檔（不建議）</h3>
-          <p>技術上你可以打開 HA 的 SSH add-on，用 <code>rm</code> 直接把 <code>.jsonl</code> 檔砍掉。<strong>但很不建議</strong>，因為 pi-web 有自己的索引與快取，直接砍檔可能讓 UI 顯示的列表跟實際磁碟對不上，甚至讓某個 Session 打開空白。真的要大掃除就走方式二的批次刪。</p>
+          <h3>方式三：直接刪 <code>/data/pi-agent/sessions/</code> 底下的檔（大掃除用）</h3>
+          <p>技術上你可以進到 HA / 容器內，用 <code>rm</code> 直接把 <code>.jsonl</code> 檔砍掉。<strong>要注意</strong>：pi-web 通常有自己的索引或快取，直接砍檔後最好重啟 add-on／容器，讓它重新掃資料夾；不然 UI 上可能還會顯示已被刪的 Session、或打開時空白。真的要一次清幾百個時這招最快，但清完記得重啟。</p>
         </li>
       </ol>
-      <div class="callout danger"><strong>危險：</strong>Delete 沒有垃圾桶——按確定就是真的刪掉。要「將來還可能想看」的 Session，先 Export <code>.jsonl</code> 存下來，再刪。</div>
+      <div class="callout danger"><strong>危險：</strong>刪除通常沒有垃圾桶——按確定就是真的刪掉，pi-web 內建沒有 undo。要「將來還可能想看」的 Session，先 Export <code>.jsonl</code>（或從磁碟複製那個 <code>.jsonl</code>）存下來，再刪。</div>
     </section>
 
     <section id="ai" data-nav="會影響記憶嗎">
@@ -360,7 +360,7 @@ Exported: 2025-08-14
       </details>
       <details class="faq">
         <summary>可以把 Session 從一台 HA 搬到另一台嗎？</summary>
-        <div class="body">可以。三個方向：（1）最乾淨——來源 HA 建 snapshot，目的 HA 還原那個 add-on 的資料。（2）手動——用 SSH 把 <code>/data/pi-agent/sessions/</code> 整包 <code>tar</code> 起來，複製到目的 HA 的同個路徑（要確定 add-on 有先裝好、也停用，不然可能會被覆寫）。（3）一場一場——Export <code>.jsonl</code>，到新機用 Import 功能匯入（如果你的 pi-web 版本有 Import；沒有就走前兩招）。</div>
+        <div class="body">可以。兩個可靠方向加一個看版本的方向：（1）最乾淨——來源 HA 建 snapshot，目的 HA 還原那個 add-on 的資料。（2）手動——用 SSH 把 <code>/data/pi-agent/sessions/</code> 整包 <code>tar</code> 起來，複製到目的 HA 的同個路徑（要確定 add-on 有先裝好、也先停用，不然可能會被覆寫；搬完再啟動）。（3）一場一場——Export <code>.jsonl</code>，到新機看有沒有對應的 Import／匯入功能；<strong>Import 不是所有 pi-web 版本都有</strong>，沒有就退回前兩招，或直接把 <code>.jsonl</code> 丟到目的 HA 的 <code>sessions/&lt;對應 cwd&gt;/</code> 資料夾裡再重啟 add-on。</div>
       </details>
       <details class="faq">
         <summary>兩個人可以同時開同一個 Session 嗎？</summary>

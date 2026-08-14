@@ -94,14 +94,14 @@
     <section id="why" data-nav="為什麼要會切">
       <h2 data-icon="why">為什麼「切模型」是日常必備動作</h2>
       <p><a href="ch10_why_multi.html">第 10 章</a>告訴你「一家不夠用」，<a href="ch11_provider_map.html">第 11 章</a>幫你把六家 provider 排成一張速查表，<a href="ch12_reasoning.html">第 12 章</a>解釋了為什麼有些模型「會先想一輪」。這些都是「知」的部分。但真正把 AI 用起來的關鍵，是「行」——<strong>你要能在同一場對話裡，一句話換一顆腦子繼續講</strong>。</p>
-      <p>舉一個很日常的場景：你問 GLM-4-Flash「幫我寫一個晚上關燈的自動化」，30 秒就給你一個 YAML。你直覺覺得「好像有點粗糙，這樣寫真的穩嗎？」——這時候你不用開新的 Session、也不用把整段複製貼到另一個工具，只要在 composer 下方那個模型下拉點一下、選 Anthropic Claude Sonnet、追問一句「請 review 上面那段自動化有沒有問題」，Claude 就會把整場對話（包含 GLM 的答案）當成上下文，直接給你意見。這叫做 <strong>draft-then-review（先草稿再審稿）</strong>，是最常見也最省錢的組合技。</p>
+      <p>舉一個很日常的場景：你問 GLM-4-Flash「幫我寫一個晚上關燈的自動化」，30 秒就給你一個 YAML。你直覺覺得「好像有點粗糙，這樣寫真的穩嗎？」——這時候你不用開新的 Session、也不用把整段複製貼到另一個工具，只要在 composer 那排工具列找到模型按鈕、點一下、選 Anthropic Claude Sonnet、追問一句「請 review 上面那段自動化有沒有問題」，Claude 就會把整場對話（包含 GLM 的答案）當成上下文，直接給你意見。這種「先便宜快出草稿，再用深模型審一輪」的做法，是社群常見的省錢組合技（能不能真的省 60-80%，看你的 prompt 長度與模型選擇，不是保證數字，是實作經驗值）。</p>
       <p>學完這章，你會知道三件事：怎麼切、切了會發生什麼、什麼時候該切什麼時候該開新 Session。</p>
       <div class="callout"><strong>觀念：</strong>切模型不是「重來一次對話」，而是「同一個對話從下一句起換一顆腦子講」。之前的每一句話都還在，新模型會用它自己的方式再讀一次。</div>
     </section>
 
     <section id="concept" data-nav="切換的即時性">
       <h2 data-icon="concept">模型下拉在哪、切了是什麼時候生效</h2>
-      <p>模型下拉的位置<a href="ch4_ui_tour.html">第 4 章</a>已經指過：在 composer（打字區）的<strong>左下角</strong>，長得像一個帶小箭頭的按鈕，上面通常顯示你目前使用的模型名稱（例如「GLM-4-Flash」、「Claude Sonnet 4.5」、「未設定」）。點一下會彈出一個下拉清單，把你在 Models 面板加過的<strong>所有 provider 底下所有可用模型</strong>都列出來。</p>
+      <p>模型下拉的位置<a href="ch4_ui_tour.html">第 4 章</a>已經指過：在 composer（打字區）下方的工具列（toolbar）上，長得像一個帶小箭頭的按鈕，上面通常顯示你目前使用的模型名稱（例如「GLM-4-Flash」、「Claude Sonnet 4.5」，或如果還沒選模型就顯示提示字）。<strong>確切位置會隨版本／主題不一樣</strong>——上游 pi-web 的 toolbar 順序（附件、模型、skill、語音、送出）是可設定的，你眼前的按鈕可能在左邊、也可能被排到中間，看模型名字認就對了。點一下會彈出一個 popover 清單，把你在 Models 面板加過的 provider 底下、目前可用的模型都列出來（清單支援搜尋，直接打字就會過濾）。</p>
       <p>它的行為有兩個關鍵點：</p>
       <ul>
         <li><strong>切了立刻生效，但不會回頭重跑</strong>——你選了新模型，<em>下一句</em>送出去就是用新模型答；<em>之前</em>已經送出去的訊息不會重新問一次、AI 已經給的答案也不會消失。也就是說「切模型」不會扣你之前那些對話的錢。</li>
@@ -116,7 +116,7 @@
       <ol class="steps">
         <li>
           <h3>開一個新的 Session，把模型下拉切到 GLM-4-Flash</h3>
-          <p>左上角按 <kbd>+ New session</kbd>，畫面清空。到 composer 左下角，點模型下拉，找 GLM 那一組，選 <code>glm-4-flash</code>（或你熟悉的便宜快模型）。按鈕上的字會變成「GLM-4-Flash」。</p>
+          <p>左上角按 <kbd>+ New session</kbd>（按鈕字樣視語系而定），畫面清空。到 composer 下方那排工具列找到模型按鈕（顯示目前模型名字的那顆），點下去，找 GLM 那一組，選 <code>glm-4-flash</code>（或你熟悉的便宜快模型）。按鈕上的字會變成「GLM-4-Flash」。</p>
         </li>
         <li>
           <h3>問一個真的家庭問題，讓它給你草稿</h3>
@@ -159,7 +159,7 @@
             <td><strong>draft-then-review</strong>（先草稿再審稿）</td>
             <td>便宜快模型出第一版 → 切深模型做 code review → 可選擇再切回便宜模型改稿</td>
             <td>寫自動化、寫腳本、寫 email、任何「有標準答案但要小心細節」的產出</td>
-            <td>比全程用深模型省 60-80%，比全程用便宜模型可靠得多</td>
+            <td>比全程用深模型省很多（實測範圍常見 50-80%，看對話長度），比全程用便宜模型可靠得多</td>
           </tr>
           <tr>
             <td><strong>深挖某段</strong>（zoom in）</td>
@@ -248,7 +248,7 @@
     <section id="warning" data-nav="切換會失敗的情況">
       <h2 data-icon="warning">有些切換會「隱形失敗」：thinking blocks 被丟掉</h2>
       <p><a href="ch12_reasoning.html">第 12 章</a>提過，Anthropic 的 Claude 用的是「native thinking blocks」——那些思考內容是模型回應裡真正的一段結構化資料，不只是文字。相對地，OpenAI-compatible 的 provider（GLM、DeepSeek、Groq、OpenRouter 等）沒有這個結構，只有純文字答案。</p>
-      <p>這造成一個容易踩到的雷：<strong>從 Claude 切到任何 OpenAI-compatible 模型時，之前那些 native thinking blocks 會被丟掉、不會送給新模型看。</strong>如果你之前的對話很依賴那段思考內容（例如你有一則訊息是「請照你剛剛想的步驟繼續」），新模型會 confuse，因為它看不到那段「剛剛想的」。</p>
+      <p>這造成一個容易踩到的雷：<strong>從 Claude 切到任何 OpenAI-compatible 模型時，先前 Claude 的 native thinking blocks（結構化欄位）沒辦法照原格式塞進新 provider 的 messages 陣列</strong>——具體是「整段被丟掉」還是「被扁平化成純文字附在正文前」，會看 pi-web 那一版怎麼序列化 transcript，兩種情況都遇過。實務上你就當成「新模型看到的 context 跟 Claude 當時看到的不會完全一樣」。如果你之前的對話很依賴那段思考內容（例如你有一則訊息是「請照你剛剛想的步驟繼續」），新模型有機率答得莫名其妙。</p>
       <table class="data-table">
         <thead>
           <tr>
@@ -265,7 +265,7 @@
           </tr>
           <tr>
             <td>Claude → GLM / DeepSeek / GPT / 任何 OpenAI-compatible</td>
-            <td><strong>不會保留</strong>（新模型看不到 thinking blocks）</td>
+            <td><strong>結構化欄位保不住</strong>（可能整段被丟掉、也可能被壓成純文字附在正文前，看版本）</td>
             <td>如果對話依賴那些思考內容，建議<strong>用 Fork 分岔</strong>而不是直接切；或者切之前先請 Claude 把思考過程「明文寫進正文」再切</td>
           </tr>
           <tr>
@@ -285,14 +285,15 @@
 
     <section id="tips" data-nav="快速切換技巧">
       <h2 data-icon="tips">快速切換的鍵盤與滑鼠技巧</h2>
-      <p>如果你會頻繁切模型（例如做 draft-then-review 是你的日常），下面幾個小技巧會讓你省很多滑鼠移動：</p>
+      <p>如果你會頻繁切模型（例如做 draft-then-review 是你的日常），下面幾個小技巧會讓你省滑鼠移動：</p>
       <ul>
-        <li><strong>鍵盤搜尋</strong>：部分 pi-web 版本支援打開下拉後直接用鍵盤打字搜尋模型名稱。例如點開下拉、打「son」，清單會自動過濾到 Sonnet 系列。手指不用離開鍵盤。</li>
-        <li><strong>Cmd/Ctrl+K 快速面板</strong>：新版 pi-web 有 command palette（命令面板），按 <kbd>Cmd</kbd>+<kbd>K</kbd>（Mac）或 <kbd>Ctrl</kbd>+<kbd>K</kbd>（Windows/Linux）可能會彈出快速搜尋。打「model」或直接打模型名字，Enter 就切。<strong>不同 pi-web 版本支援程度不一，按下去沒反應就代表你這版本沒有</strong>，退回用滑鼠點下拉即可。</li>
-        <li><strong>模型別名</strong>：Models 面板裡新增 provider 時，你可以幫每個模型取一個 display name（顯示名稱）。把常用的三個模型取短名字，例如「快」「深」「便宜」，下拉找起來一秒鐘。</li>
-        <li><strong>Default 模型</strong>：在 Models 面板選一個模型設為 default（預設），之後每次 <kbd>+ New session</kbd> 都會自動用這個模型開頭，不用再點一次下拉。日常聊天型的 provider 適合當 default。</li>
+        <li><strong>下拉裡直接打字搜尋</strong>：模型下拉打開後，上方就是 search 輸入框（pi-web 用 Command combobox 實作）。打「son」清單會自動過濾到 Sonnet 系列，Enter 選中。手指不用離開鍵盤。</li>
+        <li><strong>Cmd/Ctrl+K 命令面板</strong>：pi-web 內建的 command palette 目前是給 <em>Skill／擴充命令</em> 用的（例如 <code>/skill</code>、<code>/help</code>），<strong>不是</strong>模型快速切換器；也沒有官方的「Cmd+K 切模型」快捷鍵。想快速切模型，用上一條「打開下拉直接打字」的做法就好。</li>
+        <li><strong>幫模型取短名字</strong>：模型顯示的名稱來自 <code>~/.pi/agent/models.json</code> 每個 model 條目裡的 <code>name</code> 欄位（<a href="ch6_paste_key.html">第 6 章</a>示範過的 JSON）。你可以直接編這個檔，把 <code>"name": "Claude Sonnet 4.5"</code> 改成 <code>"name": "深"</code>，下拉裡就會顯示短名字。目前的 UI 面板還沒有內建 alias 輸入欄位，要改就手動改 JSON。</li>
+        <li><strong>預設模型</strong>：pi-web 的預設模型是靠 <code>~/.pi/agent/settings.json</code> 的 <code>defaultModel/defaultProvider</code> 決定，或用環境變數 <code>PI_WEB_DEFAULT_MODEL</code> 強制指定（見<a href="appendix_config_ref.html">附錄 A</a>）。<strong>目前 composer 下拉裡沒有「Set as default」按鈕</strong>——想換預設，去改 settings.json 或環境變數，改完重新整理瀏覽器即生效。日常聊天型的模型（便宜快）適合設成 default。</li>
+        <li><strong>把用不到的模型藏起來</strong>：接了 5-6 家 provider 之後下拉會很長。到 Models 設定面板可以用 provider visibility 欄位隱藏整家 provider，或勾掉單一模型（背後對應 <code>hiddenModels</code> 清單），下拉就會乾淨很多。也可以用環境變數 <code>PI_WEB_HIDE_PROVIDERS</code> 直接砍掉整家。</li>
       </ul>
-      <div class="callout tip"><strong>提示：</strong>不確定你的 pi-web 版本支不支援 <kbd>Ctrl</kbd>+<kbd>K</kbd>？打開 pi-web 之後按一下就知道——有就有反應，沒有就沒反應。不會弄壞任何東西。</div>
+      <div class="callout tip"><strong>提示：</strong>上面這些「靠 JSON／env 調」的做法反映的是 pi-web 目前的實作。UI 有可能之後補上 alias 輸入或「Set as default」按鈕，看到再用即可；本文以「打開 pi-web 找不到相對應按鈕」為前提寫，你打開真的沒看到那顆按鈕不代表壞了。</div>
     </section>
 
     <section id="troubleshoot" data-nav="常見卡關">
@@ -312,7 +313,7 @@
         </li>
         <li>
           <h3>切完發現「之前的思考塊不見了」或 AI 答非所問</h3>
-          <p>這是前面 warning 段講過的「native thinking blocks 被丟掉」問題。你如果從 Claude 切到 GLM/DeepSeek 之類，之前 Claude 的思考塊會消失，新模型看不到。<strong>正常現象，不是 bug</strong>。補救做法：把想保留的關鍵思考內容自己複製一段貼到新訊息裡當上下文；或者下次遇到這種情境改用 Fork 而不是切換。</p>
+          <p>這是前面 warning 段講過的「native thinking blocks 沒辦法跨 provider 帶過去」問題。你如果從 Claude 切到 GLM/DeepSeek 之類，Claude 那些結構化的思考塊在新 provider 看到的 context 裡不會是原本的樣子（可能不見、可能被壓成純文字），新模型看到的東西跟你以為它看到的不一樣。<strong>屬正常行為，不是 bug</strong>。補救做法：把想保留的關鍵思考內容自己複製一段貼到新訊息裡當上下文；或者下次遇到這種情境改用 Fork 而不是切換。</p>
         </li>
         <li>
           <h3>下拉裡完全沒有另一家 provider 的模型</h3>
@@ -320,7 +321,7 @@
         </li>
         <li>
           <h3>下拉列表模型太多，找不到想要的那個</h3>
-          <p>接了 5-6 家 provider 之後下拉會很長（動輒 30-50 個模型）。四個做法：（a）用下拉裡的搜尋框（如果有）打模型名關鍵字。（b）在 Models 面板隱藏用不到的模型（有些版本支援 hide toggle）。（c）幫常用模型取好記的 display name。（d）用 <kbd>Ctrl</kbd>+<kbd>K</kbd> command palette 搜尋（如果版本支援）。</p>
+          <p>接了 5-6 家 provider 之後下拉會很長（動輒 30-50 個模型）。三個做法：（a）在下拉打開後的搜尋框直接打模型名關鍵字（pi-web 用 Command combobox，全部型號都可搜）。（b）到 Models 設定面板用 provider visibility 隱藏整家 provider，或勾掉單一模型（背後對應 <code>hiddenModels</code>）；也可以在 env 加 <code>PI_WEB_HIDE_PROVIDERS=xxx,yyy</code> 直接砍。（c）改 <code>~/.pi/agent/models.json</code> 每個 model 的 <code>name</code> 欄位取短名字，例如把「Claude Sonnet 4.5」改成「深」，找起來快。</p>
         </li>
       </ol>
     </section>
@@ -337,7 +338,7 @@
       </details>
       <details class="faq">
         <summary>哪個模型是「預設模型」？我沒選過的話它用哪一個？</summary>
-        <div class="body">預設模型是你在 Models 面板可以自己設的。做法：右上工具列點 Models 面板 → 找到你想當預設的模型 → 通常有一個「Set as default」或星號的按鈕。設完之後每次 <kbd>+ New session</kbd> 開新對話都會自動用它。如果你沒設過，pi-web 通常會用「你 Models 面板裡第一個加的 provider 的第一個模型」，或者顯示「未設定」讓你手動選。</div>
+        <div class="body">預設模型來自 <code>~/.pi/agent/settings.json</code> 的 <code>defaultModel</code>／<code>defaultProvider</code>，也可以用環境變數 <code>PI_WEB_DEFAULT_MODEL</code>／<code>PI_WEB_DEFAULT_PROVIDER</code> 強制指定（附錄 A 有列所有相關變數）。<strong>目前 pi-web 上游沒有 composer 內的「Set as default」按鈕</strong>——想調預設就去改 settings.json 或 env，改完重整頁面即生效。如果你完全沒設過，pi-web 一般會用 pi CLI 那邊 <code>~/.pi/agent/settings.json</code> 已經寫過的值；再沒有就以「未指定」處理，此時模型下拉會提示你先選一個。</div>
       </details>
       <details class="faq">
         <summary>有沒有「自動選最適合模型」的功能？我不想自己判斷</summary>

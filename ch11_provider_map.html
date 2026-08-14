@@ -115,7 +115,7 @@
         </thead>
         <tbody>
           <tr><td><strong>定位</strong></td><td>這家公司在市場上的位置</td><td>「業界標竿」、「性價比王」、「反應最快」……這種一句話標籤，讓你先有感。</td></tr>
-          <tr><td><strong>代表模型</strong></td><td>這家目前最有名的模型名</td><td>你貼進 Pi Agent 的 Models 欄位就是這串，例如 <code>glm-4.6</code>、<code>gpt-4o</code>。</td></tr>
+          <tr><td><strong>代表模型</strong></td><td>這家目前最有名的模型名</td><td>你貼進 Pi Agent 的 Models 欄位就是這串，例如 <code>glm-4.6</code>、<code>gpt-5</code>、<code>claude-sonnet-4-6</code>。</td></tr>
           <tr><td><strong>強項</strong></td><td>這家真的比別人強在哪</td><td>可能是中文自然、可能是價格便宜、可能是速度飛快。</td></tr>
           <tr><td><strong>弱項</strong></td><td>不擅長的地方或會踩的坑</td><td>可能是要翻牆、可能是敏感題會迴避、可能是常常 rate limit。</td></tr>
           <tr><td><strong>推薦場景</strong></td><td>用這家 AI 最划算的活</td><td>「寫 HA 自動化」、「日常閒聊」、「讀超長文件」……。</td></tr>
@@ -124,9 +124,9 @@
       </table>
       <p>其中 Pi Agent 這三個欄位最容易讓新手卡關，先解釋一次以後不再重複：</p>
       <ul>
-        <li><strong>api mode</strong>：Pi Agent 用哪種協議跟 AI 講話。多數家都用 <code>openai-completions</code>（因為 OpenAI 的協議變成業界事實標準），只有 Anthropic 例外，要選 <code>anthropic</code>。</li>
+        <li><strong>api mode</strong>：Pi Agent 用哪種協議跟 AI 講話。多數家都用 <code>openai-completions</code>（因為 OpenAI 的協議變成業界事實標準），只有 Anthropic 例外，要選 <code>anthropic-messages</code>。Pi Agent 內建其他可選 mode 還有 <code>openai-responses</code>（OpenAI 新版）、<code>google-generative-ai</code>、<code>mistral-conversations</code>、<code>bedrock-converse-stream</code>，日常設定用不太到。</li>
         <li><strong>baseUrl</strong>：API 的門牌號碼。同樣是 openai-completions 協議，你要告訴 Pi Agent「這次要打去哪一家的門」，不然它會預設打去 OpenAI 官方。</li>
-        <li><strong>thinkingFormat</strong>：模型「想事情的時候把過程秀出來」的格式。有些家（GLM、DeepSeek、Anthropic）會把思考鏈跟正式回答分開送，Pi Agent 需要知道格式才能正確渲染成灰色的思考塊。填錯不會壞，但思考塊會混在答案裡看起來很亂。</li>
+        <li><strong>thinkingFormat</strong>：模型「想事情的時候把過程秀出來」的格式。有些家會把思考鏈跟正式回答分開送，Pi Agent 需要知道格式才能正確渲染成灰色的思考塊。內建可選值：<code>openai</code>、<code>openrouter</code>、<code>deepseek</code>、<code>together</code>、<code>baseten</code>、<code>zai</code>（智譜 GLM）、<code>qwen</code>、<code>chat-template</code>、<code>qwen-chat-template</code>、<code>string-thinking</code>、<code>ant-ling</code>。Anthropic 直連走 <code>anthropic-messages</code> 是原生思考塊，不用填這欄。填錯不會壞，但思考塊會混在答案裡看起來很亂。</li>
       </ul>
       <div class="callout"><strong>怎麼選：</strong>如果你完全不知道從哪家入手，走這個決策樹——「要不要翻牆？」不行 → GLM／DeepSeek／MiniMax。「預算緊嗎？」緊 → DeepSeek／GLM-4-Flash／Groq 免費額度。「寫程式為主嗎？」是 → Anthropic Claude／GLM-4.6。「要看圖嗎？」是 → OpenAI GPT-4o。「想懶得選？」→ OpenRouter 一支金鑰通吃。</div>
     </section>
@@ -157,38 +157,38 @@ Models:         glm-4.6
     </section>
 
     <section id="openai" data-nav="OpenAI 標竿">
-      <h2 data-icon="ai">OpenAI（GPT-4o / GPT-4o-mini）——業界標竿、多模態最強</h2>
+      <h2 data-icon="ai">OpenAI（GPT-5 系列）——業界標竿、多模態最強</h2>
       <table class="data-table">
         <thead><tr><th>角度</th><th>內容</th></tr></thead>
         <tbody>
           <tr><td>定位</td><td>整個 AI 產業的定調者。你聽到的「ChatGPT」就是他家的產品，開發的 API 協議變成事實標準（別家幾乎都相容）。舊金山公司。</td></tr>
-          <tr><td>代表模型</td><td><code>gpt-4o</code>（旗艦多模態）、<code>gpt-4o-mini</code>（便宜快版）、<code>o1</code> / <code>o1-mini</code>（reasoning 系列，會深度思考）。</td></tr>
+          <tr><td>代表模型</td><td>2026 主力是 GPT-5 家族：<code>gpt-5</code>（旗艦）、<code>gpt-5-mini</code>（性價比）、<code>gpt-5-nano</code>（超便宜快版）；reasoning 已整合進 GPT-5 Thinking 系列。舊 <code>gpt-4o</code> / <code>gpt-4o-mini</code> / <code>o1-mini</code> 仍在 API 可用但 OpenAI 已標為 legacy（新專案建議直接跳 GPT-5）。</td></tr>
           <tr><td>強項</td><td>能讀圖（把家電照片、螢幕截圖、家中平面圖丟給它問問題）、生態最完整（社群、教程、範例最多）、多模態任務（圖 + 文 + 語音）最成熟、模型品質頂尖。</td></tr>
-          <tr><td>弱項</td><td>台灣要翻牆或走中轉（沒官方支付通路，信用卡帳單地址擋台灣）、價格偏高、中文回應偶有翻譯腔（不如 GLM 自然）、rate limit 對新帳號很嚴。</td></tr>
+          <tr><td>弱項</td><td>台灣要翻牆或走中轉（沒官方支付通路，信用卡帳單地址擋台灣）、價格偏高、中文回應偶有翻譯腔（不如 GLM 自然）、rate limit 對新帳號很嚴、model 迭代很快（半年就會標 legacy）。</td></tr>
           <tr><td>推薦場景</td><td>家電照片辨識（「這個插座燒了嗎」）、看 HA 儀表板截圖問問題、需要多模態的任務、想要「最主流跟大家一樣」的選擇。</td></tr>
           <tr><td>申請入口</td><td><code>https://platform.openai.com/</code>。註冊要有能在美國收信的地址、能收美國號碼的手機（有 SIM 就好），或者找代購儲值卡。</td></tr>
         </tbody>
       </table>
       <p><strong>Pi Agent 該怎麼填</strong>：</p>
       <pre class="code-block"><code>Provider name: OpenAI
-API mode:       openai-completions
+API mode:       openai-completions   （新版可選 openai-responses，走 Responses API）
 Base URL:       https://api.openai.com/v1
 API key:        sk-...（OpenAI 的金鑰以 sk- 開頭）
-Thinking format: （留空，官方模型不走 thinking block）
-Models:         gpt-4o
-                gpt-4o-mini
-                o1-mini</code></pre>
-      <div class="callout warn"><strong>注意：</strong>OpenAI 是「按實際用量扣款」，不是月費制。你不用先付月租，但要先儲值一筆 pre-paid credit（例如 5 美金起）才能開始用。用完會斷連，不會自動扣爆。</div>
+Thinking format: openai               （GPT-5 Thinking 系列需要；不用 reasoning 可留空）
+Models:         gpt-5
+                gpt-5-mini
+                gpt-5-nano</code></pre>
+      <div class="callout warn"><strong>注意：</strong>OpenAI 是「按實際用量扣款」，不是月費制。你不用先付月租，但要先儲值一筆 pre-paid credit（例如 5 美金起）才能開始用。用完會斷連，不會自動扣爆。<strong>Model 迭代快</strong>——2026/02 之後 <code>gpt-4o</code> 已從 ChatGPT 下架、API 側也不保證長期供應，新建 provider 建議直接掛 GPT-5 系列。</div>
     </section>
 
     <section id="anthropic" data-nav="Anthropic Claude">
-      <h2 data-icon="ai">Anthropic（Claude 4.6 / 4.7）——深度思考首選、寫程式最穩</h2>
+      <h2 data-icon="ai">Anthropic（Claude Sonnet 4.6 / Opus 4.7 / Haiku 4.5）——深度思考首選、寫程式最穩</h2>
       <table class="data-table">
         <thead><tr><th>角度</th><th>內容</th></tr></thead>
         <tbody>
           <tr><td>定位</td><td>OpenAI 前員工出來創的公司，主打「安全的 AI」。旗下 Claude 系列在寫程式、長文閱讀、深度推理三塊被公認是天花板。舊金山公司。</td></tr>
-          <tr><td>代表模型</td><td><code>claude-sonnet-4.6</code>（旗艦中階）、<code>claude-opus-4.7</code>（旗艦大模）、<code>claude-haiku</code>（便宜快版）。這章寫作當下 4.7 是最新。</td></tr>
-          <tr><td>強項</td><td>思考塊（thinking block）最詳細、可以清楚看到它怎麼推理、寫程式最穩（複雜自動化、code review、長 script）、cache_control 機制省很多錢（重複問類似問題自動走快取）、對長文件理解力好。</td></tr>
+          <tr><td>代表模型</td><td>alias 格式（<strong>官方推薦</strong>，全用連字號、不用小數點）：<code>claude-sonnet-4-6</code>（中階旗艦，1M context）、<code>claude-opus-4-7</code>（大模旗艦，1M context）、<code>claude-haiku-4-5</code>（便宜快版，200K context）。要鎖版本則加日期後綴如 <code>claude-haiku-4-5-20251001</code>。<em>注意「4.6」是廠商行銷寫法，API 一律用 <code>4-6</code>；填成 <code>claude-sonnet-4.6</code> 會 404。</em></td></tr>
+          <tr><td>強項</td><td>思考塊（thinking block）最詳細、可以清楚看到它怎麼推理、寫程式最穩（複雜自動化、code review、長 script）、prompt caching 機制省很多錢（重複問類似問題自動走快取）、對長文件理解力好（1M context 起跳）。</td></tr>
           <tr><td>弱項</td><td>價格是所有家裡偏貴的（Opus 尤其貴）、繁體中文比 GLM 稍生硬（能用但有翻譯感）、台灣要走 VPN 或中轉、免費層很陽春（月 5 美金起才有正式配額）。</td></tr>
           <tr><td>推薦場景</td><td>重要決策討論（「我家該選 Matter 還是 Zigbee」）、寫複雜的 HA 自動化（多 trigger + 多 condition 的那種）、幫你 review 別人寫的 YAML、跑 code 生成任務。</td></tr>
           <tr><td>申請入口</td><td><code>https://console.anthropic.com/</code>。同樣要美國門檻，但比 OpenAI 好過一點點。</td></tr>
@@ -196,15 +196,15 @@ Models:         gpt-4o
       </table>
       <p><strong>Pi Agent 該怎麼填</strong>：</p>
       <pre class="code-block"><code>Provider name: Anthropic
-API mode:       anthropic          ← 注意！不是 openai-completions
-Base URL:       https://api.anthropic.com
+API mode:       anthropic-messages   ← 注意！不是 openai-completions
+Base URL:       https://api.anthropic.com/v1
 API key:        sk-ant-...（Anthropic 的金鑰以 sk-ant- 開頭）
 Thinking format: （留空，走 native thinking blocks 自動處理）
-Models:         claude-sonnet-4.6
-                claude-opus-4.7
-                claude-haiku-4.5</code></pre>
-      <div class="callout warn"><strong>注意：</strong>Anthropic 是<strong>唯一一家</strong>不用 <code>openai-completions</code> 的主流 provider，因為它的 API 協議自己一套（有 native 的 thinking blocks 和 cache_control）。api mode 填錯（例如選成 openai-completions）Pi Agent 會直接連不上或思考塊全部亂碼。</div>
-      <div class="callout tip"><strong>提示：</strong>cache_control 是 Anthropic 的省錢神器：你如果每次都問類似結構的問題（例如「這個 YAML 有什麼問題」），Pi Agent 走 anthropic 模式時會自動幫你走快取，重複的部分只算 1/10 的價錢。走 OpenRouter 中轉就沒有這功能。</div>
+Models:         claude-sonnet-4-6
+                claude-opus-4-7
+                claude-haiku-4-5</code></pre>
+      <div class="callout warn"><strong>注意：</strong>Anthropic 是<strong>唯一一家</strong>不用 <code>openai-completions</code> 的主流 provider，因為它的 API 協議自己一套（有 native 的 thinking blocks 和 prompt caching）。Pi Agent 這欄要選的正確值是 <code>anthropic-messages</code>（有些舊版文件寫 <code>anthropic</code>，現在統一叫 messages）。api mode 填錯（例如選成 openai-completions）Pi Agent 會直接連不上或思考塊全部亂碼。</div>
+      <div class="callout tip"><strong>提示：</strong>Anthropic 的 prompt caching（API 欄位叫 <code>cache_control</code>）是省錢神器：你如果每次都問類似結構的問題（例如「這個 YAML 有什麼問題」），Pi Agent 走 <code>anthropic-messages</code> 模式時會自動幫你走快取，重複的部分只算 1/10 的價錢。走 OpenRouter 中轉就沒有這功能。</div>
     </section>
 
     <section id="deepseek" data-nav="DeepSeek 性價比">
@@ -237,7 +237,7 @@ Models:         deepseek-chat
         <thead><tr><th>角度</th><th>內容</th></tr></thead>
         <tbody>
           <tr><td>定位</td><td>美國新創，自研 LPU（Language Processing Unit）晶片，把 Llama、Kimi、Mixtral 等開源模型跑到「秒回」等級。他們不做自家模型，是「跑別人模型跑最快」的專家。</td></tr>
-          <tr><td>代表模型</td><td><code>llama-3.3-70b-versatile</code>（Meta 開源旗艦）、<code>llama-3.1-8b-instant</code>（更小更快）、<code>mixtral-8x7b-32768</code>、<code>moonshotai/kimi-k2</code>。這清單會隨他們選什麼開源模型變動。</td></tr>
+          <tr><td>代表模型</td><td>目前 production 清單：<code>llama-3.3-70b-versatile</code>（Meta 開源旗艦，280 tok/s）、<code>llama-3.1-8b-instant</code>（更小更快，560 tok/s）、<code>openai/gpt-oss-120b</code>（OpenAI 開源大模）、<code>openai/gpt-oss-20b</code>（1000 tok/s，超快）。<em>過去常見的 <code>mixtral-8x7b-32768</code>、<code>moonshotai/kimi-k2</code> 已從 production 下架（Kimi K2 曾遷到 <code>-instruct-0905</code>，目前多為 preview 狀態）</em>。清單隨開源模型節奏變動。</td></tr>
           <tr><td>強項</td><td>速度是所有家最快的（實測 500 tokens/秒 vs GLM 一般 30 tokens/秒）——你按下 Enter 幾乎是話還沒說完答案就寫好了、免費額度慷慨（新戶送很多）、可以直接玩開源大模型（想試 Llama 又不想自己架 Ollama 的最省路徑）、台灣直連沒問題。</td></tr>
           <tr><td>弱項</td><td>模型上限就是他們選的那幾個（不做自家模型，換代就跟著換）、context window 一般（大多在 8K-128K）、免費層有每分鐘請求上限。</td></tr>
           <tr><td>推薦場景</td><td>需要「秒回」的即時對話、大量草稿（bulk drafting，例如一次生 30 則自動化說明）、跑開源大模型體驗、初學者玩不用錢的入門選擇。</td></tr>
@@ -249,10 +249,11 @@ Models:         deepseek-chat
 API mode:       openai-completions
 Base URL:       https://api.groq.com/openai/v1
 API key:        gsk_...（Groq 的金鑰以 gsk_ 開頭）
-Thinking format: （留空）
+Thinking format: （留空；gpt-oss 系列想開推理時填 openai）
 Models:         llama-3.3-70b-versatile
                 llama-3.1-8b-instant
-                moonshotai/kimi-k2</code></pre>
+                openai/gpt-oss-120b
+                openai/gpt-oss-20b</code></pre>
       <div class="callout tip"><strong>提示：</strong>Groq 的速度真的會讓你重新想像「跟 AI 講話」的節奏——像跟人 chat 而不是等機器。缺點是模型清單隨他們心情變動，你今天存的模型名，半年後可能被下架。要用要偶爾回官網對一下清單。</div>
     </section>
 
@@ -262,9 +263,9 @@ Models:         llama-3.3-70b-versatile
         <thead><tr><th>角度</th><th>內容</th></tr></thead>
         <tbody>
           <tr><td>定位</td><td>不是 AI 廠商，是「AI 中盤商」。他們幫你聚合上百個模型（OpenAI、Anthropic、Google、Meta、Mistral、xAI、Perplexity、DeepSeek、GLM、Cohere 全都在），你用一支金鑰、一個 baseUrl 就能通吃全部。</td></tr>
-          <tr><td>代表模型</td><td>模型名格式一律是 <code>provider/model</code>，例如 <code>anthropic/claude-sonnet-4.6</code>、<code>openai/gpt-4o</code>、<code>meta-llama/llama-3.3-70b</code>、<code>google/gemini-2.0-flash</code>。</td></tr>
+          <tr><td>代表模型</td><td>模型名格式一律是 <code>provider/model</code>，OpenRouter 端<strong>沿用廠商行銷寫法（小數點）</strong>，例如 <code>anthropic/claude-sonnet-4.5</code>、<code>anthropic/claude-opus-5</code>、<code>anthropic/claude-haiku-4.5</code>、<code>openai/gpt-5</code>、<code>meta-llama/llama-3.3-70b-instruct</code>、<code>google/gemini-2.5-flash</code>、<code>deepseek/deepseek-chat</code>。<em>要注意 Anthropic 直連要用 <code>4-6</code> 連字號、走 OpenRouter 卻用 <code>4.5</code> 小數點，兩邊命名慣例不同。</em></td></tr>
           <tr><td>強項</td><td>一支金鑰用上百個模型（省下每家申請的功夫）、跨家統一介面（換模型不用改設定）、便宜的自動 fallback（某家滿載自動切別家）、可以用信用卡買 OpenAI／Anthropic 金鑰的替代路徑（跳過原廠的地區限制）、台灣直連沒問題。</td></tr>
-          <tr><td>弱項</td><td>不是原廠所以價格會加 5-10% margin、Anthropic 的 native thinking blocks 走 OpenRouter 會被中繼「攤平」成純文字（因為走 openai-compatible 協議）、cache_control 也失效、有時候某模型的最新更新要等他們 sync 幾天。</td></tr>
+          <tr><td>弱項</td><td>不是原廠所以價格會加 5-10% margin、Anthropic 的 native thinking blocks 走 OpenRouter 會被中繼「攤平」成純文字（因為走 openai-compatible 協議）、prompt caching 也失效、有時候某模型的最新更新要等他們 sync 幾天。</td></tr>
           <tr><td>推薦場景</td><td>想試很多模型但不想每家都申請、地區限制的替代路徑（買 OpenAI 額度但不想搞美國卡）、備援與 fallback、月費預算單一化管理。</td></tr>
           <tr><td>申請入口</td><td><code>https://openrouter.ai/</code>。Google 或 GitHub 登入，充值支援 Stripe 信用卡（台灣卡通常過得了）與加密貨幣。</td></tr>
         </tbody>
@@ -274,12 +275,13 @@ Models:         llama-3.3-70b-versatile
 API mode:       openai-completions
 Base URL:       https://openrouter.ai/api/v1
 API key:        sk-or-v1-...（OpenRouter 金鑰以 sk-or-v1- 開頭）
-Thinking format: （留空）
-Models:         anthropic/claude-sonnet-4.6
-                openai/gpt-4o
+Thinking format: openrouter          （想開 reasoning 才需要，其餘留空）
+Models:         anthropic/claude-sonnet-4.5
+                anthropic/claude-opus-5
+                openai/gpt-5
                 deepseek/deepseek-r1
                 meta-llama/llama-3.3-70b-instruct
-                google/gemini-2.0-flash</code></pre>
+                google/gemini-2.5-flash</code></pre>
       <div class="callout warn"><strong>注意：</strong>如果你重度依賴 Anthropic 的思考塊或 cache_control（例如常常長對話 review 大段 YAML），<strong>不要走 OpenRouter 的 anthropic/*</strong>——那條路會把 thinking blocks 攤平、cache 失效，體驗跟直連差很多。改申請 Anthropic 直連的金鑰，把兩家都掛在 Models 裡各自用途各自跑。</div>
     </section>
 
@@ -293,13 +295,14 @@ Models:         anthropic/claude-sonnet-4.6
           <tr><td>強項</td><td>context window 大到誇張（最長可達 1M tokens——約等於 3-4 本厚小說）、abab7 便宜、中英日語都行、台灣直連沒問題、多模態（部分模型能吃圖）。</td></tr>
           <tr><td>弱項</td><td>品牌認知較低（沒 GLM／DeepSeek 那麼紅）、社群小教學文少、模型迭代速度沒中國第一梯隊快、極長 context 開下去單次費用會滾雪球。</td></tr>
           <tr><td>推薦場景</td><td>讀超長文件（整份 HA log 找問題、整本 e-book 摘要、整份 codebase 分析）、大量歷史對話回顧、需要「把所有材料一次餵給它」的任務。</td></tr>
-          <tr><td>申請入口</td><td><code>https://platform.minimaxi.com/</code>（注意末尾是 <strong>minimaxi</strong> 不是 minimax）。手機 +886 註冊。</td></tr>
+          <tr><td>申請入口</td><td>國際帳號：<code>https://www.minimax.io/</code>（API 走 <code>api.minimax.io</code>）；中國大陸帳號：<code>https://platform.minimaxi.com/</code>（API 走 <code>api.minimaxi.com</code>，末尾多一個 <strong>i</strong>）。台灣 +886 手機兩邊都能註冊，兩套帳號互不通用、金鑰也不共用，選一邊申請即可。</td></tr>
         </tbody>
       </table>
-      <p><strong>Pi Agent 該怎麼填</strong>：</p>
+      <p><strong>Pi Agent 該怎麼填</strong>（依你申請的帳號選對應 Base URL）：</p>
       <pre class="code-block"><code>Provider name: MiniMax
 API mode:       openai-completions
-Base URL:       https://api.minimaxi.com/v1
+Base URL:       https://api.minimax.io/v1      ← 國際帳號用這個
+                https://api.minimaxi.com/v1    ← 中國大陸帳號用這個（多一個 i）
 API key:        （MiniMax 開放平台複製的那串）
 Thinking format: deepseek           ← M2 系列走 reasoning 時建議填
 Models:         MiniMax-M2
@@ -356,7 +359,7 @@ Models:         MiniMax-M2
           <tr>
             <td>寫 HA 自動化 YAML（多 trigger、多 condition）</td>
             <td>GLM-4.6</td>
-            <td>Anthropic Sonnet</td>
+            <td>Claude Sonnet 4.6</td>
             <td>GLM 中文順且熟悉 HA、Sonnet 邏輯最穩不亂寫。</td>
           </tr>
           <tr>
@@ -373,7 +376,7 @@ Models:         MiniMax-M2
           </tr>
           <tr>
             <td>寫複雜 script 或 Python 小工具</td>
-            <td>Anthropic Opus</td>
+            <td>Claude Opus 4.7</td>
             <td>DeepSeek-reasoner</td>
             <td>Opus 寫程式最穩、R1 是便宜的替代方案。</td>
           </tr>
@@ -421,11 +424,11 @@ Models:         MiniMax-M2
         </li>
         <li>
           <h3>用 OpenRouter 為什麼 Anthropic 的思考塊不見了</h3>
-          <p>因為 OpenRouter 是走 openai-completions 中繼協議把所有家統一介面，這個協議沒有 Anthropic 的 native thinking block 格式。OpenRouter 幫你把思考鏈「攤平」成純文字塞回答裡，結果就是你看到答案很長但沒有灰色的思考塊。要保留完整思考塊必須<strong>走 Anthropic 直連</strong>（api mode 選 <code>anthropic</code>）——這也是<a href="#anthropic">上面 Anthropic 那節</a>強調要單獨掛的原因。日常兩條路併存：中繼走 OpenRouter 圖便宜、深度討論走 Anthropic 直連保完整體驗。</p>
+          <p>因為 OpenRouter 是走 openai-completions 中繼協議把所有家統一介面，這個協議沒有 Anthropic 的 native thinking block 格式。OpenRouter 幫你把思考鏈「攤平」成純文字塞回答裡，結果就是你看到答案很長但沒有灰色的思考塊。要保留完整思考塊必須<strong>走 Anthropic 直連</strong>（api mode 選 <code>anthropic-messages</code>）——這也是<a href="#anthropic">上面 Anthropic 那節</a>強調要單獨掛的原因。日常兩條路併存：中繼走 OpenRouter 圖便宜、深度討論走 Anthropic 直連保完整體驗。</p>
         </li>
         <li>
           <h3>台灣信用卡刷 GLM / OpenAI 過不了怎麼辦</h3>
-          <p>GLM 需要中國實名＋支付寶／微信，台灣卡直接不收。變通方法：（a）找中國親友幫忙儲值（人情借用）、（b）淘寶找代購儲值卡（用台幣買點卡碼，充進帳戶）、（c）改走 OpenRouter，用台灣信用卡買到 GLM 的模型（貴一點點但通路能過）。OpenAI 卡台灣地址帳單也麻煩，同樣走 OpenRouter 買 openai/gpt-4o 是最省事的替代路徑。</p>
+          <p>GLM 需要中國實名＋支付寶／微信，台灣卡直接不收。變通方法：（a）找中國親友幫忙儲值（人情借用）、（b）淘寶找代購儲值卡（用台幣買點卡碼，充進帳戶）、（c）改走 OpenRouter，用台灣信用卡買到 GLM 的模型（貴一點點但通路能過）。OpenAI 卡台灣地址帳單也麻煩，同樣走 OpenRouter 買 <code>openai/gpt-5</code> 系列是最省事的替代路徑。</p>
         </li>
         <li>
           <h3>Groq 免費額度用完會發生什麼</h3>
@@ -461,8 +464,8 @@ Models:         MiniMax-M2
         <div class="body">不會，但新舊 session 走不同 provider。Pi Agent 的每個對話 session 開頭選的 provider＋model 會被<strong>凍結</strong>，之後你就算換了預設 provider，回到這個舊 session 它還是用當初選的那個模型繼續。所以想試新 provider 直接開新 session 就好，不用擔心弄亂舊對話。這個行為在<a href="ch4_ui_tour.html">第 4 章</a>介面導覽有講過。</div>
       </details>
       <details class="faq">
-        <summary>Anthropic 的 cache_control 是什麼？走 OpenRouter 為什麼失效？</summary>
-        <div class="body">cache_control 是 Anthropic 專屬機制：你如果重複問類似結構的問題（例如每次都貼一份長 5000 字的 system prompt 加不同問題），Anthropic 會偵測到系統提示重複、把它放進快取，第二次以後只算 1/10 的價錢。<a href="ch12_reasoning.html">第 12 章</a>會展開講怎麼設計 prompt 讓快取吃到。這個功能只有走 api mode <code>anthropic</code>（直連）才啟動，走 <code>openai-completions</code>（即使是 OpenRouter 的 anthropic/*）都會失效，因為 OpenAI 協議沒有這個欄位可傳。日常重度使用 Claude 的話，額外花時間申請 Anthropic 直連金鑰、跳過 OpenRouter 中繼，長期會省很多錢。</div>
+        <summary>Anthropic 的 prompt caching / cache_control 是什麼？走 OpenRouter 為什麼失效？</summary>
+        <div class="body">prompt caching 是 Anthropic 專屬機制（API 欄位叫 <code>cache_control</code>）：你如果重複問類似結構的問題（例如每次都貼一份長 5000 字的 system prompt 加不同問題），Anthropic 會偵測到系統提示重複、把它放進快取，第二次以後只算 1/10 的價錢。<a href="ch12_reasoning.html">第 12 章</a>會展開講怎麼設計 prompt 讓快取吃到。這個功能只有走 api mode <code>anthropic-messages</code>（直連）才啟動，走 <code>openai-completions</code>（即使是 OpenRouter 的 anthropic/*）都會失效，因為 OpenAI 協議沒有這個欄位可傳。日常重度使用 Claude 的話，額外花時間申請 Anthropic 直連金鑰、跳過 OpenRouter 中繼，長期會省很多錢。</div>
       </details>
       <details class="faq">
         <summary>我看到有些教學提到 Zai / Zhipu 的 thinkingFormat，跟這章寫的一樣嗎？</summary>

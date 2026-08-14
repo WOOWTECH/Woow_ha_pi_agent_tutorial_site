@@ -112,7 +112,7 @@
         <li>手機 App 沒辦法自動跟著走</li>
       </ol>
       <p>啟用 Ingress 之後，這四件事全部消失。你連 Home Assistant 就好，HA 幫你把畫面塞進側邊欄那個 iframe（內嵌框架）裡，登入、權限、遠端連線全部沿用 HA 那一套。</p>
-      <div class="callout"><strong>觀念：</strong>Pi Agent 的內部埠是 <code>30142</code>，但你在瀏覽器網址列永遠看不到這個數字，因為你根本不會直接連它。所有請求都繞到 <code>你的HA網址/api/hassio_ingress/…</code> 這條路徑，由 HA 幫你轉發進去。</div>
+      <div class="callout"><strong>觀念：</strong>Pi Agent 的內部埠是 <code>30142</code>（<code>config.yaml</code> 的 <code>ingress_port: 30142</code> 明講），但你在瀏覽器網址列永遠看不到這個數字——你根本沒直接連它。實際上，每一個資源請求都被塞進 <code>你的HA網址/api/hassio_ingress/&lt;token&gt;/…</code> 這條 HA 核心（<code>homeassistant/components/hassio/ingress.py</code>）內建的路由，由 HA 內部轉發給 add-on 容器裡的 nginx（監聽 30142），nginx 再轉給 pi-web（Next.js，實際跑在容器內部 30141）。三層代理，你的瀏覽器看到的永遠只是 HA 的網址。</div>
 
       <table class="data-table">
         <thead>
@@ -132,7 +132,7 @@
 
     <section id="admin" data-nav="admin 權限的意義">
       <h2 data-icon="persons">admin 權限的意義（為什麼家人看不到）</h2>
-      <p>Home Assistant 使用者分兩種（在第 5 章「用戶管理」有更完整的說明）：</p>
+      <p>Home Assistant 使用者分兩種（HA 官方的「用戶管理」章節有完整說明，不在本教材範圍）：</p>
       <table class="data-table">
         <thead>
           <tr><th>角色</th><th>能做什麼</th><th>側欄長什麼樣</th></tr>
@@ -142,13 +142,13 @@
           <tr><td><strong>User（一般用戶）</strong></td><td>只能操作既有的儀表板、開關燈、看歷史</td><td><strong>看不到</strong>「Pi Agent」按鈕</td></tr>
         </tbody>
       </table>
-      <p>這是 Pi Agent 的 <code>config.yaml</code> 裡面刻意寫了一行 <code>panel_admin: true</code>——「這個側邊面板，只給管理員看」。為什麼要這樣？</p>
+      <p>這是 Pi Agent 的 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on/blob/main/config.yaml" rel="noopener"><code>config.yaml</code></a> 裡刻意寫了一行 <code>panel_admin: true</code>（就在 <code>panel_title: Pi Agent</code> 下面）——「這個側邊面板，只給管理員看」。實作面上，這對應 HA supervisor 端 <code>IngressPanel</code> 的 <code>admin</code> 旗標，再被 HA 核心的 <code>frontend.async_register_built_in_panel(..., require_admin=data.admin, ...)</code> 套用。為什麼要這樣？</p>
       <ul>
         <li>Pi Agent 會用你的 <strong>API 金鑰</strong>去打外面的 AI（GLM、OpenAI、Claude…），這些金鑰是要付費的，訪客亂玩會直接燒錢。</li>
         <li>Pi Agent 的 <strong>Session 對話</strong>會記錄你問過的家裡問題，可能夾雜設備 ID、屋內位置，屬於相對私密的資料。</li>
         <li>Pi Agent 的 <strong>Skills</strong>能真的執行 shell 指令、動 HA 設定，訪客如果玩壞了自動化，你要花整晚回復。</li>
       </ul>
-      <div class="callout warn"><strong>注意：</strong>如果你想讓另一位家人（例如另一半）也能用 Pi Agent，正確做法是「把他升成管理員」，不是「找一個 hack 讓一般用戶也能看到 add-on」。升管理員的方法在<a href="ch5_first_key.html">第 5 章</a>之後、或是原本的 HA 入住指南的「用戶管理」章節有教。</div>
+      <div class="callout warn"><strong>注意：</strong>如果你想讓另一位家人（例如另一半）也能用 Pi Agent，正確做法是「把他升成管理員」，不是「找一個 hack 讓一般用戶也能看到 add-on」。升管理員的方法在本章下面「家人也想玩」那節有步驟；更完整的角色說明請參考原本 HA 入住指南的「用戶管理」章節。</div>
       <figure class="shot">
         <img src="assets/screenshots/ch3/01_sidebar.png" alt="Home Assistant 側邊欄裡的 Pi Agent 按鈕" />
         <figcaption><strong>圖 3-1</strong>Home Assistant 側邊欄：Overview、地圖、能源、通知這些常見項目底下，Pi Agent 那顆機器人圖示就是入口（只有 admin 才看得到）。</figcaption>
@@ -219,9 +219,9 @@
           <tr><th>比較點</th><th>側欄內嵌（預設）</th><th>Open in new tab（獨立分頁）</th></tr>
         </thead>
         <tbody>
-          <tr><td>網址列長相</td><td>看起來是 HA 的網址</td><td>會帶一段長長的一次性 token</td></tr>
-          <tr><td>登入怎麼過</td><td>沿用 HA 的登入 session</td><td>token 就是「臨時通行證」</td></tr>
-          <tr><td>重整之後</td><td>照樣運作</td><td>token 過期 → 404，得回側欄重按</td></tr>
+          <tr><td>網址列長相</td><td><code>/hassio/ingress/woow_ha_pi_agent</code>（HA 監督器 frontend 的固定路徑）</td><td><code>/api/hassio_ingress/&lt;一長串 16-128 字元 token&gt;/…</code>（HA <code>createHassioSession</code> 現場發的）</td></tr>
+          <tr><td>登入怎麼過</td><td>沿用 HA 的登入 session（cookie）</td><td>token 本身就是「臨時通行證」，HA 每 60 秒會 <code>validateHassioSession</code> 續一次</td></tr>
+          <tr><td>重整之後</td><td>照樣運作（cookie 沒過期）</td><td>token 過期就 404，得回側欄重按新開一次</td></tr>
           <tr><td>能不能複製網址給別人</td><td><strong>不建議</strong>（別人沒登入你的 HA 也進不去）</td><td><strong>絕對不行</strong>（token 綁你這台瀏覽器）</td></tr>
           <tr><td>什麼時候用</td><td>日常主要模式</td><td>雙螢幕、想把 HA 和 Pi Agent 並排</td></tr>
         </tbody>
@@ -239,7 +239,7 @@
           <li>小孩帳號<strong>不建議</strong>升管理員，寧可你當代理人。理由：改壞 HA 設定的復原成本比想像高。</li>
         </ul>
       </div>
-      <div class="callout tip"><strong>提示：</strong>之後 Pi Agent 有可能開放「按 Session 分權限」的功能，讓一般用戶也能被授權看特定對話。這功能還沒到，本教材更新時會補上。現階段就是「管理員全看、一般用戶不看」二選一。</div>
+      <div class="callout tip"><strong>提示：</strong>Pi Agent 現階段沒有「按 Session 分權限」這種細粒度的授權（README 的 Security 表也講明「Anyone with HA admin login = full pi-web access」），所以就是「管理員全看、一般用戶完全看不到」二選一。如果哪天上游改了行為，本教材會更新，但目前不要假設有這條路。</div>
     </section>
 
     <section id="troubleshoot" data-nav="常見卡關">
@@ -254,7 +254,7 @@
         </li>
         <li>
           <h3>按下去右邊「一直空白」，轉圈圈半天</h3>
-          <p>先等 10～15 秒，因為 pi-web 的 nginx 首次啟動比較慢。等超過 30 秒都還是白的，按 <kbd>F12</kbd> 打開瀏覽器 <strong>Console</strong>，看有沒有紅字 <code>404</code> 或 <code>403 Untrusted API request</code>。<br>如果是 403，那是 add-on 剛升級但 nginx 還沒重載，回「Add-ons → Pi Agent」按一下「Restart」重來一次就會好。<br>如果是 404，八成是 add-on 沒完全啟動，看一下 Add-on 頁面的 <code>Log</code> 分頁有沒有錯誤。</p>
+          <p>先等 10～15 秒，因為 pi-web 的 nginx 首次啟動比較慢。等超過 30 秒都還是白的，按 <kbd>F12</kbd> 打開瀏覽器 <strong>Network</strong> 或 <strong>Console</strong> 分頁看有沒有紅字。<br>如果一堆 <code>_next/…</code>、<code>/api/…</code> 是 <strong>404</strong>，通常是 nginx 的 <code>sub_filter</code> 或注入的 <code>&lt;/head&gt;</code> shim 沒把絕對路徑正確重寫成 ingress 前綴（DOCS.md「Troubleshooting」有詳細敘述），八成是 add-on 沒完全啟動——先看 Add-on 頁面 <code>Log</code> 分頁；不行就重啟 add-on。<br>如果是 <strong>403</strong>（有時會夾 <code>Untrusted API request</code> 字樣），先直接「Add-ons → Pi Agent → Restart」；還不行就照 DOCS 說的做 <code>ha core restart</code>，因為 ingress token 是 add-on 啟動時 mint 的，有時 Supervisor 需要重新註冊 panel。</p>
         </li>
         <li>
           <h3>「Open in new tab」按下去顯示 404</h3>
@@ -295,7 +295,7 @@
       </details>
       <details class="faq">
         <summary>可以把 Pi Agent 的網址設成瀏覽器書籤嗎？</summary>
-        <div class="body">可以，但書籤裡不要存「Open in new tab」那個帶 token 的長網址（會過期）。應該存 HA 首頁的 URL（例如 <code>http://homeassistant.local:8123</code>），然後每次從側邊欄點進 Pi Agent。或者更直接一點，書籤網址寫 <code>http://homeassistant.local:8123/hassio/ingress/woow_ha_pi_agent</code>，這是 HA 內部給側欄面板的固定路徑，會永遠有效。</div>
+        <div class="body">可以，但<strong>絕對不要</strong>存「Open in new tab」那個帶 <code>/api/hassio_ingress/&lt;一長串 token&gt;/…</code> 的網址——那段 token 是 HA 用 <code>createHassioSession</code> 現場發的、每次重啟或閒置久了就失效，存了也白搭。安全的做法是存 HA 首頁（例如 <code>http://homeassistant.local:8123</code>），從側邊欄點進 Pi Agent。想省一步的話，可以書籤 <code>http://homeassistant.local:8123/hassio/ingress/woow_ha_pi_agent</code>——這是 HA 監督器（Supervisor）frontend 給 add-on ingress 的固定路徑，slug <code>woow_ha_pi_agent</code> 就是 <code>config.yaml</code> 裡宣告的那個。開啟時 HA 會臨場拿新的 token 幫你補上，所以這條連結是「永久有效」的（前提是 add-on 沒被移除、你的帳號還是管理員）。</div>
       </details>
     </section>
 

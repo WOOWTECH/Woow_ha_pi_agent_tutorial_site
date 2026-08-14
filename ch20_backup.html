@@ -117,13 +117,16 @@
           <tr><td><code>sessions/*.jsonl</code></td><td>你跟 AI 講過的所有對話（每個 session 一個檔，見 <a href="ch8_session.html">第 8 章</a>）</td><td><strong>會</strong></td></tr>
           <tr><td><code>models.json</code></td><td>所有 provider 設定與 API 金鑰（見 <a href="ch6_paste_key.html">第 6 章</a>）</td><td><strong>會</strong></td></tr>
           <tr><td><code>skills/</code></td><td>你裝過或自己寫的 Skill（見 <a href="ch14_skill_concept.html">第 14 章</a>）</td><td><strong>會</strong></td></tr>
-          <tr><td><code>auth.json</code></td><td>OAuth 登入 token（例如 <em>GLM login</em> 那種免打 key 的授權）</td><td><strong>會</strong></td></tr>
-          <tr><td><code>home/pi-cwd-*/</code></td><td>pi coding agent 幫你開的工作目錄（含成品、腳本、Skill 草稿）</td><td><strong>會</strong></td></tr>
+          <tr><td><code>auth.json</code></td><td>OAuth 登入 token（例如 <em>GLM login</em> 那種免打 key 的授權；權限 600）</td><td><strong>會</strong></td></tr>
+          <tr><td><code>settings.json</code></td><td>pi-web 介面偏好（主題、預設 provider 等）</td><td><strong>會</strong></td></tr>
+          <tr><td><code>home/pi-cwd-YYYYMMDD/</code></td><td>pi coding agent 幫你開的工作目錄（含腳本、Skill 草稿；命名格式固定為 <code>pi-cwd-</code> 加 8 位日期）</td><td><strong>會</strong></td></tr>
+          <tr><td><code>projects/&lt;影片名&gt;/final.mp4</code></td><td>影片管線的成品 MP4 與 script.md、voice/（見 <a href="ch17_video_pipeline.html">第 17 章</a>）</td><td><strong>會</strong></td></tr>
           <tr><td><code>rclone/rclone.conf</code></td><td>Google Drive 授權 token（見 <a href="ch19_rclone.html">第 19 章</a>）</td><td><strong>會</strong></td></tr>
+          <tr><td><code>.video-tools-installed</code></td><td>video-tools 首裝完成的 sentinel 空檔（見 <a href="ch18_video_tools.html">第 18 章</a>）</td><td><strong>會</strong>（但 restore 進新機會導致 s6 跳過重下——見警告區）</td></tr>
           <tr><td><code>venv/</code></td><td>Python 環境（video-tools 用的一堆套件）</td><td><strong>不會</strong>（還原後自動重下）</td></tr>
           <tr><td><code>playwright-cache/</code></td><td>Playwright 用的 Chromium 瀏覽器</td><td><strong>不會</strong>（還原後自動重下）</td></tr>
-          <tr><td><code>projects/*/clips/</code></td><td>影片管線抓下來的畫面片段（原始素材）</td><td><strong>不會</strong>（可再產）</td></tr>
-          <tr><td><code>projects/*/segments/</code></td><td>ffmpeg 剪接的中繼檔</td><td><strong>不會</strong>（可再產）</td></tr>
+          <tr><td><code>projects/&lt;影片名&gt;/clips/*.webm</code></td><td>Playwright 錄下來的每段畫面（原始素材）</td><td><strong>不會</strong>（可再產）</td></tr>
+          <tr><td><code>projects/&lt;影片名&gt;/segments/*.mp4</code></td><td>ffmpeg 剪接的中繼檔</td><td><strong>不會</strong>（可再產）</td></tr>
         </tbody>
       </table>
       <p>簡單記憶法：<strong>「你的成果會走，工具鏈跟半成品不會走」</strong>。對話、金鑰、Skill、rclone 授權、成品 mp4 都是你的成果；venv、Chromium、影片中繼檔是可以重下重跑的工具與素材。</p>
@@ -143,8 +146,8 @@
           <p><code>projects/&lt;某支影片&gt;/clips/</code> 裡是 Playwright 錄下來的每一段畫面，<code>segments/</code> 是 ffmpeg 剪出來的過渡片段。這些都是可以照著腳本再產一次的東西——只要 <code>projects/&lt;某支影片&gt;/</code> 底下的腳本、旁白稿、成品 <code>final.mp4</code> 有備份，你就有能力重新生一次中間檔。備份中繼檔沒有意義，只會讓 snapshot 肥大。</p>
         </li>
         <li>
-          <h3>還原後 s6-overlay 會自動幫你重下</h3>
-          <p>Pi Agent 開機時有一個叫 <code>video-tools-init</code> 的 s6 服務（<a href="ch18_video_tools.html">第 18 章</a>展開講過），它會檢查 <code>venv/</code> 與 <code>playwright-cache/</code> 在不在，不在就自動重下。所以你 snapshot 就算沒收這兩個資料夾，restore 完 Pi Agent 一開機，前面 3-8 分鐘會偷偷把它們重新裝一次。你只要耐心等，什麼都不用做。</p>
+          <h3>還原後 <code>video-tools-init</code> 會自動幫你重下</h3>
+          <p>Pi Agent 開機時 <code>pi-web-start.sh</code> 會 fork 一個背景腳本 <code>video-tools-init.sh</code>（<a href="ch18_video_tools.html">第 18 章</a>展開講過）。它的判斷是「sentinel 檔在 <strong>且</strong> <code>venv/bin/python3</code> 存在」，任一缺就重下。snapshot 不收 <code>venv/</code> 跟 <code>playwright-cache/</code>——那 python3 就不在，即使 sentinel 被 restore 進來也會觸發重下。restore 完 Pi Agent 一開機，前面 3-8 分鐘會偷偷把它們重新裝一次。你只要耐心等，什麼都不用做。</p>
         </li>
       </ol>
       <p>所以整個設計哲學是：<strong>snapshot 只包「無法從別處重建的東西」</strong>。對話、金鑰、Skill、rclone token、成品 mp4——這些丟了就真的丟了；venv、Chromium、影片中間檔——這些永遠可以重下重跑。備份策略設計成這樣，你才能在合理檔案大小內存到很多份歷史快照。</p>
@@ -157,23 +160,23 @@
       <ol class="steps">
         <li>
           <h3>打開 HA 的備份頁</h3>
-          <p>在 Home Assistant 側邊欄按 <strong>設定 → 系統 → 備份</strong>。第一次打開你會看到一個空清單（或前一次 HA 自動做的 backup）。舊版本的路徑是 <em>設定 → 系統 → Server Controls</em>，那條路徑在新版已經沒了，就是這裡。</p>
+          <p>在 Home Assistant 側邊欄按 <strong>設定 → 系統 → 備份</strong>（Settings → System → Backups）。第一次打開會看到一個空清單，或前一次 HA 自動排程做的 backup。舊版本（2023 以前）的路徑是 <em>設定 → 系統 → Server Controls</em>，那條路徑在新版已經沒了，就是這裡。</p>
         </li>
         <li>
-          <h3>按右下角「建立備份」，選「完整備份」</h3>
-          <p>畫面會問你要「完整備份」還是「部分備份」。第一次建議選 <strong>完整備份</strong>——它會把 HA 核心設定＋所有 add-on 資料一起包，含 Pi Agent 的 <code>/data/pi-agent/</code>。部分備份是你熟練之後想只備某幾個 add-on 才用（下面 troubleshoot 有講）。</p>
+          <h3>按右下角「立即備份」，選「手動備份」</h3>
+          <p>2024 之後的 HA UI 是右下角 <strong>Backup now（立即備份）→ Manual backup（手動備份）</strong>——舊教學裡的「建立備份 / 完整備份」按鈕已經改名。點下去會跳出一個「選要備份什麼」的畫面：預設所有東西都勾（Home Assistant 設定、每個已安裝 add-on、共享資料夾、媒體）。第一次建議<strong>保持全勾</strong>——它會把 HA 核心設定＋每個 add-on（含 Pi Agent 的 <code>/data/pi-agent/</code>）一起包。想省空間可以取消 media 跟 share 這兩個大戶，其他別動。</p>
         </li>
         <li>
           <h3>幫這次備份取個能一眼看懂的名字</h3>
           <p>預設名字通常是「Core &lt;版本&gt;」加時間戳，字很長但沒鑑別度。改一個像 <code>2026-08-14-full</code>、<code>升級前備份</code>、<code>裝完 GLM 金鑰</code> 這種你未來會看得懂的名字。取個好名字之後找備份會快很多。</p>
         </li>
         <li>
-          <h3>要不要加密自己決定</h3>
-          <p>畫面上有一個密碼欄可以加密備份檔。原則：<strong>要上傳到雲端就開加密</strong>（Nabu Casa、Google Drive、iCloud 都算），<strong>只存在自己家 NAS 或本機硬碟</strong>可以不用開。密碼要記在密碼管理器裡，忘了就真的救不回來。</p>
+          <h3>加密與 Backup Emergency Kit</h3>
+          <p>2025 版 HA 預設會<strong>自動幫你產一把加密金鑰</strong>並要求你下載 <em>Backup Emergency Kit</em>（一個 .txt 檔，裡面就是那把金鑰）。這個檔案<strong>務必存到密碼管理器或印出來收好</strong>——金鑰掉了，那份 backup 就真的還原不回來，沒有任何官方後門。要不要另外自訂密碼隨意，重點是那把 emergency kit 一定要留一份跟 HA 本體分開的地方（別跟 backup 檔一起放同一朵雲）。</p>
         </li>
         <li>
-          <h3>按下去等幾分鐘</h3>
-          <p>備份時間跟你的 HA 資料量與 add-on 數量有關，家用規模的話大概 1-10 分鐘。做完後那份備份會出現在清單裡，顯示大小（正常會有幾百 MB 到幾 GB，不誇張）。你可以按右邊三個點選<strong>下載 .tar</strong>存到本機，或選<strong>上傳到 Nabu Casa</strong>自動放雲端。有裝 Google Drive Backup 這類第三方 add-on 的話也會出現對應的上傳選項。</p>
+          <h3>選存放位置、按下去等幾分鐘</h3>
+          <p>下一步選 backup 要存哪：本機、Nabu Casa、掛好的 Network Storage、或第三方 add-on（例如 <em>Google Drive Backup</em>、<em>Samba Backup</em>）提供的位置。可以多勾幾個做多重備援。備份時間跟資料量與 add-on 數量有關，家用規模大概 1-10 分鐘。做完那份 backup 會出現在清單裡，可以按三個點選<strong>下載 .tar</strong>存到本機。</p>
         </li>
       </ol>
       <div class="callout tip"><strong>提示：</strong>Nabu Casa 訂閱戶可以在備份頁直接開啟「自動排程」與「自動上雲」，設好之後每週或每天自動做，完全不用手動按。沒 Nabu Casa 的話，可以裝 <em>Google Drive Backup</em> 或 <em>Samba Backup</em> 這類社群 add-on 排排程。</p>
@@ -189,7 +192,7 @@
         </li>
         <li>
           <h3>裝好 HA、上傳 backup、按還原</h3>
-          <p>在測試機的<strong>設定 → 系統 → 備份</strong>頁按右上「上傳備份」把你剛剛下載的 <code>.tar</code> 傳上去，然後按右邊三個點<strong>「還原」</strong>。有加密就填密碼。HA 會提示要重開機，讓它自己重來。</p>
+          <p>在測試機的<strong>設定 → 系統 → 備份</strong>頁按右上三個點的「上傳備份」把你剛剛下載的 <code>.tar</code> 傳上去，然後點該備份卡片、按<strong>「還原備份」</strong>。加密備份會要求你貼上 Backup Emergency Kit 裡的那把金鑰（或你當時自訂的密碼），沒那把就 restore 不動。HA 會提示要重開機，讓它自己重來。</p>
         </li>
         <li>
           <h3>等 Pi Agent 自動起來、video-tools 重下</h3>
@@ -216,7 +219,7 @@
       <ul>
         <li><strong>版本不對就會出事</strong>：<code>models.json</code>、<code>sessions/*.jsonl</code> 的欄位格式有可能在 Pi Agent 版本升級時微調。你把舊版格式的檔案塞進新版 add-on 可能會讓 pi-web 讀取失敗；反過來也可能。HA 官方 backup 會把 add-on 版本一起記錄，還原時是「同版對同版」，這個對齊你自己 rsync 沒辦法保證。</li>
         <li><strong>會漏掉 add-on 中繼狀態</strong>：add-on 除了 <code>/data/</code> 還有它的 <em>options.json</em>（設定分頁的內容）、config 分頁的環境變數、log_level 之類。HA backup 一起包，rsync 你要自己想辦法收齊，很容易漏。</li>
-        <li><strong>還原時 Pi Agent 不會知道要重下 video-tools</strong>：sentinel 檔案 <code>/data/pi-agent/.video-tools-installed</code> 你也一起 rsync 過去了，s6-overlay 看到這個檔就跳過重下——但實際上新機是沒 venv 的空機。結果 pi-web 開得起來，影片管線一用就崩。</li>
+        <li><strong>還原時 Pi Agent 不會知道要重下 video-tools</strong>：sentinel 檔案 <code>/data/pi-agent/.video-tools-installed</code> 你也一起 rsync 過去了，<code>video-tools-init.sh</code> 一開機看到這個檔（且 <code>venv/bin/python3</code> 存在檢查）就跳過重下——但如果你只搬 sentinel 沒搬 venv，或 venv 被排除，pi-web 開得起來但影片管線一用就崩。這時要進 Configuration 開 <code>reset_video_tools</code> 才能重來（見 <a href="ch18_video_tools.html">第 18 章</a>）。</li>
       </ul>
       <p>結論：<strong>正解永遠是 HA snapshot</strong>。它就是為這種場景設計的，你別自作聰明繞過去。</p>
       <div class="callout warn"><strong>注意：</strong>唯一可以直接手動搬 <code>/data/pi-agent/</code> 檔案的場景是「只搬單一 Skill 給朋友」——你把 <code>skills/&lt;某個 skill&gt;/</code> 打包成 zip 傳給朋友，讓他解壓到自己的 <code>/data/pi-agent/skills/</code>。這種粒度沒問題，因為 Skill 只是 Markdown 文字，沒有版本綁定。</p>
@@ -289,7 +292,7 @@
         </li>
         <li>
           <h3>還原之後 Pi Agent 空空的，對話跟金鑰都不見</h3>
-          <p>八成是做 backup 時沒勾到 add-on data。回頭做 backup 頁重看：<strong>建立備份 → 完整備份</strong>會自動全勾；<strong>部分備份</strong>要手動勾「附加元件（Add-ons）」下的 <em>Woow HA Pi Agent</em>，還要另外確認「附加元件資料」也打勾。有些人只勾了 add-on 本體沒勾 add-on data，還原後 Pi Agent 是裝著的但 <code>/data/</code> 是空的。</p>
+          <p>八成是做 backup 時漏勾了這個 add-on。做完的 backup 可以在清單卡片點進去看「包含哪些內容」——如果 <em>Woow HA Pi Agent</em> 沒出現在 Add-ons 區塊，這份 backup 本來就沒帶它的資料。回頭重做一次：<strong>Backup now → Manual backup</strong> 的資料選擇畫面裡，Add-ons 分區找到 <em>Woow HA Pi Agent</em>，確認它有勾。現代 HA 一個 add-on 的資料是隨 add-on 條目一起打包（沒有分開的「add-on 本體 / add-on 資料」兩個 checkbox），所以只要勾了就會帶 <code>/data/pi-agent/</code>。（如果你看到的介面還有分開的兩個勾選項，代表你 HA 版本很舊，強烈建議升級——升級前記得先做一次完整備份，見<a href="ch21_upgrade.html">第 21 章</a>。）</p>
         </li>
         <li>
           <h3>金鑰還原完好像還在，但按 Test 綠燈變紅</h3>
@@ -305,7 +308,11 @@
         </li>
         <li>
           <h3>rclone 上傳 Google Drive 還原後不動</h3>
-          <p><code>rclone.conf</code> 的 OAuth token 有時效，太久沒用會過期，還原一份很舊的 snapshot 就會遇到。<a href="ch19_rclone.html">第 19 章</a>教過的 <code>rclone config reconnect</code> 跑一遍就好，會 refresh token 不用整個重新設。</p>
+          <p><code>rclone.conf</code> 的 OAuth token 有時效（refresh_token 通常長效但長期閒置或帳號側撤銷都會失效），還原一份很舊的 snapshot 常會遇到。<a href="ch19_rclone.html">第 19 章</a>教過的作法：SSH 進 add-on 容器跑 <code>rclone config reconnect gdrive:</code>（記得帶你當初設的 remote 名稱＋冒號，通常就是 <code>gdrive:</code>），會跳同一個 OAuth 授權流程 refresh token，不用整個 <code>rclone config</code> 重來。詳細錯誤訊息（<code>oauth2: token expired</code>）對照見<a href="ch19_rclone.html">第 19 章</a>末段。</p>
+        </li>
+        <li>
+          <h3>Backup Emergency Kit 檔案掉了、還原時要密碼</h3>
+          <p>2025 版 HA 的自動排程備份會用系統自動產的加密金鑰，就記在那個 .txt 檔（Backup Emergency Kit）裡。掉了：先去<strong>設定 → 系統 → 備份 → 右上三個點 → 顯示加密金鑰</strong>，能再顯示一次讓你複製起來——只要你還能登入原本的 HA，就有救。如果原機也掛了、Kit 也沒存，那份 backup 就<strong>真的解不開</strong>，沒有官方後門。教訓：Kit 一存到就馬上抄一份到密碼管理器，這是新版 HA 最容易踩的坑。其他 restore 卡關的通用排錯思路對照<a href="ch22_troubleshoot.html">第 22 章</a>。</p>
         </li>
       </ol>
     </section>
@@ -322,7 +329,7 @@
       </details>
       <details class="faq">
         <summary>加密要開嗎？密碼忘了怎麼辦？</summary>
-        <div class="body"><strong>要外傳雲端就開加密</strong>（Nabu Casa、Google Drive、任何非你家設備）；<strong>只存本地看你自己</strong>——本機 NAS、家裡的 USB 硬碟可以不加密（快、方便復原）。密碼一定要記在密碼管理器（1Password / Bitwarden），忘了就<strong>真的救不回來</strong>，沒有官方後門也沒有工具能爆破。有些人偷懶用固定的家用密碼那就要接受「所有 snapshot 用同一支密碼」的風險。</div>
+        <div class="body">2025 版 HA 預設就會幫你產一把加密金鑰、要求下載 <strong>Backup Emergency Kit</strong>（一個 .txt 檔）——這把是所有<em>自動排程備份</em>共用的金鑰，掉了那些 backup 就全還原不回來。所以不管你要不要另外自訂密碼，那個 kit 一定要收好（密碼管理器、印出來夾在說明書都行，重點是跟 HA 本體分開存）。手動備份要另外設密碼隨意，但原則仍是：<strong>要外傳雲端就一定要有加密</strong>（Nabu Casa、Google Drive、任何非你家設備），<strong>只存本地看你自己</strong>——本機 NAS、家裡的 USB 硬碟可以不加密。有些人偷懶所有 backup 用同一支密碼那就要接受「這支密碼一旦外流所有歷史 snapshot 都危險」的風險。</div>
       </details>
       <details class="faq">
         <summary>舊 snapshot 能反查以前的對話內容嗎？</summary>

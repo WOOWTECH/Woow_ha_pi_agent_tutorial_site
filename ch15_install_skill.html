@@ -69,7 +69,7 @@
       <a href="#concept">Skill 從哪裡來</a>
       <a href="#docker">Pi Agent 怎麼下載</a>
       <a href="#steps">動手裝一個</a>
-      <a href="#url">owner/repo 縮寫</a>
+      <a href="#url">git: 縮寫與 ref pin</a>
       <a href="#compare">來源差別對照</a>
       <a href="#done">裝完該做的三件事</a>
       <a href="#assign">移除 skill</a>
@@ -88,7 +88,7 @@
     <div class="chapter-header">
       <div class="kicker">第 15 章</div>
       <h1>從 GitHub 裝別人做好的 Skill</h1>
-      <p class="lead">上一章講完 Skill 是什麼，這一章直接動手。教你打開 Skills 面板、貼上一個 GitHub 網址、按下裝、看它出現在系統提示裡。做完你的 AI 就多了那項新本事，全程不用寫程式、也不用 SSH 進 HA 主機——按幾下滑鼠就搞定。</p>
+      <p class="lead">上一章講完 Skill 是什麼，這一章直接動手。教你打開 Skills 面板、用內建搜尋在 <code>skills.sh</code> 目錄找一個現成 skill、按 Install、看它出現在系統提示裡。做完你的 AI 就多了那項新本事，全程不用寫程式、也不用 SSH 進 HA 主機。<strong>panel 是「搜尋為主、貼網址為輔」的商店介面，不是單純的 URL 輸入框</strong>——這是新手最容易誤解的地方，看到搜尋框以為壞了就不知道下一步該做什麼。</p>
     </div>
 
     <section id="why" data-nav="為什麼從別人的裝起">
@@ -105,55 +105,71 @@
     </section>
 
     <section id="concept" data-nav="Skill 從哪裡來">
-      <h2 data-icon="concept">Skill 的三種來源</h2>
-      <p>Pi Agent 的 Skills 面板可以吃三種來源，寫在同一個輸入框裡：</p>
+      <h2 data-icon="concept">Skill package spec 的四種寫法</h2>
+      <p>Pi Agent 底層是 <code>@earendil-works/pi-coding-agent</code>（<code>pi</code> CLI），Skills 面板的「Add skill」按鈕其實就是 <code>pi install &lt;package-spec&gt;</code> 的圖形化版本。<strong>package spec 有明確格式，不是任你亂貼</strong>。以下四種是官方 <a href="https://github.com/earendil-works/pi/blob/main/docs/packages.md" rel="noopener">packages.md</a> 列的合法來源：</p>
       <table class="data-table">
         <thead>
-          <tr><th>來源</th><th>寫法範例</th><th>它會怎麼處理</th><th>這章教嗎</th></tr>
+          <tr><th>來源類型</th><th>寫法範例</th><th>底層動作</th><th>裝到哪</th></tr>
         </thead>
         <tbody>
           <tr>
-            <td>GitHub 完整 URL</td>
-            <td><code>https://github.com/mattpocock/skills</code></td>
-            <td>直接 <code>git clone</code></td>
-            <td>會，主力示範</td>
+            <td>npm 套件</td>
+            <td><code>npm:@scope/pkg@1.2.3</code><br /><code>npm:my-pi-skill</code></td>
+            <td>跑 <code>npm install</code></td>
+            <td><code>~/.pi/agent/npm/</code></td>
           </tr>
           <tr>
-            <td>owner/repo 縮寫</td>
-            <td><code>mattpocock/skills</code></td>
-            <td>自動補成 <code>https://github.com/mattpocock/skills</code>，再 clone</td>
-            <td>會，第二節示範</td>
+            <td>Git（<code>git:</code> 前綴）</td>
+            <td><code>git:github.com/user/repo@v1</code><br /><code>git:git@github.com:user/repo</code></td>
+            <td><code>git clone</code>（吃 shorthand）</td>
+            <td><code>~/.pi/agent/git/&lt;host&gt;/&lt;path&gt;</code></td>
           </tr>
           <tr>
-            <td>本地資料夾路徑</td>
-            <td><code>/data/pi-agent/skills/my-first-skill</code></td>
-            <td>直接讀那個資料夾（不 clone）</td>
-            <td>不會，留到<a href="ch16_write_skill.html">第 16 章</a>自己寫的時候</td>
+            <td>Git（協定完整 URL）</td>
+            <td><code>https://github.com/user/repo</code><br /><code>ssh://git@github.com/user/repo</code></td>
+            <td><code>git clone</code></td>
+            <td>同上</td>
+          </tr>
+          <tr>
+            <td>本地路徑</td>
+            <td><code>/absolute/path</code><br /><code>./relative/path</code></td>
+            <td>寫到 settings、原地讀取</td>
+            <td>原路徑不搬</td>
           </tr>
         </tbody>
       </table>
-      <p>三種背後其實只有一個運作邏輯：把某個資料夾放到 <code>/data/pi-agent/skills/</code> 底下，然後 pi-web 每次開新 session 就去掃這個資料夾、把裡面每個子資料夾當一個 skill。差別只在「這個資料夾怎麼來的」——遠端拉下來的、還是你自己丟進去的。</p>
-      <div class="callout tip"><strong>提示：</strong>第三種（本地路徑）是留給「你自己在電腦上寫了半個小時的 skill、想先塞進去試試」的情境。它跳過 git 這一層，改動不用 push 也能生效。這章示範前兩種，因為對「還沒開始寫 skill」的人來說，是最實用的入手方式。</div>
+      <div class="callout warn"><strong>注意：</strong>常有人以為可以貼 <code>owner/repo</code> 這種裸縮寫（像 <code>gh repo clone</code> 那樣）——<strong>Pi Agent 不吃</strong>。要用 GitHub shorthand 一定要加 <code>git:</code> 前綴變成 <code>git:github.com/owner/repo</code>；不然只有 <code>https://</code>、<code>http://</code>、<code>ssh://</code>、<code>git://</code> 這幾個協定 URL 才被接受。</div>
+      <p>四種背後其實共用同一個機制：把資源展開後，讓 <code>pi</code> 掃 <code>~/.pi/agent/skills/</code>、<code>~/.pi/agent/npm/</code>、<code>~/.pi/agent/git/</code> 三個位置的 skill 目錄（有 <code>SKILL.md</code> 的資料夾），註冊成 session 開場時可用的 skill 集合。Woow 的 add-on 額外做了一件事：把 <code>$HOME/.pi/agent/skills</code> 用 symlink 指到 <code>/data/pi-agent/skills</code>，讓 UI 與 CLI 在 HA volume 上共用同一份狀態（這叫「skills 路徑橋」，寫在 <code>docs/ARCHITECTURE.md</code>）。</p>
+      <div class="callout tip"><strong>提示：</strong>沒有 <code>~/.pi/agent/skills/</code> 這個目錄本身「不裝 npm/git 包」——它是留給你手動丟 <code>SKILL.md</code> 的地方（<a href="ch16_write_skill.html">第 16 章</a>會教）。npm 與 git 裝來的 skill 分別去 <code>npm/</code> 與 <code>git/</code> 目錄，別去 <code>skills/</code> 底下找。</div>
       <figure class="shot">
-        <img src="assets/screenshots/ch15/01_skills_modal.png" alt="Skills 面板：新增與管理" />
-        <figcaption><strong>圖 15-1</strong>Skills 面板：Add Skill 輸入框接受 GitHub URL、owner/repo shorthand、本地路徑三種；下方列出已裝的 skill，每列都有移除按鈕。</figcaption>
+        <img src="assets/screenshots/ch15/01_skills_modal.png" alt="Skills 面板：搜尋、Add skill 與已裝清單" />
+        <figcaption><strong>圖 15-1</strong>Skills 面板：上方有搜尋框（打關鍵字如 <code>react</code>、<code>testing</code> 搜 <code>skills.sh</code> 目錄）、右側「Add skill」按鈕開對話框讓你貼 <code>npm:</code> 或 <code>git:</code> package spec；下方列出已裝的 skill，每列可切 enable/disable、Check updates、Remove。</figcaption>
       </figure>
     </section>
 
     <section id="docker" data-nav="Pi Agent 怎麼下載">
       <h2 data-icon="docker">Pi Agent 是怎麼下載這些 skill 的</h2>
-      <p>知道背後在跑什麼，會讓你比較安心，也在出事的時候比較好排查。Pi Agent 拉遠端 skill 的方式很傳統：<strong>就是 <code>git clone</code></strong>。</p>
-      <p>從 v0.12.0 版開始，Pi Agent 的 add-on 基底映像有預裝 <code>git</code> 跟 <code>openssh-client</code> 兩個套件（這件事寫在 Containerfile 的 apt-get install 那行），所以你按下「Add Skill」的當下，容器裡真的在跑一句類似這樣的指令：</p>
-      <pre class="code-block"><code>cd /data/pi-agent/skills/
-git clone https://github.com/mattpocock/skills.git mattpocock-skills</code></pre>
-      <p>然後 pi-web 就會在下一次開 session 的時候，讀到 <code>/data/pi-agent/skills/mattpocock-skills/</code> 這個資料夾，把它註冊成一個可用的 skill 集合。你在 UI 上其實是在做「git clone 的圖形化版本」，這點知道之後很多疑問就自然消解了：</p>
+      <p>知道背後在跑什麼，會讓你比較安心，也在出事的時候比較好排查。Pi Agent 拉遠端 skill 的方式很傳統：<strong>對 <code>npm:</code> 就是 <code>npm install</code>、對 <code>git:</code> 就是 <code>git clone</code></strong>。</p>
+      <p>Woow 的 add-on 基底映像從第一版就把 <code>git</code>、<code>openssh-client</code>、<code>curl</code>、<code>jq</code>、<code>ca-certificates</code> 這幾個裝在 <code>Containerfile</code> 的第一段 <code>apt-get install</code>（不是後來版本才加上去的功能——註解直接寫明「are needed by the provider check, the models.json merge and the <code>skills</code> CLI, which shells out to git and ssh」）。所以你按「Install」的當下，容器裡跑的實際指令視 spec 而定：</p>
+      <pre class="code-block"><code># 你貼 npm:@foo/bar
+pi install npm:@foo/bar
+# 底層：npm install，落在 ~/.pi/agent/npm/@foo/bar/
+
+# 你貼 git:github.com/user/repo@v1
+pi install git:github.com/user/repo@v1
+# 底層：git clone --branch v1，落在 ~/.pi/agent/git/github.com/user/repo/
+
+# 你貼 https://github.com/user/repo
+pi install https://github.com/user/repo
+# 底層：git clone，落在 ~/.pi/agent/git/github.com/user/repo/</code></pre>
+      <p>在 Woow 的 add-on 裡，<code>$HOME/.pi/agent/skills</code> 是一個指到 <code>/data/pi-agent/skills</code> 的 symlink（skills 路徑橋，見 <code>ARCHITECTURE.md</code> 第 148 行說明「Pinning HOME into the volume is what makes the CLI and the web UI agree on state」）。UI 與 CLI 因此對「哪些 skill 已裝」看到的是同一份狀態，不會出現「命令列裝了但 UI 找不到」這種鬼故事。你在 UI 上做的其實是 <code>pi install</code> 的圖形化版本，這點知道之後很多疑問就自然消解了：</p>
       <ul>
-        <li><strong>為什麼要 GitHub URL？</strong>因為 <code>git clone</code> 吃 URL。</li>
-        <li><strong>為什麼私人 repo 不會通？</strong>因為 <code>git clone</code> 遇到私人 repo 要問你帳號密碼，UI 沒地方讓你填。</li>
-        <li><strong>為什麼裝了不會自動更新？</strong>因為 clone 完就完了，除非你手動再 <code>git pull</code>（UI 沒這個按鈕，只能移除重裝）。</li>
-        <li><strong>為什麼 clone 一半可以中斷？</strong>因為那就是一個網路操作，你把頁面關掉、網路斷線，跟你在終端機 <kbd>Ctrl</kbd>+<kbd>C</kbd> 中斷 git clone 一樣。</li>
+        <li><strong>為什麼有 <code>npm:</code> 跟 <code>git:</code> 兩種前綴？</strong>因為底層是兩套完全不同的套件管理系統，pi 用前綴決定要叫誰。</li>
+        <li><strong>為什麼私人 repo 有可能通？</strong>因為 <code>openssh-client</code> 有裝、<code>~/.ssh/config</code> 被讀，SSH URL 走你的 key（見下節）。反而是 HTTPS 私人 repo 卡在沒有 UI 填 PAT——這是 UI 限制，不是後端不支援。</li>
+        <li><strong>為什麼裝了不會自動更新？</strong>Git ref 被 pin 死（pinned tags/commits）。<code>pi update --extensions</code> 或 UI 上的「Check updates」才會去看有沒有新版；設定成 <code>@v1</code> 之類的 ref 更是<em>刻意</em>不動。</li>
+        <li><strong>為什麼安裝失敗會留下爛掉的資料夾？</strong>0.83.0 已經修掉這個 bug（CHANGELOG「Fixed failed Git package installs leaving partial directories that blocked clean retries」）。舊版遇到就手動 <code>rm -rf</code> 那個路徑重試。</li>
       </ul>
-      <div class="callout"><strong>觀念：</strong>Pi Agent 把 <code>/data/pi-agent/skills/</code> 這個資料夾當作 skill 的家（詳細目錄結構見<a href="ch20_backup.html">第 20 章</a>）。這個資料夾在 HA snapshot 備份的時候會一起被打包，主機還原後你的 skill 收藏也會回來，不用重裝一次。</div>
+      <div class="callout"><strong>觀念：</strong>整個 <code>/data/pi-agent/</code> volume 都會被 HA snapshot 涵蓋（<a href="ch20_backup.html">第 20 章</a>），這代表你的 skill 收藏（包含 <code>skills/</code>、<code>npm/</code>、<code>git/</code>、以及決定「哪些有 enable」的 <code>~/.pi/agent/settings.json</code>）主機還原後都會回來，不用重裝一次。</div>
     </section>
 
     <section id="steps" data-nav="動手裝一個">
@@ -165,60 +181,69 @@ git clone https://github.com/mattpocock/skills.git mattpocock-skills</code></pre
           <p>從 Home Assistant 側邊欄點「Pi Agent」進到主介面（<a href="ch3_open_it.html">第 3 章</a>教過的路徑）。你會看到左邊是 Session 列表、中間是對話區、右上有一排小圖示——那排小圖示就是<strong>面板切換列</strong>。</p>
         </li>
         <li>
-          <h3>點右上「工具箱」圖示打開 Skills 面板</h3>
-          <p>右上工具列由左至右通常是：<strong>Models</strong>（模型）、<strong>Skills</strong>（技能，圖示是一個工具箱或積木）、<strong>System prompt</strong>（唯讀）、<strong>Settings</strong>（設定）。滑鼠移上去 tooltip 會顯示名字，找到「Skills」點下去。畫面右側會滑出一個側欄，最上面通常是「Add Skill」或「＋」按鈕，下面是已裝的 skill 清單（第一次進去這裡是空的）。</p>
+          <h3>切到 Skills 面板</h3>
+          <p>頂端工具列有 Extensions／Skills／Prompts／Themes／Plugins 這幾個資源分頁，找到「Skills」點下去（tooltip 顯示 <em>Skills</em>，i18n key 是 <code>i18n.skills</code>）。畫面切到 Skills 管理面板：<strong>上方是一個搜尋框，placeholder 寫著「e.g. react, testing, deploy」</strong>（i18n key <code>i18n.skillSearchPlaceholder</code>）；右上角一個「Add skill」按鈕；下方是已裝清單（第一次進去空的，會顯示「No skills found」，並附一個連 <code>skills.sh</code> 的提示「to discover and install skills for your agent」）。</p>
         </li>
         <li>
-          <h3>按「Add Skill」叫出輸入框</h3>
-          <p>按下「Add Skill」或「＋」按鈕，會跳出一個對話框，裡面有一個輸入框，上方通常寫「GitHub URL / owner/repo / local path」——這就是<strong>吃三種來源的那個框</strong>。有些版本會分成三個 tab（Remote／Shorthand／Local），有些直接一個框讓你貼什麼都可以，看你 pi-web 的版本而定。</p>
+          <h3>兩條路：先試搜尋，找不到再手動 Add skill</h3>
+          <p><strong>路 A（推薦）：</strong>直接在搜尋框打 <code>mattpocock</code> 或關鍵字，pi-web 會打 <code>/api/skills/search</code> 去查 <code>skills.sh</code> 目錄，找到就顯示卡片、右邊一顆「Install」按鈕，按下就裝。<strong>路 B：</strong>按「Add skill」按鈕開對話框，裡面一個輸入框，placeholder 是 <code>npm:@scope/package</code>——這時候你可以貼任何合法的 package spec（見上一節四種格式）。</p>
         </li>
         <li>
-          <h3>貼上完整 GitHub URL</h3>
-          <p>把這行複製貼上：<code>https://github.com/mattpocock/skills</code>。<strong>末尾不要加 <code>.git</code> 也沒關係</strong>——pi-web 會自動補上。也不用先在瀏覽器打開這個網址檢查——反正一按裝它就會告訴你 repo 存不存在。</p>
+          <h3>貼上合法的 package spec</h3>
+          <p>如果走路 B，貼這行任一皆可：</p>
+          <pre class="code-block"><code>git:github.com/mattpocock/skills
+# 或協定完整 URL
+https://github.com/mattpocock/skills
+# 或指定 tag / commit
+git:github.com/mattpocock/skills@main</code></pre>
+          <p><strong>不要貼裸 <code>mattpocock/skills</code>——pi 不吃這種縮寫</strong>。要用 GitHub shorthand 一定要加 <code>git:</code> 前綴。同時對話框旁邊會有 scope 切換（global 對應 <code>~/.pi/agent/settings.json</code>、project 對應 <code>.pi/settings.json</code>）——沒特別想法就選 global。</p>
         </li>
         <li>
-          <h3>按確認開始 clone</h3>
-          <p>按「Install」／「Add」／「確認」按鈕（依語言與版本不同）。這時候你會看到一個進度條或轉圈圈符號，狀態文字類似「Cloning...」或「Downloading...」。這一步實際跑的就是我們上一節講的 <code>git clone</code>，時間大約 5-30 秒（看 repo 大小和你網路）。<strong>不要按取消也不要重新整理頁面</strong>，讓它跑完。</p>
+          <h3>按 Install 開始下載</h3>
+          <p>按「Install」按鈕（i18n key <code>i18n.install</code>；下載中顯示「Installing…」）。這時候實際跑的是 <code>pi install</code>，後端 POST 到 <code>/api/skills/install</code>（<code>body: {cwd, package, scope}</code>）。時間 5-30 秒視 repo 大小與網路而定。<strong>不要按取消也不要重整頁面</strong>，讓它跑完；成功會跳一個 toast「Package installed.」（i18n key <code>i18n.packageInstalled</code>）。</p>
         </li>
         <li>
           <h3>看到 skill 出現在列表就成了</h3>
-          <p>完成後對話框關閉，Skills 面板的清單裡多了一個新項目，名字通常就是 repo 名（<code>mattpocock-skills</code> 或 <code>skills</code>）。每個項目旁邊會有一個小小的「三點」選單，可以點進去看細節或移除。裝好了。</p>
+          <p>安裝完面板下方多一個項目，每列右邊有 enable/disable 開關、「Check updates」與移除。<strong>裝在哪個實體路徑</strong>：npm 包在 <code>~/.pi/agent/npm/…</code>、git 包在 <code>~/.pi/agent/git/&lt;host&gt;/&lt;path&gt;/…</code>——UI 的「Installed path」欄位（i18n key <code>i18n.installedPath</code>）會直接告訴你。</p>
         </li>
         <li>
-          <h3>開新 session 驗證 skill 有進到 system prompt</h3>
-          <p>按左上「New Session」開一個新對話——<strong>要開新的，不是留在舊的</strong>，因為 system prompt 是 session 開場時就決定好、之後不重讀。然後點右上「System prompt」面板（唯讀的那個），往下捲，你應該能看到一段類似這樣的區塊：<code>&lt;available_skills&gt;...mattpocock-skills...&lt;/available_skills&gt;</code>。看到自己剛才裝的 skill 名字有出現，就代表 pi-web 認得它了、AI 也在這個 session 裡「知道」它可以用這項技能。</p>
+          <h3>用 Reload session 或開新 session 驗證 skill 有進到 system prompt</h3>
+          <p>Skills 面板右上通常有「Reload session」按鈕（i18n key <code>i18n.reloadSession</code>），按了會重跑 skill 掃描並提示「Session reloaded.」。或者按左上「New session」開新對話——system prompt 是 session 開場決定的、不會中途重讀。然後點右上「System prompt」面板（唯讀）往下捲，你應該能看到 <code>&lt;available_skills&gt;…mattpocock-skills…&lt;/available_skills&gt;</code> 區塊（pi 遵循 <a href="https://agentskills.io/integrate-skills" rel="noopener">Agent Skills 規格</a>）。看到自己剛裝的名字，就代表 pi 認得它、AI 在這個 session 「知道」它可以用。</p>
         </li>
       </ol>
-      <div class="callout tip"><strong>提示：</strong>如果第 7 步的 System prompt 面板裡沒有你剛裝的 skill 名字，不用急著懷疑失敗——先按一下瀏覽器 <kbd>F5</kbd> 重新整理再開一個更新的 session。有些 pi-web 版本的前端狀態要重整才刷新（見「troubleshoot」那節）。</div>
+      <div class="callout tip"><strong>提示：</strong>如果 System prompt 面板裡沒有你剛裝的 skill 名字，先試「Reload session」而不是 <kbd>F5</kbd>——<code>enableSkillCommands</code> 開了的話 skill 還會註冊為 <code>/skill:name</code> 斜線命令，在對話輸入框打 <code>/skill:</code> 就會列出所有可用 skill 供你選（見 <a href="https://github.com/earendil-works/pi/blob/main/docs/skills.md" rel="noopener">skills.md</a>「Skill Commands」節）。</div>
     </section>
 
-    <section id="url" data-nav="owner/repo 縮寫">
-      <h2 data-icon="url">owner/repo 縮寫：懶得貼完整網址</h2>
-      <p>剛剛第 4 步你貼了 <code>https://github.com/mattpocock/skills</code>——但其實你可以只貼<strong> <code>mattpocock/skills</code></strong>，Pi Agent 會自動幫你補上前面的 <code>https://github.com/</code>。這種寫法叫做 <strong>owner/repo shorthand</strong>（作者／repo 名 縮寫）。</p>
-      <p>兩種寫法會產生完全一樣的結果：</p>
+    <section id="url" data-nav="git: 縮寫與 ref pin">
+      <h2 data-icon="url">git: 縮寫與 ref pin（不是裸 owner/repo）</h2>
+      <p>Pi 的 <code>git:</code> 前綴解鎖兩種能力：<strong>host/user/repo 縮寫</strong>與<strong>SSH shorthand</strong>。以下同一個 mattpocock/skills repo 的六種等價寫法都會 clone 到 <code>~/.pi/agent/git/github.com/mattpocock/skills/</code>：</p>
       <table class="data-table">
         <thead>
-          <tr><th>你貼什麼</th><th>Pi Agent 實際會 clone 什麼</th></tr>
+          <tr><th>你貼什麼</th><th>結果</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>https://github.com/mattpocock/skills</code></td><td><code>https://github.com/mattpocock/skills.git</code></td></tr>
-          <tr><td><code>https://github.com/mattpocock/skills.git</code></td><td><code>https://github.com/mattpocock/skills.git</code></td></tr>
-          <tr><td><code>mattpocock/skills</code></td><td><code>https://github.com/mattpocock/skills.git</code></td></tr>
+          <tr><td><code>git:github.com/mattpocock/skills</code></td><td>HTTPS clone，抓預設分支</td></tr>
+          <tr><td><code>git:github.com/mattpocock/skills@v1</code></td><td>HTTPS clone，pin 到 <code>v1</code> tag</td></tr>
+          <tr><td><code>git:git@github.com:mattpocock/skills</code></td><td>SSH clone（用 <code>~/.ssh/config</code> 的 key）</td></tr>
+          <tr><td><code>https://github.com/mattpocock/skills</code></td><td>HTTPS clone；<em>不用</em> <code>git:</code> 前綴</td></tr>
+          <tr><td><code>ssh://git@github.com/mattpocock/skills</code></td><td>SSH clone；<em>不用</em> <code>git:</code> 前綴</td></tr>
+          <tr><td><code>mattpocock/skills</code></td><td><strong>不吃</strong>——沒有前綴的裸縮寫會被拒絕</td></tr>
         </tbody>
       </table>
-      <p>使用時機很直觀：<strong>如果 skill 在 GitHub 上、且是 public repo，就用縮寫；其他情況一律貼完整 URL。</strong></p>
-      <p>不吃縮寫的情境：</p>
+      <p>重要規則（<a href="https://github.com/earendil-works/pi/blob/main/docs/packages.md#git" rel="noopener">packages.md git 節</a>白紙黑字）：</p>
       <ul>
-        <li>Skill 放在 <strong>GitLab</strong>、<strong>Bitbucket</strong>、<strong>Codeberg</strong> 這類非 GitHub 平台——縮寫預設是 GitHub，不會自動判斷。</li>
-        <li>Skill 放在 <strong>私人 Gitea</strong>／<strong>自架 Git server</strong>——同理。</li>
-        <li>你想要指定 <strong>特定 branch 或 tag</strong>——縮寫只能拉預設分支（通常是 <code>main</code>），要拉別的 branch 需要用完整 URL 加後綴（不同版本 pi-web 語法不一，實務上如果要非 main 分支，一律建議先自己 fork 一份到自己的 GitHub 再裝 main）。</li>
+        <li>沒有 <code>git:</code> 前綴時，<strong>只有協定 URL</strong>被接受：<code>https://</code>、<code>http://</code>、<code>ssh://</code>、<code>git://</code>。</li>
+        <li>加了 <code>git:</code> 前綴才能用 <code>host/user/repo</code> 或 <code>user@host:path</code> 這類 shorthand。</li>
+        <li>Ref 一律 pin 死。<code>@v1</code> 就是永遠 <code>v1</code>；<code>pi update --extensions</code> 不會把 <code>@v1</code> 移到 <code>v2</code>，只會把 clone 對到你設定的 ref。想升就 <code>pi install git:host/user/repo@new-ref</code> 覆蓋。</li>
+        <li>SSH URL 自動用你 SSH agent 或 <code>~/.ssh/config</code> 的 key；CI 環境可以設 <code>GIT_TERMINAL_PROMPT=0</code> 與 <code>GIT_SSH_COMMAND="ssh -o BatchMode=yes"</code> 快速失敗。</li>
       </ul>
-      <div class="callout"><strong>觀念：</strong>縮寫語法不是 Pi Agent 發明的，這是 GitHub 生態圈的慣例——<code>gh repo clone owner/repo</code>、<code>npx owner/repo</code>、<code>uvx --from git+github:owner/repo</code> 都吃這種寫法。之所以 GitHub 有這種特權，是因為它是公開開源 repo 事實上的主場，工具都預設先猜 GitHub。</div>
+      <p>非 GitHub 平台完全支援——直接把 host 換掉：<code>git:gitlab.com/user/repo</code>、<code>git:codeberg.org/user/repo</code>、<code>git:git.your-domain.tw/user/repo</code>。這跟「GitHub 才有特權」相反——git: 縮寫不預設 GitHub，任何 host 都吃。</p>
+      <div class="callout"><strong>觀念：</strong>這個縮寫格式跟 <code>npm</code>、<code>uv</code> 的 <code>git+</code> 語法族系相近，但不完全一樣。<code>gh repo clone owner/repo</code> 的裸縮寫是 <code>gh</code> CLI 自己實作的假設，pi 明確拒絕這樣做，避免「這個 <code>foo/bar</code> 到底是 npm 還是 GitHub」的歧義。</div>
     </section>
 
     <section id="compare" data-nav="來源差別對照">
       <h2 data-icon="compare">不同來源的差別與踩雷點</h2>
-      <p>裝 skill 看似只是「貼網址、按裝」，但每種來源背後的 auth 機制差很多。這節把各種情境攤開來，讓你選對路。</p>
+      <p>裝 skill 看似只是「貼 spec、按 Install」，但每種來源背後的 auth 與更新機制差很多。這節把各種情境攤開來，讓你選對路。</p>
       <table class="data-table">
         <thead>
           <tr>
@@ -230,44 +255,44 @@ git clone https://github.com/mattpocock/skills.git mattpocock-skills</code></pre
         </thead>
         <tbody>
           <tr>
-            <td>公開 GitHub repo（HTTPS）</td>
+            <td>公開 GitHub repo（HTTPS，<code>https://…</code> 或 <code>git:github.com/…</code>）</td>
             <td>會，一貼就通</td>
-            <td>公開 repo 的 <code>git clone https://...</code> 完全不需要 auth</td>
+            <td>公開 repo 的 <code>git clone https://…</code> 完全不需要 auth</td>
             <td>直接用，這是 90% 的情境</td>
           </tr>
           <tr>
-            <td>公開 GitHub repo（owner/repo 縮寫）</td>
-            <td>會，等同上面</td>
-            <td>Pi Agent 自動補成 HTTPS URL</td>
-            <td>能用縮寫就用縮寫，貼起來省事</td>
+            <td>公開 npm 套件（<code>npm:@scope/pkg</code>）</td>
+            <td>會，跑 <code>npm install</code></td>
+            <td>作者已把 skill 打包發佈到 npm registry</td>
+            <td>能用 <code>@version</code> pin 版本；生態系不夠成熟，多數 skill 還是走 git</td>
           </tr>
           <tr>
             <td>私人 GitHub repo（HTTPS）</td>
             <td>不會通</td>
-            <td>Pi Agent 沒有 UI 讓你填 GitHub 帳號密碼或 PAT（Personal Access Token）</td>
-            <td>把 repo <strong>fork 成 public</strong>（如果你有權限）；或在 HA host 上手動 <code>git config --global credential.helper store</code> 先跑一次 clone 快取密碼再用縮寫</td>
+            <td>UI 沒有欄位填 PAT，非互動式的 git clone 遇到需要密碼就死</td>
+            <td>三選一：（1）fork 成 public；（2）改走下面 SSH；（3）SSH 進 HA host 手動 <code>git config --global credential.helper store</code> 快取密碼</td>
           </tr>
           <tr>
-            <td>私人 GitHub repo（SSH URL：<code>git@github.com:owner/repo</code>）</td>
-            <td>技術上支援（v0.12.0+ 有 openssh-client），但要自己設定 key</td>
-            <td>SSH 認證要你在 HA host 產一支 SSH key、把 public key 貼到 GitHub Settings → SSH Keys、還要在容器裡 known_hosts 加上 <code>github.com</code></td>
-            <td>不推薦——這是為進階使用者留的門，一般家用建議走 fork 成 public 的路線</td>
+            <td>私人 GitHub repo（SSH，<code>git:git@github.com:owner/repo</code>）</td>
+            <td>會通，pi 官方支援</td>
+            <td><code>openssh-client</code> 有裝、<code>~/.ssh/config</code> 有被讀（<code>docs/packages.md</code>：「SSH URLs use your configured SSH keys automatically」）</td>
+            <td>HA host 產 key、貼 public key 到 GitHub Settings → SSH Keys、key 放在 <code>/data/pi-agent/home/.ssh/</code>（因為 <code>HOME</code> 被 pin 到 volume），先 <code>ssh -T git@github.com</code> 把 host key 加進 known_hosts</td>
           </tr>
           <tr>
-            <td>GitLab／Bitbucket／自架 Git server 的公開 repo</td>
-            <td>會通，用完整 HTTPS URL</td>
-            <td>只要 URL 是完整的 <code>https://...</code> 就當一般 git clone 處理</td>
-            <td>貼完整 URL，不能用縮寫</td>
+            <td>非 GitHub 平台（GitLab／Bitbucket／Codeberg／自架）</td>
+            <td>會通，用 <code>git:host/user/repo</code> 或完整 <code>https://…</code></td>
+            <td>Pi 的 git shorthand 不預設 host，任何 host 都吃</td>
+            <td>直接貼，跟 GitHub 一模一樣的體驗</td>
           </tr>
           <tr>
-            <td>本地資料夾</td>
-            <td>會，但要你自己塞進去</td>
-            <td>Pi Agent 只掃 <code>/data/pi-agent/skills/</code>，不會自己找檔案</td>
-            <td>SSH 進 HA host 用 <code>scp</code>、<code>rsync</code>、或直接掛 Samba share 丟資料夾進去，<a href="ch16_write_skill.html">第 16 章</a>會教</td>
+            <td>本地路徑</td>
+            <td>會，寫到 settings 原地讀</td>
+            <td>不搬檔——settings.json 記絕對路徑，pi 每次啟動去掃</td>
+            <td>SSH 進 HA host 用 <code>scp</code>／Samba 丟到 <code>/data/pi-agent/</code> 底下再貼路徑；<a href="ch16_write_skill.html">第 16 章</a>會教</td>
           </tr>
         </tbody>
       </table>
-      <div class="callout warn"><strong>注意：</strong>「有 v0.12.0 就有 openssh-client」不代表 SSH 一定能通——你還要處理 SSH key 產生、GitHub 綁定、known_hosts 授信。這條路一步就 30 分鐘、坑非常多，除非你本來就是走 SSH 管 git 的人，否則<strong>強烈建議走「fork 成 public」的路線</strong>：如果 skill 是別人的、fork 到自己帳號設 public；如果是自己寫的、放到你自己的 public repo。這樣一輩子都是 90% 情境，直接按裝就通。</div>
+      <div class="callout warn"><strong>注意：</strong>SSH 私人 repo 支援是官方 feature，但在 HA add-on 裡不算「按裝就通」——你要處理 SSH key 產生、GitHub 綁定、known_hosts 授信、還要記得 key 要放在 <code>/data/pi-agent/home/.ssh/</code>（因為 <code>HOME</code> 被 pin 到 volume，不是 <code>/root/.ssh/</code>；見 <code>docs/ARCHITECTURE.md</code>）。這條路第一次設定 30 分鐘、之後才一勞永逸。除非你已經是走 SSH 管 git 的人，一般家用<strong>建議先走「fork 成 public」的路線</strong>——五分鐘搞定，之後直接按裝就通。</div>
     </section>
 
     <section id="done" data-nav="裝完該做的三件事">
@@ -279,8 +304,8 @@ git clone https://github.com/mattpocock/skills.git mattpocock-skills</code></pre
           <p>剛剛第 7 步在 System prompt 看到 skill 名字，只代表 pi-web 「認得」它，還沒證明 AI 真的會用。開一個新 session，用測試句<strong>直接點名這個 skill</strong>：例如「請你用 <em>skill 名字</em> 幫我做 XX」。AI 如果有回應、有動用工具，就代表 skill 通了。如果 AI 說「我沒看到這個 skill」或直接無視，回頭排查（見「troubleshoot」）。</p>
         </li>
         <li>
-          <h3>讀 skill repo 的 README 搞懂它能做什麼</h3>
-          <p>裝完最容易忽略的事就是<strong>不讀說明書</strong>。每個 skill repo 的根目錄一定有 <code>README.md</code>——寫的人會在裡面告訴你：這個 skill 叫什麼、哪些觸發情境會被叫出來、需要哪些工具、有沒有 environment variable 要設。花 5 分鐘讀完，比你在對話裡瞎試半小時有效多了。回到 GitHub repo 的頁面直接看，或 SSH 進 HA host 到 <code>/data/pi-agent/skills/&lt;repo-name&gt;/README.md</code> 打開讀。</p>
+          <h3>讀 skill 的 SKILL.md 搞懂它能做什麼</h3>
+          <p>裝完最容易忽略的事就是<strong>不讀說明書</strong>。<strong>SKILL.md 才是主說明書</strong>（不是 README.md）——pi 讀的 frontmatter <code>name</code>、<code>description</code>、<code>allowed-tools</code> 都在裡面，也會告訴你觸發情境、需要的工具、環境變數。花 5 分鐘讀完比在對話裡瞎試半小時有效。UI 上點該 skill 列會展開細節、或用 Installed path 找到實體路徑打開：<code>/data/pi-agent/home/.pi/agent/git/&lt;host&gt;/&lt;user&gt;/&lt;repo&gt;/SKILL.md</code>（git 包）或 <code>…/npm/…</code>（npm 包）。</p>
         </li>
         <li>
           <h3>沒幫上忙就移除，別留在那裡佔 tokens</h3>
@@ -293,25 +318,24 @@ git clone https://github.com/mattpocock/skills.git mattpocock-skills</code></pre
     <section id="assign" data-nav="移除 skill">
       <h2 data-icon="assign">移除 skill 的兩種方式</h2>
       <p>移除 skill 有兩條路，各有各的場合：</p>
-      <h3>方式 A：從 Skills 面板 UI 刪</h3>
-      <p>打開 Skills 面板（右上工具列的工具箱圖示），找到那個 skill 的列，右邊有一個「三點選單」（⋮）或「垃圾桶」圖示。點下去會跳確認對話框，按確定就會把 <code>/data/pi-agent/skills/&lt;name&gt;/</code> 整個資料夾刪掉。</p>
-      <p>這是 <strong>99% 的情境該用的方式</strong>——按兩下就好，不會刪錯。適合：不想要某個 skill 了、換一個更好的替代、清理實驗留下來的雜項。</p>
-      <h3>方式 B：SSH 進 HA host 用指令刪</h3>
-      <p>UI 掛掉了、或某個 skill 資料夾整個壞掉導致 pi-web 讀不到列表、或你要一次刪很多個——這時候走 terminal：</p>
+      <h3>方式 A：從 Skills 面板 UI 刪（走 pi remove）</h3>
+      <p>打開 Skills 面板切到那個 skill 的列，右邊有「Remove」按鈕。按下跳確認對話框、按確定，後端跑 <code>pi remove &lt;spec&gt;</code>：從 <code>settings.json</code> 拿掉登錄、把 <code>~/.pi/agent/git/…</code> 或 <code>~/.pi/agent/npm/…</code> 底下的資料夾刪乾淨。UI 冒出「Package removed.」toast（<code>i18n.packageRemoved</code>）。這是 <strong>99% 情境該用的方式</strong>——不會漏刪 settings 也不會刪錯路徑。</p>
+      <h3>方式 B：SSH 進 HA host 跑 pi remove</h3>
+      <p>UI 掛了、或某包壞到 pi-web 讀不到列表、或要一次刪很多個——走 terminal 跑 CLI 而不是自己 <code>rm -rf</code>：</p>
       <pre class="code-block"><code># SSH 進 HA host（Advanced SSH &amp; Web Terminal add-on）
-# 進去 Pi Agent 的 skill 資料夾
-cd /data/pi-agent/skills/
+podman exec -it pi-web bash          # 進到 pi-web 容器
+# 或走 HA add-on 的 Terminal
 
-# 看有哪些
-ls
+# 看目前裝了哪些
+pi list
 
-# 刪掉不要的（可以搭配萬用字元一次多個）
-rm -rf mattpocock-skills
+# 刪一個 npm 包
+pi remove npm:@foo/bar
 
-# 或用萬用字元刪一整批（例如所有實驗性的）
-rm -rf test-*</code></pre>
-      <div class="callout warn"><strong>注意：</strong><code>rm -rf</code> 沒有救回鍵。打指令之前先 <code>ls</code> 一下看你人在哪個資料夾。刪錯了要靠 HA snapshot 還原（<a href="ch20_backup.html">第 20 章</a>）。</div>
-      <p>刪完之後回到 pi-web 開一個新 session，System prompt 面板裡就不會再有那個 skill——因為 pi-web 每次開 session 都是重掃資料夾。<strong>舊的 session 不會受影響</strong>，它們是在開場時就把 skill 內容嵌進 system prompt 的，之後刪不刪外部檔案跟舊 session 的 context 已經無關。</p>
+# 刪一個 git 包
+pi remove git:github.com/user/repo</code></pre>
+      <div class="callout warn"><strong>注意：</strong>只 <code>rm -rf</code> 資料夾<strong>不會</strong>把 <code>settings.json</code> 的登錄清掉——下次 pi 啟動看到 settings 寫「有這個包」但檔案不在，會嘗試重裝或報錯。永遠優先用 <code>pi remove</code>。真的要手動清就記得同時編輯 <code>~/.pi/agent/settings.json</code>。</div>
+      <p>刪完 reload session（或開新 session），System prompt 就不會再有那個 skill。<strong>舊 session 不受影響</strong>——skill 內容在開場就嵌進 system prompt 了，之後刪 skill 跟舊 session 的 context 無關。</p>
     </section>
 
     <section id="troubleshoot" data-nav="常見卡關">
@@ -319,7 +343,7 @@ rm -rf test-*</code></pre>
       <ol class="steps">
         <li>
           <h3>貼了 URL 按確認完全沒反應</h3>
-          <p>三個常見原因：（1）URL 打錯字——最容易的是打成 <code>github.com/xxx</code> 沒有前面的 <code>https://</code>，或 owner 拼錯。開一個新分頁把整段 URL 貼進去看得不得到那個 repo。（2）repo 是 private 或已刪除——公開檢查方式是無痕視窗開那個 URL，看得到就是 public。（3）你剛裝了但沒等 clone 完就跑去看列表——重整頁面，通常已經在了。</p>
+          <p>四個常見原因：（1）你貼了裸 <code>owner/repo</code>——pi 不吃這種縮寫，改成 <code>git:github.com/owner/repo</code>。（2）URL 打錯字——最容易是漏掉 <code>https://</code> 或 owner 拼錯，新分頁貼 URL 檢查一次。（3）repo 是 private 或已刪除——無痕視窗開那個 URL，看得到才是 public。（4）你剛按 Install 但沒等後端跑完——面板下方會有「Installing…」狀態文字，等它變綠色勾勾。</p>
         </li>
         <li>
           <h3>裝到一半跳 fatal 401 或 Authentication failed</h3>
@@ -327,7 +351,7 @@ rm -rf test-*</code></pre>
         </li>
         <li>
           <h3>Clone 明明完成了但 Skills 面板不出現</h3>
-          <p>先按 <kbd>F5</kbd> 重整 pi-web 頁面，通常這一步就解決——有些版本前端 state 沒即時同步。還是不出現的話按 <kbd>F12</kbd> 打開瀏覽器 devtools，切到 <strong>Console</strong> 分頁看有沒有紅字錯誤（大多是 pi-web 前端 bug）。再看看 <strong>Network</strong> 分頁，找 <code>/api/skills</code> 那個請求——如果它回 4xx 或 5xx，就是後端問題（重啟 Pi Agent add-on 通常會好）。</p>
+          <p>先按面板右上「Reload session」（i18n key <code>i18n.reloadSession</code>）——這比 <kbd>F5</kbd> 更精確，因為 skill 掃描是「開 session」才會做，重整頁面不會重掃。還是不出現按 <kbd>F12</kbd> 打開 devtools，切到 <strong>Console</strong> 看有沒有紅字，再看 <strong>Network</strong> 分頁那個 <code>/api/skills?cwd=…</code> 請求（Woow 的 acceptance suite 有測這個 endpoint，正常應該 200）——如果它回 4xx／5xx 就是後端問題。<strong>403 特別要留意</strong>：這代表你目前的 <code>cwd</code> 不是「trusted project」也不是預設的 <code>pi-cwd-YYYYMMDD/</code> 資料夾——見 ARCHITECTURE.md「Allowed cwd roots」節。</p>
         </li>
         <li>
           <h3>Skill 裝完了但 AI 好像完全忽略它</h3>
@@ -335,19 +359,19 @@ rm -rf test-*</code></pre>
         </li>
         <li>
           <h3>Clone 卡在 50%、進度條不動</h3>
-          <p>網路問題居多。可能是 HA 主機連 GitHub 慢（家裡光世代連 GitHub 偶爾抽風）、或 repo 太大（少數 skill repo 有含大型 asset，數十 MB 起跳）。解法：等 3-5 分鐘看看會不會自己完成。真的太久就取消，改用 SSH 進 HA host 手動下：<code>cd /data/pi-agent/skills/ &amp;&amp; git clone https://github.com/xxx/yyy.git</code>——terminal 會顯示每一步的狀態，卡在哪裡看得比 UI 進度條清楚。</p>
+          <p>網路問題居多。可能是 HA 主機連 GitHub 慢、或 repo 太大（少數 skill repo 有含大型 asset，數十 MB 起跳）。解法：等 3-5 分鐘看看會不會自己完成。真的太久就取消，SSH 進 HA host 手動跑 CLI：<code>pi install git:github.com/xxx/yyy</code>——terminal 會顯示每一步的狀態，卡在哪裡看得比 UI 進度條清楚（因為 UI 與 CLI 共用 skills 路徑橋，CLI 裝好 UI 就會看到）。<strong>不要自己在 <code>~/.pi/agent/git/</code> 下 <code>git clone</code></strong>——會缺 settings.json 的登錄，UI 認不到。</p>
         </li>
         <li>
           <h3>裝進來的 skill 名字重複、跟原有的撞名</h3>
-          <p>Pi Agent 的 skill 是以資料夾名（也就是 repo 名）為 key 的，如果兩個 repo 都叫 <code>skills</code>（滿常見的），第二個裝進來會蓋掉第一個。解法：SSH 進 HA host，把資料夾手動改名：<code>cd /data/pi-agent/skills/ &amp;&amp; mv skills mattpocock-skills</code>，然後 pi-web 開新 session 就會用改過的名字。以後再裝 skill 前先掃一下你的資料夾，避免撞名。</p>
+          <p>Pi 用 <strong>SKILL.md 的 <code>name</code> 欄位</strong>當 key（不是資料夾名，見 <code>docs/skills.md</code>「Frontmatter」小節：「Pi does not require this to match the parent directory」）。兩個 skill 撞名時，pi 有 dedup 機制，同 scope 只留一份、跨 scope 走「project 蓋 global」。解法：<strong>不要手動改資料夾名</strong>——那不解決問題。改去 <code>~/.pi/agent/settings.json</code> 把其中一個包從 <code>packages</code> 陣列拿掉，或直接用 UI 的 disable 開關關掉衝突的那個。</p>
         </li>
         <li>
           <h3>裝完想更新到最新版</h3>
-          <p>UI 沒有「更新」按鈕，因為 Pi Agent 不會自動追蹤 upstream。要更新只有一條路：<strong>移除、重裝</strong>。從 Skills 面板刪、再貼一次 URL 裝進來——這樣拿到的就是當下的最新版。也可以走 SSH 手動 <code>cd /data/pi-agent/skills/&lt;name&gt; &amp;&amp; git pull</code>，但這只有你自己記得的時候會做，實務上沒人這樣管。乾脆定期（一個月一次）盤點你留下的 skill，重新裝一遍就好。</p>
+          <p><strong>UI 有更新按鈕</strong>：每個 skill 列右邊有「Check updates」（<code>i18n.checkUpdates</code>），按一下 pi 會打 <code>/api/skills/check</code> 比對本地與 upstream 的 versionHash；如果有新版，同一列冒出「Update」按鈕（走 <code>/api/skills/update</code>）。SSH 進 HA host 也可以：<code>pi update --extensions</code> 一次盤點所有 git／npm 包，或 <code>pi update npm:@foo/bar</code> 只更新一個。<strong>pin 死 ref（<code>@v1</code>）的包不會被自動移到新 ref</strong>，只會重整 checkout；要換 ref 用 <code>pi install git:host/user/repo@new-ref</code> 覆蓋。</p>
         </li>
         <li>
           <h3>Skill 資料夾長超級大、占很多硬碟</h3>
-          <p>正常 skill 一個資料夾幾百 KB 到幾 MB，如果某個裝完發現 <code>du -sh /data/pi-agent/skills/&lt;name&gt;</code> 是幾百 MB 甚至 GB，通常是 repo 裡包了大型 asset（範例影片、pre-trained model）。看 README 有沒有說明用途——用不到就直接移除，用得到但不想占硬碟就<strong>用「本地路徑」方式改裝一份精簡版</strong>（把 <code>SKILL.md</code> 和必要的資料夾自己剪一份放進去）。詳見<a href="ch16_write_skill.html">第 16 章</a>。</p>
+          <p>正常 skill 幾百 KB 到幾 MB，如果 <code>du -sh /data/pi-agent/git/github.com/&lt;user&gt;/&lt;repo&gt;</code> 是幾百 MB 甚至 GB，通常是 repo 帶大型 asset（範例影片、pre-trained model）。看 README 用途——用不到直接 remove，用得到但不想占硬碟就<strong>把 SKILL.md 和最小資料夾複製到 <code>/data/pi-agent/skills/&lt;name&gt;/</code>（skill hand-authored 位置），然後把原本的 git 包 remove，再用本地路徑（<code>/data/pi-agent/skills/&lt;name&gt;</code>）重新裝一次</strong>。詳見<a href="ch16_write_skill.html">第 16 章</a>。</p>
         </li>
       </ol>
     </section>
@@ -364,7 +388,7 @@ rm -rf test-*</code></pre>
       </details>
       <details class="faq">
         <summary>Skill 會不會自動更新？作者改了我這邊也會跟著改嗎？</summary>
-        <div class="body"><strong>不會自動更新。</strong>你按裝的那一刻，Pi Agent 只是 <code>git clone</code> 了當下的版本到本地，之後作者在 GitHub 改了什麼、發了新 tag，你這邊都不知道。要拿最新版只能<strong>移除、重裝</strong>（見 troubleshoot 第 7 條）。這個機制是刻意的——避免「你半夜作者 push 了一個 breaking change，你早上起來自動化就爛掉」的情況。你想追新版是主動行為，不是被動接受。</div>
+        <div class="body"><strong>預設不會自動更新，但你可以主動觸發。</strong>裝的那一刻是把某個 ref 的 snapshot clone 下來，作者之後在 upstream 改什麼你不會被動接收。要看有沒有新版：UI 每個 skill 列有「Check updates」按鈕，或 CLI 跑 <code>pi update --extensions</code>。<strong>Pin 死的 ref（<code>@v1</code>）連 update 也不會移到新 tag</strong>，只會重整到你設定的 ref——想升就明確 <code>pi install git:host/user/repo@new-ref</code>。這個機制是刻意的：避免「作者半夜 push 了 breaking change 你早上起來自動化就爛掉」的情況。</div>
       </details>
       <details class="faq">
         <summary>一次可以裝幾個 skill？有沒有上限？</summary>
@@ -376,7 +400,7 @@ rm -rf test-*</code></pre>
       </details>
       <details class="faq">
         <summary>裝進來的 skill 在哪個實體檔案裡？我想手動偷改一下</summary>
-        <div class="body">位置在 <code>/data/pi-agent/skills/&lt;repo-name&gt;/</code>，這是 HA add-on 容器內的路徑。從 HA host 用 Advanced SSH &amp; Web Terminal add-on 進去，然後 <code>cd</code> 過去就可以看到。每個 skill 一定有 <code>SKILL.md</code>（主要說明書），可能有 <code>references/</code>（額外參考）、<code>scripts/</code>（腳本）等資料夾。<strong>手動改是允許的</strong>——但下次移除重裝就會被覆蓋，所以偷改屬於「臨時實驗」用法，長期想改就 fork 成自己的 repo 再改再裝。</div>
+        <div class="body">看 source：<strong>npm 包</strong>在 <code>/data/pi-agent/home/.pi/agent/npm/&lt;pkg&gt;/</code>；<strong>git 包</strong>在 <code>/data/pi-agent/home/.pi/agent/git/&lt;host&gt;/&lt;user&gt;/&lt;repo&gt;/</code>；<strong>你手寫的</strong>在 <code>/data/pi-agent/skills/&lt;name&gt;/</code>（透過 skills 路徑橋 symlink 到 <code>$HOME/.pi/agent/skills/</code>，兩個路徑指同一份檔案）。UI 的「Installed path」欄位（<code>i18n.installedPath</code>）會直接告訴你確切路徑。從 HA host 用 Advanced SSH add-on 進去 <code>cd</code> 過去就能改。<strong>手動改是允許的</strong>——但 <code>pi update</code> 對 git 包會 reset 掉你的改動；長期改就 fork 成自己的 repo 再裝。</div>
       </details>
       <details class="faq">
         <summary>把 API 費用花在 skill 上值不值？</summary>
@@ -384,7 +408,7 @@ rm -rf test-*</code></pre>
       </details>
       <details class="faq">
         <summary>可以把 skill 的資料夾複製到另一台 Pi Agent 用嗎？</summary>
-        <div class="body">可以，這也是<strong>離線遷移的正規做法</strong>。從 A 主機把 <code>/data/pi-agent/skills/&lt;name&gt;</code> 整個 tar 打包，傳到 B 主機同路徑解開，B 主機的 pi-web 開新 session 就會認到。不用透過 GitHub、不需要網路。這在你搬家換 HA 主機、或者從測試機搬到正式機的時候超好用。備份的話直接用 HA snapshot 更省事——<a href="ch20_backup.html">第 20 章</a>會講到 <code>/data/pi-agent/</code> 整個目錄會被 snapshot 涵蓋。</div>
+        <div class="body">可以，這是<strong>離線遷移的正規做法</strong>——但別只複製 <code>skills/</code>。從 A 主機把整個 <code>/data/pi-agent/</code>（包含 <code>skills/</code>、<code>home/.pi/agent/npm/</code>、<code>home/.pi/agent/git/</code> 和 <code>home/.pi/agent/settings.json</code>）tar 打包，B 主機同路徑解開再 reload session 就會認到。<strong>settings.json 是關鍵</strong>——它記錄了「哪些 npm/git 包已安裝、pin 在哪個 ref、什麼 scope」，沒帶就等於沒裝。備份的話直接用 HA snapshot 更省事，<a href="ch20_backup.html">第 20 章</a>會講到 <code>/data/pi-agent/</code> 整個目錄會被涵蓋。</div>
       </details>
       <details class="faq">
         <summary>還是遇到怪問題怎麼辦？</summary>

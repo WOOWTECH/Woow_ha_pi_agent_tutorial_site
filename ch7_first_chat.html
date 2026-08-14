@@ -125,15 +125,15 @@
 
     <section id="steps" data-nav="動手開第一個對話">
       <h2 data-icon="steps">動手：從新對話按鈕到收到第一個回答</h2>
-      <p>照著做，7 步結束。假設你已經完成 <a href="ch6_paste_key.html">ch6 貼金鑰</a>、pi-web 打開來右下角模型列表有東西可選。</p>
+      <p>照著做，7 步結束。假設你已經完成 <a href="ch6_paste_key.html">ch6 貼金鑰</a>、pi-web 打開來 Composer 左下角模型下拉有東西可選（位置對照 <a href="ch4_ui_tour.html">ch4 UI 巡禮</a>：模型下拉在左下、送出鍵在右下）。</p>
       <ol class="steps">
         <li>
           <b>左上角按「New session（新對話）」</b>
           <p>會在左邊列表最上面多出一條，預設名字是「Untitled」或當下時間。點它，中間的對話區會清空，你可以開始了。<b>不要</b>在舊對話上直接問新題目，捲軸會越長越貴、AI 也會被前面的內容干擾。</p>
         </li>
         <li>
-          <b>Composer（輸入框）底下的模型下拉，選 GLM-4.6</b>
-          <p>Composer 是螢幕最下方那個大輸入框，正下方一排小按鈕，其中一個是「模型」下拉。點開，選你 ch6 貼好的那組 GLM 供應商底下的 <code>glm-4.6</code>（或叫 <code>glm-4-plus</code>、看你申請到的方案）。第一次玩選 GLM 是因為它<b>中文好、免費額度大方</b>。之後 ch13 會教怎麼切換到 Claude、Gemini、DeepSeek 等其他家。</p>
+          <b>Composer 左下角的模型下拉，選 GLM-4.6</b>
+          <p>Composer 是螢幕最下方那個大輸入框，<b>左下角</b>有一顆「模型」下拉、<b>右下角</b>是送出鍵（<a href="ch4_ui_tour.html">ch4</a> 已經帶你認過位置）。點開左下下拉，選你 <a href="ch6_paste_key.html">ch6</a> 貼好的那組 GLM 供應商底下的 <code>glm-4.6</code>——這一串就是 ch6 教你在 <code>models[].name</code> 填的那個字。第一次玩選 GLM 是因為它<b>中文好、免費額度大方</b>。之後 <a href="ch13_switch_model.html">ch13</a> 會教怎麼切換到 Claude、Gemini、DeepSeek 等其他家。</p>
         </li>
         <li>
           <b>在打字區輸入第一個問題，一字不改照抄下面這段</b>
@@ -143,14 +143,14 @@
         <li>
           <b>按 Enter 送出（或右下角的送出按鈕）</b>
           <p>訊息會跳到中間對話區的上方，AI 的回應會從下方開始長出來——先出現一塊<b>灰底</b>的思考塊，過幾秒（GLM-4.6 通常 5-15 秒），下面會開始一字一字打出正式回答。</p>
-          <div class="callout tip">如果 Enter 是換行、Shift+Enter 才送出，那是模型面板 Composer 的設定。兩種設定都合理，你習慣哪種就用哪種。找不到設定看 ch4 UI 巡禮。</div>
+          <div class="callout tip">pi-web 目前的預設行為是 <b>Enter 送出、Shift+Enter 換行</b>（跟 ChatGPT、Claude 網頁一致）。如果你按 Shift+Enter 卻直接送出去，那是 upstream 的已知 bug（earendil-works/pi issue #4918、#5188），不是你按錯——先用滑鼠點右下角送出鍵避開，等 pi-web 升版修掉。<a href="ch4_ui_tour.html">ch4</a> 有 Composer 位置圖。</div>
         </li>
         <li>
           <b>讀 AI 回應，先看正式回答（下半段），思考塊看不看都可以</b>
           <p>典型會是這樣結構：</p>
           <ul>
             <li>先幫你判斷這是「自動化（automation）」的任務</li>
-            <li>列出你需要的三個東西：觸發（trigger）= 每天 22:00、動作（action）= 調暗到 20%、可能還會問你要不要「漸變（transition）」</li>
+            <li>列出你需要的三個東西：觸發（<code>triggers:</code>）= 每天 22:00、動作（<code>actions:</code>）= 調暗到 20%、可能還會問你要不要「漸變（transition）」。注意 2024.10 之後 HA 把 YAML 鍵改成複數（<code>triggers:</code>／<code>actions:</code>／<code>conditions:</code>），舊教學裡的單數寫法還能跑但不建議寫新的</li>
             <li>給你一段 YAML 範例，或用 UI 的「新增自動化」流程步驟</li>
             <li>結尾通常會問你要不要它幫你直接生一份自動化</li>
           </ul>
@@ -163,7 +163,7 @@
         <li>
           <b>再追一句：問缺點</b>
           <pre class="code-block">這個方案有什麼缺點？漸變過程如果我在用電視會不會被打斷？</pre>
-          <p>這句在示範「反問」。任何 AI 給的建議，都要習慣性問一次「缺點是什麼」、「什麼情況下會失效」——這是判斷答案品質的關鍵動作。AI 通常會誠實承認，例如「漸變 30 分鐘期間如果你手動調整了亮度，自動化不會停，會繼續往目標值走；如果要避免這狀況要加一個 <code>condition</code>」等等。</p>
+          <p>這句在示範「反問」。任何 AI 給的建議，都要習慣性問一次「缺點是什麼」、「什麼情況下會失效」——這是判斷答案品質的關鍵動作。AI 通常會誠實承認，例如「漸變 30 分鐘期間如果你手動調整了亮度，自動化不會停，會繼續往目標值走；如果要避免這狀況要加一段 <code>conditions:</code>」等等。（若 AI 回你單數 <code>condition:</code>，那是舊語法，2024.10 之後建議一律用複數。）</p>
         </li>
       </ol>
       <div class="callout">
@@ -287,7 +287,7 @@
       <p>常見的幻覺類型：</p>
       <ul>
         <li><b>編造不存在的型號、書名、人名。</b>問「有沒有一款米家的窗簾馬達支援 Zigbee 3.0」，它可能給你一個型號叫「MJZC01-XXX」——查了根本沒這型號。</li>
-        <li><b>編造不存在的網址或指令。</b>問「HA 有沒有 <code>light.slow_dim</code> 這個服務」，它可能說「有，你可以呼叫 <code>light.slow_dim: entity_id: light.xxx</code>」——實際上 HA 沒這個服務，只有 <code>light.turn_on</code> 加 <code>transition</code>。</li>
+        <li><b>編造不存在的網址或指令。</b>問「HA 有沒有 <code>light.slow_dim</code> 這個動作（action，2024.10 前叫「服務／service」）」，它可能說「有，你可以呼叫 <code>light.slow_dim: entity_id: light.xxx</code>」——實際上 HA 從來沒有這個動作，只有 <code>light.turn_on</code> 加 <code>transition</code> 參數。<b>這是本章故意舉的幻覺範例，別真的照著貼到你的自動化裡。</b></li>
         <li><b>把兩件事情混在一起。</b>你問 A 品牌的功能，它把 B 品牌的功能寫成 A 的。</li>
         <li><b>過期的資訊當現在的講。</b>模型 2024 年訓練，你 2026 年問——它可能還在講兩年前的方案，聽起來很篤定。</li>
       </ul>
@@ -367,7 +367,7 @@
 
       <details class="faq">
         <summary>症狀：回應到一半突然停住，沒有句號、沒有繼續</summary>
-        <p>這是模型的<b>單次輸出上限（max tokens）</b>到了。GLM-4.6 預設約 4096 或 8192，寫長篇答案時可能會截。</p>
+        <p>這是模型的<b>單次輸出上限（max tokens）</b>到了。GLM-4.6 官方 BigModel API 預設 <code>max_tokens=4096</code>（不是坊間傳的 8192；4096 是 Zhipu <a href="https://docs.z.ai/guides/overview/concept-param" rel="noopener">docs.z.ai concept-param</a> 明列的預設），寫長篇 YAML／表格時很容易被截。</p>
         <ol class="steps">
           <li>最簡單：追一句「<b>請繼續</b>」，AI 會從斷點接著寫。</li>
           <li>如果常常截，去 ch12 學怎麼調 max_tokens 或改用「壓縮」模式，讓 AI 主動精簡輸出。</li>
@@ -428,7 +428,7 @@
         <ol class="steps">
           <li><b>看得懂 → 手動貼進去試。</b>YAML 你如果每一行大概知道在做什麼，先在 HA 的「開發者工具 → 樣板」測試，或用「檢查設定」按鈕驗證語法，再實際套用。</li>
           <li><b>看不懂 → 請 AI 逐行解釋。</b>直接追問「這段 YAML 每一行分別在做什麼？用小學生聽得懂的方式」，看完你自己能複述就照做。看不懂就不要用——這是自我保護。</li>
-          <li><b>會影響安全的（例如控制電子鎖、瓦斯、警報）→ 先在<u>不重要的實體</u>上測。</b>把 <code>action</code> 裡的目標暫時換成一顆測試用的燈，看行為對再換回真的目標。</li>
+          <li><b>會影響安全的（例如控制電子鎖、瓦斯、警報）→ 先在<u>不重要的實體</u>上測。</b>把 <code>actions:</code> 區塊裡的目標 <code>entity_id</code> 暫時換成一顆測試用的燈，看行為對再換回真的目標。</li>
         </ol>
         <p>Pi Agent 未來會有「一鍵套用到 HA」的功能（ch10 之後），但即使有，這個「先在腦裡走一遍」的習慣也要保留。</p>
       </details>

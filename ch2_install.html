@@ -69,7 +69,7 @@
       <a href="#what-is-repository">加倉庫是什麼</a>
       <a href="#concept-what-you-get">裝完會拿到什麼</a>
       <a href="#prerequisites">三個必備條件</a>
-      <a href="#install-steps">六步驟安裝</a>
+      <a href="#install-steps">七步驟安裝</a>
       <a href="#first-boot-truth">首次啟動的真相</a>
       <a href="#check-logs">看記錄檔確認</a>
       <a href="#what-next">這章之後做什麼</a>
@@ -88,7 +88,7 @@
     <div class="chapter-header">
       <div class="kicker">第 2 章</div>
       <h1>裝好 Pi Agent</h1>
-      <p class="lead">從「加倉庫」到側欄按鈕跳出來，其實只有六個動作。真正麻煩的是首次啟動那 3-8 分鐘的沉默——這章會告訴你螢幕看起來像當掉的時候，機器裡到底在做什麼。</p>
+      <p class="lead">從「加倉庫」到側欄按鈕跳出來，其實就七個動作。真正麻煩的是首次啟動那 3-8 分鐘的沉默——這章會告訴你螢幕看起來像當掉的時候，機器裡到底在做什麼。</p>
     </div>
 
     <section id="why-this-chapter" data-nav="為什麼要一整章">
@@ -145,8 +145,8 @@
             <td>設定 → 系統 → 修復 → 系統資訊，看「Installation Type」</td>
           </tr>
           <tr>
-            <td><b>系統空間 ≥ 3 GB</b></td>
-            <td>映像檔本身約 300 MB，首次啟動再下載約 720 MB，加上暫存跟 log 抓 3 GB 才不會卡。</td>
+            <td><b>系統可用空間 ≥ 3 GB（建議值）</b></td>
+            <td>映像檔本身約 300 MB（CHANGELOG v0.11.0 明列），首次啟動再下載 720 MB（README 數字）到 <code>/data/pi-agent/</code>，硬扣約 1 GB；抓 3 GB 是加上暫存、log、後續 Chromium 快取與 HA snapshot 的餘裕，不是官方硬性下限。</td>
             <td>設定 → 系統 → 儲存空間</td>
           </tr>
           <tr>
@@ -167,16 +167,16 @@
       </div>
     </section>
 
-    <section id="install-steps" data-nav="六步驟安裝">
+    <section id="install-steps" data-nav="七步驟安裝">
       <h2 data-icon="steps">動手：從加倉庫到看到側欄按鈕</h2>
       <p>照順序做，一步一步來。整個過程在網路正常的樹莓派上大概 4-6 分鐘（含下載），x86 小主機或 NUC 大概 1-2 分鐘。</p>
       <ol class="steps">
         <li>
-          <b>打開設定 → 應用程式（Apps）</b>
-          <p>HA 從 2026.2 版開始，把原本叫「Add-ons」的地方改名為「Apps（應用程式）」，位置一樣，就是名字換了。如果你的 HA 還沒更新，看到的還是「Add-ons」也沒關係，是同一個東西。</p>
+          <b>打開設定 → 附加元件（Add-ons）</b>
+          <p>Home Assistant 官方文件與 Woow HA Pi Agent 的 README 到 2026-08 為止都仍稱為「Add-ons（附加元件）」。網路上偶爾看到有人叫它「Apps」是社群內部提案的暱稱，官方 UI 目前<b>沒有</b>正式改名，看到的字樣就是「Add-ons / 附加元件」。</p>
         </li>
         <li>
-          <b>進入 Add-on Store（Apps Store）→ 按右上角三點選單 → 儲存庫（Repositories）</b>
+          <b>進入 Add-on Store → 按右上角三點選單 → 儲存庫（Repositories）</b>
           <p>會跳出一個對話框「管理附加元件儲存庫」，裡面已經有 HA 官方的幾個預設倉庫。</p>
         </li>
         <li>
@@ -209,7 +209,7 @@
         </li>
         <li>
           <b>按「啟動（START）」</b>
-          <p>頁面上方會轉圈圈，大約 5-15 秒之後轉圈停止，狀態變成「已啟動」。這時候<b>側欄應該會在 30 秒內出現一個機器人圖示「Pi Agent」</b>（只有 admin 使用者看得到）。</p>
+          <p>頁面上方會轉圈圈，大約 5-15 秒之後轉圈停止，狀態變成「已啟動」。這時候<b>側欄應該會在 10 秒內出現一個機器人圖示「Pi Agent」</b>（只有 admin 使用者看得到，README 官方時間就是 ~10 s；如果超過 30 秒還沒亮，見下方疑難排解）。</p>
         </li>
       </ol>
       <figure class="shot">
@@ -221,14 +221,14 @@
     <section id="first-boot-truth" data-nav="首次啟動的真相">
       <h2 data-icon="warning">首次啟動要等 3-8 分鐘的真相</h2>
       <p>看到「已啟動」不代表「已經好」。這時候你如果馬上點側欄按鈕進去，很可能會看到白畫面、載入圈圈、或者「connection refused」的錯誤。<b>這是正常的。</b></p>
-      <p>因為 pi-web 已經開起來了沒錯，但同時間背景還有另一個 s6 服務叫 <code>video-tools-init</code>，它正在做這幾件事：</p>
+      <p>因為 pi-web 已經開起來了沒錯，但同時間背景還有另一個 s6 服務叫 <code>video-tools-init</code>，它正在做這幾件事（依 CHANGELOG v0.11.0 的順序，秒數為實測估算——官方 README 只給總時間「約 720 MB」）：</p>
       <ol class="steps">
-        <li>建立 Python 虛擬環境（venv），約 20 秒</li>
-        <li><code>pip install</code> playwright、edge-tts、pyyaml、mutagen，約 30-90 秒</li>
-        <li>透過 Playwright 下載 Chromium 瀏覽器（<b>這是最大隻的，約 500 MB</b>），約 2-6 分鐘</li>
+        <li>建立 Python 虛擬環境（venv）——估算 ~20 秒</li>
+        <li><code>pip install</code> playwright、edge-tts、pyyaml、mutagen——估算 30-90 秒（看網路 + 樹莓派 CPU）</li>
+        <li>透過 Playwright 下載並解壓 Chromium 瀏覽器（<b>最大宗，佔絕大部分下載量</b>）——估算 2-6 分鐘</li>
         <li>寫入完成標記 <code>/data/pi-agent/.video-tools-installed</code></li>
       </ol>
-      <p>整包加起來大概 720 MB，樹莓派 3-8 分鐘、x86 通常 1-2 分鐘就好。<b>之後就不用再下載了</b>——完成標記檔案存在，下次開機這個 init 服務會直接 exit 100 毫秒內結束。這是為第 <a href="ch18_video_tools.html">18 章的影片管線</a>做準備。</p>
+      <p>整包加起來大概 720 MB（這是 README 明寫的數字），樹莓派 3-8 分鐘、x86 通常 1-2 分鐘就好。<b>之後就不用再下載了</b>——完成標記檔案存在，下次開機這個 init 服務會 <code>&lt;100ms</code> 內直接結束（CHANGELOG v0.11.0 原話）。這是為第 <a href="ch18_video_tools.html">18 章的影片管線</a>做準備。</p>
       <div class="callout tip">
         <b>「我根本不打算做影片，可以跳過嗎？」</b>短答：不行，第一次還是會下載。長答：整個機制被綁在 <code>video-tools-init</code> 的 s6 oneshot 裡，你沒辦法選擇性關掉。但反過來想，反正只下載一次，之後就是背景一個檔案佔硬碟而已；哪天想玩影片管線隨時都可以。細節看 <a href="ch18_video_tools.html">ch18</a>。
       </div>
@@ -252,7 +252,7 @@
           </tr>
           <tr>
             <td><code>Downloading Chromium ...</code></td>
-            <td>正在抓 500 MB 的瀏覽器</td>
+            <td>正在抓 Chromium 瀏覽器（720 MB 下載中最大的一塊）</td>
             <td>耐心等，網路慢就慢</td>
           </tr>
           <tr>

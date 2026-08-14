@@ -253,7 +253,7 @@
           <tr>
             <td>Playwright 錄畫面產出的影片<strong>全黑</strong>或全灰</td>
             <td>Chromium 沒下好、或 Playwright cache 壞了</td>
-            <td>Configuration 分頁把 <code>reset_video_tools</code> 打開 → 重啟 Add-on → 等 3-8 分鐘讓它重新下 720MB → 這個開關會<strong>自動彈回 false</strong>，不會每次都重下。<a href="ch18_video_tools.html">第 18 章</a>末段有詳細步驟。</td>
+            <td>Configuration 分頁把 <code>reset_video_tools</code> 打開 → 儲存 → 重啟 Add-on → 等 3-8 分鐘重新下 720MB → <strong>重下完務必自己把開關翻回 <code>false</code></strong>（<a href="ch18_video_tools.html">第 18 章</a>踩雷區有寫：這個開關不會自動彈回，忘了關每次重啟都要再等 3-8 分鐘）。</td>
           </tr>
           <tr>
             <td>影片有畫面但<strong>沒配音</strong></td>
@@ -338,7 +338,7 @@
         </li>
         <li>
           <h3>暫時關掉 Watchdog 好 debug</h3>
-          <p>Watchdog 一直重啟會讓你連 log 都來不及看清楚。應用程式（Apps）→ Woow HA Pi Agent → 停用 <strong>Watchdog</strong> 開關 → 現在它掛了就是掛了，不會被自動重啟——你有時間慢慢看 log 找原因。debug 完記得<strong>把 Watchdog 再開回來</strong>，這是長期運轉的重要保護。</p>
+          <p>Watchdog 一直重啟會讓你連 log 都來不及看清楚。設定 → 附加元件（Add-ons）→ Woow HA Pi Agent → <strong>Info 分頁</strong>下面的 <strong>Watchdog</strong> 開關關掉（跟「顯示在側邊欄」同一區） → 現在它掛了就是掛了，不會被自動重啟——你有時間慢慢看 log 找原因。debug 完記得<strong>把 Watchdog 再開回來</strong>，這是長期運轉的重要保護。</p>
         </li>
         <li>
           <h3>還是找不到原因就整組重灌</h3>
@@ -468,7 +468,7 @@
       </details>
       <details class="faq">
         <summary>發 GitHub Issue 多久會有人回？</summary>
-        <div class="body">這是<strong>純社群開源專案</strong>，沒有 SLA。維護者用愛發電、有空才回。實務上：資訊附得完整的 issue，通常 1-3 天有人回（可能是維護者、可能是其他使用者）。資訊不完整、只寫「壞了」的，可能永遠沒人回。想被回，重點是<strong>把診斷資訊附齊</strong>（見<a href="#assign">求救那一節</a>），減少維護者猜的成本。</div>
+        <div class="body">這是<strong>純社群開源專案，沒有 SLA、沒有任何回覆保證</strong>。維護者用愛發電、有空才回，可能幾小時、可能幾週。資訊不完整、只寫「壞了」的，被回的機率會低很多——甚至沒人理。想被回，重點是<strong>把診斷資訊附齊</strong>（見<a href="#assign">求救那一節</a>），減少維護者猜的成本；急件別等 issue，直接照本章各節自己排除，或去 GitHub Discussions／HA 社群找有空的人。</div>
       </details>
       <details class="faq">
         <summary>有沒有付費支援？急件想快點解決</summary>
@@ -488,7 +488,7 @@
       </details>
       <details class="faq">
         <summary>影片管線第一次跑就失敗，有辦法先確認工具都裝好了嗎？</summary>
-        <div class="body">開 Add-on Info 分頁下方的 <strong>Terminal</strong>（或 <code>docker exec -it addon_b9cf5676_woow_ha_pi_agent bash</code>），在裡面依序打 <code>which python3</code>、<code>which ffmpeg</code>、<code>which rclone</code>、<code>which chromium</code>——每一個都要回出路徑（<code>/data/pi-agent/venv/bin/python3</code>、<code>/usr/bin/ffmpeg</code>...）才代表裝好。有<code>not found</code>就代表 <code>video-tools-init</code> 沒跑完，回<a href="#records">影片管線那節</a>用 <code>reset_video_tools</code> 重跑。</div>
+        <div class="body">最省事的方法是<strong>裝 SSH &amp; Web Terminal add-on</strong> → 在裡面打 <code>docker exec -it addon_&lt;你的slug&gt;_woow_ha_pi_agent bash</code>（slug 每一台 HA 都不一樣，<a href="ch19_rclone.html">第 19 章</a>教過怎麼撈——通常長得像 <code>addon_a1b2c3d4_woow_ha_pi_agent</code>；先 <code>docker ps | grep pi_agent</code> 抓完整名字）。進 shell 後依序打 <code>which python3</code>、<code>which ffmpeg</code>、<code>which rclone</code>、<code>which chromium</code>——每一個都要回出路徑（<code>/data/pi-agent/venv/bin/python3</code>、<code>/usr/bin/ffmpeg</code>...）才代表裝好。有 <code>not found</code> 就代表 <code>video-tools-init</code> 沒跑完，回<a href="#records">影片管線那節</a>用 <code>reset_video_tools</code> 重跑。</div>
       </details>
       <details class="faq">
         <summary>tablet 或手機瀏覽器上傳圖片給 AI 一直失敗，PC 就沒事</summary>

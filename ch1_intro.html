@@ -107,7 +107,7 @@
     <section id="concept" data-nav="Pi Agent 是什麼">
       <h2 data-icon="concept">Pi Agent 到底是什麼</h2>
       <p>把家裡想成一間小客廳。你原本有電視、有 Switch、有擴大機——這些都是「看得到的家電」。<strong>Pi Agent 是一台看不見的工作台</strong>，也在客廳，只是沒有實體。它會思考、會查 Google、會寫程式、會幫你出主意，幫忙做那些「你想做但不會做」的家事。</p>
-      <p>技術上白話講：Pi Agent 是一個 <strong>Home Assistant 附加元件（Add-on，2026.2 起 HA 官方改叫 Apps）</strong>。你在 HA 後台按一下「安裝」，它就會在你家 HA 主機上跑起來，然後在 HA 左邊側邊欄多出一個「Pi Agent」的圖示。點進去，你就跟這個 AI 工作站對話。</p>
+      <p>技術上白話講：Pi Agent 是一個 <strong>Home Assistant 附加元件（Add-on，HA 2026.2 起官方 UI 正式改稱 Apps，選單位置在「設定 → Apps」）</strong>。你在 HA 後台按一下「安裝」，它就會在你家 HA 主機上跑起來，然後在 HA 左邊側邊欄多出一個「Pi Agent」的圖示。點進去，你就跟這個 AI 工作站對話。</p>
       <div class="callout tip"><strong>提示：</strong>它是「附加元件（Apps）」不是「整合（Integration）」——這兩個常被搞混。整合是接「一台裝置」進 HA（例如接一顆燈泡）；附加元件是「多跑一個程式」在 HA 主機上（例如多跑一個 AI）。第 2 章會實際帶你裝，不用擔心。</div>
       <p>它裡面藏了什麼？講三個名字你會安心一點：</p>
       <ul>
@@ -134,7 +134,7 @@
       <p><strong>4. 教它一項「新手藝」給它學（Skills）</strong></p>
       <p>Skills 就是「AI 的一份 SOP」。舉例：你可以教它「每次講到冷氣，都要先問幾坪、幾個人、預算」——把這份 SOP 存下來，之後它每次遇到冷氣話題就照這個流程走。Skills 可以自己寫，也可以從 GitHub 上別人分享的直接裝。第 14 章會整章講。</p>
 
-      <div class="callout tip"><strong>提示：</strong>不用四件都會，先從第一件（寫自動化）練手就很有用。第 6 章開始就會帶你聊第一個自動化。</div>
+      <div class="callout tip"><strong>提示：</strong>不用四件都會，先從第一件（寫自動化）練手就很有用。第 7 章會帶你開第一個對話、把第一個自動化聊出來。</div>
     </section>
 
     <section id="compare" data-nav="跟手機 ChatGPT 差在哪">
@@ -243,15 +243,15 @@
         </li>
         <li>
           <h3>設定裡看得到「附加元件（Apps）」</h3>
-          <p>點齒輪 → 進「設定」頁 → 找到「附加元件」（HA 2026.2 以後可能顯示成「Apps」，兩個是同一個東西）。看得到這一項，代表你的 HA 是 HAOS 或 Supervised，這本書適用。看不到就是 Container/Core，這本書不適用。</p>
+          <p>點齒輪 → 進「設定」頁 → 找到「附加元件」（HA 2026.2 起正式改名叫「Apps」，位置一樣在「設定」頁裡，兩個是同一個東西）。看得到這一項，代表你的 HA 是 HAOS 或 Supervised，這本書適用。看不到就是 Container/Core，這本書不適用。</p>
         </li>
         <li>
           <h3>認得左邊側邊欄</h3>
-          <p>左邊那條垂直的圖示列——「首頁（Home，2026.2 前叫 Overview）」「地圖」「能源」「歷史」…—Pi Agent 裝好後會在這裡多一顆圖示，跟這些並排。</p>
+          <p>左邊那條垂直的圖示列——「首頁（Home，2026.2 起把預設面板改成新的 Home Dashboard，取代舊版 Overview；如果你懷念舊版，可以在「設定 → 儀表板」加回 Overview (legacy)）」「地圖」「能源」「歷史」…—Pi Agent 裝好後會在這裡多一顆圖示，跟這些並排。</p>
         </li>
         <li>
           <h3>找得到系統首頁</h3>
-          <p>設定 → 系統，看得到「一般」「更新」「硬體」「備份」等分頁。備份很重要——第 22 章會教怎麼把 Pi Agent 的對話一起備份走。</p>
+          <p>設定 → 系統，看得到「一般」「更新」「硬體」「備份」等分頁（HA 2026.2 起「開發者工具」也被歸進「設定」區的工具集中管理）。備份很重要——第 20 章會教怎麼把 Pi Agent 的對話一起備份走。</p>
         </li>
       </ol>
       <div class="callout warn"><strong>注意：</strong>上面五件事有任何一件做不到，先<strong>不要往下裝</strong>。回去看 HA 入住指南把 HA 打穩，Pi Agent 之後隨時能裝，不急。</div>
@@ -275,18 +275,18 @@
             <td>裝好 Pi Agent、認得介面、跑第一句話</td>
           </tr>
           <tr>
-            <td>先跟它聊</td>
-            <td>ch5-ch7</td>
-            <td>申請第一支金鑰、用 GLM 對話、寫第一個自動化</td>
+            <td>先跟它聊起來</td>
+            <td>ch5-ch9</td>
+            <td>申請第一支金鑰、用 GLM 對話、看懂 Session 與思考塊</td>
           </tr>
           <tr>
-            <td>多個 AI</td>
-            <td>ch8-ch10</td>
-            <td>同時掛好幾家 AI（Claude、OpenAI、DeepSeek）、按任務切換</td>
+            <td>多個 AI 一起用</td>
+            <td>ch10-ch13</td>
+            <td>為什麼多接幾家、六家 provider 對照、Reasoning、切換模型</td>
           </tr>
           <tr>
             <td>Skills</td>
-            <td>ch11-ch16</td>
+            <td>ch14-ch16</td>
             <td>教它一項新手藝、裝別人寫好的、自己寫一份</td>
           </tr>
           <tr>
@@ -297,7 +297,7 @@
           <tr>
             <td>家常維護</td>
             <td>ch20-ch22</td>
-            <td>備份、更新、家人怎麼一起用</td>
+            <td>對話與金鑰備份、升級注意、卡關手冊</td>
           </tr>
         </tbody>
       </table>
@@ -334,7 +334,7 @@
         </li>
         <li>
           <h3>家人不喜歡「AI 在家裡」的想法</h3>
-          <p>常見疑慮兩個：「它會不會偷聽？」「它會不會亂動我家東西？」白話回答：（1）Pi Agent 沒有麥克風、沒有攝影機，你不打字它不做事；（2）它動 HA 之前會先問你確認，你按確定它才動。可以先用 read-only 的方式讓它跑一週（只讓它讀狀態、不讓它改東西），家人看它多有用，接受度就會上來。第 22 章有一篇「家人怎麼一起用」的實戰。</p>
+          <p>常見疑慮兩個：「它會不會偷聽？」「它會不會亂動我家東西？」白話回答：（1）Pi Agent 沒有麥克風、沒有攝影機，你不打字它不做事；（2）它動 HA 之前會先問你確認，你按確定它才動。可以先用 read-only 的方式讓它跑一週（只讓它讀狀態、不讓它改東西），家人看它多有用，接受度就會上來。</p>
         </li>
         <li>
           <h3>我很擔心資料外洩</h3>
@@ -351,7 +351,7 @@
       <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>這跟 Nabu Casa 差在哪？我付月費有比較好嗎？</summary>
-        <div class="body">Nabu Casa 是 HA 官方的「遠端連線＋語音助理」訂閱服務，月費約 6.5 美金，解決的是「怎麼在外面連家裡的 HA」跟「HA 內建語音助理雲端運算」這兩件事。Pi Agent 完全是另一個東西——它是「AI 工作站」，不管你有沒有付 Nabu Casa 都能裝。兩者不衝突：Nabu Casa 幫你連得到家、Pi Agent 幫你在家裡多一個 AI 幫手。</div>
+        <div class="body">Nabu Casa 是 HA 官方的「遠端連線＋語音助理」訂閱服務，月費約 8 美金（或年費約 80 美金，2026 年公告價；依地區與幣別略有不同），解決的是「怎麼在外面連家裡的 HA」跟「HA 內建語音助理雲端運算」這兩件事。Pi Agent 完全是另一個東西——它是「AI 工作站」，不管你有沒有付 Nabu Casa 都能裝。兩者不衝突：Nabu Casa 幫你連得到家、Pi Agent 幫你在家裡多一個 AI 幫手。</div>
       </details>
       <details class="faq">
         <summary>一定要 HAOS 嗎？我用 Docker 跑 HA Container 有辦法嗎？</summary>
@@ -359,7 +359,7 @@
       </details>
       <details class="faq">
         <summary>小孩可以用嗎？會不會學壞？</summary>
-        <div class="body">Pi Agent 的預設模型（GLM、Claude、GPT）都有內容過濾，一般家庭場景不會出事。真的要更保險，可以：（a）第 22 章會教怎麼開「兒童帳號」限制它只能問特定主題；（b）你可以裝一份「家庭作業輔助」的 Skill，把它固定在「解釋概念、不直接寫答案」的行為模式。用法自由，你是家長，你設規則。</div>
+        <div class="body">Pi Agent 的預設模型（GLM、Claude、GPT）都有內容過濾，一般家庭場景不會出事。真的要更保險，可以：（a）在 HA「設定 → 人員」開一個非管理員帳號給小孩用，Pi Agent 只有管理員（Administrator）看得到，孩子那邊自然就沒有這顆側邊欄圖示；（b）你可以裝一份「家庭作業輔助」的 Skill（第 14-15 章會教），把它固定在「解釋概念、不直接寫答案」的行為模式。用法自由，你是家長，你設規則。</div>
       </details>
       <details class="faq">
         <summary>網路斷了還能用嗎？</summary>
@@ -371,7 +371,7 @@
       </details>
       <details class="faq">
         <summary>它會定期收費嗎？我怕不小心花很多錢。</summary>
-        <div class="body">Pi Agent 這個附加元件本身完全免費（MIT 開源）。花錢的部分只有「AI 呼叫費」，也就是你打字問它、它回答你，這一來一回會消耗你 API 金鑰的餘額。GLM、DeepSeek 這類中國模型一個月正常使用約 30-100 元台幣；OpenAI GPT-4o 高強度使用一個月可能 300-1000 元；Claude Opus 最貴、但也最會寫程式。第 5 章教你怎麼設「用量上限」，避免一個晚上跑掉 3000 元的意外。</div>
+        <div class="body">Pi Agent 這個附加元件本身完全免費（MIT 開源）。花錢的部分只有「AI 呼叫費」，也就是你打字問它、它回答你，這一來一回會消耗你 API 金鑰的餘額。GLM、DeepSeek 這類中國模型一個月正常使用約 30-100 元台幣（實際依你的對話長度與模型等級浮動，官方費率請以廠商當日公告為準）；OpenAI GPT-4o 高強度使用一個月可能 300-1000 元；Claude 高階模型（例如 Opus 系列）最貴、但也最會寫程式。第 5 章會教你到 GLM 廠商後台設「用量上限」，避免一個晚上跑掉 3000 元的意外；其它家的入口整理在附錄 B。</div>
       </details>
       <details class="faq">
         <summary>裝了會不會拖慢我 HA？</summary>

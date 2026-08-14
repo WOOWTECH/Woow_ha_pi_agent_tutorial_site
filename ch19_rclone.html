@@ -155,15 +155,19 @@
           <p>打開之後看到黑底白字的畫面，這時候你是站在 HA host 上（可以看到 <code>/config/</code>、<code>/mnt/</code> 這些 HA 系統目錄），但你還沒進到 Pi Agent 的 add-on 容器裡。想確認自己在哪，跑 <code>ls /data/pi-agent/</code>——會顯示「No such file or directory」，因為 <code>/data/pi-agent/</code> 是容器裡面的路徑，HA host 上看不到。</p>
         </li>
         <li>
+          <h3>先查你自己的 add-on slug（最保險的一步）</h3>
+          <p>Pi Agent 容器名字長成 <code>addon_&lt;slug&gt;</code>，而 slug 前面會帶一段<strong>八位英數 repo hash</strong>（例如 <code>b9cf5676_woow_ha_pi_agent</code>）——這段 hash 是 HA 依你加的 add-on repository URL 算出來的，每個人裝的都不一樣。<strong>最不會錯的查法</strong>：HA 側邊欄 → 設定 → 附加元件 → 點 Woow HA Pi Agent → 上方「資訊（Info）」分頁往下捲，會看到 <code>Hostname</code> 或 <code>Slug</code> 欄位（例如 <code>b9cf5676_woow_ha_pi_agent</code>），這就是你要用的 slug。抄下來備用。</p>
+        </li>
+        <li>
           <h3>用 docker exec 進 Pi Agent 容器</h3>
-          <p>在 terminal 裡跑：<code>docker exec -it addon_local_woow_ha_pi_agent bash</code>。跑完你會看到 shell prompt 換了樣子（通常變成 <code>root@某串英數字:/#</code>），這代表你已經在容器內。這時候再跑 <code>ls /data/pi-agent/</code> 就會看到 sessions、models、rclone 這些子資料夾。</p>
+          <p>在 terminal 裡把剛才那段 slug 套進去：<code>docker exec -it addon_&lt;你的slug&gt; bash</code>，例如 <code>docker exec -it addon_b9cf5676_woow_ha_pi_agent bash</code>。跑完你會看到 shell prompt 換了樣子（通常變成 <code>root@某串英數字:/#</code>），這代表你已經在容器內。這時候再跑 <code>ls /data/pi-agent/</code> 就會看到 sessions、models、rclone 這些子資料夾。</p>
         </li>
         <li>
           <h3>接下來所有指令都在容器內跑</h3>
           <p>後面章節的 <code>rclone config</code>、<code>rclone lsd</code>、<code>rclone config reconnect</code> 這些指令，都必須在容器內執行——因為 HA host 上根本沒有 rclone 執行檔。跑錯地方會顯示「rclone: command not found」，記得先確認你的 prompt 有沒有換過來。</p>
         </li>
       </ol>
-      <div class="callout warn"><strong>注意：</strong>add-on 容器的名字 <code>addon_local_woow_ha_pi_agent</code> 是「local repository（自己加倉庫）」安裝版本的名字。如果你未來從別的來源裝 Pi Agent（例如官方 registry），名字可能變成 <code>addon_woowtech_ha_pi_agent</code> 或類似的。找不到就跑 <code>docker ps | grep pi</code>，看實際名字是什麼再對應。</p></div>
+      <div class="callout warn"><strong>注意：</strong>你可能在別人的教學看到 <code>addon_local_woow_ha_pi_agent</code>（自建 local repo）或 <code>addon_woowtech_ha_pi_agent</code>（假想的官方 registry）——這些都不是真名。真名一律是 <strong>Info 分頁裡秀出來的那段</strong>（例如 <code>b9cf5676_woow_ha_pi_agent</code>）。萬一 Info 找不到，退路是 SSH 進 HA host 跑 <code>docker ps --format '{{.Names}}' | grep pi_agent</code>，會直接印出 <code>addon_&lt;真實slug&gt;</code>。</div>
     </section>
 
     <section id="steps" data-nav="rclone config 精靈">
@@ -184,7 +188,7 @@
         </li>
         <li>
           <h3>client_id / client_secret 空著按 Enter（見警告）</h3>
-          <p>問 <code>Google Application Client Id&gt;</code>。個人一次性用，直接按 Enter 走 rclone 內建的 client_id 就夠。<code>client_secret</code> 同樣空白按 Enter。<strong>但看下面那個警告方塊</strong>——2026 年之後這個做法會不能用，重度使用者建議自己申請一組。</p>
+          <p>問 <code>Google Application Client Id&gt;</code>。個人一次性用，直接按 Enter 走 rclone 內建的 client_id 就夠。<code>client_secret</code> 同樣空白按 Enter。<strong>但看下面那個警告方塊</strong>——rclone 官方預告「內建 client_id 會在 2026 年<em>期間</em>停用（will stop working during 2026）」，重度使用者建議現在就自己申請一組。</p>
         </li>
         <li>
           <h3>Scope 選 1（完整存取）</h3>
@@ -215,15 +219,15 @@
           <p>回到你的 terminal，rclone 這時候在等 <code>Enter verification code&gt;</code>。把剛才那段驗證碼貼進去按 Enter。看到 <code>Got code</code> 就代表 OAuth 完成、token 已存進 <code>rclone.conf</code>。</p>
         </li>
         <li>
-          <h3>Configure this as a Shared Drive? 選 n</h3>
-          <p>問你這個 remote 要不要接你公司的共用雲端硬碟（Team Drive）。個人 Google 帳號選 <code>n</code>。</p>
+          <h3>Configure this as a Shared Drive (Team Drive)? 選 n</h3>
+          <p>rclone 原話是 <code>Configure this as a Shared Drive (Team Drive)?</code>——問你要不要接你公司的共用雲端硬碟（原本叫 Team Drive、現在改名 Shared Drive）。個人 Google 帳號沒有這種東西，選 <code>n</code>。</p>
         </li>
         <li>
           <h3>看到摘要，選 y 存檔</h3>
           <p>精靈會秀你剛才填的所有值（type = drive、scope = drive 之類），問 <code>Keep this "gdrive" remote?</code>，選 <code>y</code>（keep）。回到主選單後打 <code>q</code>（quit）離開精靈。</p>
         </li>
       </ol>
-      <div class="callout warn"><strong>注意（2026 年 client_id 政策）：</strong>rclone 官方近期加了一段警告：<strong>共用（內建）client_id 會在 2026 年停用</strong>，rclone 官方文件已把「Making your own client_id」從「optional（選項）」改成「strongly recommended（強烈建議）」。個人少量使用短期內還能用，但如果你長期依賴這個上傳（比如每週產十幾支影片），花 15 分鐘去 Google Cloud Console 申請一組自己的 client_id / client_secret 貼回精靈裡，能避免 2026 年之後突然失效。步驟麻煩但一次搞定，rclone 官網 <code>rclone.org/drive/#making-your-own-client-id</code> 有完整教學。</p></div>
+      <div class="callout warn"><strong>注意（2026 年 client_id 政策）：</strong>rclone 官方在 <code>rclone config</code> 精靈裡直接加了一段警告：「<em>The shared client_id is being retired and will stop working during 2026, so creating your own is now strongly recommended.</em>」＝共用 client_id 在 2026 年<em>期間</em>會被停用，強烈建議自己做一組。個人少量使用<strong>當下還能用</strong>，但如果你長期依賴這個上傳（比如每週產十幾支影片），花 15 分鐘去 Google Cloud Console 申請一組自己的 client_id / client_secret 貼回精靈第 4 步，能避免半路失效。步驟麻煩但一次搞定，rclone 官網 <code>rclone.org/drive/#making-your-own-client-id</code> 有完整教學。</div>
       <div class="callout danger"><strong>危險：</strong>驗證碼那段是「一次性通行證」，貼到 terminal 之後 rclone 會拿去跟 Google 換一張長期 token。<strong>不要把驗證碼截圖貼到 LINE 群、Discord 求助</strong>——雖然它一分鐘內會失效，但那一分鐘內誰拿到都能綁到自己的 rclone 冒充你。同理，terminal 印出來的那段 URL 也不要公開，那條 URL 綁的是「這一次授權請求」，誰打開誰就能授權自己的 Google 帳號進去。</p></div>
     </section>
 
@@ -416,7 +420,7 @@ team_drive =</code></pre>
         </li>
         <li>
           <h3>docker exec 進去之後 prompt 沒變、指令一樣說 command not found</h3>
-          <p>你可能連 docker exec 都沒跑成功（HA 有些版本沒有 docker command，是用 <code>ha</code> CLI 或直接 podman）。做法：先跑 <code>docker ps</code> 看有沒有回列表——沒有的話換 <code>ha addons info local_woow_ha_pi_agent</code>，再看 add-on 頁面右上角有沒有「開啟網頁終端機」按鈕（有些 add-on 內建 shell），從那邊進去就直接在容器內。真的都不行，跟 Pi Agent 客服拿最新的容器名字。</p>
+          <p>你可能連 docker exec 都沒跑成功（HA 有些版本沒有 docker command，是用 <code>ha</code> CLI 或直接 podman）。做法：先跑 <code>docker ps --format '{{.Names}}' | grep pi_agent</code> 直接印出真名（例如 <code>addon_b9cf5676_woow_ha_pi_agent</code>）；沒有 docker 就換 <code>ha addons info &lt;你的slug&gt;</code>（slug 從 HA 附加元件 → Pi Agent → Info 分頁抄）；再不行去 add-on 頁面右上角看有沒有「開啟網頁終端機」按鈕，有些 add-on 內建 shell，點下去就直接在容器內、免 docker exec。</p>
         </li>
         <li>
           <h3>影片跑完 push_drive 那一段整個沒執行</h3>

@@ -243,7 +243,7 @@
     <section id="cost" data-nav="成本差多少">
       <h2 data-icon="cost">成本到底差多少（新台幣估）</h2>
       <p>AI 廠商都用 <strong>token</strong>（詞元）計價。粗略換算：<strong>中文一個字大約 2 個 tokens，英文一個字大約 1.3 個 tokens</strong>。所以你問一句「幫我開客廳燈」大概 20 個 tokens，一次比較長的對話含 AI 回覆可能是 3,000-5,000 tokens。</p>
-      <p>各家的價目是「每 100 萬 tokens」多少錢，換算新台幣（<strong>2026 年估價，實際以官方為準</strong>）大概像這樣：</p>
+      <p>各家的價目是「每 100 萬 tokens」多少錢，換算新台幣（<strong>2026 年中粗估、匯率抓 32、實際請以各家官方 pricing 頁為準</strong>）大概像這樣：</p>
       <table class="data-table">
         <thead>
           <tr><th>模型</th><th>角色</th><th>輸入 100 萬 tokens</th><th>輸出 100 萬 tokens</th><th>一次 5000-token 對話約</th></tr>
@@ -266,16 +266,16 @@
           <tr>
             <td>OpenAI GPT-4o</td>
             <td>多模態旗艦</td>
-            <td>約 NT$ 80-150</td>
-            <td>約 NT$ 300-450</td>
+            <td>約 NT$ 80</td>
+            <td>約 NT$ 320</td>
             <td>約 NT$ 1-2</td>
           </tr>
           <tr>
             <td>Anthropic Claude Opus</td>
             <td>頂級思考</td>
-            <td>約 NT$ 450-600</td>
-            <td>約 NT$ 2000-2500</td>
-            <td>約 NT$ 8-12</td>
+            <td>約 NT$ 160</td>
+            <td>約 NT$ 800</td>
+            <td>約 NT$ 3-4</td>
           </tr>
           <tr>
             <td>DeepSeek-R1</td>
@@ -286,9 +286,9 @@
           </tr>
         </tbody>
       </table>
-      <p>看到差距了嗎？<strong>同樣一次對話，Groq 是 5 毛，Claude Opus 是 10 塊，差了 200 倍</strong>。如果你不分場景全用 Claude Opus，一天問 30 次就 300 塊、一個月 9,000 塊——超過 Netflix 訂閱月費 40 倍。</p>
+      <p>看到差距了嗎？<strong>同樣一次對話，Groq 幾乎是零頭、Claude Opus 是 3-4 塊，差了 60~80 倍不誇張</strong>。如果你不分場景全用 Claude Opus，一天問 30 次就 100 塊上下、一個月 3,000 塊——比 Netflix 月費多 10 倍還不止。</p>
       <p>反過來，如果你全用 Groq，遇到重要決策時它給你隨口一答，你聽了就決定，可能買錯 5 萬塊的冷氣。<strong>省錯地方比花錯錢更貴</strong>。</p>
-      <div class="callout warn"><strong>注意：</strong>上面數字是<strong>粗估</strong>，各家隨時改價。動筆買之前一律去該廠商 pricing 頁面（Google 搜「<em>公司名</em> pricing」）確認當下價格。第 12 章會教你怎麼在 Pi Agent 看自己每次對話花了幾個 tokens。</div>
+      <div class="callout warn"><strong>非常重要的免責：</strong>上表的新台幣金額是 <strong>2026 年中的粗估、非官方報價</strong>。AI 廠商的定價至少一季調一次、常常無預警腰斬或漲價（例如 Anthropic Opus 從 4.x 早期版本一路降過）、匯率也會動。<strong>動筆買、決定月度預算之前，一律去該廠商 pricing 頁面確認當下數字</strong>（Google 搜「<em>公司名</em> pricing」直接看官方）。表格用來建立「這幾家彼此差幾個數量級」的心智模型就好，別拿來對帳。第 12 章會教你怎麼在 Pi Agent 看自己每次對話實際花了幾個 tokens。</div>
     </section>
 
     <section id="warning" data-nav="只有一家會怎樣">
@@ -417,7 +417,7 @@
       </details>
       <details class="faq">
         <summary>每家 provider 我要一個月付多少最合理？</summary>
-        <div class="body">參考數字（一般家庭用戶，每天 20-50 則對話）：<strong>Groq 或 GLM-Flash 打底</strong>——多數家庭一個月不到 30 元；<strong>GLM-4.6 或 DeepSeek 思考中檔</strong>——月費約 100-300 元；<strong>Anthropic Claude Opus 頂級</strong>——如果只用在重要決策（每月 30-50 次），約 500-1500 元。三家全接、正確分工的話，總月費 <strong>500 到 2000 元</strong>之間，比一家全部用 Claude Opus（動輒 6000 元起跳）划算得多。實際數字取決於你問話長短，第 12 章會教你估算。</div>
+        <div class="body">參考數字（一般家庭用戶，每天 20-50 則對話，<strong>2026 年中粗估、以下皆非官方報價</strong>）：<strong>Groq 或 GLM-Flash 打底</strong>——多數家庭一個月不到 30 元；<strong>GLM-4.6 或 DeepSeek 思考中檔</strong>——月費約 100-300 元；<strong>Anthropic Claude Opus 頂級</strong>——如果只用在重要決策（每月 30-50 次），約 200-500 元。三家全接、正確分工的話，總月費<strong>抓 500-1500 元</strong>就夠寬鬆，比一家全部用 Claude Opus（動輒 2000-4000 元）划算得多。實際數字取決於你問話長短，也隨廠商調價浮動，第 12 章會教你在 Pi Agent 內看每筆的 token 用量估算。</div>
       </details>
       <details class="faq">
         <summary>接了第二家會不會拖慢 pi-web？</summary>

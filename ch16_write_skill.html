@@ -226,7 +226,7 @@ description: 使用者傳冰箱照片時，幫他列出食材、找出臨期的�
           <h3>方案 A：本地路徑法（最快，2 分鐘）</h3>
           <p>用 <code>scp</code> 或 SFTP 客戶端（例如 FileZilla、Cyberduck）連到你的 HA host，把整個 <code>fridge-check/</code> 資料夾丟到 <code>/data/pi-agent/skills/</code> 底下。用 <code>scp</code> 的話指令長這樣（把 <code>homeassistant.local</code> 換成你 HA 的位址）：</p>
           <pre class="code-block"><code>scp -r ~/Desktop/fridge-check root@homeassistant.local:/data/pi-agent/skills/</code></pre>
-          <p>丟完進去 Pi Agent 的 Skills 面板按重整（refresh），就會看到 <code>fridge-check</code> 出現在清單裡。完成。</p>
+          <p>丟完之後回 pi-web，按 <kbd>F5</kbd> 重整瀏覽器頁面（<a href="ch15_install_skill.html">第 15 章</a>解釋過為什麼要這樣——pi-web 的 Skills 面板不一定會即時偵測新資料夾），Skills 清單裡就會看到 <code>fridge-check</code>。完成。</p>
         </li>
         <li>
           <h3>方案 B：GitHub 法（正式，可分享給朋友）</h3>
@@ -383,8 +383,8 @@ git push -u origin main</code></pre>
           <p>在 repo 根目錄放一個 <code>README.md</code> 說明 skill 幹嘛用的、怎麼用、示範對話截圖。這對朋友篩選有沒有用到很有幫助。<code>SKILL.md</code> 是給 AI 讀的、<code>README.md</code> 是給人讀的，兩份不衝突。</p>
         </li>
         <li>
-          <h3>加到公開索引（進階）</h3>
-          <p>有些社群維護 skill 索引檔（例如 <code>skills.sh</code> 這類清單），發 PR 把你的 skill 加進去，其他人搜尋就找得到。這是可選的，不做完全沒影響——就是曝光度差別。</p>
+          <h3>加到公開索引（進階、可選）</h3>
+          <p>目前 Pi Agent 生態沒有官方的 skill 索引站，各家社群零散有自己的 awesome-list 型清單。想曝光的話發到 HA 中文社群、Reddit r/homeassistant、或推特/BlueSky 掛 <code>#pi-agent</code>、<code>#homeassistant</code> tag 通常比較有效。<strong>沒有指定的中央索引可以送 PR</strong>，別在網路上聽人講「送到 skills.sh」就照做——那並不是 Pi Agent 官方頻道。</p>
         </li>
       </ol>
       <div class="callout tip"><strong>提示：</strong>剛開始寫 skill 不用想著「這個要不要分享」。<strong>先寫給自己家用</strong>，用個一兩個月覺得穩了、確實幫到自己了，再考慮 push public。太早分享容易還沒 debug 完就散出去，反而幫倒忙。</div>
@@ -432,7 +432,7 @@ git push -u origin main</code></pre>
       </details>
       <details class="faq">
         <summary>Skill 可以呼叫工具嗎？例如叫 AI 讀 HA 的資料</summary>
-        <div class="body">可以，但要看模型跟裝了哪些工具。你可以在 <code>SKILL.md</code> 裡指示「請用 <code>read_file</code> 讀 <code>/config/automations.yaml</code>」「請呼叫 <code>ha_get_state</code> 拿實體目前狀態」，AI 就會叫那個工具（前提是那個工具本來就有裝，通常是別的 skill 附帶進來的）。工具呼叫的細節在<a href="ch9_thinking_diff.html">第 9 章</a>的「工具卡片」段講過。想讓 skill 能操作 HA 的話，先裝 <code>home-assistant-best-practices</code> 這個 skill 提供 HA 工具，你自己的 skill 就能引用它們。</div>
+        <div class="body">可以，但要看模型跟裝了哪些工具。你可以在 <code>SKILL.md</code> 裡指示「請用 <code>read_file</code> 讀 <code>/config/automations.yaml</code>」「請呼叫 <code>bash</code> 跑這條指令」，AI 就會叫那個工具（前提是那個工具本來就有裝在 pi-web，例如 <code>bash</code>、<code>read_file</code>、<code>write_file</code> 這些檔案／指令類工具通常是內建）。工具呼叫的細節在<a href="ch9_thinking_diff.html">第 9 章</a>的「工具卡片」段講過。要操作 HA 實體則要另外設定 MCP server（例如接 <code>ha-mcp</code> 之類的 MCP server 提供 <code>ha_get_state</code>、<code>ha_call_service</code>）——這是 pi-web 外部設定，不是 skill 本身能自帶的東西。</div>
       </details>
       <details class="faq">
         <summary>Skill 寫錯會不會弄壞 Pi Agent？</summary>

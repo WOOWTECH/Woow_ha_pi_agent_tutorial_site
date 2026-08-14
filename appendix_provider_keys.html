@@ -98,8 +98,8 @@
       <p>Pi Agent 支援的 provider 越來越多，但每次要新加一家，你都會撞到同樣三個問題：</p>
       <ul>
         <li><strong>入口網址在哪？</strong> Google 搜「GLM API」跳出來十幾個看起來很像的頁面，哪個才是真的？智譜開放平台跟智譜清言（AI 對話網站）長得很像、網址完全不同。</li>
-        <li><strong>API keys 選單藏哪裡？</strong> 每家後台的名字不一樣——OpenAI 叫 <code>API keys</code>、Anthropic 叫 <code>API Keys</code>（在 Settings 底下）、GLM 叫「API 金鑰管理」、DeepSeek 叫 <code>API Keys</code> 但入口在左側欄。第一次找常常要點五分鐘。</li>
-        <li><strong>Pi Agent 該怎麼填？</strong> 拿到金鑰只是一半，另一半是要在 Pi Agent 的 Models 面板選對 <code>api mode</code>、貼對 <code>baseUrl</code>、指對 <code>model</code> 名字。任何一格填錯都會 Test 紅叉。</li>
+        <li><strong>API keys 選單藏哪裡？</strong> 每家後台的名字不一樣——OpenAI 現在統一收在 <code>Settings → API keys</code>、Anthropic 也是 <code>Settings → API keys</code>（左下齒輪進去）、GLM 叫「API 金鑰管理」、DeepSeek 叫 <code>API keys</code> 但入口在左側欄。第一次找常常要點五分鐘。</li>
+        <li><strong>Pi Agent 該怎麼填？</strong> 拿到金鑰只是一半，另一半是要在 Pi Agent 的 Models 面板選對 <code>API mode</code>（<code>openai-completions</code> / <code>openai-responses</code> / <code>anthropic-messages</code> / <code>google-generative-ai</code> 四選一）、貼對 <code>baseUrl</code>、指對 <code>model</code> 名字。任何一格填錯都會 Test 紅叉。</li>
       </ul>
       <p>這附錄把七家答案一次寫齊。已經看過<a href="ch5_first_key.html">第 5 章</a>申請 GLM、<a href="ch6_paste_key.html">第 6 章</a>把金鑰貼進 Pi Agent 的話，這裡就是「同樣的流程套到另外六家」的對照表。看過<a href="ch10_why_multi.html">第 10 章</a>為什麼要多接幾家、<a href="ch11_provider_map.html">第 11 章</a>六家對照的話，這裡多出來的是 MiniMax 那家，還有每家的實務坑。</p>
       <div class="callout"><strong>觀念：</strong>Pi Agent 是把「你和 provider 的鑰匙」交給它保管的 BYOK 介面，鑰匙留在你家 HA 硬碟（<code>/data/pi-agent/models.json</code>）。所以你申請多少家、用哪一家、花多少錢，都是你直接跟 provider 那邊算帳，Pi Agent 不經手。</div>
@@ -142,8 +142,8 @@
           <tr><td>費率頁</td><td><code>https://open.bigmodel.cn/pricing</code></td></tr>
           <tr><td>Pi Agent api mode</td><td><code>openai-completions</code>（相容 OpenAI 格式）</td></tr>
           <tr><td>Pi Agent baseUrl</td><td><code>https://open.bigmodel.cn/api/paas/v4</code>（結尾不要多斜線）</td></tr>
-          <tr><td>推薦 model</td><td><code>glm-4.6</code>（旗艦、會思考、200k context）、<code>glm-4-air</code>（輕量便宜）、<code>glm-4-flashx</code>（極速閒聊）</td></tr>
-          <tr><td>thinkingFormat</td><td><code>zai</code>（Pi Agent 內建的智譜思考塊解析器）</td></tr>
+          <tr><td>推薦 model</td><td><code>glm-4.6</code>（旗艦、會思考、200k context；2026 起 <code>glm-4.7</code> 已推出，主打 agentic coding，可替換用）、<code>glm-4-air</code>（輕量便宜）、<code>glm-4-flash</code>（免費快速閒聊）</td></tr>
+          <tr><td>thinkingFormat</td><td><code>zai</code>（Pi Agent 內建的智譜思考塊解析器，處理 <code>&lt;think&gt;…&lt;/think&gt;</code> tag）</td></tr>
         </tbody>
       </table>
       <p><strong>典型 Add Provider 表單填法</strong>：</p>
@@ -158,19 +158,19 @@ thinkingFormat: zai</code></pre>
 
     <section id="openai" data-nav="OpenAI">
       <h2 data-icon="ai">OpenAI</h2>
-      <p>ChatGPT 背後的公司，模型指標一直是業界標竿。<code>gpt-4o</code> 全能、<code>gpt-4o-mini</code> 便宜又快、<code>o1</code>／<code>o3</code> 系列會深度思考但貴。台灣可以用信用卡直接付。</p>
+      <p>ChatGPT 背後的公司，模型指標一直是業界標竿。2026 主力是 <code>gpt-5.6</code> 系列——<code>gpt-5.6-sol</code>（頂配、會 reasoning）、<code>gpt-5.6-terra</code>（均衡、日常主力）、<code>gpt-5.6-luna</code>（便宜、高流量場景）。前代 <code>gpt-4o</code> 系列仍在但已不建議新專案首選。台灣可以用信用卡直接付。</p>
       <table class="data-table">
         <thead>
           <tr><th>項目</th><th>內容</th></tr>
         </thead>
         <tbody>
-          <tr><td>註冊入口</td><td><code>https://platform.openai.com/signup</code>（platform 是開發者後台，跟 chat.openai.com 是不同帳號體系但可共用登入）</td></tr>
-          <tr><td>金鑰位置</td><td>登入後右上頭像 → <strong>View API keys</strong>（或左側 Dashboard → API keys）→ Create new secret key。</td></tr>
-          <tr><td>費率頁</td><td><code>https://openai.com/pricing</code></td></tr>
-          <tr><td>Pi Agent api mode</td><td><code>openai-completions</code></td></tr>
+          <tr><td>註冊入口</td><td><code>https://platform.openai.com/</code>（platform 是開發者後台，跟 chatgpt.com 是不同帳號體系但可共用登入）</td></tr>
+          <tr><td>金鑰位置</td><td>登入後左側 <strong>Settings → API keys → Create new secret key</strong>（直達 <code>platform.openai.com/settings/organization/api-keys</code>）。舊入口「右上頭像 → View API keys」已淘汰。</td></tr>
+          <tr><td>費率頁</td><td><code>https://openai.com/api/pricing/</code></td></tr>
+          <tr><td>Pi Agent api mode</td><td><code>openai-completions</code>（或新版 <code>openai-responses</code>，看你想用哪套端點）</td></tr>
           <tr><td>Pi Agent baseUrl</td><td><code>https://api.openai.com/v1</code></td></tr>
-          <tr><td>推薦 model</td><td><code>gpt-4o</code>（旗艦全能）、<code>gpt-4o-mini</code>（便宜快、日常足夠）、<code>o1-mini</code>（會思考的便宜版）</td></tr>
-          <tr><td>thinkingFormat</td><td>留空（<code>gpt-4o</code> 系列不回思考塊；<code>o1</code> 系列有自己的內部推理但 API 不回傳過程）</td></tr>
+          <tr><td>推薦 model</td><td><code>gpt-5.6-terra</code>（日常主力）、<code>gpt-5.6-luna</code>（便宜快）、<code>gpt-5.6-sol</code>（reasoning／複雜任務）</td></tr>
+          <tr><td>thinkingFormat</td><td>留空（OpenAI 的 reasoning 過程 API 不回傳，Pi Agent 不用另拆）</td></tr>
         </tbody>
       </table>
       <div class="callout warn"><strong>注意：</strong>OpenAI 對某些國家／地區發卡的信用卡會直接拒絕（風控嚴）。台灣核發的 Visa／Master 通常可以，但偶爾要試兩三張。如果家裡有訂 iCloud＋家庭方案／Nabu Casa 的信用卡（都是 Apple ID 綁的），那張卡刷 OpenAI 通常也過得了。</div>
@@ -186,17 +186,17 @@ thinkingFormat: zai</code></pre>
         </thead>
         <tbody>
           <tr><td>註冊入口</td><td><code>https://console.anthropic.com/</code>。Google 一鍵登入或 email。</td></tr>
-          <tr><td>金鑰位置</td><td>左下齒輪 → <strong>Settings → API Keys → Create Key</strong>。金鑰以 <code>sk-ant-</code> 開頭。</td></tr>
+          <tr><td>金鑰位置</td><td>左下齒輪 → <strong>Settings → API keys → Create Key</strong>（直達 <code>console.anthropic.com/settings/keys</code>）。金鑰以 <code>sk-ant-</code> 開頭。</td></tr>
           <tr><td>費率頁</td><td><code>https://www.anthropic.com/pricing</code></td></tr>
-          <tr><td>Pi Agent api mode</td><td><strong><code>anthropic</code></strong>（不是 openai-completions！）</td></tr>
+          <tr><td>Pi Agent api mode</td><td><strong><code>anthropic-messages</code></strong>（不是 openai-completions！Add Provider 下拉的正式選項名稱是 <code>anthropic-messages</code>）</td></tr>
           <tr><td>Pi Agent baseUrl</td><td>官方預設就好，可留空或填 <code>https://api.anthropic.com</code></td></tr>
-          <tr><td>推薦 model</td><td><code>claude-sonnet-4-6</code>（日常均衡）、<code>claude-opus-4-7</code>（最強、貴）、<code>claude-haiku-4-5</code>（便宜快）</td></tr>
-          <tr><td>thinkingFormat</td><td>用 <code>anthropic</code> api mode 時 Pi Agent 會自動處理，無需另填</td></tr>
+          <tr><td>推薦 model</td><td><code>claude-sonnet-4-6</code>（日常均衡）、<code>claude-opus-4-7</code> / <code>claude-opus-4-8</code> / <code>claude-opus-5</code>（旗艦，越後越強越貴）、<code>claude-haiku-4-5</code>（便宜快）</td></tr>
+          <tr><td>thinkingFormat</td><td>選 <code>anthropic-messages</code> api mode 時 Pi Agent 會自動用 <code>native</code> 格式（thinking block 是 Messages API 原生欄位）；下拉可不動</td></tr>
         </tbody>
       </table>
       <p><strong>典型 Add Provider 表單填法</strong>：</p>
       <pre class="code-block"><code>Name:           Anthropic
-API mode:       anthropic          ← 注意！不是 openai-completions
+API mode:       anthropic-messages ← 注意！不是 openai-completions
 Base URL:       (留空，用官方預設)
 API key:        sk-ant-...
 Model name:     claude-sonnet-4-6</code></pre>
@@ -205,62 +205,62 @@ Model name:     claude-sonnet-4-6</code></pre>
 
     <section id="deepseek" data-nav="DeepSeek">
       <h2 data-icon="ai">DeepSeek</h2>
-      <p>中國幻方旗下的實驗室，<code>deepseek-chat</code> 是全球目前性價比之王之一，<code>deepseek-reasoner</code>（R1 系列）是開源推理模型。相容 OpenAI 格式、API 定價便宜到誇張。</p>
+      <p>中國幻方旗下的實驗室，V4 系列現在是全球性價比之王之一。相容 OpenAI 格式、API 定價便宜到誇張。<strong>注意：</strong>舊的 <code>deepseek-chat</code> / <code>deepseek-reasoner</code> 兩個模型名在 2026-07-24 已下架，改用 V4 系列。</p>
       <table class="data-table">
         <thead>
           <tr><th>項目</th><th>內容</th></tr>
         </thead>
         <tbody>
           <tr><td>註冊入口</td><td><code>https://platform.deepseek.com/</code>。手機或 email 註冊。</td></tr>
-          <tr><td>金鑰位置</td><td>左側欄 <strong>API Keys → Create API Key</strong>。金鑰以 <code>sk-</code> 開頭。</td></tr>
+          <tr><td>金鑰位置</td><td>左側欄 <strong>API keys → Create API Key</strong>。金鑰以 <code>sk-</code> 開頭。</td></tr>
           <tr><td>費率頁</td><td><code>https://api-docs.deepseek.com/quick_start/pricing</code></td></tr>
           <tr><td>Pi Agent api mode</td><td><code>openai-completions</code></td></tr>
           <tr><td>Pi Agent baseUrl</td><td><code>https://api.deepseek.com/v1</code></td></tr>
-          <tr><td>推薦 model</td><td><code>deepseek-chat</code>（V3，日常聊天）、<code>deepseek-reasoner</code>（R1，會思考）</td></tr>
-          <tr><td>thinkingFormat</td><td><code>deepseek-chat</code> 留空；<code>deepseek-reasoner</code> 填 <code>deepseek</code></td></tr>
+          <tr><td>推薦 model</td><td><code>deepseek-v4-flash</code>（便宜快、1M context、日常主力）、<code>deepseek-v4-pro</code>（高階、複雜推理）。<strong>舊名 <code>deepseek-chat</code> / <code>deepseek-reasoner</code> 已於 2026-07-24 下架，填了直接 404。</strong></td></tr>
+          <tr><td>thinkingFormat</td><td><code>deepseek-v4-flash</code> 一般留空；<code>deepseek-v4-pro</code> 走推理時填 <code>deepseek</code>（走 <code>reasoning_content</code> 欄位）</td></tr>
         </tbody>
       </table>
-      <div class="callout warn"><strong>注意：</strong>DeepSeek peak 時段（東亞白天）常撞 rate limit，回傳會很慢或直接 429。要穩定用就得儲值升等或分流到別家。<code>deepseek-reasoner</code>（R1）才有思考塊，<code>deepseek-chat</code> 沒有——想看 AI 推理過程要選對模型。</div>
+      <div class="callout warn"><strong>注意：</strong>DeepSeek peak 時段（東亞白天）常撞 rate limit，回傳會很慢或直接 429。要穩定用就得儲值升等或分流到別家。如果你手上還有 2026 年上半年的教材寫 <code>deepseek-chat</code>／<code>deepseek-reasoner</code>——那兩支已死，換成 <code>deepseek-v4-flash</code>／<code>deepseek-v4-pro</code>，baseUrl 和 request 格式完全不變。</div>
     </section>
 
     <section id="groq" data-nav="Groq">
       <h2 data-icon="ai">Groq</h2>
-      <p>不是 Elon 的 Grok，是另一家做「LPU 推理硬體」的美國公司，強項是<strong>速度</strong>——同樣 Llama-3.3 70B 在 Groq 上一秒 500+ tokens，比其他家快 5-10 倍。免費 tier 就能用，適合當急件備援。</p>
+      <p>不是 Elon 的 Grok，是另一家做「LPU 推理硬體」的美國公司，強項是<strong>速度</strong>——大型開源模型在 Groq 上一秒 500+ tokens，比其他家快 5-10 倍。免費 tier 就能用，適合當急件備援。<strong>注意：</strong>Groq 是本附錄七家裡「模型下架最頻繁」的一家，2026 上半年已把 Llama 3.x 全系列跟舊 Kimi 都退役。</p>
       <table class="data-table">
         <thead>
           <tr><th>項目</th><th>內容</th></tr>
         </thead>
         <tbody>
           <tr><td>註冊入口</td><td><code>https://console.groq.com/</code>。GitHub / Google 一鍵登入。</td></tr>
-          <tr><td>金鑰位置</td><td>左側 <strong>API Keys → Create API Key</strong>。金鑰以 <code>gsk_</code> 開頭。</td></tr>
+          <tr><td>金鑰位置</td><td>左側 <strong>API keys → Create API Key</strong>。金鑰以 <code>gsk_</code> 開頭。</td></tr>
           <tr><td>費率頁</td><td><code>https://groq.com/pricing/</code>（免費 tier 有 rate limit，付費 tier 便宜）</td></tr>
           <tr><td>Pi Agent api mode</td><td><code>openai-completions</code></td></tr>
           <tr><td>Pi Agent baseUrl</td><td><code>https://api.groq.com/openai/v1</code></td></tr>
-          <tr><td>推薦 model</td><td><code>llama-3.3-70b-versatile</code>（開源模型旗艦）、<code>moonshotai/kimi-k2-instruct</code>（Moonshot 的 Kimi K2）</td></tr>
-          <tr><td>thinkingFormat</td><td>多數留空。跑 reasoning 模型時視模型而定。</td></tr>
+          <tr><td>推薦 model</td><td><code>openai/gpt-oss-120b</code>（旗艦開源、Llama 3.3 官方指定接班）、<code>openai/gpt-oss-20b</code>（輕量便宜）、<code>moonshotai/kimi-k2-instruct-0905</code>（256K context、agentic coding；舊的 <code>kimi-k2-instruct</code> 已淘汰）、<code>qwen/qwen3.6-27b</code>（Qwen 開源接班）</td></tr>
+          <tr><td>thinkingFormat</td><td>多數留空。跑 reasoning 模型（如 <code>deepseek-r1-distill-llama-70b</code>、<code>qwen-qwq-32b</code>）時填 <code>deepseek</code>。</td></tr>
         </tbody>
       </table>
-      <div class="callout warn"><strong>注意：</strong>Groq 的模型陣容變動很快，官方會不定時下線舊模型（例如 <code>mixtral-8x7b</code> 就被下架過）。如果你的 Pi Agent 突然對某個模型連不上，先去 <code>console.groq.com/docs/models</code> 看該 model 名稱是否還在名單裡。</div>
+      <div class="callout warn"><strong>注意：</strong>Groq 官方會不定時下線舊模型——<code>llama-3.3-70b-versatile</code>、<code>moonshotai/kimi-k2-instruct</code>、<code>mixtral-8x7b</code> 都已下架。如果你的 Pi Agent 突然對某個模型連不上，先去 <code>console.groq.com/docs/models</code> 或 <code>/deprecations</code> 看該 model 名稱是否還在名單裡，改成官方指定的接班版本即可。</div>
     </section>
 
     <section id="minimax" data-nav="MiniMax">
       <h2 data-icon="ai">MiniMax</h2>
-      <p>中國 MiniMax 的模型系列，<code>MiniMax-M2</code> 是 2025 年的旗艦——1M context、支援 reasoning、相容 OpenAI 格式。特色是超長 context 適合塞整本 PDF 進去問。國際版跟中國版分兩個 endpoint。</p>
+      <p>中國 MiniMax 的模型系列，<code>MiniMax-M2</code> 是 2025-2026 的旗艦——1M context、支援 reasoning、相容 OpenAI／Anthropic 兩種格式。特色是超長 context 適合塞整本 PDF 進去問。國際版跟中國版分兩個 endpoint。</p>
       <table class="data-table">
         <thead>
           <tr><th>項目</th><th>內容</th></tr>
         </thead>
         <tbody>
-          <tr><td>註冊入口</td><td>國際版 <code>https://api.minimax.io/</code>（推薦）；中國版 <code>https://api.minimax.chat/</code>。兩邊<strong>帳號不通</strong>，選一邊就固定用那邊。</td></tr>
+          <tr><td>註冊入口</td><td>國際版 <code>https://platform.minimax.io/</code>（推薦，台灣使用者用這個）；中國版 <code>https://platform.minimaxi.com/</code>。兩邊<strong>帳號完全獨立</strong>，選一邊就固定用那邊。</td></tr>
           <tr><td>金鑰位置</td><td>登入後 <strong>帳戶設定 → API Key → 新建</strong>。</td></tr>
-          <tr><td>費率頁</td><td>官網 pricing 頁（不同 endpoint 有各自的價目表，以你註冊那邊為準）</td></tr>
-          <tr><td>Pi Agent api mode</td><td><code>openai-completions</code></td></tr>
-          <tr><td>Pi Agent baseUrl</td><td>國際版：<code>https://api.minimax.io/v1</code>；中國版：<code>https://api.minimaxi.com/v1</code>（多一個 i）</td></tr>
-          <tr><td>推薦 model</td><td><code>MiniMax-M2</code>（2025 旗艦、1M context、有思考塊）、<code>abab7-chat-preview</code>（前代通用）</td></tr>
-          <tr><td>thinkingFormat</td><td><code>MiniMax-M2</code> 填 <code>deepseek</code>（M2 用 <code>&lt;think&gt;</code> tag，跟 DeepSeek 格式相容）；<code>abab7</code> 留空</td></tr>
+          <tr><td>費率頁</td><td>官網 pricing 頁（國際版與中國版有各自的價目表，以你註冊那邊為準）</td></tr>
+          <tr><td>Pi Agent api mode</td><td><code>openai-completions</code>（走 <code>/v1</code> 端點）</td></tr>
+          <tr><td>Pi Agent baseUrl</td><td>國際版：<code>https://api.minimax.io/v1</code>；中國版：<code>https://api.minimaxi.com/v1</code>（多一個 <code>i</code>——這是 MiniMax 官方刻意的命名，不是筆誤）</td></tr>
+          <tr><td>推薦 model</td><td><code>MiniMax-M2</code>（2026 旗艦、1M context、有思考塊、agentic 表現領先開源榜）、<code>abab7-chat-preview</code>（前代通用）</td></tr>
+          <tr><td>thinkingFormat</td><td><code>MiniMax-M2</code> 填 <code>zai</code>（M2 把 chain-of-thought 包在 <code>&lt;think&gt;…&lt;/think&gt;</code> tag 塞到 content 前段，跟 GLM/智譜同格式；別選成 <code>deepseek</code>，那是 <code>reasoning_content</code> 欄位派）；<code>abab7</code> 留空</td></tr>
         </tbody>
       </table>
-      <div class="callout warn"><strong>注意：</strong>國際／中國兩個 endpoint 千萬別搞混——同一支金鑰只能在註冊那邊用，跨邊會 401。1M context 是 <code>MiniMax-M2</code> 才有，選 <code>abab7</code> 一樣只有 32k 左右。</div>
+      <div class="callout warn"><strong>注意：</strong>國際／中國兩個 endpoint 千萬別搞混——同一支金鑰只能在註冊那邊用，跨邊會 401。1M context 是 <code>MiniMax-M2</code> 才有，選 <code>abab7</code> 一樣只有 32k 左右。M2 官方文件強調：思考塊 <code>&lt;think&gt;</code> 內容要完整保留在對話歷史裡（模型訓練時就是這樣，砍掉會影響多步推理），Pi Agent 用 <code>zai</code> 格式時會自動處理這件事。</div>
     </section>
 
     <section id="openrouter" data-nav="OpenRouter">
@@ -273,14 +273,14 @@ Model name:     claude-sonnet-4-6</code></pre>
         <tbody>
           <tr><td>註冊入口</td><td><code>https://openrouter.ai/</code>。Google 或 GitHub 登入。</td></tr>
           <tr><td>金鑰位置</td><td>登入後右上頭像 → <strong>Keys → Create Key</strong>。金鑰以 <code>sk-or-v1-</code> 開頭。</td></tr>
-          <tr><td>費率頁</td><td>每個模型有自己的原廠 rate，OpenRouter 額外收約 <strong>5.5%</strong> 手續費（或最低 $0.0001／request，看哪個大）。等於你付「原價 × 1.055」，方便換取「一把 key 通吃」。</td></tr>
+          <tr><td>費率頁</td><td>模型 token 單價<strong>與原廠一致</strong>（passthrough，不加價），但<strong>儲值時</strong>收 <strong>5.5% 平台費</strong>（加密貨幣 5.0%），且信用卡有 $0.80 最低手續費——小額儲值實質費率 10-20%，一次多加點才划算。</td></tr>
           <tr><td>Pi Agent api mode</td><td><code>openai-completions</code>（OpenRouter 統一用 OpenAI 相容格式，連 Anthropic 模型走這裡也是 openai-completions）</td></tr>
           <tr><td>Pi Agent baseUrl</td><td><code>https://openrouter.ai/api/v1</code></td></tr>
-          <tr><td>推薦 model</td><td>用 <code>provider/model</code> 格式：<code>anthropic/claude-sonnet-4.6</code>、<code>openai/gpt-4o</code>、<code>deepseek/deepseek-chat</code>、<code>google/gemini-2.5-pro</code></td></tr>
+          <tr><td>推薦 model</td><td>用 <code>provider/model</code> 格式：<code>anthropic/claude-sonnet-4.6</code>、<code>openai/gpt-5.6-terra</code>、<code>deepseek/deepseek-v4-flash</code>、<code>google/gemini-2.5-pro</code>、<code>zhipu/glm-4.6</code></td></tr>
           <tr><td>thinkingFormat</td><td>看你選哪個模型；思考塊格式會被 OpenRouter 標準化，通常留空即可</td></tr>
         </tbody>
       </table>
-      <div class="callout warn"><strong>注意：</strong>Anthropic 模型走 OpenRouter 這條，會<strong>失去 native thinking blocks 跟 cache_control</strong>——因為 OpenRouter 把所有家都塞進 openai-completions 這個共同格式，走原廠 <code>anthropic</code> api mode 才有的功能會被拉平。要用 Claude 的思考塊或省 cache 錢，還是直接跟 Anthropic 辦一支金鑰比較划算。</div>
+      <div class="callout warn"><strong>注意：</strong>Anthropic 模型走 OpenRouter 這條，會<strong>失去 native thinking blocks 跟 cache_control</strong>——因為 OpenRouter 把所有家都塞進 openai-completions 這個共同格式，走原廠 <code>anthropic-messages</code> api mode 才有的功能會被拉平。要用 Claude 的思考塊或省 cache 錢，還是直接跟 Anthropic 辦一支金鑰比較划算。</div>
       <div class="callout tip"><strong>提示：</strong>OpenRouter 適合當「一次試多家 AI 比較」的沙盒。你不確定要辦哪家、想同一個問題丟 6 家對比看誰答得好，OpenRouter 一把 key 就能做完，不用一次辦 6 個帳號。第 <a href="ch13_switch_model.html">13</a> 章示範的模型下拉切換就是這個工作流。</div>
     </section>
 
@@ -311,31 +311,31 @@ Model name:     claude-sonnet-4-6</code></pre>
             <td><strong>OpenAI</strong></td>
             <td><code>openai-completions</code></td>
             <td><code>https://api.openai.com/v1</code></td>
-            <td><code>gpt-4o-mini</code></td>
+            <td><code>gpt-5.6-luna</code></td>
             <td>留空</td>
             <td>信用卡直接刷</td>
           </tr>
           <tr>
             <td><strong>Anthropic</strong></td>
-            <td><code>anthropic</code></td>
+            <td><code>anthropic-messages</code></td>
             <td>(官方預設)</td>
             <td><code>claude-sonnet-4-6</code></td>
-            <td>自動</td>
+            <td>自動（native）</td>
             <td>信用卡直接刷</td>
           </tr>
           <tr>
             <td><strong>DeepSeek</strong></td>
             <td><code>openai-completions</code></td>
             <td><code>https://api.deepseek.com/v1</code></td>
-            <td><code>deepseek-chat</code></td>
-            <td>R1 用 <code>deepseek</code>；chat 留空</td>
+            <td><code>deepseek-v4-flash</code></td>
+            <td>pro 推理用 <code>deepseek</code>；flash 留空</td>
             <td>需支付寶（有障礙）</td>
           </tr>
           <tr>
             <td><strong>Groq</strong></td>
             <td><code>openai-completions</code></td>
             <td><code>https://api.groq.com/openai/v1</code></td>
-            <td><code>llama-3.3-70b-versatile</code></td>
+            <td><code>openai/gpt-oss-120b</code></td>
             <td>留空</td>
             <td>信用卡直接刷</td>
           </tr>
@@ -344,7 +344,7 @@ Model name:     claude-sonnet-4-6</code></pre>
             <td><code>openai-completions</code></td>
             <td><code>https://api.minimax.io/v1</code></td>
             <td><code>MiniMax-M2</code></td>
-            <td>M2 用 <code>deepseek</code></td>
+            <td>M2 用 <code>zai</code></td>
             <td>國際版可信用卡</td>
           </tr>
           <tr>
@@ -357,7 +357,7 @@ Model name:     claude-sonnet-4-6</code></pre>
           </tr>
         </tbody>
       </table>
-      <div class="callout"><strong>觀念：</strong>Anthropic 是唯一一家 api mode 選 <code>anthropic</code>，因為它有自己的協議（原生 thinking blocks、cache_control）。其他六家都是「相容 OpenAI 格式」，選 <code>openai-completions</code> 差別只在 baseUrl 換一下。這也是為什麼 <a href="ch11_provider_map.html">第 11 章</a>會把「api mode 對照」單獨拉一節講。</div>
+      <div class="callout"><strong>觀念：</strong>Anthropic 是唯一一家 api mode 選 <code>anthropic-messages</code>，因為它有自己的協議（原生 thinking blocks、cache_control）。其他六家都是「相容 OpenAI 格式」，選 <code>openai-completions</code> 差別只在 baseUrl 換一下。這也是為什麼 <a href="ch11_provider_map.html">第 11 章</a>會把「api mode 對照」單獨拉一節講。</div>
     </section>
 
     <section id="troubleshoot" data-nav="申請卡關解法">
@@ -366,11 +366,11 @@ Model name:     claude-sonnet-4-6</code></pre>
       <ol class="steps">
         <li>
           <h3>申請完貼進 Pi Agent、按 Test 紅叉</h3>
-          <p>先按以下順序排查：（1）<strong>baseUrl 結尾有沒有多一個 <code>/</code></strong>——例如打成 <code>.../v4/</code> 而不是 <code>.../v4</code>，多數 provider 會直接 404；（2）<strong>金鑰有沒有頭尾空白</strong>——網頁選字段常會多選到一格空白，貼進 Pi Agent 前先貼到記事本檢查；（3）<strong>api mode 選對沒</strong>——Anthropic 用 <code>anthropic</code>，其他六家用 <code>openai-completions</code>，選錯直接 401 或 400；（4）<strong>model 名字打對沒</strong>——例如 <code>glm-4.6</code> 少打 <code>.6</code> 變 <code>glm-4</code> 就 404 model not found。第 <a href="ch6_paste_key.html">6</a> 章 troubleshoot 有完整錯誤碼對照。</p>
+          <p>先按以下順序排查：（1）<strong>baseUrl 結尾有沒有多一個 <code>/</code></strong>——例如打成 <code>.../v4/</code> 而不是 <code>.../v4</code>，多數 provider 會直接 404；（2）<strong>金鑰有沒有頭尾空白</strong>——網頁選字段常會多選到一格空白，貼進 Pi Agent 前先貼到記事本檢查；（3）<strong>api mode 選對沒</strong>——Anthropic 用 <code>anthropic-messages</code>，其他六家用 <code>openai-completions</code>，選錯直接 401 或 400；（4）<strong>model 名字打對沒</strong>——例如 <code>glm-4.6</code> 少打 <code>.6</code> 變 <code>glm-4</code> 就 404 model not found，或還在填 2026-07 前的 <code>deepseek-chat</code>／舊 <code>llama-3.3-70b-versatile</code> 也是同樣結果。第 <a href="ch6_paste_key.html">6</a> 章 troubleshoot 有完整錯誤碼對照。</p>
         </li>
         <li>
           <h3>台灣信用卡刷不了</h3>
-          <p>依 provider 分開處理：（1）<strong>OpenAI／Anthropic</strong>——換一張卡，或改用綁在 Apple ID 上的 iCloud 家庭方案卡（那張卡通常過得了）；（2）<strong>GLM／DeepSeek／MiniMax（中國家）</strong>——找有支付寶／微信支付的朋友代刷儲值，或改走 OpenRouter 用它們的模型（例如 <code>openrouter/zhipu/glm-4.6</code>、<code>openrouter/deepseek/deepseek-chat</code>）；（3）<strong>不想麻煩</strong>——用 Wise 或 Revolut 開一張虛擬卡，多數海外 provider 都認；（4）<strong>直接用 OpenRouter</strong>——它一把 key 通吃多家，只多付 5.5% 手續費省下辦 5 個帳號的力氣。</p>
+          <p>依 provider 分開處理：（1）<strong>OpenAI／Anthropic</strong>——換一張卡，或改用綁在 Apple ID 上的 iCloud 家庭方案卡（那張卡通常過得了）；（2）<strong>GLM／DeepSeek／MiniMax（中國家）</strong>——找有支付寶／微信支付的朋友代刷儲值，或改走 OpenRouter 用它們的模型（例如 <code>zhipu/glm-4.6</code>、<code>deepseek/deepseek-v4-flash</code>）；（3）<strong>MiniMax</strong>——選<strong>國際版</strong>（<code>platform.minimax.io</code>）就能用台灣信用卡刷，中國版才需要支付寶；（4）<strong>不想麻煩</strong>——用 Wise 或 Revolut 開一張虛擬卡，多數海外 provider 都認；（5）<strong>直接用 OpenRouter</strong>——它一把 key 通吃多家，儲值時 5.5% 平台費（加密貨幣 5.0%）省下辦 5 個帳號的力氣。</p>
         </li>
         <li>
           <h3>手機驗證卡住（收不到簡訊）</h3>
@@ -407,7 +407,7 @@ Model name:     claude-sonnet-4-6</code></pre>
       </details>
       <details class="faq">
         <summary>有沒有辦法所有家一次搞定、不用一家一家申請？</summary>
-        <div class="body">有，就是 <strong>OpenRouter</strong>。它幫你聚合上百個模型，你辦一個 OpenRouter 帳號、拿一支 key，就能跑 <code>openai/gpt-4o</code>、<code>anthropic/claude-sonnet-4.6</code>、<code>deepseek/deepseek-chat</code>、<code>zhipu/glm-4.6</code>、<code>meta/llama-3.3-70b</code>… 幾乎全部。代價是每次呼叫多付約 5.5% 手續費（等於「原廠價 × 1.055」），換取免辦 6 個帳號、免處理 6 種支付方式的省心。缺點：Anthropic 走 OpenRouter 會失去 native thinking blocks 跟 cache_control 這兩個省錢功能，長期重度用 Claude 的人還是直接辦 Anthropic 帳號划算。</div>
+        <div class="body">有，就是 <strong>OpenRouter</strong>。它幫你聚合上百個模型，你辦一個 OpenRouter 帳號、拿一支 key，就能跑 <code>openai/gpt-5.6-terra</code>、<code>anthropic/claude-sonnet-4.6</code>、<code>deepseek/deepseek-v4-flash</code>、<code>zhipu/glm-4.6</code>、<code>moonshotai/kimi-k2-instruct-0905</code>… 幾乎全部。代價是<strong>儲值時</strong>多付 5.5% 平台費（加密貨幣 5.0%，小額還有 $0.80 最低手續費），token 單價本身跟原廠一致，換取免辦 6 個帳號、免處理 6 種支付方式的省心。缺點：Anthropic 走 OpenRouter 會失去 native thinking blocks 跟 cache_control 這兩個省錢功能，長期重度用 Claude 的人還是直接辦 Anthropic 帳號划算。</div>
       </details>
       <details class="faq">
         <summary>金鑰貼進 Pi Agent 之後會被上傳到 Woow 嗎？</summary>
@@ -415,15 +415,15 @@ Model name:     claude-sonnet-4-6</code></pre>
       </details>
       <details class="faq">
         <summary>已經填好 baseUrl 跟 api mode 但 Test 還是紅叉，怎麼確定是哪一格錯？</summary>
-        <div class="body">按 Pi Agent 右上 Models 面板卡片的 Edit，逐格對照這附錄的「Pi Agent 填法」表：（1）api mode 是不是選對（Anthropic 選 <code>anthropic</code>，其他選 <code>openai-completions</code>）；（2）baseUrl 是不是<strong>一字不差</strong>（含 <code>https</code>、含 <code>/v1</code> 或 <code>/api/paas/v4</code>、結尾<strong>沒有</strong>多 <code>/</code>）；（3）按金鑰欄位的眼睛圖示看內容，檢查頭尾沒空白、沒少字；（4）model 名字跟 provider 官方 docs 完全一樣（大小寫、連字號都要對）。四個都對還是不通，回頭看<a href="ch6_paste_key.html">第 6 章</a>的錯誤碼對照表——401 是金鑰錯、404 是地址錯、400 是 api mode 錯、402 是餘額不足。</div>
+        <div class="body">按 Pi Agent 右上 Models 面板卡片的 Edit，逐格對照這附錄的「Pi Agent 填法」表：（1）api mode 是不是選對（Anthropic 選 <code>anthropic-messages</code>，其他選 <code>openai-completions</code>）；（2）baseUrl 是不是<strong>一字不差</strong>（含 <code>https</code>、含 <code>/v1</code> 或 <code>/api/paas/v4</code>、結尾<strong>沒有</strong>多 <code>/</code>）；（3）按金鑰欄位的眼睛圖示看內容，檢查頭尾沒空白、沒少字；（4）model 名字跟 provider 官方 docs 完全一樣（大小寫、連字號都要對，且沒用到已下架的舊名如 <code>deepseek-chat</code>、<code>llama-3.3-70b-versatile</code>）。四個都對還是不通，回頭看<a href="ch6_paste_key.html">第 6 章</a>的錯誤碼對照表——401 是金鑰錯、404 是地址錯、400 是 api mode 錯、402 是餘額不足。</div>
       </details>
       <details class="faq">
         <summary>Anthropic 為什麼特別要選 <code>anthropic</code> api mode？別人怎麼都用 openai-completions？</summary>
-        <div class="body">因為 Anthropic 的 API 協議自己一套，跟 OpenAI 那套不相容。它有兩個 openai-completions 表達不出來的功能：（1）<strong>native thinking blocks</strong>——Claude 會思考的模型（如 <code>claude-opus-4-7</code>）會把思考鏈用結構化欄位回傳，不是塞在文字裡；（2）<strong>cache_control</strong>——你可以標記 prompt 的某段自動快取，下次同樣前綴費用打 1 折。這些走 <code>anthropic</code> api mode 才能用；走 OpenRouter（強制 openai-completions）就會被拉平掉。所以重度用 Claude 的人建議直接跟 Anthropic 辦帳號、用 <code>anthropic</code> api mode，比走 OpenRouter 划算。<a href="ch12_reasoning.html">第 12 章</a>整章在解釋思考塊的價值，可以搭配看。</div>
+        <div class="body">因為 Anthropic 的 API 協議自己一套（叫 Messages API），跟 OpenAI Chat Completions 那套不相容。它有兩個 openai-completions 表達不出來的功能：（1）<strong>native thinking blocks</strong>——Claude 會思考的模型（如 <code>claude-opus-4-7</code>、<code>claude-opus-5</code>）會把思考鏈用結構化 content block（<code>type: "thinking"</code>）回傳，不是塞在文字裡；（2）<strong>cache_control</strong>——你可以標記 prompt 的某段自動快取，下次同樣前綴費用打 1 折。這些走 <code>anthropic-messages</code> api mode 才能用；走 OpenRouter（強制 openai-completions）就會被拉平掉。所以重度用 Claude 的人建議直接跟 Anthropic 辦帳號、用 <code>anthropic-messages</code> api mode，比走 OpenRouter 划算。<a href="ch12_reasoning.html">第 12 章</a>整章在解釋思考塊的價值，可以搭配看。</div>
       </details>
       <details class="faq">
         <summary>MiniMax 的國際版和中國版，我該選哪一個？</summary>
-        <div class="body">台灣使用者建議選<strong>國際版</strong>（<code>api.minimax.io</code>），原因：（1）台灣信用卡直接可以刷，不用搞支付寶；（2）介面是英文＋簡中，台灣人比較好讀；（3）從台灣連線延遲比較低。中國版（<code>api.minimaxi.com</code>，注意多一個 <code>i</code>）主要給中國境內用戶，付款要走支付寶／微信。<strong>切勿混用</strong>——同一支金鑰只在你註冊那邊可用，跨邊會 401；且模型定價兩邊可能不同。</div>
+        <div class="body">台灣使用者建議選<strong>國際版</strong>（<code>platform.minimax.io</code>，API 端點 <code>api.minimax.io</code>），原因：（1）台灣信用卡直接可以刷，不用搞支付寶；（2）介面是英文＋簡中，台灣人比較好讀；（3）從台灣連線延遲比較低。中國版（<code>platform.minimaxi.com</code>，API 端點 <code>api.minimaxi.com</code>——注意多一個 <code>i</code>，是官方刻意命名）主要給中國境內用戶，付款要走支付寶／微信。<strong>切勿混用</strong>——同一支金鑰只在你註冊那邊可用，跨邊會 401；且模型定價兩邊可能不同。國際版還額外提供 <code>/anthropic</code> 端點給想用 Anthropic 相容格式的人（一般用 <code>/v1</code> openai-completions 就夠）。</div>
       </details>
     </section>
 

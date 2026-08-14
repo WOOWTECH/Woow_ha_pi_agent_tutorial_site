@@ -195,10 +195,10 @@
           <tr><th>項目</th><th>內容</th></tr>
         </thead>
         <tbody>
-          <tr><td>作用</td><td>下次 add-on 重啟時，把 <code>/data/pi-agent/video-tools/</code> 裡的 Python venv 與 Playwright（含 Chromium 瀏覽器）<strong>全部打掉重灌</strong>。</td></tr>
+          <tr><td>作用</td><td>下次 add-on 啟動時，把 <code>/data/pi-agent/venv/</code>、<code>/data/pi-agent/playwright-cache/</code> 以及安裝哨兵檔 <code>.video-tools-installed</code> <strong>全部打掉重灌</strong>，強制 <code>video-tools-init</code> 重跑一次完整下載（Chromium ＋ Python venv ~720 MB）。</td></tr>
           <tr><td>合法值</td><td><code>true</code> / <code>false</code></td></tr>
           <tr><td>預設</td><td><code>false</code></td></tr>
-          <tr><td>是否需重啟</td><td>是。改完必須<strong>儲存 → 手動重啟 add-on</strong>才觸發。</td></tr>
+          <tr><td>是否需重啟</td><td>是。儲存後 HA Supervisor 會自動重啟 add-on 觸發重灌——<strong>不用手動按重啟</strong>。重灌完成後這個旗標會透過 Supervisor API 自動翻回 <code>false</code>，不會每次開機都重灌。</td></tr>
         </tbody>
       </table>
       <h3>什麼時候該開</h3>
@@ -208,11 +208,11 @@
         <li>venv 裡的 Python 套件跟 add-on 主程式對不起來（升級後偶爾會發生）。</li>
         <li>一年一次的「大掃除」——就算沒事，趁著低峰時段跑一次順便升級 Chromium 也 OK。</li>
       </ul>
-      <div class="callout warn"><strong>注意：</strong>觸發流程一定是<strong>「儲存 Configuration → 手動重啟 add-on」</strong>兩件事都要做。光儲存不會發生任何事——add-on 是在<em>啟動時</em>檢查這個旗標的。觸發完成、重灌成功後，這個選項會<strong>自動變回 <code>false</code></strong>，所以不會每次重啟都重灌。</div>
-      <div class="callout warn"><strong>注意：</strong>重灌會下載約 <strong>720 MB</strong>（Chromium 就佔了 500 MB 左右），跟第一次裝 add-on 一樣。網速慢的話要等 5–10 分鐘。這段時間影片相關功能全部不能用，其他 AI 對話功能不受影響。</div>
+      <div class="callout warn"><strong>注意：</strong>觸發流程就是<strong>「勾起來 → 儲存」</strong>兩步。儲存後 Supervisor 會自動重啟 add-on，開機時 <code>video-tools-init</code> s6-oneshot 檢查旗標、發現是 <code>true</code>、就把 sentinel 檔跟 venv／playwright-cache 全部刪掉重跑。重跑成功後，pi-web 會呼叫 Supervisor API 把這個選項<strong>自動翻回 <code>false</code></strong>，你不會被卡在「每次開機都重下 720 MB」的迴圈。</div>
+      <div class="callout warn"><strong>注意：</strong>重灌會下載約 <strong>720 MB</strong>（Chromium 就佔了 500 MB 左右），跟第一次裝 add-on 一樣。網速慢的話要等 5–10 分鐘（Raspberry Pi 4 上有時 3–8 分鐘）。這段時間影片相關功能全部不能用，其他 AI 對話功能不受影響——因為 pi-web 跟 <code>video-tools-init</code> 是平行啟動的，就算下載失敗，聊天還是能用。</div>
       <h3>範例（一次性使用）</h3>
       <pre class="code-block"><code>reset_video_tools: true</code></pre>
-      <p>儲存 → 重啟 add-on → 等 Logs 出現 <code>video-tools-init: complete</code> → 這個值自動變回 <code>false</code>。之後不用管它。</p>
+      <p>儲存 → 等 Supervisor 自動重啟 → Logs 出現 <code>video-tools-init</code> 開始下載 → 完成後 Configuration 分頁重新載入，會看到這個值已經自己變回 <code>false</code>。之後不用管它。</p>
     </section>
 
     <section id="advanced" data-nav="選項 4：env_vars">
@@ -224,7 +224,7 @@
         <tbody>
           <tr><td>作用</td><td>塞任意環境變數給 pi-web 主程式讀。用來對付「add-on 沒開專屬設定，但底層工具吃某個環境變數」的邊緣情境。</td></tr>
           <tr><td>格式</td><td>YAML list，每一項是 <code>{name: X, value: Y}</code>。</td></tr>
-          <tr><td>名稱規則</td><td>正則 <code>^[A-Za-z_][A-Za-z0-9_]*$</code>——大小寫英數與底線、<strong>開頭不能是數字</strong>。</td></tr>
+          <tr><td>名稱規則</td><td>正則 <code>^[A-Za-z_][A-Za-z0-9_]*$</code>——大小寫英數與底線、<strong>開頭不能是數字</strong>。不合規的名稱（例如帶連字號 <code>MY-VAR</code>、有中文）init 腳本會<strong>跳過並印 warning 到 Logs</strong>，不會把整個 add-on 弄壞——但那條環境變數不會生效。</td></tr>
           <tr><td>預設</td><td><code>[]</code>（空 list）</td></tr>
           <tr><td>是否需重啟</td><td>是。改完儲存後 add-on 會自動重啟。</td></tr>
         </tbody>
@@ -238,11 +238,11 @@
           <tr><td><code>HTTP_PROXY</code> / <code>HTTPS_PROXY</code></td><td>叫 pi-web 走 HTTP proxy 出去</td><td>公司網路強制走 proxy 才能連外</td></tr>
           <tr><td><code>NO_PROXY</code></td><td>指定某些主機不走 proxy</td><td>內網 HA API 不要繞 proxy</td></tr>
           <tr><td><code>PLAYWRIGHT_DOWNLOAD_HOST</code></td><td>指定 Chromium 下載鏡像</td><td>直連 Playwright CDN 太慢，換成國內鏡像加速</td></tr>
-          <tr><td><code>OPENAI_BASE_URL</code></td><td>全域改寫 OpenAI SDK 的預設端點</td><td>想強制所有 <code>openai-completions</code> provider 走某個內部閘道</td></tr>
+          <tr><td><code>OPENAI_BASE_URL</code></td><td>改寫 OpenAI SDK 的預設端點</td><td>想把 <strong>OpenAI 官方 provider</strong>（沒自填 baseUrl 的那一家）導到內部閘道 / 反向代理</td></tr>
         </tbody>
       </table>
       <div class="callout danger"><strong>危險：</strong><strong>不要把 API 金鑰塞在這裡</strong>——例如寫 <code>OPENAI_API_KEY</code>、<code>ANTHROPIC_API_KEY</code>。這些變數 pi-web <strong>不會讀</strong>，你以為設好了、實際上金鑰完全沒生效。所有 provider 金鑰都在 <a href="ch6_paste_key.html">pi-web Models 面板</a>裡管理，那是唯一正確的地方。</div>
-      <div class="callout warn"><strong>注意：</strong><code>OPENAI_BASE_URL</code> 是全域改寫——意思是所有<strong>用 openai-completions 通訊協定</strong>的 provider（含 DeepSeek、Groq、OpenRouter、MiniMax 等）都會被強制導到你設的網址。想單獨改一家的 baseUrl，還是回 Models 面板改那一家的設定，不要用這個環境變數。</div>
+      <div class="callout warn"><strong>注意：</strong>不要把 <code>OPENAI_BASE_URL</code> 想成「一次改所有 provider」——它只影響 <strong>OpenAI SDK 在沒有自訂 baseUrl 時的預設值</strong>。pi-web 的 Models 面板裡，DeepSeek、Groq、OpenRouter、MiniMax、GLM 每一家 provider 都各自填了自己的 <code>baseUrl</code>，那個欄位優先，不會被這個環境變數蓋掉。真正被影響的只有「OpenAI 官方 provider（沒改過 baseUrl 那一家）」。想單獨改一家的端點，回 Models 面板改那一家的 baseUrl 欄位，不要用環境變數繞。</div>
       <h3>範例</h3>
       <p>走公司 proxy：</p>
       <pre class="code-block"><code>env_vars:
@@ -283,15 +283,14 @@ env_vars:
           <tr><th>v0.12.x 舊欄位</th><th>v0.13.0 之後去哪裡設</th></tr>
         </thead>
         <tbody>
+          <tr><td><code>api_key</code>（GLM 主金鑰）</td><td>pi-web Models 面板 → GLM (zai) provider → API Key</td></tr>
           <tr><td><code>openai_api_key</code></td><td>pi-web Models 面板 → OpenAI provider → API Key 欄位</td></tr>
-          <tr><td><code>glm_api_key</code></td><td>pi-web Models 面板 → GLM (zai) provider → API Key</td></tr>
           <tr><td><code>anthropic_api_key</code></td><td>pi-web Models 面板 → Anthropic provider → API Key</td></tr>
           <tr><td><code>deepseek_api_key</code></td><td>pi-web Models 面板 → DeepSeek provider → API Key</td></tr>
           <tr><td><code>groq_api_key</code></td><td>pi-web Models 面板 → Groq provider → API Key</td></tr>
           <tr><td><code>openrouter_api_key</code></td><td>pi-web Models 面板 → OpenRouter provider → API Key</td></tr>
           <tr><td><code>minimax_api_key</code></td><td>pi-web Models 面板 → MiniMax provider → API Key</td></tr>
-          <tr><td><code>openai_base_url</code>（單一 provider 用）</td><td>pi-web Models 面板 → 該 provider 的 baseUrl 欄</td></tr>
-          <tr><td><code>openai_base_url</code>（全域強制用）</td><td>本附錄的 <code>env_vars</code> → <code>OPENAI_BASE_URL</code></td></tr>
+          <tr><td><code>extra_allowed_hosts</code>（v0.10.0 就已移除）</td><td>不用設了——nginx 已改寫 <code>Host: localhost</code>，pi-web 一律通過驗證</td></tr>
         </tbody>
       </table>
       <div class="callout"><strong>觀念：</strong>為什麼要搬家？兩個原因：（1）金鑰跟著 pi-web 資料一起備份／還原更合理（<a href="ch20_backup.html">第 20 章</a>），跟 add-on 容器層設定分開；（2）UI 有 Test 按鈕即時驗證，比 add-on 表單摸黑貼、儲存、重啟才知道對不對，體驗好非常多。</div>
@@ -314,7 +313,7 @@ env_vars:
         </li>
         <li>
           <h3>reset_video_tools 開了但 video-tools 沒重下載</h3>
-          <p>你少做了第二步——<strong>儲存 + 手動重啟 add-on 兩件事都要做</strong>。光儲存不會觸發，因為這個旗標是在 add-on 啟動時檢查的。到 add-on 頁面按「重新啟動」，然後看 Logs 應該會出現 <code>video-tools-init: reset requested</code> 這行。</p>
+          <p>正常流程是<strong>勾 <code>true</code> → 儲存 → Supervisor 自動重啟 → <code>video-tools-init</code> 檢查旗標 → 開始下載</strong>。如果儲存後沒動靜，先確認：（1）Configuration 分頁真的按到了「儲存」按鈕（有時被浮動元件擋住，往下捲）；（2）打開 Logs 分頁看 <code>video-tools-init</code> 那幾行——如果只看到「exit &lt;100ms」代表旗標沒被讀到；（3）真的都沒觸發時再從 add-on 頁面手動按「重新啟動」補一次。下載成功後回 Configuration 分頁重新載入，這個選項會自己翻回 <code>false</code>。</p>
         </li>
         <li>
           <h3>timezone 設了 <code>Taipei</code> 但時間還是 UTC</h3>
@@ -351,7 +350,7 @@ env_vars:
       </details>
       <details class="faq">
         <summary>4 個選項可以在跑的時候動態改嗎？還是一定要重啟？</summary>
-        <div class="body">全部都<strong>要重啟</strong>——儲存 Configuration 之後 HA 會自動重啟 add-on，這個過程約 15–30 秒。<code>reset_video_tools</code> 又多一步「手動重啟才觸發」，因為 supervisor 自動重啟太快、還沒等 sentinel 檔被刪掉就跑完了。其他三個選項儲存後的自動重啟就會生效。</div>
+        <div class="body">全部都<strong>要重啟才生效</strong>——但你不用自己按重啟。儲存 Configuration 之後 HA Supervisor 會自動重啟 add-on，這個過程約 15–30 秒，四個選項在下一次開機時全部一起套用。<code>log_level</code>／<code>timezone</code>／<code>env_vars</code> 在 pi-web process 啟動時讀環境變數；<code>reset_video_tools</code> 則是在 <code>video-tools-init</code> s6-oneshot 開機時讀 <code>/data/options.json</code>——都是自動的，不需要人工介入。</div>
       </details>
     </section>
 

@@ -130,19 +130,22 @@
       <h3>長什麼樣</h3>
       <p>灰色底、標題寫「Thinking」或「思考中」（依語言設定），左邊有一個小三角 ▶ 或 <code>+</code>。它出現在 AI 正式回答的<strong>上方</strong>，代表「AI 是先想過這一段，才給你下面那個答案」。點一下 ▶ 展開，就會看到 AI 逐步推理的內容，通常是一大段自言自語的文字。</p>
       <h3>什麼時候會出現</h3>
-      <p>只有 <strong>reasoning（推理）模型</strong>才會有。目前 Pi Agent 支援的 reasoning 模型：</p>
+      <p>只有 <strong>reasoning（推理）模型</strong>才會有。<a href="ch12_reasoning.html">第 12 章</a>會完整拆解各家的差異，這裡先給一張快速對照，看得懂圖 9-1 的思考塊來自哪家就夠了：</p>
       <table class="data-table">
         <thead>
-          <tr><th>模型</th><th>Provider</th><th>思考塊格式</th></tr>
+          <tr><th>模型</th><th>Provider</th><th>pi-web 的 <code>thinkingFormat</code></th><th>看得到內容嗎</th></tr>
         </thead>
         <tbody>
-          <tr><td>GLM-4.6</td><td>智譜（Z.ai）</td><td><code>zai</code></td></tr>
-          <tr><td>DeepSeek-R1</td><td>DeepSeek</td><td><code>deepseek</code></td></tr>
-          <tr><td>Claude Opus 4 / Sonnet 4（extended thinking）</td><td>Anthropic</td><td><code>native</code></td></tr>
-          <tr><td>o1 / o3 系列</td><td>OpenAI</td><td><code>native</code></td></tr>
+          <tr><td>GLM-4.6（含 <code>&lt;think&gt;</code> tag 或 <code>reasoning_content</code>）</td><td>智譜（Z.ai）</td><td><code>zai</code></td><td>看得到全文</td></tr>
+          <tr><td>DeepSeek-R1 / R1-0528（<code>reasoning_content</code>）</td><td>DeepSeek</td><td><code>deepseek</code></td><td>看得到全文</td></tr>
+          <tr><td>Claude Sonnet 4.5 / Haiku 4.5（extended thinking-only）；Sonnet/Opus 4.6（extended 或 adaptive）；Opus 4.7+（僅 adaptive）</td><td>Anthropic</td><td>SDK 走 <code>thinking</code> 內建 block，Models 表單通常留空</td><td>看得到，但官方是<strong>摘要（summarized）</strong>不是原始 CoT</td></tr>
+          <tr><td>Qwen3 / QwQ 系列</td><td>阿里雲、OpenRouter</td><td><code>qwen</code> 或 <code>qwen-chat-template</code></td><td>看得到全文</td></tr>
+          <tr><td>OpenAI o1 / o3 / o4-mini、GPT-5 reasoning</td><td>OpenAI</td><td>選 <code>openai</code>（只拿得到 usage 統計）</td><td><strong>看不到</strong>——OpenAI 官方策略就是不回傳 CoT，你只會看到 <code>reasoning_tokens</code> 計費數字，沒有思考塊可展開</td></tr>
+          <tr><td>Kimi K2-Instruct（Groq 上架版）</td><td>Moonshot / Groq</td><td>不用選 thinkingFormat（K2-Instruct 不是 reasoning 模型）</td><td>沒有——Groq 上的是 Instruct 版，K2-Thinking 只有 Moonshot 官方 API 有</td></tr>
         </tbody>
       </table>
-      <p>非 reasoning 模型（GLM-4-Flash、GPT-4o、Claude Haiku 那種）就沒有思考塊——它們是「直接吐答案不留過程」。</p>
+      <p>非 reasoning 模型（GLM-4-Flash、GPT-4o、Claude Haiku 3.5、Kimi K2-Instruct 那種）就沒有思考塊——它們是「直接吐答案不留過程」。</p>
+      <div class="callout warn"><strong>糾正：</strong>pi-web 內部的 <code>thinkingFormat</code> 合法值只有 <code>openai / openrouter / together / deepseek / zai / qwen / chat-template / qwen-chat-template / string-thinking / ant-ling</code>——<strong>沒有 <code>native</code>、也沒有 <code>none</code></strong>。網路上有些第三方教學會寫「Anthropic 選 native」，那是誤傳；Anthropic 走的是 SDK 內建 <code>type: "thinking"</code> content block，走的是 <code>@anthropic-ai/sdk</code> 那條路，Models 表單的 thinkingFormat 欄位對它其實沒作用，留空即可。</div>
       <h3>展開能讀到什麼</h3>
       <p>會看到 AI 在給你正式答案前的推理過程，例如：「使用者想要一個晚上 10 點關客廳燈的自動化。我需要用 time 觸發，動作是 <code>light.turn_off</code>，還要考慮如果沒人在家的話⋯⋯」這種一連串的自言自語。有時候長達幾百字，有時候只有兩三行。</p>
       <h3>什麼時候該讀</h3>
@@ -158,10 +161,11 @@
         <li>反正你也不打算採用這個答案。</li>
       </ul>
       <h3>為什麼有時候明明選了 reasoning 模型卻看不到思考塊</h3>
-      <p>兩個可能：
+      <p>三個可能：
       <ol>
-        <li><strong>Provider 設定沒開對 thinkingFormat</strong>——你在 Models 面板加 provider 時，那個下拉沒設對值（GLM 要選 <code>zai</code>、DeepSeek 選 <code>deepseek</code>、Anthropic 選 <code>native</code>）。回<a href="ch6_paste_key.html">第 6 章</a>檢查一次。</li>
-        <li><strong>你選到了 provider 底下的非 reasoning 模型</strong>——例如智譜的下拉裡除了 GLM-4.6 還有 GLM-4-Flash，後者是非 reasoning。看模型下拉的名字對照一下。</li>
+        <li><strong><a href="ch6_paste_key.html">第 6 章</a>教的 <code>reasoning</code> 勾選沒打勾</strong>——GLM-4.6 的 model entry 進階區塊有一個 <code>reasoning</code> checkbox，那才是使用者面向的開關；沒勾的話 pi-web 收得到思考內容但不會展開顯示。</li>
+        <li><strong>Provider 底下的 thinkingFormat 選錯</strong>——這是 provider 層的欄位（不是 model 層），OpenAI 相容端點通常留 <code>openai</code>，GLM 選 <code>zai</code>、DeepSeek 選 <code>deepseek</code>、Qwen 選 <code>qwen</code>；Anthropic 走內建 SDK 不用選。設錯的話 pi-web 拆不出 <code>reasoning_content</code>，就會把思考文字整段塞進正式答案或直接吃掉。</li>
+        <li><strong>你選到了 provider 底下的非 reasoning 模型</strong>——例如智譜的下拉裡除了 GLM-4.6 還有 GLM-4-Flash，後者不是 reasoning；Groq 上的 Kimi K2 只有 <em>Instruct</em> 沒有 <em>Thinking</em>。看模型名字對照一下。</li>
       </ol></p>
     </section>
 
@@ -172,26 +176,30 @@
       <p>白色的卡片、上方寫「Tool: xxx」或「Calling xxx」，中間有一個小區塊列出<strong>輸入（parameters）</strong>與<strong>輸出（result）</strong>的摘要。點卡片可以展開看完整內容。有些卡片跑到一半會顯示「Running⋯⋯」轉圈，跑完會亮綠燈（成功）或紅燈（失敗）。</p>
       <h3>什麼時候會出現</h3>
       <p>AI 需要「動手做」而不只是「回答文字」時。動手包含：讀你貼過來的檔案、跑一段 bash 指令、抓網頁、查天氣、搜資料庫等。哪一種工具會被叫出來，取決於你裝了哪些 skill（<a href="ch16_write_skill.html">第 16 章</a>會教你自己寫 skill）以及 AI 覺得該不該用。</p>
-      <h3>常見的工具名稱速查</h3>
+      <h3>常見的工具名稱速查（pi coding agent 內建 7 支）</h3>
+      <p>Pi Agent 的核心 agent（<code>@earendil-works/pi-coding-agent</code>）內建工具只有這 7 支，卡片上顯示的就是這幾個字，全小寫：</p>
       <table class="data-table">
         <thead>
           <tr><th>工具名</th><th>做什麼</th><th>你要不要展開看</th></tr>
         </thead>
         <tbody>
-          <tr><td><code>read_file</code> / <code>Read</code></td><td>讀一個檔案</td><td>建議看，確認讀對檔</td></tr>
-          <tr><td><code>write_file</code> / <code>Write</code></td><td>寫入／覆蓋一個檔案</td><td><strong>一定要看</strong>，確認路徑跟內容都對</td></tr>
-          <tr><td><code>bash</code> / <code>Bash</code></td><td>跑一段 shell 指令</td><td>建議看，尤其是 <code>rm</code>、<code>mv</code>、<code>sudo</code></td></tr>
-          <tr><td><code>web_fetch</code> / <code>WebFetch</code></td><td>去抓一個網頁的內容</td><td>看網址對不對即可</td></tr>
-          <tr><td><code>search</code> / <code>Grep</code></td><td>在檔案裡搜關鍵字</td><td>通常不用看，除非結果怪</td></tr>
+          <tr><td><code>read</code></td><td>讀一個檔案</td><td>建議看，確認讀對檔</td></tr>
+          <tr><td><code>write</code></td><td>寫入／覆蓋一個檔案（整份取代）</td><td><strong>一定要看</strong>，確認路徑跟內容都對</td></tr>
+          <tr><td><code>edit</code></td><td>對現有檔案做小片段替換（產生 inline diff）</td><td><strong>一定要看</strong>，diff 就是它給的</td></tr>
+          <tr><td><code>bash</code></td><td>跑一段 shell 指令</td><td>建議看，尤其是 <code>rm</code>、<code>mv</code>、<code>sudo</code></td></tr>
+          <tr><td><code>grep</code></td><td>在檔案裡搜關鍵字</td><td>通常不用看，除非結果怪</td></tr>
+          <tr><td><code>find</code></td><td>找檔名／目錄結構</td><td>通常不用看</td></tr>
+          <tr><td><code>ls</code></td><td>列一個目錄底下有什麼</td><td>通常不用看</td></tr>
         </tbody>
       </table>
+      <div class="callout warn"><strong>糾正：</strong>你可能看過別的教學提到 <code>read_file</code>／<code>write_file</code>／<code>web_fetch</code>／<code>search</code>——那是 Claude Code 或其他 agent 框架的命名，<strong>pi coding agent 不叫這些名字，也沒有內建的 web fetch 工具</strong>。要抓網頁得靠 skill（例如裝一個帶 <code>curl</code> 或 <code>playwright</code> 的 skill）或叫它 <code>bash: curl ...</code>。裝了 skill 之後才會有額外的工具名字出現在卡片上，那些名字由 skill 自己決定，不在這 7 支之列。</div>
       <h3>展開能讀到什麼</h3>
-      <p>兩塊：實際傳給工具的參數（例如 <code>read_file</code> 的 <code>path</code> 是什麼）、以及工具回傳的結果（檔案內容、指令輸出、網頁 HTML 摘要等）。這是「AI 到底做了什麼」的證據，比 AI 自己說的更可靠。</p>
+      <p>兩塊：實際傳給工具的參數（例如 <code>read</code> 的 <code>path</code> 是什麼、<code>bash</code> 的 <code>command</code> 是什麼）、以及工具回傳的結果（檔案內容、指令輸出、grep 命中行等）。這是「AI 到底做了什麼」的證據，比 AI 自己說的更可靠。</p>
       <h3>什麼時候該讀</h3>
       <ul>
-        <li>AI 說「我讀了 xxx」的時候，展開對應的 <code>read_file</code> 卡確認它讀對了。</li>
-        <li>看到 <code>write_file</code>／<code>Write</code>／<code>Edit</code> 這類會動檔案的，<strong>一定要展開看</strong>，尤其是 <code>path</code> 對不對。</li>
-        <li>看到 <code>bash</code>／<code>Bash</code> 卡片，展開看指令有沒有危險字（<code>rm -rf</code>、<code>chmod 777</code>、<code>curl | sh</code>）。</li>
+        <li>AI 說「我讀了 xxx」的時候，展開對應的 <code>read</code> 卡確認它讀對了。</li>
+        <li>看到 <code>write</code>／<code>edit</code> 這類會動檔案的，<strong>一定要展開看</strong>，尤其是 <code>path</code> 對不對；<code>edit</code> 還要看 <code>old_string</code> 是不是真的來自原檔。</li>
+        <li>看到 <code>bash</code> 卡片，展開看指令有沒有危險字（<code>rm -rf</code>、<code>chmod 777</code>、<code>curl | sh</code>）。</li>
         <li>AI 給的結論跟你預期不同，想追工具的原始輸出，看是不是資料本來就是那樣。</li>
       </ul>
       <div class="callout warn"><strong>注意：</strong>工具卡片如果亮紅燈（error），AI 會嘗試繼續往下講但那句話很可能是編出來的（因為工具沒真的跑成功）。看到紅燈先展開讀錯誤訊息，決定要不要叫 AI 重試。</div>
@@ -212,11 +220,11 @@
       <ol class="steps">
         <li>
           <h3>方式 A：手動複製整段修改後版本</h3>
-          <p>最保守。點 diff 上方的「Copy after」或「Show final」，把改完後的完整版複製起來，自己去 <code>configuration.yaml</code> 貼上取代原本內容。適合「不信任 AI 自動改檔」或「只想套用其中一部分」的情境。</p>
+          <p>最保守。pi-web 的 diff／工具卡片右上角有一個 <strong>Copy</strong> 按鈕（i18n 標籤 <code>i18n.copy</code>，中文介面會顯示「複製」），另外有 <strong>Show details / Hide details</strong> 展開完整 patch，還有 <strong>Compare HEAD</strong> 可以跟 git 已存的版本比對。把改完後的內容複製起來，自己去 <code>configuration.yaml</code> 貼上取代原本內容即可。適合「不信任 AI 自動改檔」或「只想套用其中一部分」的情境。</p>
         </li>
         <li>
-          <h3>方式 B：叫 AI 用 write_file 工具直接改</h3>
-          <p>回一句「幫我寫進去」，AI 會呼叫 <code>write_file</code>／<code>Write</code> 工具直接改檔。這時候<strong>你要盯緊那張工具卡片</strong>：展開看 <code>path</code> 是不是你想的那個檔、內容有沒有跟 diff 對上。適合「已經看過 diff 覺得沒問題」的情境。</p>
+          <h3>方式 B：叫 AI 用 <code>edit</code> 或 <code>write</code> 工具直接改</h3>
+          <p>回一句「幫我寫進去」，AI 通常會呼叫 <code>edit</code>（做局部替換、保留其他行）或 <code>write</code>（整份覆蓋）工具改檔。<strong>優先讓它用 <code>edit</code></strong>——出錯範圍限縮在改動那幾行。這時候<strong>你要盯緊那張工具卡片</strong>：展開看 <code>path</code> 是不是你想的那個檔、內容有沒有跟 diff 對上。適合「已經看過 diff 覺得沒問題」的情境。</p>
         </li>
         <li>
           <h3>方式 C：說「不要」讓 AI 另外想</h3>
@@ -228,19 +236,20 @@
 
     <section id="records" data-nav="真實例子解剖">
       <h2 data-icon="records">一個真實例子的解剖</h2>
-      <p>假設你問 AI：「幫我加一個晚上 10 點自動關客廳燈的自動化」。用 GLM-4.6（有 reasoning）＋ 裝了 <em>home-assistant-best-practices</em> skill（有 read_file／write_file 工具能力）。AI 的回應會依序長成這樣：</p>
+      <p>假設你問 AI：「幫我加一個晚上 10 點自動關客廳燈的自動化」。用 GLM-4.6（勾了 reasoning）＋ 裝了 <em>home-assistant-best-practices</em> skill（skill 本身不含新工具，但會給 AI 一份 HA-flavor system prompt，讓它知道要用 <code>edit</code> 而不是 <code>write</code> 蓋掉整個 <code>automations.yaml</code>）。AI 的回應會依序長成這樣：</p>
       <table class="data-table">
         <thead>
           <tr><th>#</th><th>你看到什麼區塊</th><th>裡面是什麼</th><th>你要不要打開看</th></tr>
         </thead>
         <tbody>
           <tr><td>1</td><td>思考塊（灰）</td><td>AI 自言自語：「使用者要 22:00 關客廳燈。要用 time 觸發，動作是 <code>light.turn_off</code>，target 是 <code>light.living_room</code>。要不要加條件？先做最簡單的版本。」</td><td>可看可不看，好奇的話展開學它的分解方式</td></tr>
-          <tr><td>2</td><td>工具卡：<code>read_file</code>（白）</td><td>Input: <code>path: /config/automations.yaml</code>；Output: 原本檔案內容</td><td>建議看，確認讀的是 <code>/config/automations.yaml</code> 不是別的檔</td></tr>
-          <tr><td>3</td><td>Inline diff（紅綠）</td><td>在檔尾加入新的 automation entry，含 alias、triggers、actions</td><td><strong>一定要看</strong>——尤其確認 entity_id 是不是 <code>light.living_room</code> 而不是別間的燈</td></tr>
-          <tr><td>4</td><td>工具卡：<code>write_file</code>（白）</td><td>Input: <code>path: /config/automations.yaml</code>, <code>content: ...</code>；Output: <code>success</code></td><td><strong>一定要看</strong>——確認 path 對、內容跟 diff 一致</td></tr>
+          <tr><td>2</td><td>工具卡：<code>read</code>（白）</td><td>Input: <code>path: /config/automations.yaml</code>；Output: 原本檔案內容</td><td>建議看，確認讀的是 <code>/config/automations.yaml</code> 不是別的檔</td></tr>
+          <tr><td>3</td><td>工具卡：<code>edit</code>（白）＋ 附帶 Inline diff（紅綠）</td><td>Input: <code>path: /config/automations.yaml</code>、<code>old_string: ...</code>、<code>new_string: ...</code>；卡片下方直接 render 出 diff（在檔尾加入新的 automation entry，含 alias、triggers、actions）</td><td><strong>一定要看</strong>——尤其確認 entity_id 是不是 <code>light.living_room</code> 而不是別間的燈，也確認 <code>old_string</code> 段落是真的原檔存在的、沒有 hallucinate 出來</td></tr>
+          <tr><td>4</td><td>Output: <code>success</code>（同一張 <code>edit</code> 卡的結果段）</td><td>編輯執行結果</td><td>看有沒有亮綠燈；紅燈代表 <code>old_string</code> 沒 match，改動沒發生</td></tr>
           <tr><td>5</td><td>正式回答（無框）</td><td>「已經幫你在 <code>automations.yaml</code> 加了新規則，記得去 開發者工具 → YAML → 重新載入自動化 讓它生效。」</td><td>照做</td></tr>
         </tbody>
       </table>
+      <div class="callout tip"><strong>提示：</strong>pi coding agent 的 <code>edit</code> 工具設計上就是「舊字串必須逐字對得上」，這是它比 <code>write</code>（整份覆蓋）安全的原因——AI 幻覺出來的行對不上，改動會直接失敗、給你紅燈，比默默寫錯強。</div>
       <p>看到沒？如果你不會讀這些區塊，你只會看到最後那句「已經幫你加了」——聽起來很爽，實際上你完全不知道它有沒有動對檔、有沒有寫錯 entity_id、有沒有把原本的自動化蓋掉。會讀的人可以在第 3 步 diff 就攔下錯誤，不必等 HA 出問題才回頭找。</p>
       <div class="callout"><strong>觀念：</strong>Pi Agent 的哲學是「透明」——不藏 AI 的想法、不藏 AI 動的手腳、不藏 AI 要動的檔。這對新手一開始有點壓力，但玩熟後你會發現，這才是敢把家交給 AI 管的前提。</div>
     </section>
@@ -254,7 +263,7 @@
         </thead>
         <tbody>
           <tr><td>思考塊</td><td>可能很多（一次幾百到幾千字）</td><td>你付（算 output tokens）</td></tr>
-          <tr><td>工具卡輸入</td><td>看你叫它讀什麼檔（<code>read_file</code> 讀大檔就吃很多）</td><td>下一輪 AI 要「看到」這段的話，算 input tokens</td></tr>
+          <tr><td>工具卡輸入</td><td>看你叫它讀什麼檔（<code>read</code> 讀大檔就吃很多）</td><td>下一輪 AI 要「看到」這段的話，算 input tokens</td></tr>
           <tr><td>工具卡輸出</td><td>同上</td><td>同上</td></tr>
           <tr><td>Diff</td><td>看檔多長</td><td>算 output tokens</td></tr>
         </tbody>
@@ -263,14 +272,18 @@
       <ol>
         <li><strong>只在需要深想的時候用 reasoning 模型。</strong>家用日常問題（「查一下今天天氣」「開客廳燈」）用非 reasoning 的 GLM-4-Flash 就好，快又便宜、還沒思考塊佔位。</li>
         <li><strong>叫 AI 讀檔前先想它需不需要讀整份。</strong>如果只是要改一段，可以說「只讀第 X 到第 Y 行」，別讓它把整個 <code>automations.yaml</code>（可能幾千行）通通拉進 context。</li>
-        <li><strong>對話變太長就開新 session。</strong>前面累積的思考塊、工具輸出都會被帶進每一輪的 context，一路加下去 tokens 會爆。看到 pi-web 底部 context 進度條變黃就該收工另起爐灶。</li>
+        <li><strong>對話變太長就開新 session。</strong>前面累積的思考塊、工具輸出都會被帶進每一輪的 context，一路加下去 tokens 會爆。pi-web 底部有一個 <code>contextUsage</code> 指標（顯示 <em>% used / contextWindow tokens</em>）——本版沒有明文的黃／紅門檻，建議自己抓 <strong>60% 就準備新 session</strong>、80% 一定要開新的，不要撐到 100% 才被 provider 拒單。</li>
       </ol>
     </section>
 
     <section id="theme" data-nav="關掉思考塊顯示">
       <h2 data-icon="theme">關掉思考塊顯示（純看答案）</h2>
-      <p>有些人覺得思考塊很吵、佔畫面又看不習慣，想關掉。有些 pi-web 版本可以在 <strong>Settings 面板</strong>找到「Show reasoning blocks / 顯示思考塊」的開關，關掉之後 UI 就只顯示 AI 的正式答案。</p>
-      <div class="callout warn"><strong>注意：</strong>這個開關只是<strong>關掉「你看不到」</strong>——AI 還是照樣在想、tokens 照樣花。要真的省錢，正確做法是<strong>換非 reasoning 模型</strong>（把模型下拉切到 GLM-4-Flash、GPT-4o 這類），而不是關 UI。</div>
+      <p>有些人覺得思考塊很吵、佔畫面又看不習慣，想關掉。<strong>老實說：截至本文寫作時的 pi-web <code>0.8.4</code>（本教學 pin 的版本），沒有 UI 開關可以直接隱藏思考塊</strong>——它預設就已經是收起的（左邊 ▶ 那個），除非你點開否則本來就不佔位。想更進一步做視覺化淨化，只有兩條路：</p>
+      <ul>
+        <li><strong>回到 <a href="ch6_paste_key.html">第 6 章</a>把 model entry 的 <code>reasoning</code> 勾勾拿掉</strong>——這樣 pi-web 就不會把思考內容當獨立區塊 render 出來，會直接吞掉。缺點：GLM-4.6 這種模型即使你關掉顯示，provider 那邊還是照算 <code>reasoning_content</code> 的 output tokens，錢一樣付。</li>
+        <li><strong>直接<a href="ch13_switch_model.html">換非 reasoning 模型</a></strong>——把模型下拉切到 GLM-4-Flash、GPT-4o、Claude Haiku 3.5、Kimi K2-Instruct 那類，AI 根本不會想、也沒思考塊。這才是唯一真正省 tokens 的做法。</li>
+      </ul>
+      <div class="callout warn"><strong>糾正：</strong>如果你在網路上看到「pi-web 的 Settings 有 Show reasoning blocks 開關」——那可能是舊版或別的 fork。本教學基準版本 <code>0.8.4</code> 沒這個開關，別花時間找。有需要就開 issue 給 <a href="https://www.npmjs.com/package/@agegr/pi-web" rel="noopener">@agegr/pi-web</a> 上游。</div>
       <p>另一種折衷：把「重要的深度問題」跟「日常快問快答」分兩個 session 用不同模型。深度那個開 GLM-4.6 展開思考塊看它推理；日常那個用 GLM-4-Flash 秒答不留過程。這樣兩邊都爽。</p>
     </section>
 
@@ -283,11 +296,11 @@
         </li>
         <li>
           <h3>工具卡片顯示 error（紅燈）</h3>
-          <p>展開卡片看 output 欄位的錯誤訊息。常見原因：檔案路徑錯（AI 拼錯 <code>/config/automations.yaml</code> 或缺前面的斜線）、bash 指令 exit 1（權限不夠、指令找不到）、web_fetch 超時。看到訊息後回覆 AI「這個 tool 失敗了，訊息是⋯⋯，改用別的方式」，讓它重試。</p>
+          <p>展開卡片看 output 欄位的錯誤訊息（pi-web 內部欄位叫 <code>isError</code>）。常見原因：檔案路徑錯（AI 拼錯 <code>/config/automations.yaml</code> 或缺前面的斜線）、<code>bash</code> 指令 exit ≠ 0（權限不夠、指令找不到）、<code>edit</code> 的 <code>old_string</code> 對不上原檔（AI hallucinate 了一段不存在的行）。看到訊息後回覆 AI「這個 tool 失敗了，訊息是⋯⋯，改用別的方式」，讓它重試。</p>
         </li>
         <li>
           <h3>Diff 貼上去對不齊、YAML 縮排錯</h3>
-          <p>pi-web 的 diff render 有時候有 whitespace 顯示問題（tab 跟 space 看起來一樣但貼出去差很多）。解法：叫 AI 「請重新輸出完整檔案內容而不是 diff」，然後整份複製貼上取代。或叫它用 <code>write_file</code> 工具直接寫進去，避開你手動複製這一步。</p>
+          <p>pi-web 的 diff render 有時候有 whitespace 顯示問題（tab 跟 space 看起來一樣但貼出去差很多）。解法：叫 AI 「請重新輸出完整檔案內容而不是 diff」，然後整份複製貼上取代。或叫它用 <code>write</code>／<code>edit</code> 工具直接寫進去，避開你手動複製這一步。</p>
         </li>
         <li>
           <h3>我明明選了 GLM-4.6 為什麼沒有思考塊</h3>
@@ -295,7 +308,7 @@
         </li>
         <li>
           <h3>工具卡卡在「Running⋯⋯」轉圈很久</h3>
-          <p>大部分工具幾秒內會結束，超過 30 秒還在轉的話通常是網路問題（web_fetch 卡在對方 server）或 bash 指令跑太久（<code>find /</code> 那種）。點卡片右上角有時候有「Cancel」可以中止；沒有的話，重新整理頁面（Session 會保住不會不見，只是那次 tool call 會標記失敗）。</p>
+          <p>大部分工具幾秒內會結束，超過 30 秒還在轉的話通常是 <code>bash</code> 指令跑太久（<code>find /</code>、<code>ffmpeg</code> 這種）或 <code>read</code> 一個超大檔（read 有 max lines 限制但真的 GB 級檔還是會慢）。pi coding agent 本身沒有內建 <code>web_fetch</code> 工具，所以「網頁抓不下來」在原生 7 支工具裡不會發生——除非你另外裝了 skill 加進來，那就要看那顆 skill 的實作。點卡片右上角有時候有 Cancel 按鈕；沒有的話重新整理頁面（Session 會保住不會不見，只是那次 tool call 會標記 <code>isError</code>）。</p>
         </li>
         <li>
           <h3>Diff 一直都不出現，AI 只給我一段程式碼</h3>
@@ -312,7 +325,7 @@
       </details>
       <details class="faq">
         <summary>工具卡片可以我自己觸發嗎？</summary>
-        <div class="body">不能直接點按鈕觸發，但可以在對話裡「請求」AI 用某個工具。例如你可以講「請用 <code>read_file</code> 讀 <code>/config/configuration.yaml</code>」，AI 就會叫那個工具。前提是那個工具已經被裝在 session 裡（透過 skill）。工具清單在 System prompt 面板的 <code>&lt;available_tools&gt;</code> 塊裡可以查（<a href="ch14_skill_concept.html">第 14 章</a>會講）。</div>
+        <div class="body">不能直接點按鈕觸發，但可以在對話裡「請求」AI 用某個工具。例如你可以講「請用 <code>read</code> 讀 <code>/config/configuration.yaml</code>」，AI 就會叫那個工具。前提是內建 7 支（<code>read/write/edit/bash/grep/find/ls</code>）夠用，或那顆工具已經被裝在 session 裡（透過 skill）。想確認裝了哪些 skill 增補的工具，去 pi-web 的 Skills 分頁翻，不是像有些教學說的什麼 <code>&lt;available_tools&gt;</code> XML block——pi-web 沒有這個面板（<a href="ch14_skill_concept.html">第 14 章</a>會講 Skill 是怎麼掛進 agent 的）。</div>
       </details>
       <details class="faq">
         <summary>Diff 裡的程式碼可以完全信任嗎？</summary>
