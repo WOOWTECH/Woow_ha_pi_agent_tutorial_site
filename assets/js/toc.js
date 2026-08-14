@@ -1,5 +1,47 @@
-// Sidebar TOC — highlight current section on scroll, smooth-scroll on click.
+// 側欄導覽：
+//   1. 手機版把長長的章節清單收合成一顆「目錄」按鈕（漸進增強，沒 JS 就是全展開）
+//   2. 捲動時高亮目前所在的章內段落
+//   3. 點章內錨點時平滑捲動
 (function () {
+  /* ---------------------------------------------- 1. 手機版收合 --- */
+  const sidebar = document.querySelector('.sidebar');
+  const mq = window.matchMedia('(max-width: 960px)');
+
+  if (sidebar) {
+    const panels = sidebar.querySelectorAll('ol, .toc-in-chapter');
+    const toggle = document.createElement('button');
+    toggle.type = 'button';
+    toggle.className = 'nav-toggle';
+    toggle.setAttribute('aria-expanded', 'false');
+    toggle.innerHTML = '<span class="nav-toggle-label">目錄</span><span class="nav-toggle-caret" aria-hidden="true"></span>';
+
+    const firstHeading = sidebar.querySelector('h2');
+    if (firstHeading) sidebar.insertBefore(toggle, firstHeading);
+
+    const setCollapsed = (collapsed) => {
+      sidebar.classList.toggle('is-collapsed', collapsed);
+      toggle.setAttribute('aria-expanded', String(!collapsed));
+    };
+
+    const applyMode = () => {
+      sidebar.classList.toggle('is-collapsible', mq.matches);
+      setCollapsed(mq.matches);
+    };
+
+    toggle.addEventListener('click', () => setCollapsed(!sidebar.classList.contains('is-collapsed')));
+
+    // 手機上點任何導覽連結（含跳到本頁錨點）就把選單收起來
+    panels.forEach((p) =>
+      p.addEventListener('click', (e) => {
+        if (mq.matches && e.target.closest('a')) setCollapsed(true);
+      })
+    );
+
+    applyMode();
+    mq.addEventListener('change', applyMode);
+  }
+
+  /* --------------------------------------- 2 & 3. 章內錨點行為 --- */
   const sections = document.querySelectorAll('section[id]');
   const links = document.querySelectorAll('.toc-in-chapter a[href^="#"]');
   if (!sections.length || !links.length) return;
