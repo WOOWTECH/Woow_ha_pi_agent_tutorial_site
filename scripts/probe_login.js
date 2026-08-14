@@ -1,4 +1,8 @@
+const path = require('path');
 const { chromium } = require('playwright');
+
+const ROOT = path.resolve(__dirname, '..');
+const HA_URL = process.env.HA_URL || 'http://homeassistant.local:8123';
 
 (async () => {
   const browser = await chromium.launch({ headless: true });
@@ -7,7 +11,7 @@ const { chromium } = require('playwright');
   let lastErr;
   for (let i = 0; i < 3; i++) {
     try {
-      await page.goto('https://woowtech-ha.woowtech.io', { waitUntil: 'domcontentloaded', timeout: 30000 });
+      await page.goto(HA_URL, { waitUntil: 'domcontentloaded', timeout: 30000 });
       lastErr = null;
       break;
     } catch (e) {
@@ -46,7 +50,7 @@ const { chromium } = require('playwright');
   });
   console.log('ELEMENTS:');
   html.forEach((e) => console.log(' ', JSON.stringify(e)));
-  await page.screenshot({ path: '/tmp/ha_tutorial/scripts/probe_login.png', fullPage: true });
-  console.log('Screenshot: /tmp/ha_tutorial/scripts/probe_login.png');
+  await page.screenshot({ path: path.join(ROOT, 'scripts', 'probe_login.png'), fullPage: true });
+  console.log('Screenshot: ' + path.join(ROOT, 'scripts', 'probe_login.png'));
   await browser.close();
 })();
