@@ -14,11 +14,11 @@
   <meta property="og:title" content="第 14 章 · Skill 是什麼？跟手機 App 有什麼不一樣 · Woow HA Pi Agent 入住指南" />
   <meta property="og:description" content="Pi Agent Skill 系統概觀：Skill 與傳統 App 的差別、system prompt 的 &lt;available_skills&gt; 塊、pi-web 如何發現 skill。" />
   <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch14_skill_concept.html" />
-  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch14/01_system_prompt.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="第 14 章 · Skill 是什麼？跟手機 App 有什麼不一樣 · Woow HA Pi Agent 入住指南" />
   <meta name="twitter:description" content="Pi Agent Skill 系統概觀：Skill 與傳統 App 的差別、system prompt 的 &lt;available_skills&gt; 塊、pi-web 如何發現 skill。" />
-  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch14/01_system_prompt.png" />
   <meta name="theme-color" content="#6183FC" />
   <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -238,6 +238,10 @@
       </ol>
       <p>如果 System prompt 面板打開<strong>看不到 <code>available_skills</code> 那段</strong>，通常是兩個原因：（1）你完全沒裝任何 skill，Pi Agent 這時候會省略這一塊，AI 就完全依賴一般知識回答，一樣能用；（2）你的 pi-web 版本比較舊，那時候還沒把 available_skills 塊獨立顯示，升級 Pi Agent add-on 就有了（<a href="ch21_upgrade.html">第 21 章</a>會講升級）。</p>
       <div class="callout tip"><strong>提示：</strong>看 System prompt 面板是排查「AI 為什麼沒用我剛裝的 skill」最快的方法。九成問題出在「其實 session 開得比裝 skill 早，所以那次沒吃到」——關掉開新對話就解決了。</div>
+      <figure class="shot">
+        <img src="assets/screenshots/ch14/01_system_prompt.png" alt="System prompt 面板中的 available_skills 塊" />
+        <figcaption><strong>圖 14-1</strong>System prompt 面板：把往上滑就能看到 <code>&lt;available_skills&gt;</code> 塊，裡面列出這個 session 讀到的每一個 skill 名稱與描述。</figcaption>
+      </figure>
     </section>
 
     <section id="steps" data-nav="Skill 最小骨架">

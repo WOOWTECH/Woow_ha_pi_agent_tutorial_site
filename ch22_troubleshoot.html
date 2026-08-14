@@ -14,11 +14,11 @@
   <meta property="og:title" content="第 22 章 · 常見卡關手冊 · Woow HA Pi Agent 入住指南" />
   <meta property="og:description" content="Pi Agent 常見卡關全集：401 金鑰錯、402 沒額度、404 ingress 掉、Sidebar 消失、影片管線失敗、Skill 裝不起來、Watchdog 反覆重啟，每個症狀對應解法。" />
   <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch22_troubleshoot.html" />
-  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch22/01_addon_logs.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="第 22 章 · 常見卡關手冊 · Woow HA Pi Agent 入住指南" />
   <meta name="twitter:description" content="Pi Agent 常見卡關全集：401 金鑰錯、402 沒額度、404 ingress 掉、Sidebar 消失、影片管線失敗、Skill 裝不起來、Watchdog 反覆重啟，每個症狀對應解法。" />
-  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch22/01_addon_logs.png" />
   <meta name="theme-color" content="#6183FC" />
   <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -385,6 +385,10 @@
         </li>
       </ol>
       <div class="callout tip"><strong>提示：</strong>debug log 開了之後跑一次「重現問題的操作」（例如再送一次會 401 的訊息），log 就會有那一次操作的<strong>完整詳細內容</strong>——包括發給 provider 的 request、收到的 response 全文。這對「明明按對步驟卻壞掉」的怪 bug 特別有用。</div>
+      <figure class="shot">
+        <img src="assets/screenshots/ch22/01_addon_logs.png" alt="Pi Agent add-on 的 Logs 分頁" />
+        <figcaption><strong>圖 22-1</strong>Add-on 的 Logs 分頁：bashio 開機訊息 + pi-web 執行輸出交錯，最下面 30 行就是最新事件——排錯時先看這裡。</figcaption>
+      </figure>
     </section>
 
     <section id="assign" data-nav="求救的正確方式">

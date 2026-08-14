@@ -14,11 +14,11 @@
   <meta property="og:title" content="第 15 章 · 從 GitHub 裝別人做好的 Skill · Woow HA Pi Agent 入住指南" />
   <meta property="og:description" content="Pi Agent 從 GitHub 安裝 Skill：Skills 面板的 Search、Add from URL 與 owner/repo shorthand、常見 auth 失敗的排錯。" />
   <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch15_install_skill.html" />
-  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch15/01_skills_modal.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="第 15 章 · 從 GitHub 裝別人做好的 Skill · Woow HA Pi Agent 入住指南" />
   <meta name="twitter:description" content="Pi Agent 從 GitHub 安裝 Skill：Skills 面板的 Search、Add from URL 與 owner/repo shorthand、常見 auth 失敗的排錯。" />
-  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch15/01_skills_modal.png" />
   <meta name="theme-color" content="#6183FC" />
   <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -134,6 +134,10 @@
       </table>
       <p>三種背後其實只有一個運作邏輯：把某個資料夾放到 <code>/data/pi-agent/skills/</code> 底下，然後 pi-web 每次開新 session 就去掃這個資料夾、把裡面每個子資料夾當一個 skill。差別只在「這個資料夾怎麼來的」——遠端拉下來的、還是你自己丟進去的。</p>
       <div class="callout tip"><strong>提示：</strong>第三種（本地路徑）是留給「你自己在電腦上寫了半個小時的 skill、想先塞進去試試」的情境。它跳過 git 這一層，改動不用 push 也能生效。這章示範前兩種，因為對「還沒開始寫 skill」的人來說，是最實用的入手方式。</div>
+      <figure class="shot">
+        <img src="assets/screenshots/ch15/01_skills_modal.png" alt="Skills 面板：新增與管理" />
+        <figcaption><strong>圖 15-1</strong>Skills 面板：Add Skill 輸入框接受 GitHub URL、owner/repo shorthand、本地路徑三種；下方列出已裝的 skill，每列都有移除按鈕。</figcaption>
+      </figure>
     </section>
 
     <section id="docker" data-nav="Pi Agent 怎麼下載">

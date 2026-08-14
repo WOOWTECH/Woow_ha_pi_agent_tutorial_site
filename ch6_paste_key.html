@@ -14,11 +14,11 @@
   <meta property="og:title" content="第 6 章 · 把金鑰貼進 Models 面板 · Woow HA Pi Agent 入住指南" />
   <meta property="og:description" content="把 GLM 或其他 AI 金鑰貼進 Pi Agent 的 Models 面板：Add Provider 表單欄位、Test 按鈕確認、金鑰存在哪裡。" />
   <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch6_paste_key.html" />
-  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch6/01_models_panel.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="第 6 章 · 把金鑰貼進 Models 面板 · Woow HA Pi Agent 入住指南" />
   <meta name="twitter:description" content="把 GLM 或其他 AI 金鑰貼進 Pi Agent 的 Models 面板：Add Provider 表單欄位、Test 按鈕確認、金鑰存在哪裡。" />
-  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch6/01_models_panel.png" />
   <meta name="theme-color" content="#6183FC" />
   <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -104,6 +104,10 @@
       <p>把它想成家裡冰箱門上那張「電話簿」磁貼：水電行、鎖匠、瓦斯行、外送店家。你打電話叫水電時翻冰箱看號碼，Pi Agent 要問 AI 時也翻這本登記簿。差別是：一家 provider 可以列很多支不同的模型（就像一家水電行有三個師傅可以叫）。</p>
       <div class="callout"><strong>觀念：</strong>面板裡看到的每一張卡片＝一個 provider（供應商）。一個 provider 底下可以再列很多個 model（模型）。GLM 這家 provider 目前主要就用 <code>glm-4.6</code> 一顆，之後 GLM 出新模型你再回來 Add Model 就好。</div>
       <p>這個面板背後對應的檔案是 <code>/data/pi-agent/models.json</code>——你在面板點 Save，pi-web 就把最新內容寫進這個 JSON。要看檔案本人，可以進 HA 的 File Editor add-on 打開它（權限被鎖成 <code>600</code>，只有 root 讀得到）。你完全不需要手動編這個檔，UI 幫你搞定；<strong>知道它存在的意義是</strong>：HA 的備份（snapshot）會連帶這個檔案一起打包，之後換主機、還原 snapshot，金鑰不用重申請。第 <a href="ch20_backup.html">20</a> 章會細講。</p>
+      <figure class="shot">
+        <img src="assets/screenshots/ch6/01_models_panel.png" alt="Pi Agent Models 面板" />
+        <figcaption><strong>圖 6-1</strong>Models 面板：一張卡片一家 provider，右上 Add Provider 加新家、每張卡上的 Test 綠燈就代表金鑰通。</figcaption>
+      </figure>
     </section>
 
     <section id="what" data-nav="三個欄位在填什麼">
