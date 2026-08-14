@@ -34,6 +34,7 @@
     <div class="brand-sub">從零到能用</div>
     <h2>章節</h2>
     <ol>
+      <li class="part-label">基礎：從零到能用</li>
       <li><a href="ch1_login.html">登入 HA</a></li>
       <li><a href="ch2_system_settings.html">系統設定</a></li>
       <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
@@ -46,6 +47,19 @@
       <li><a href="ch10_scripts.html">腳本 Scripts</a></li>
       <li><a href="ch11_devices.html">裝置詳細設定</a></li>
       <li><a href="ch12_domains.html">Domain 控制圖鑑</a></li>
+      <li class="part-label">擴充：接上更多裝置</li>
+      <li><a href="ch13_themes.html">主題與外觀</a></li>
+      <li><a href="ch14_integrations.html">整合服務串接</a></li>
+      <li><a href="ch15_protocols.html">通訊協定大百科</a></li>
+      <li><a href="ch16_todo_calendar.html">待辦與行事曆</a></li>
+      <li class="part-label">數據、能源與 AI</li>
+      <li><a href="ch17_energy.html">能源儀表板</a></li>
+      <li><a href="ch18_history_data.html">歷史數據與導出</a></li>
+      <li><a href="ch19_voice_ai.html">語音助理與 AI</a></li>
+      <li class="part-label">進階架構與應用</li>
+      <li><a href="ch20_addons_docker.html">Add-on 與 Docker</a></li>
+      <li><a href="ch21_network_remote.html">網路與遠端連線</a></li>
+      <li><a href="ch22_life_logs.html">生活紀錄應用</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -62,6 +76,7 @@
       <h2>附錄</h2>
       <a href="appendix_hacs_addons.html">A · 生態圈：HACS/Add-ons/遠端</a>
       <a href="appendix_scenes_helpers_groups.html">B · 場景/輔助元件/群組</a>
+      <a href="appendix_hardware_install.html">C · 裝機前傳：硬體與 HAOS</a>
     </div>
   </aside>
 
@@ -101,6 +116,7 @@
 
     <section id="rename" data-nav="重新命名步驟">
       <h2 data-icon="rename">重新命名步驟</h2>
+      <div class="callout"><strong>版本差異：</strong>下面會用到的「設定 → 工具（Settings → Tools）」，在 2026.2 之前是側欄上獨立的一項「開發者工具（Developer tools）」；2026.2 把它收進「設定」裡，2026.8 再把名字從「開發者工具」簡化成「工具」。裡面的分頁名稱（狀態、範本⋯⋯）沒有變，舊版請到側欄的「開發者工具」找同一個東西。</div>
       <ol class="steps">
         <li>
           <h3>進「設定 → 裝置與服務 → 實體」</h3>
@@ -125,10 +141,10 @@
         <li>
           <h3>要不要一起改實體 ID？</h3>
           <p><strong>建議改。</strong>如果這是剛裝的裝置、還沒被任何自動化引用，直接把 ID 改成有意義的英數，例如 <code>light.living_room_main</code>。之後看程式碼會很容易。</p>
-          <div class="callout warn"><strong>注意：</strong>已被自動化、腳本、儀表板引用的實體，改 ID 前先在「開發者工具 → 狀態（States）」搜一下有沒有被用到。</div>
+          <div class="callout warn"><strong>注意：</strong>已被自動化、腳本、儀表板引用的實體，改 ID 前先在「設定 → 工具 → 狀態（States）」搜一下有沒有被用到。</div>
         </li>
       </ol>
-      <div class="callout"><strong>驗證</strong>：改完後，「開發者工具 → 狀態」搜尋新名字應該找得到；舊 entity_id 應該從清單消失。<strong>警告</strong>：如果這個實體有被自動化用到，改 entity_id 會讓自動化壞掉——第 8 章會講為什麼要一開始就想好命名。</div>
+      <div class="callout"><strong>驗證</strong>：改完後，「設定 → 工具 → 狀態」搜尋新名字應該找得到；舊 entity_id 應該從清單消失。<strong>警告</strong>：如果這個實體有被自動化用到，改 entity_id 會讓自動化壞掉——第 8 章會講為什麼要一開始就想好命名。</div>
     </section>
 
     <section id="labels" data-nav="用標籤分類">
@@ -161,20 +177,20 @@
 
     <section id="done" data-nav="命名範例集">
       <h2 data-icon="done">命名範例集（直接抄）</h2>
-      <table style="width:100%; border-collapse: collapse; font-size:14px; margin-top:12px;">
-        <thead style="background: var(--surface-alt);">
+      <table class="data-table">
+        <thead>
           <tr>
-            <th style="text-align:left; padding:10px; border:1px solid var(--border);">類型</th>
-            <th style="text-align:left; padding:10px; border:1px solid var(--border);">友善名稱</th>
-            <th style="text-align:left; padding:10px; border:1px solid var(--border);">實體 ID</th>
+            <th>類型</th>
+            <th>友善名稱</th>
+            <th>實體 ID</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td style="padding:8px; border:1px solid var(--border);">燈</td><td style="padding:8px; border:1px solid var(--border);">主燈</td><td style="padding:8px; border:1px solid var(--border);"><code>light.living_room_main</code></td></tr>
-          <tr><td style="padding:8px; border:1px solid var(--border);">燈</td><td style="padding:8px; border:1px solid var(--border);">氣氛燈</td><td style="padding:8px; border:1px solid var(--border);"><code>light.living_room_ambient</code></td></tr>
-          <tr><td style="padding:8px; border:1px solid var(--border);">開關</td><td style="padding:8px; border:1px solid var(--border);">飲水機</td><td style="padding:8px; border:1px solid var(--border);"><code>switch.kitchen_water_dispenser</code></td></tr>
-          <tr><td style="padding:8px; border:1px solid var(--border);">感應器</td><td style="padding:8px; border:1px solid var(--border);">人在</td><td style="padding:8px; border:1px solid var(--border);"><code>binary_sensor.master_bedroom_occupancy</code></td></tr>
-          <tr><td style="padding:8px; border:1px solid var(--border);">冷氣</td><td style="padding:8px; border:1px solid var(--border);">冷氣</td><td style="padding:8px; border:1px solid var(--border);"><code>climate.master_bedroom_ac</code></td></tr>
+          <tr><td>燈</td><td>主燈</td><td><code>light.living_room_main</code></td></tr>
+          <tr><td>燈</td><td>氣氛燈</td><td><code>light.living_room_ambient</code></td></tr>
+          <tr><td>開關</td><td>飲水機</td><td><code>switch.kitchen_water_dispenser</code></td></tr>
+          <tr><td>感應器</td><td>人在</td><td><code>binary_sensor.master_bedroom_occupancy</code></td></tr>
+          <tr><td>冷氣</td><td>冷氣</td><td><code>climate.master_bedroom_ac</code></td></tr>
         </tbody>
       </table>
       <div class="callout"><strong>下一步</strong>：命名想好了，第 6 章讓你把常用實體拉到儀表板；第 8 章教你用這些名字寫第一個自動化。</div>
@@ -183,18 +199,18 @@
     <section id="categories" data-nav="Categories 分類">
       <h2 data-icon="labels">Categories：第四種分類（進階）</h2>
       <p>2024.04 之後 HA 引入了 <strong>Categories</strong>（分類），跟 Labels 常常被搞混，這裡幫你分清楚：</p>
-      <table style="width:100%; border-collapse:collapse; margin:12px 0; font-size:14px;">
-        <thead style="background: var(--surface-alt);">
+      <table class="data-table">
+        <thead>
           <tr>
-            <th style="text-align:left; padding:10px; border-bottom:1px solid var(--hairline);">維度</th>
-            <th style="text-align:left; padding:10px; border-bottom:1px solid var(--hairline);">Labels 標籤</th>
-            <th style="text-align:left; padding:10px; border-bottom:1px solid var(--hairline);">Categories 分類</th>
+            <th>維度</th>
+            <th>Labels 標籤</th>
+            <th>Categories 分類</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td style="padding:8px 10px;">能貼在哪</td><td style="padding:8px 10px;">區域／設備／實體／自動化／腳本／場景／helper</td><td style="padding:8px 10px;">只有自動化／腳本／場景／helper</td></tr>
-          <tr><td style="padding:8px 10px;">能當自動化目標嗎</td><td style="padding:8px 10px;">可以</td><td style="padding:8px 10px;">不行，純粹是後台清單分類</td></tr>
-          <tr><td style="padding:8px 10px;">典型用法</td><td style="padding:8px 10px;">「所有客廳燈」「所有安全設備」</td><td style="padding:8px 10px;">「照明類」「氛圍類」「安全類」（清單好找）</td></tr>
+          <tr><td>能貼在哪</td><td>區域／設備／實體／自動化／腳本／場景／helper</td><td>只有自動化／腳本／場景／helper</td></tr>
+          <tr><td>能當自動化目標嗎</td><td>可以</td><td>不行，純粹是後台清單分類</td></tr>
+          <tr><td>典型用法</td><td>「所有客廳燈」「所有安全設備」</td><td>「照明類」「氛圍類」「安全類」（清單好找）</td></tr>
         </tbody>
       </table>
       <div class="callout"><strong>一句話：</strong>要在自動化裡用就選 Labels，只是想在後台清單裡收好就選 Categories。</div>
@@ -220,7 +236,7 @@
       <h2 data-icon="advanced">常見卡關</h2>
       <details class="faq">
         <summary>改了 entity_id 後某個自動化不動了？</summary>
-        <div class="body">因為那個自動化裡引用的是舊 entity_id。到「設定 → 自動化」逐一檢查，或用「開發者工具 → 範本」搜尋舊名字。這也是為什麼第 8 章會教「一律用 entity_id 而不是 device_id」——換 entity_id 至少你會馬上發現壞了，device_id 換設備才壞就更難查。</div>
+        <div class="body">因為那個自動化裡引用的是舊 entity_id。到「設定 → 自動化」逐一檢查，或用「設定 → 工具（舊版側欄叫「開發者工具」）→ 範本」搜尋舊名字。這也是為什麼第 8 章會教「一律用 entity_id 而不是 device_id」——換 entity_id 至少你會馬上發現壞了，device_id 換設備才壞就更難查。</div>
       </details>
       <details class="faq">
         <summary>Friendly name 和 entity_id 差在哪？</summary>

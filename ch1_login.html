@@ -34,6 +34,7 @@
     <div class="brand-sub">從零到能用</div>
     <h2>章節</h2>
     <ol>
+      <li class="part-label">基礎：從零到能用</li>
       <li><a href="ch1_login.html" class="active">登入 HA</a></li>
       <li><a href="ch2_system_settings.html">系統設定</a></li>
       <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
@@ -46,6 +47,19 @@
       <li><a href="ch10_scripts.html">腳本 Scripts</a></li>
       <li><a href="ch11_devices.html">裝置詳細設定</a></li>
       <li><a href="ch12_domains.html">Domain 控制圖鑑</a></li>
+      <li class="part-label">擴充：接上更多裝置</li>
+      <li><a href="ch13_themes.html">主題與外觀</a></li>
+      <li><a href="ch14_integrations.html">整合服務串接</a></li>
+      <li><a href="ch15_protocols.html">通訊協定大百科</a></li>
+      <li><a href="ch16_todo_calendar.html">待辦與行事曆</a></li>
+      <li class="part-label">數據、能源與 AI</li>
+      <li><a href="ch17_energy.html">能源儀表板</a></li>
+      <li><a href="ch18_history_data.html">歷史數據與導出</a></li>
+      <li><a href="ch19_voice_ai.html">語音助理與 AI</a></li>
+      <li class="part-label">進階架構與應用</li>
+      <li><a href="ch20_addons_docker.html">Add-on 與 Docker</a></li>
+      <li><a href="ch21_network_remote.html">網路與遠端連線</a></li>
+      <li><a href="ch22_life_logs.html">生活紀錄應用</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -60,6 +74,7 @@
       <h2>附錄</h2>
       <a href="appendix_hacs_addons.html">A · 生態圈：HACS/Add-ons/遠端</a>
       <a href="appendix_scenes_helpers_groups.html">B · 場景/輔助元件/群組</a>
+      <a href="appendix_hardware_install.html">C · 裝機前傳：硬體與 HAOS</a>
     </div>
   </aside>
 
@@ -95,6 +110,7 @@
 
     <section id="steps" data-nav="登入步驟">
       <h2 data-icon="steps">登入步驟</h2>
+      <div class="callout"><strong>版本差異：</strong>登入後看到的預設儀表板，2026.2 起改叫「首頁（Home）」；在那之前叫「總覽（Overview）」，舊版介面的側欄最上面會寫「總覽」。兩者是同一個位置，下面的步驟都適用。</div>
       <ol class="steps">
         <li>
           <h3>打開登入頁</h3>
@@ -110,7 +126,7 @@
         </li>
         <li>
           <h3>勾選「保持登入」</h3>
-          <p>勾了以後，這台瀏覽器預設 10 天內都不用重登（HA 的 refresh token 有效期）。<strong>共用電腦請不要勾。</strong></p>
+          <p>勾了以後，這台瀏覽器會記住你，不用每次開都重打密碼。官方文件沒有寫死幾天，只說明「超過 90 天沒用過的登入憑證會被自動清掉」，所以只要你固定在用，實務上就是一直保持登入。<strong>共用電腦請不要勾。</strong></p>
           <figure class="shot">
             <img src="assets/screenshots/ch1/02_keep_logged_in.png" alt="勾選 Keep me logged in" />
             <figcaption><strong>圖 1-2</strong>勾選「保持登入」— 個人裝置建議打勾。</figcaption>
@@ -118,7 +134,7 @@
         </li>
         <li>
           <h3>進到主控台</h3>
-          <p>登入成功會直接跳到「總覽（Overview）」儀表板，顯示你家各區域的狀態卡片。</p>
+          <p>登入成功會直接跳到「首頁（Home）」儀表板（舊版叫「總覽 Overview」），顯示你家各區域的狀態卡片。</p>
           <figure class="shot">
             <img src="assets/screenshots/ch1/03_dashboard.png" alt="登入後的主控台" />
             <figcaption><strong>圖 1-3</strong>主控台：左側選單、上方標籤頁、中間卡片。</figcaption>
@@ -142,7 +158,7 @@
       <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>密碼忘記了怎麼辦？</summary>
-        <div class="body">密碼存在主機上，沒有寄信重設。如果你是管理員，需要用 SSH 或 HA 的救援模式重設；如果你不是管理員，請聯絡管理員從第 5 章的「使用者」把你的密碼重設一次。</div>
+        <div class="body">密碼存在主機上，沒有寄信重設。<strong>如果你還登得進去而且是擁有者</strong>，直接到「設定 → 人員」選那個人改密碼就好。<strong>如果是自己被鎖在外面</strong>，HAOS 要在主機本身接上螢幕鍵盤，在那個直連的主控台打 <code>auth reset --interactive</code> 重設（官方文件特別註明：不能用 App 或附加元件裡的 SSH 終端機，一定要主機本身的畫面）；Docker 安裝則是進容器跑 <code>hass --script auth --config /config change_password 帳號 新密碼</code> 再重啟容器。如果你不是管理員，最快的路是請管理員從第 5 章的「使用者」幫你重設一次。</div>
       </details>
       <details class="faq">
         <summary>登入頁一直轉圈圈進不去？</summary>
@@ -168,7 +184,7 @@
         </li>
         <li>
           <h3>忘記擁有者密碼</h3>
-          <p>沒辦法找回。要嘛用 SSH 進主機重設，要嘛從備份還原（ch9 會教）。這也是為什麼要<strong>盡快建立備份</strong>。</p>
+          <p>官方明講「無法從 Home Assistant 內部找回擁有者密碼」。HAOS 的正解是在主機接螢幕鍵盤，於直連主控台執行 <code>auth reset --interactive</code>（不能用 SSH 終端機）；Docker 則進容器用 <code>hass --script auth</code> 改。兩條都走不通就只剩重跑一次初始設定，或從備份還原（ch9 會教）。這也是為什麼要<strong>盡快建立備份</strong>。</p>
         </li>
         <li>
           <h3>Companion App 一直登入失敗</h3>

@@ -34,6 +34,7 @@
     <div class="brand-sub">從零到能用</div>
     <h2>章節</h2>
     <ol>
+      <li class="part-label">基礎：從零到能用</li>
       <li><a href="ch1_login.html">登入 HA</a></li>
       <li><a href="ch2_system_settings.html">系統設定</a></li>
       <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
@@ -46,6 +47,19 @@
       <li><a href="ch10_scripts.html">腳本 Scripts</a></li>
       <li><a href="ch11_devices.html">裝置詳細設定</a></li>
       <li><a href="ch12_domains.html">Domain 控制圖鑑</a></li>
+      <li class="part-label">擴充：接上更多裝置</li>
+      <li><a href="ch13_themes.html">主題與外觀</a></li>
+      <li><a href="ch14_integrations.html">整合服務串接</a></li>
+      <li><a href="ch15_protocols.html">通訊協定大百科</a></li>
+      <li><a href="ch16_todo_calendar.html">待辦與行事曆</a></li>
+      <li class="part-label">數據、能源與 AI</li>
+      <li><a href="ch17_energy.html">能源儀表板</a></li>
+      <li><a href="ch18_history_data.html">歷史數據與導出</a></li>
+      <li><a href="ch19_voice_ai.html">語音助理與 AI</a></li>
+      <li class="part-label">進階架構與應用</li>
+      <li><a href="ch20_addons_docker.html">Add-on 與 Docker</a></li>
+      <li><a href="ch21_network_remote.html">網路與遠端連線</a></li>
+      <li><a href="ch22_life_logs.html">生活紀錄應用</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -61,6 +75,7 @@
       <h2>附錄</h2>
       <a href="appendix_hacs_addons.html">A · 生態圈：HACS/Add-ons/遠端</a>
       <a href="appendix_scenes_helpers_groups.html">B · 場景/輔助元件/群組</a>
+      <a href="appendix_hardware_install.html">C · 裝機前傳：硬體與 HAOS</a>
     </div>
   </aside>
 
@@ -127,19 +142,20 @@
 
     <section id="test" data-nav="送出第一則通知">
       <h2 data-icon="test">送出第一則通知</h2>
+      <div class="callout"><strong>這個功能改過名：</strong>側欄以前有一個獨立的「開發者工具」，2026.2 起整包搬進<strong>設定</strong>裡，2026.8 又把名字從「開發者工具」簡化成<strong>工具（Tools）</strong>。所以新版路徑是<strong>設定 → 工具 → 動作</strong>，舊版是側欄的<strong>開發者工具 → 動作</strong>，裡面的分頁內容完全一樣。另外，以前叫「服務（Service）」的東西，2024.8 起正式改叫<strong>動作（Action）</strong>，YAML 裡的 <code>service:</code> 也跟著改成 <code>action:</code>。</div>
       <ol class="steps">
         <li>
-          <h3>開發者工具 → 動作</h3>
-          <p>HA 網頁左側「開發者工具」→ 「動作 (Actions)」分頁。</p>
+          <h3>設定 → 工具 → 動作</h3>
+          <p>HA 網頁左側「設定」→「工具 (Tools)」→「動作 (Actions)」分頁。</p>
         </li>
         <li>
           <h3>動作欄選 <code>notify.mobile_app_XXX</code></h3>
           <p>XXX 是你剛才登入的手機名稱。這個動作是 App 自動幫你建的。</p>
           <figure class="shot">
-            <img src="assets/screenshots/ch7/02_dev_services.png" alt="開發者工具 - 動作" />
-            <figcaption><strong>圖 7-2</strong>開發者工具的動作呼叫介面。</figcaption>
+            <img src="assets/screenshots/ch7/02_dev_services.png" alt="設定 → 工具 → 動作" />
+            <figcaption><strong>圖 7-2</strong>設定 → 工具的動作執行介面（截圖為舊版的開發者工具）。</figcaption>
           </figure>
-          <p><strong>通知服務命名規則</strong>：<code>notify.mobile_app_&lt;裝置名&gt;</code>，裝置名裡的非英數字元會變成底線。例如 iPhone 13 Pro Max 會變成 <code>notify.mobile_app_iphone_13_pro_max</code>。到「開發者工具 → 動作」下拉裡搜尋 <code>notify.mobile_app</code> 就能看到你的手機。</p>
+          <p><strong>通知動作命名規則</strong>：<code>notify.mobile_app_&lt;裝置名&gt;</code>，裝置名裡的非英數字元會變成底線。例如 iPhone 13 Pro Max 會變成 <code>notify.mobile_app_iphone_13_pro_max</code>。到「設定 → 工具 → 動作」下拉裡搜尋 <code>notify.mobile_app</code> 就能看到你的手機。</p>
         </li>
         <li>
           <h3>填 message 與 title</h3>
@@ -150,7 +166,7 @@ data:
   message: "從 HA 發來的第一則訊息"</pre>
         </li>
         <li>
-          <h3>按「呼叫動作」</h3>
+          <h3>按「執行動作」</h3>
           <p>手機立刻叮！— 恭喜，你的智慧家庭有「嘴巴」了。</p>
         </li>
       </ol>
@@ -170,7 +186,7 @@ data:
         title: "開門"
       - action: "IGNORE"
         title: "不理"</pre>
-      <p>然後在自動化裡監聽事件 <code>mobile_app_notification_action</code>，拿到 <code>action: "OPEN_DOOR"</code> 就呼叫開門動作。之後不管你在世界哪裡都能遠端開門。</p>
+      <p>然後在自動化裡監聽事件 <code>mobile_app_notification_action</code>，拿到 <code>action: "OPEN_DOOR"</code> 就執行開門動作。之後不管你在世界哪裡都能遠端開門。</p>
       <div class="callout warn"><strong>兩個很容易踩的坑：</strong>
       <ol style="margin:8px 0 0 20px;">
       <li><strong>Android 一則通知最多 3 個動作按鈕</strong>；iOS 可以放到約 10 個但超過會需要下滑。跨平台就以 3 個為上限。</li>
@@ -189,7 +205,7 @@ data:
       <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>通知沒收到？</summary>
-        <div class="body">依序檢查：（1）手機系統的 App 通知權限是不是開的；（2）App 內「設定 → Companion App → 通知」是不是開的；（3）呼叫的動作名稱有沒有寫對；（4）手機是不是在勿擾模式。</div>
+        <div class="body">依序檢查：（1）手機系統的 App 通知權限是不是開的；（2）App 內「設定 → Companion App → 通知」是不是開的；（3）執行的動作名稱有沒有寫對；（4）手機是不是在勿擾模式。</div>
       </details>
       <details class="faq">
         <summary>能通知所有家人的手機嗎？</summary>
@@ -205,7 +221,7 @@ data:
       <h2 data-icon="tips">常見卡關</h2>
       <details class="faq">
         <summary>手機收不到通知</summary>
-        <div class="body">照順序檢查：(1) Companion App 開過通知權限；(2) 手機不在飛航／勿擾／省電模式；(3) HA 對外網路 OK（App 需要連 Firebase/APNs）；(4) 動作名對嗎，去「開發者工具 → 動作」搜 <code>notify.mobile_app</code> 有沒有你的手機。</div>
+        <div class="body">照順序檢查：(1) Companion App 開過通知權限；(2) 手機不在飛航／勿擾／省電模式；(3) HA 對外網路 OK（App 需要連 Firebase/APNs）；(4) 動作名對嗎，去「設定 → 工具 → 動作」搜 <code>notify.mobile_app</code> 有沒有你的手機。</div>
       </details>
       <details class="faq">
         <summary>iOS 收到通知但無聲</summary>

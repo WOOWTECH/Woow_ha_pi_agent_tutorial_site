@@ -1,6 +1,6 @@
 # Home Assistant 新居入住指南（從零到能用）
 
-12 章＋2 附錄的繁體中文 Home Assistant 教學靜態網站，帶你把剛裝好的 HA 從空白狀態設定到日常可用。
+22 章＋3 附錄的繁體中文 Home Assistant 教學靜態網站，從「剛裝好的空白 HA」一路帶到通訊協定、能源監控、語音助理與案場級網路架構。
 
 **線上閱讀：<https://woowtech.github.io/Woow_ha_tutorial_site/>**
 
@@ -9,6 +9,8 @@
 - 內容以 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.zh-hant) 授權釋出
 
 ## 內容
+
+### 基礎：從零到能用
 
 | # | 檔案 | 主題 |
 |---|---|---|
@@ -23,9 +25,40 @@
 | 9 | `ch9_backups.html` | 手動與自動備份、還原、備份存放位置 |
 | 10 | `ch10_scripts.html` | 腳本、Fields 參數、執行模式、四種呼叫入口 |
 | 11 | `ch11_devices.html` | 裝置頁、韌體更新、停用/隱藏/刪除、Repairs |
-| 12 | `ch12_domains.html` | 各 Domain 的常用服務、UI 卡片與常見坑 |
-| A | `appendix_hacs_addons.html` | Add-on 商店、HACS、四種遠端連線方案 |
+| 12 | `ch12_domains.html` | 各 Domain 的常用動作、UI 卡片與常見坑 |
+
+### 擴充：接上更多裝置
+
+| # | 檔案 | 主題 |
+|---|---|---|
+| 13 | `ch13_themes.html` | 深色模式、社群主題、主題變數、品牌客製 |
+| 14 | `ch14_integrations.html` | 整合的新增與診斷、雲端 vs 本地、HACS 自訂整合 |
+| 15 | `ch15_protocols.html` | Wi-Fi/Zigbee/Z-Wave/Matter/Thread/BLE/KNX/Modbus/MQTT |
+| 16 | `ch16_todo_calendar.html` | 待辦清單、本地與 Google 行事曆、行事曆觸發自動化 |
+
+### 數據、能源與 AI
+
+| # | 檔案 | 主題 |
+|---|---|---|
+| 17 | `ch17_energy.html` | 能源儀表板、Riemann sum 與 Utility Meter、電價成本 |
+| 18 | `ch18_history_data.html` | History/Logbook、Recorder、長期統計、CSV 匯出、InfluxDB |
+| 19 | `ch19_voice_ai.html` | Assist pipeline、本地與雲端語音、接 LLM 當對話代理 |
+
+### 進階架構與應用
+
+| # | 檔案 | 主題 |
+|---|---|---|
+| 20 | `ch20_addons_docker.html` | 四種安裝方式、Supervisor、容器觀念、雲端備份 |
+| 21 | `ch21_network_remote.html` | 固定 IP、Cloudflare Tunnel、VPN、反向代理、資安硬規則 |
+| 22 | `ch22_life_logs.html` | Helper 做生活紀錄、統計圖表、客製儀表板版面 |
+
+### 附錄
+
+| # | 檔案 | 主題 |
+|---|---|---|
+| A | `appendix_hacs_addons.html` | 應用程式商店、HACS、遠端連線概觀 |
 | B | `appendix_scenes_helpers_groups.html` | 場景、10 種 Helper、群組 |
+| C | `appendix_hardware_install.html` | 裝機前傳：安裝方式比較、硬體選擇、HAOS 燒錄與首次開機 |
 
 ## 檔案結構
 
@@ -33,12 +66,12 @@
 index.html               目錄頁             ← 卡片由 build_nav.js 產生
 404.html                 找不到頁面
 ch*.html / appendix_*    內容頁             ← head/側欄/pager/footer 由 build_nav.js 產生
-chapters.json            章節單一來源        ← 要改導覽就改這裡
+chapters.json            章節單一來源        ← 章節順序、編號、分篇、卡片文案、SEO 描述
 sitemap.xml              產生物，勿手改
 robots.txt
 assets/css/style.css     全站樣式
 assets/js/toc.js         章內錨點 scroll-spy＋手機版側欄收合
-assets/screenshots/      46 張標注過的截圖
+assets/screenshots/      46 張標注過的截圖（第 1～12 章）
 scripts/build_nav.js     導覽產生器
 scripts/check_links.js   站內連結／錨點健檢
 scripts/capture.js       截圖產生器
@@ -66,11 +99,14 @@ python3 -m http.server 8080     # 或 npx http-server -p 8080
 node scripts/build_nav.js
 ```
 
-它會覆寫每一頁的 `<head>`、`<aside class="sidebar">`、`<div class="pager">`、`<footer class="site-footer">`，重建 `index.html` 的卡片，並重新產生 `sitemap.xml`。
+它會覆寫每一頁的 `<head>`、`<aside class="sidebar">`、`chapter-header` 裡的「第 N 章／附錄 X」標記、`<div class="pager">`、`<footer class="site-footer">`，重建 `index.html` 的卡片，並重新產生 `sitemap.xml`。
+
+`chapters.json` 每一章的 `part` 欄位決定它在目錄頁與側欄裡歸在哪一篇；同一個 `part` 字串的章節會被歸成一組。
 
 - **改章節標題／順序／目錄文案** → 改 `chapters.json`，重跑
 - **改章內錨點文字** → 改該 `<section>` 的 `data-nav` 屬性，重跑
-- **新增一章** → `chapters.json` 加一筆 + 寫好該 HTML 的 `<main>` 內容，重跑。其他 15 個檔案的側欄會自動跟上
+- **新增一章** → `chapters.json` 加一筆 + 寫好該 HTML 的 `<main>` 內容，重跑。其他 26 個檔案的側欄會自動跟上
+- **章節編號不用手寫** → `chapter-header` 的 kicker 由 `num` 產生，所以檔名裡的數字只是穩定網址用的 slug
 
 每個 `<section>` 都必須有 `id` 與 `data-nav`：
 
@@ -86,6 +122,8 @@ node scripts/build_nav.js
 ```bash
 node scripts/build_nav.js --check   # 導覽是否與 chapters.json 同步（CI 會擋）
 node scripts/check_links.js         # 站內連結、圖片、錨點、重複 id、sitemap 涵蓋率
+                                    # 另外會擋：data-icon 沒有對應字符、表格用 inline style、
+                                    #           FAQ 不足、缺 chapter-header kicker
 ```
 
 `.github/workflows/checks.yml` 會：
@@ -94,7 +132,9 @@ node scripts/check_links.js         # 站內連結、圖片、錨點、重複 id
 - **PR**：只跑 `--check` 與連結檢查，不改檔，把「忘了跑產生器」擋在合併前
 - 另外有一個不擋合併的外部連結檢查（lychee）
 
-`sectionLabels`（`chapters.json` 最後一段）是 `data-nav` 的一次性遷移表：HTML 裡的 `<section>` 若還沒有 `data-nav`，`build_nav.js` 會照這張表補寫進去。全部遷移完之後可以整段刪掉。
+`build_nav.js` 仍保留 `sectionLabels` 的相容邏輯：HTML 裡的 `<section>` 若沒有 `data-nav`，會去 `chapters.json` 的 `sectionLabels` 找；找不到就從 `<h2>` 推一個短標題並寫回檔案。目前所有章節都已經有 `data-nav`，所以 `chapters.json` 裡不再需要這張表。
+
+新章節的寫作規格在 [`STYLE.md`](STYLE.md)：語氣、可用元件、`data-icon` 清單、章節結構模板與事實查證要求都在那裡。
 
 ## 截圖產生器（capture.js）
 

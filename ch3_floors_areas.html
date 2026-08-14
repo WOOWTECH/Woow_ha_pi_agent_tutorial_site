@@ -34,6 +34,7 @@
     <div class="brand-sub">從零到能用</div>
     <h2>章節</h2>
     <ol>
+      <li class="part-label">基礎：從零到能用</li>
       <li><a href="ch1_login.html">登入 HA</a></li>
       <li><a href="ch2_system_settings.html">系統設定</a></li>
       <li><a href="ch3_floors_areas.html" class="active">樓層與區域</a></li>
@@ -46,6 +47,19 @@
       <li><a href="ch10_scripts.html">腳本 Scripts</a></li>
       <li><a href="ch11_devices.html">裝置詳細設定</a></li>
       <li><a href="ch12_domains.html">Domain 控制圖鑑</a></li>
+      <li class="part-label">擴充：接上更多裝置</li>
+      <li><a href="ch13_themes.html">主題與外觀</a></li>
+      <li><a href="ch14_integrations.html">整合服務串接</a></li>
+      <li><a href="ch15_protocols.html">通訊協定大百科</a></li>
+      <li><a href="ch16_todo_calendar.html">待辦與行事曆</a></li>
+      <li class="part-label">數據、能源與 AI</li>
+      <li><a href="ch17_energy.html">能源儀表板</a></li>
+      <li><a href="ch18_history_data.html">歷史數據與導出</a></li>
+      <li><a href="ch19_voice_ai.html">語音助理與 AI</a></li>
+      <li class="part-label">進階架構與應用</li>
+      <li><a href="ch20_addons_docker.html">Add-on 與 Docker</a></li>
+      <li><a href="ch21_network_remote.html">網路與遠端連線</a></li>
+      <li><a href="ch22_life_logs.html">生活紀錄應用</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -62,6 +76,7 @@
       <h2>附錄</h2>
       <a href="appendix_hacs_addons.html">A · 生態圈：HACS/Add-ons/遠端</a>
       <a href="appendix_scenes_helpers_groups.html">B · 場景/輔助元件/群組</a>
+      <a href="appendix_hardware_install.html">C · 裝機前傳：硬體與 HAOS</a>
     </div>
   </aside>
 
@@ -104,9 +119,10 @@
         <li><strong>只有區域沒有樓層</strong> — 舊版 HA 沒樓層概念，跟著本章補上樓層。</li>
         <li><strong>有樓層但混亂</strong> — 之前試過但沒整理，考慮先刪掉重來。</li>
       </ol>
+      <div class="callout"><strong>頁面名稱：</strong>樓層與區域都在「設定 → 區域、標籤和區塊」（Settings → Areas, labels &amp; zones）這一頁設定；2024.4 之前的舊版還沒有樓層與標籤，這頁只列得出區域。把裝置放進區域走的是「設定 → 裝置與服務 → 裝置」，這個路徑到目前為止都沒有改名。另外側欄的預設儀表板從 2026.2 起叫「首頁（Home）」，舊版叫「總覽（Overview）」。</div>
       <figure class="shot">
         <img src="assets/screenshots/ch3/01_areas_page.png" alt="區域與樓層頁面" />
-        <figcaption><strong>圖 3-1</strong>「區域、樓層與區塊」頁面 — 左側是樓層，右側是每個樓層下的區域。</figcaption>
+        <figcaption><strong>圖 3-1</strong>「區域、標籤和區塊」頁面 — 左側是樓層，右側是每個樓層下的區域。</figcaption>
       </figure>
     </section>
 
@@ -153,7 +169,7 @@
           <div class="callout tip"><strong>提示：</strong>「戶外」建成一個沒有指定樓層的區域也可以，或是自己開一個「戶外」樓層。</div>
         </li>
       </ol>
-      <div class="callout tip"><strong>驗證</strong>：回到「設定 → 概觀」，你應該看到剛建的樓層／區域出現在左側篩選；隨便點一個區域，右邊會列出這個區域的設備數量。</div>
+      <div class="callout tip"><strong>驗證</strong>：回到「設定 → 區域、標籤和區塊」，你應該看到剛建的樓層／區域出現在左側篩選；隨便點一個區域，右邊會列出這個區域的設備數量。</div>
     </section>
 
     <section id="assign" data-nav="把設備放進區域">
@@ -186,12 +202,12 @@
 
     <section id="done" data-nav="完成對照">
       <h2 data-icon="done">完成對照</h2>
-      <p>做完之後，回到「區域、樓層與區塊」頁應該長這樣：</p>
+      <p>做完之後，回到「區域、標籤和區塊」頁應該長這樣：</p>
       <figure class="shot">
         <img src="assets/screenshots/ch3/06_done.png" alt="完成的樓層區域佈局" />
         <figcaption><strong>圖 3-6</strong>完成的樓層區域佈局 — 每個區域下方顯示「N 個裝置」。</figcaption>
       </figure>
-      <p>接下來到左側選單的「總覽」，切到「以區域為分頁」的檢視，你會看到 HA 自動幫每個區域生成一張卡片。</p>
+      <p>接下來到左側選單的「首頁（Home）」（舊版叫「總覽 Overview」），切到「以區域為分頁」的檢視，你會看到 HA 自動幫每個區域生成一張卡片。</p>
     </section>
 
     <section id="faq" data-nav="常見問題">
@@ -218,7 +234,7 @@
       <h2 data-icon="advanced">常見卡關</h2>
       <details class="faq">
         <summary>不小心把設備放錯區域怎麼辦？</summary>
-        <div class="body">回「設定 → 設備」找到那個設備，點進去右上角有「區域」下拉可以改。實體也可以個別覆寫（覆寫後就跟設備分家了）。</div>
+        <div class="body">回「設定 → 裝置與服務 → 裝置」找到那個設備，點進去右上角有「區域」下拉可以改。實體也可以個別覆寫（覆寫後就跟設備分家了）。</div>
       </details>
       <details class="faq">
         <summary>已經有一堆設備，重新規劃區域來得及嗎？</summary>

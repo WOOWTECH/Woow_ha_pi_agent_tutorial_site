@@ -34,6 +34,7 @@
     <div class="brand-sub">從零到能用</div>
     <h2>章節</h2>
     <ol>
+      <li class="part-label">基礎：從零到能用</li>
       <li><a href="ch1_login.html">登入 HA</a></li>
       <li><a href="ch2_system_settings.html">系統設定</a></li>
       <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
@@ -46,6 +47,19 @@
       <li><a href="ch10_scripts.html">腳本 Scripts</a></li>
       <li><a href="ch11_devices.html">裝置詳細設定</a></li>
       <li><a href="ch12_domains.html">Domain 控制圖鑑</a></li>
+      <li class="part-label">擴充：接上更多裝置</li>
+      <li><a href="ch13_themes.html">主題與外觀</a></li>
+      <li><a href="ch14_integrations.html">整合服務串接</a></li>
+      <li><a href="ch15_protocols.html">通訊協定大百科</a></li>
+      <li><a href="ch16_todo_calendar.html">待辦與行事曆</a></li>
+      <li class="part-label">數據、能源與 AI</li>
+      <li><a href="ch17_energy.html">能源儀表板</a></li>
+      <li><a href="ch18_history_data.html">歷史數據與導出</a></li>
+      <li><a href="ch19_voice_ai.html">語音助理與 AI</a></li>
+      <li class="part-label">進階架構與應用</li>
+      <li><a href="ch20_addons_docker.html">Add-on 與 Docker</a></li>
+      <li><a href="ch21_network_remote.html">網路與遠端連線</a></li>
+      <li><a href="ch22_life_logs.html">生活紀錄應用</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -62,6 +76,7 @@
       <h2>附錄</h2>
       <a href="appendix_hacs_addons.html">A · 生態圈：HACS/Add-ons/遠端</a>
       <a href="appendix_scenes_helpers_groups.html">B · 場景/輔助元件/群組</a>
+      <a href="appendix_hardware_install.html">C · 裝機前傳：硬體與 HAOS</a>
     </div>
   </aside>
 
@@ -86,6 +101,7 @@
 
     <section id="what" data-nav="備份包含什麼">
       <h2 data-icon="what">備份包含什麼</h2>
+      <div class="callout"><strong>改名了：</strong>2026.2 版起，HA 把「附加元件（Add-on）」正式改名為「應用程式（Apps）」，安裝入口也從舊版的「設定 → 附加元件」變成「設定 → 應用程式」。你在舊版看到的 Add-on 跟新版的 Apps 是同一個東西，本章之後一律用新名字。備份頁本身沒有搬家，新舊版都在「設定 → 系統 → 備份」。</div>
       <p>HA 的完整備份是一份 <code>.tar</code> 壓縮檔，展開後主要有兩塊：</p>
       <ul>
         <li><strong>Home Assistant 核心設定</strong>
@@ -96,7 +112,7 @@
             <li>Lovelace 儀表板配置。</li>
           </ul>
         </li>
-        <li><strong>附加元件（Add-on）資料</strong>
+        <li><strong>應用程式（Apps，舊版叫附加元件 Add-on）資料</strong>
           <ul>
             <li>Zigbee2MQTT 的配對清單。</li>
             <li>Node-RED 的流程。</li>
@@ -148,7 +164,7 @@
 
     <section id="auto" data-nav="自動備份排程">
       <h2 data-icon="auto">開啟自動備份排程</h2>
-      <p>HA OS 2024.10 之後內建了完整的自動備份排程功能，不再需要裝額外的自動備份 add-on。</p>
+      <p>HA OS 2024.10 之後內建了完整的自動備份排程功能，不再需要裝額外的自動備份 App。</p>
       <p>到「設定 → 系統 → 備份 → 自動備份（右上角）」，可以設定：</p>
       <ul>
         <li><strong>頻率</strong>：每天、每週、每月，以及執行時間（建議凌晨 3~5 點）。</li>
@@ -158,7 +174,7 @@
             <li><strong>Home Assistant Cloud（Nabu Casa）</strong>——最簡單，訂閱後直接勾選。</li>
             <li><strong>Google Drive</strong>——透過官方整合綁定。</li>
             <li><strong>Samba / NFS 網芳</strong>——存到你家 NAS。</li>
-            <li><strong>Nextcloud add-on</strong>——自架雲端。</li>
+            <li><strong>Nextcloud App</strong>——自架雲端。</li>
           </ul>
         </li>
         <li><strong>加密</strong>：一律開啟並設同一組密碼。</li>
@@ -182,7 +198,7 @@
       <p>正確做法（至少擇一，建議兩個都做）：</p>
       <ul>
         <li><strong>雲端</strong>：Nabu Casa 或 Google Drive 整合，設定成自動上傳。</li>
-        <li><strong>NAS / 網芳</strong>：家裡有 Synology / QNAP / TrueNAS，透過 Samba backup add-on 或原生整合寫過去。</li>
+        <li><strong>NAS / 網芳</strong>：家裡有 Synology / QNAP / TrueNAS，透過 Samba backup App 或原生整合寫過去。</li>
         <li><strong>離線硬碟</strong>：每個月一次手動下載到隨身碟收好。</li>
       </ul>
       <p>3-2-1 備份守則：<em>3 份備份，2 種媒體，1 份離站</em>。用在 HA 上就是「本機 + NAS + 雲端」。</p>
@@ -191,7 +207,7 @@
     <section id="troubleshoot" data-nav="常見問題排除">
       <h2 data-icon="troubleshoot">常見問題排除</h2>
       <p><strong>問題 1：備份檔案太大。</strong></p>
-      <p>檢查「開發者工具 → 統計」，看 Recorder 資料庫多大。可以縮短保留天數（<code>recorder.purge_keep_days</code>，預設 10 天）或排除高頻感應器（如電力儀、CPU 溫度）。媒體庫確認沒被勾進去。</p>
+      <p>檢查「設定 → 工具 → 統計」（Settings → Tools，舊版叫「開發者工具」，在側欄自己一項），看 Recorder 資料庫多大。可以縮短保留天數（<code>recorder.purge_keep_days</code>，預設 10 天）或排除高頻感應器（如電力儀、CPU 溫度）。媒體庫確認沒被勾進去。</p>
       <p><strong>問題 2：還原後某些整合的密碼 / token 失效。</strong></p>
       <p>大多數整合的 token 存在 <code>.storage/</code> 裡會一起還原。但雲端類（Google、Alexa、Nest）常常需要重新授權，因為 token 有時效或綁 IP。這是預期行為，重新綁一次即可。</p>
       <p><strong>問題 3：SD 卡壞了讀不出來、備份還原路徑斷了。</strong></p>

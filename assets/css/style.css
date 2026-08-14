@@ -253,23 +253,23 @@ section h2[data-icon]::before {
 }
 /* Explicit icon glyphs — mapped via ::before for each data-icon */
 section h2[data-icon="why"]::before        { content: "\F0335"; }  /* lightbulb-outline */
-section h2[data-icon="steps"]::before      { content: "\F029B"; }  /* format-list-numbered */
-section h2[data-icon="faq"]::before        { content: "\F04C6"; }  /* comment-question-outline */
+section h2[data-icon="steps"]::before      { content: "\F027B"; }  /* format-list-numbered */
+section h2[data-icon="faq"]::before        { content: "\F0186"; }  /* comment-question-outline */
 section h2[data-icon="url"]::before        { content: "\F059F"; }  /* web */
-section h2[data-icon="companion"]::before  { content: "\F0F9E"; }  /* cellphone-link */
-section h2[data-icon="enter"]::before      { content: "\F0343"; }  /* login-variant */
-section h2[data-icon="profile"]::before    { content: "\F0004"; }  /* account-cog */
+section h2[data-icon="companion"]::before  { content: "\F0121"; }  /* cellphone-link */
+section h2[data-icon="enter"]::before      { content: "\F05FC"; }  /* login-variant */
+section h2[data-icon="profile"]::before    { content: "\F1370"; }  /* account-cog */
 section h2[data-icon="now"]::before        { content: "\F0349"; }  /* magnify */
-section h2[data-icon="plan"]::before       { content: "\F0A99"; }  /* view-dashboard-outline */
-section h2[data-icon="assign"]::before     { content: "\F0DFC"; }  /* connection */
+section h2[data-icon="plan"]::before       { content: "\F0821"; }  /* view-dashboard-outline */
+section h2[data-icon="assign"]::before     { content: "\F1616"; }  /* connection */
 section h2[data-icon="done"]::before       { content: "\F05E1"; }  /* check-circle-outline */
 section h2[data-icon="concept"]::before    { content: "\F04FC"; }  /* tag-multiple-outline (fallback tag) */
-section h2[data-icon="rename"]::before     { content: "\F04B4"; }  /* rename-box */
-section h2[data-icon="labels"]::before     { content: "\F0ECF"; }  /* label-multiple */
-section h2[data-icon="persons"]::before    { content: "\F0851"; }  /* account-multiple-plus */
-section h2[data-icon="tabs"]::before       { content: "\F04A3"; }  /* tab */
+section h2[data-icon="rename"]::before     { content: "\F0455"; }  /* rename-box */
+section h2[data-icon="labels"]::before     { content: "\F1375"; }  /* label-multiple */
+section h2[data-icon="persons"]::before    { content: "\F0010"; }  /* account-multiple-plus */
+section h2[data-icon="tabs"]::before       { content: "\F04E9"; }  /* tab */
 section h2[data-icon="tips"]::before       { content: "\F04CF"; }  /* star-outline */
-section h2[data-icon="app"]::before        { content: "\F0937"; }  /* cellphone-arrow-down */
+section h2[data-icon="app"]::before        { content: "\F09D5"; }  /* cellphone-arrow-down */
 section h2[data-icon="login"]::before      { content: "\F0306"; }  /* key */
 section h2[data-icon="test"]::before       { content: "\F0668"; }  /* test-tube */
 section h2[data-icon="advanced"]::before   { content: "\F062E"; }  /* tune */
@@ -709,3 +709,100 @@ details.faq .body {
   .sidebar.is-collapsible > h2 { display: none; }
   .sidebar { padding-bottom: 16px; }
 }
+
+/* 補齊既有章節用到但先前沒有對應字符的 data-icon，以及新章節使用的圖示 */
+section h2[data-icon="troubleshoot"]::before    { content: "\F0BE0"; }  /* wrench-outline */
+section h2[data-icon="what"]::before            { content: "\F09EE"; }  /* file-document-outline */
+section h2[data-icon="auto"]::before            { content: "\F04E6"; }  /* sync */
+section h2[data-icon="restore"]::before         { content: "\F006F"; }  /* backup-restore */
+section h2[data-icon="location"]::before        { content: "\F0352"; }  /* map-marker-radius */
+section h2[data-icon="modes"]::before           { content: "\F04E1"; }  /* swap-horizontal */
+section h2[data-icon="blueprints"]::before      { content: "\F0A66"; }  /* puzzle-outline */
+section h2[data-icon="entity_id_trap"]::before  { content: "\F0ECD"; }  /* shield-alert-outline */
+section h2[data-icon="hacs"]::before            { content: "\F04DC"; }  /* store */
+section h2[data-icon="addons"]::before          { content: "\F0431"; }  /* puzzle */
+section h2[data-icon="remote"]::before          { content: "\F0D3D"; }  /* transit-connection-variant */
+section h2[data-icon="warning"]::before         { content: "\F0029"; }  /* alert-octagon */
+
+section h2[data-icon="theme"]::before           { content: "\F03D8"; }  /* palette */
+section h2[data-icon="integration"]::before     { content: "\F0339"; }  /* link-variant */
+section h2[data-icon="protocol"]::before        { content: "\F0FD8"; }  /* protocol */
+section h2[data-icon="todo"]::before            { content: "\F08A8"; }  /* clipboard-check-outline */
+section h2[data-icon="calendar"]::before        { content: "\F0E18"; }  /* calendar-month-outline */
+section h2[data-icon="energy"]::before          { content: "\F140B"; }  /* lightning-bolt */
+section h2[data-icon="history"]::before         { content: "\F012A"; }  /* chart-line */
+section h2[data-icon="export"]::before          { content: "\F095E"; }  /* database-export */
+section h2[data-icon="ai"]::before              { content: "\F167A"; }  /* robot-outline */
+section h2[data-icon="voice"]::before           { content: "\F05CB"; }  /* account-voice */
+section h2[data-icon="docker"]::before          { content: "\F0868"; }  /* docker */
+section h2[data-icon="network"]::before         { content: "\F1087"; }  /* router-network */
+section h2[data-icon="records"]::before         { content: "\F0EBF"; }  /* notebook-outline */
+section h2[data-icon="hardware"]::before        { content: "\F061A"; }  /* chip */
+section h2[data-icon="security"]::before        { content: "\F0CCC"; }  /* shield-lock-outline */
+section h2[data-icon="compare"]::before         { content: "\F05D1"; }  /* scale-balance */
+section h2[data-icon="cost"]::before            { content: "\F0116"; }  /* cash-multiple */
+section h2[data-icon="disk"]::before            { content: "\F02CA"; }  /* harddisk */
+section h2[data-icon="book"]::before            { content: "\F14F7"; }  /* book-open-variant */
+section h2[data-icon="eco"]::before             { content: "\F032A"; }  /* leaf */
+section h2[data-icon="wifi"]::before            { content: "\F05A9"; }  /* wifi */
+section h2[data-icon="zigbee"]::before          { content: "\F0D41"; }  /* zigbee */
+
+/* 資料表格 —— 取代先前各章各自寫 inline style 的做法 */
+.data-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 20px 0;
+  font-size: 14px;
+  background: var(--surface);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.data-table thead th {
+  text-align: left;
+  padding: 12px 14px;
+  background: var(--surface-alt);
+  color: var(--ink-900);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 13px;
+  border-bottom: 1px solid var(--hairline);
+  white-space: nowrap;
+}
+.data-table tbody td {
+  padding: 11px 14px;
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink-700);
+  vertical-align: top;
+}
+.data-table tbody tr:last-child td { border-bottom: 0; }
+.data-table tbody tr:hover td { background: var(--ww-blue-050); }
+.data-table td code, .data-table th code { white-space: nowrap; }
+
+@media (max-width: 960px) {
+  .data-table { display: block; overflow-x: auto; white-space: nowrap; }
+  .data-table tbody td, .data-table thead th { white-space: normal; min-width: 120px; }
+}
+
+/* 側欄的篇章分隔標籤（22 章之後需要分組） */
+.sidebar ol li.part-label {
+  counter-increment: none;
+  list-style: none;
+  margin: 18px 0 6px;
+  padding: 0 12px;
+  font-family: var(--font-body);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-300);
+}
+.sidebar ol li.part-label:first-child { margin-top: 0; }
+
+/* Grid 子項目預設 min-width:auto，會被「最寬的那個子元素」撐開，
+   導致寬表格／長程式碼區塊把整頁推出視窗外（手機上尤其明顯）。
+   min-width:0 讓欄位可以縮，寬內容才會改由自己的 overflow-x 處理。 */
+.layout > * { min-width: 0; }
+.content pre, .content .data-table { max-width: 100%; }

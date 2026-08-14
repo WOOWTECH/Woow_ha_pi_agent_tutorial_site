@@ -122,11 +122,19 @@ function buildSidebar(page, html) {
   if (bare.length) problems.push(`${page.file}: <section> 缺 data-nav → ${bare.join(', ')}`);
   if (!sections.length) problems.push(`${page.file}: 找不到任何 <section id data-nav>`);
 
+  let lastPart = null;
   const chapterItems = chapters
-    .map(
-      (c) =>
+    .map((c) => {
+      const rows = [];
+      if (c.part && c.part !== lastPart) {
+        lastPart = c.part;
+        rows.push(`      <li class="part-label">${esc(c.part)}</li>`);
+      }
+      rows.push(
         `      <li><a href="${c.file}"${c.file === page.file ? ' class="active"' : ''}>${esc(c.navLabel)}</a></li>`
-    )
+      );
+      return rows.join('\n');
+    })
     .join('\n');
 
   const inChapter = sections
@@ -231,6 +239,14 @@ function buildPage(page) {
     buildSidebar(page, html),
     'sidebar'
   );
+  const kicker = page.kind === 'appendix' ? `附錄 ${page.num}` : `第 ${Number(page.num)} 章`;
+  const kickerRe = /(<div class="chapter-header">\s*<div class="kicker">)[\s\S]*?(<\/div>)/;
+  if (kickerRe.test(html)) {
+    html = html.replace(kickerRe, (m, open_, close_) => `${open_}${esc(kicker)}${close_}`);
+  } else {
+    problems.push(`${page.file}: 找不到 chapter-header 的 kicker 區塊`);
+  }
+
   html = replaceOne(page.file, html, /<div class="pager">[\s\S]*?<\/div>/, buildPager(page), 'pager');
 
   const footer = buildFooter();
@@ -254,19 +270,26 @@ function buildIndex() {
           <p>${esc(e.card)}</p>
         </a>`;
 
-  const grids = `<section class="chapter-index">
-      <h2 class="index-title">章節目錄</h2>
-      <div class="chapter-grid">
-${chapters.map(card).join('\n')}
-      </div>
-    </section>
+  // 依 part 分組；沒有 part 的章節全部歸在「章節目錄」下
+  const groups = [];
+  for (const c of chapters) {
+    const title = c.part || '章節目錄';
+    const g = groups.find((x) => x.title === title);
+    if (g) g.items.push(c);
+    else groups.push({ title, items: [c] });
+  }
+  groups.push({ title: '附錄', items: appendices });
 
-    <section class="chapter-index" style="margin-top:56px;">
-      <h2 class="index-title">附錄</h2>
+  const grids = groups
+    .map(
+      (g, i) => `<section class="chapter-index"${i ? ' style="margin-top:56px;"' : ''}>
+      <h2 class="index-title">${esc(g.title)}</h2>
       <div class="chapter-grid">
-${appendices.map(card).join('\n')}
+${g.items.map(card).join('\n')}
       </div>
-    </section>`;
+    </section>`
+    )
+    .join('\n\n    ');
 
   html = replaceOne('index.html', html, /<head>[\s\S]*?<\/head>/, buildHead({ file: 'index.html' }, original), '<head>');
   html = replaceOne(

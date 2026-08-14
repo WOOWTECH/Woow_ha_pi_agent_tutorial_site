@@ -34,6 +34,7 @@
     <div class="brand-sub">從零到能用</div>
     <h2>章節</h2>
     <ol>
+      <li class="part-label">基礎：從零到能用</li>
       <li><a href="ch1_login.html">登入 HA</a></li>
       <li><a href="ch2_system_settings.html" class="active">系統設定</a></li>
       <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
@@ -46,6 +47,19 @@
       <li><a href="ch10_scripts.html">腳本 Scripts</a></li>
       <li><a href="ch11_devices.html">裝置詳細設定</a></li>
       <li><a href="ch12_domains.html">Domain 控制圖鑑</a></li>
+      <li class="part-label">擴充：接上更多裝置</li>
+      <li><a href="ch13_themes.html">主題與外觀</a></li>
+      <li><a href="ch14_integrations.html">整合服務串接</a></li>
+      <li><a href="ch15_protocols.html">通訊協定大百科</a></li>
+      <li><a href="ch16_todo_calendar.html">待辦與行事曆</a></li>
+      <li class="part-label">數據、能源與 AI</li>
+      <li><a href="ch17_energy.html">能源儀表板</a></li>
+      <li><a href="ch18_history_data.html">歷史數據與導出</a></li>
+      <li><a href="ch19_voice_ai.html">語音助理與 AI</a></li>
+      <li class="part-label">進階架構與應用</li>
+      <li><a href="ch20_addons_docker.html">Add-on 與 Docker</a></li>
+      <li><a href="ch21_network_remote.html">網路與遠端連線</a></li>
+      <li><a href="ch22_life_logs.html">生活紀錄應用</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -60,6 +74,7 @@
       <h2>附錄</h2>
       <a href="appendix_hacs_addons.html">A · 生態圈：HACS/Add-ons/遠端</a>
       <a href="appendix_scenes_helpers_groups.html">B · 場景/輔助元件/群組</a>
+      <a href="appendix_hardware_install.html">C · 裝機前傳：硬體與 HAOS</a>
     </div>
   </aside>
 
@@ -93,13 +108,14 @@
 
     <section id="steps" data-nav="動手設定">
       <h2 data-icon="steps">動手設定</h2>
+      <div class="callout"><strong>這一頁改過名字：</strong>本章的主戰場現在叫<strong>設定 → 系統 → 家庭資訊（Home information）</strong>，官方文件已經改用這個名稱。舊版本的畫面上同一頁叫「一般（General）」，位置與欄位完全一樣，下面的截圖是舊版介面。</div>
       <ol class="steps">
         <li>
-          <h3>設定 → 系統 → 一般</h3>
-          <p>在設定頁點「系統」，再點「一般」。這頁就是本章的主戰場。</p>
+          <h3>設定 → 系統 → 家庭資訊</h3>
+          <p>在設定頁點「系統」，再點「家庭資訊」（舊版叫「一般」）。這頁就是本章的主戰場。</p>
           <figure class="shot">
             <img src="assets/screenshots/ch2/02_general.png" alt="一般設定頁" />
-            <figcaption><strong>圖 2-2</strong>系統一般設定頁，有名稱、時區、單位、貨幣等欄位。</figcaption>
+            <figcaption><strong>圖 2-2</strong>系統的家庭資訊設定頁，有名稱、時區、單位、貨幣等欄位。</figcaption>
           </figure>
         </li>
         <li>
@@ -125,29 +141,29 @@
           <div class="callout tip"><strong>提示：</strong>如果之後感覺日出日落時間怪怪的、通知時間不對，八成是這頁少了某個欄位。</div>
         </li>
       </ol>
-      <div class="callout tip"><strong>驗證</strong>：儲存後回到「設定 → 概觀」，右下角的日期時間應該顯示台北時區；「設定 → 區域 → home」的地圖應該框住你家。</div>
+      <div class="callout tip"><strong>驗證</strong>：儲存後回到「設定 → 概觀」，右下角的日期時間應該顯示台北時區；「設定 → 區域、標籤與區間（Areas, labels &amp; zones）→ 區間（Zones）分頁 → home」的地圖應該框住你家。</div>
     </section>
 
     <section id="profile" data-nav="個人偏好">
-      <h2 data-icon="profile">個人偏好（自己的頭像、語言、佈景）</h2>
+      <h2 data-icon="profile">個人偏好（自己的頭像、語言、主題）</h2>
       <p><strong>觀念：系統設定 vs 個人設定</strong>。時區、單位、貨幣是<strong>系統級</strong>（所有人共用）；語言、日期格式、每週第一天是<strong>個人級</strong>（每個帳號各自設）。這也是為什麼家人登入常常看到不同語言，別以為壞掉。</p>
-      <p>剛才是「整個家」的設定，這裡是「你自己」的設定：右下角頭像 → 「使用者設定」。</p>
+      <p>剛才是「整個家」的設定，這裡是「你自己」的設定：點側邊欄最下方你自己的名字 → 「使用者個人資料（User profile）」，舊版叫「使用者設定」。</p>
       <ol class="steps">
         <li>
           <h3>語言</h3>
           <p>選「繁體中文」，整個介面立刻中文化。</p>
           <figure class="shot">
             <img src="assets/screenshots/ch2/04_profile_language.png" alt="使用者語言設定" />
-            <figcaption><strong>圖 2-4</strong>使用者設定的「語言」欄位。</figcaption>
+            <figcaption><strong>圖 2-4</strong>使用者個人資料頁的「語言」欄位。</figcaption>
           </figure>
         </li>
         <li>
           <h3>時間格式與初始頁面</h3>
-          <p><strong>時間格式</strong>：24 小時或 12 小時看習慣。<strong>啟動頁面</strong>：你希望登入後看到哪一頁（預設是「總覽」）。</p>
+          <p><strong>時間格式</strong>：24 小時或 12 小時看習慣。<strong>預設儀表板（Default dashboard）</strong>：你希望登入後看到哪一頁（預設是「總覽」）。</p>
         </li>
         <li>
-          <h3>佈景（Theme）</h3>
-          <p>下拉選單有幾個內建佈景，包括「Backend-selected」（跟隨系統深淺色）、「Default light/dark」等。</p>
+          <h3>主題（Theme，舊版介面譯作「佈景」）</h3>
+          <p>下拉選單有幾個內建主題，包括「Backend-selected」（跟隨系統深淺色）、「Default light/dark」等。</p>
         </li>
       </ol>
     </section>
@@ -164,7 +180,7 @@
       </details>
       <details class="faq">
         <summary>不同使用者能各自選語言嗎？</summary>
-        <div class="body">可以。系統設定的語言只是「預設值」，每位使用者的「使用者設定」可以自己選。</div>
+        <div class="body">可以。系統設定的語言只是「預設值」，每位使用者的「使用者個人資料」頁可以自己選。</div>
       </details>
     </section>
 

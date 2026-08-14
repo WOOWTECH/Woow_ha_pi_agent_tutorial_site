@@ -34,6 +34,7 @@
     <div class="brand-sub">從零到能用</div>
     <h2>章節</h2>
     <ol>
+      <li class="part-label">基礎：從零到能用</li>
       <li><a href="ch1_login.html">登入 HA</a></li>
       <li><a href="ch2_system_settings.html">系統設定</a></li>
       <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
@@ -46,6 +47,19 @@
       <li><a href="ch10_scripts.html">腳本 Scripts</a></li>
       <li><a href="ch11_devices.html">裝置詳細設定</a></li>
       <li><a href="ch12_domains.html">Domain 控制圖鑑</a></li>
+      <li class="part-label">擴充：接上更多裝置</li>
+      <li><a href="ch13_themes.html">主題與外觀</a></li>
+      <li><a href="ch14_integrations.html">整合服務串接</a></li>
+      <li><a href="ch15_protocols.html">通訊協定大百科</a></li>
+      <li><a href="ch16_todo_calendar.html">待辦與行事曆</a></li>
+      <li class="part-label">數據、能源與 AI</li>
+      <li><a href="ch17_energy.html">能源儀表板</a></li>
+      <li><a href="ch18_history_data.html">歷史數據與導出</a></li>
+      <li><a href="ch19_voice_ai.html">語音助理與 AI</a></li>
+      <li class="part-label">進階架構與應用</li>
+      <li><a href="ch20_addons_docker.html">Add-on 與 Docker</a></li>
+      <li><a href="ch21_network_remote.html">網路與遠端連線</a></li>
+      <li><a href="ch22_life_logs.html">生活紀錄應用</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -62,6 +76,7 @@
       <h2>附錄</h2>
       <a href="appendix_hacs_addons.html">A · 生態圈：HACS/Add-ons/遠端</a>
       <a href="appendix_scenes_helpers_groups.html">B · 場景/輔助元件/群組</a>
+      <a href="appendix_hardware_install.html">C · 裝機前傳：硬體與 HAOS</a>
     </div>
   </aside>
 
@@ -84,6 +99,7 @@
 
     <section id="now" data-nav="現況：自動生成的預設">
       <h2 data-icon="now">現況：預設儀表板</h2>
+      <div class="callout"><strong>版本差異：</strong>2026.2 起，新安裝打開看到的預設儀表板換成了新的 <strong>Home Dashboard</strong>，側欄上名稱一樣是「Overview（概觀）」。以前那種「一個區域一張卡、把實體全塞進去」的自動總覽變成舊版範本，要在「設定 → 儀表板 → 新增儀表板」裡挑 <strong>Overview (legacy)</strong> 才生得出來。兩種的排版原則一樣，下面照做就好。</div>
       <p>登入後看到的第一頁就是預設儀表板。它會自動：</p>
       <ul>
         <li>每個區域一張卡片。</li>
@@ -101,8 +117,8 @@
       <div class="callout tip"><strong>建議：先建新儀表板，不要改預設的「概觀」</strong>。HA 官方文件建議：預設 Overview 是自動產生的，改了會被下次自動掃描覆蓋；新建一個「我家」儀表板，愛怎麼改都行。</div>
       <ol class="steps">
         <li>
-          <h3>右上角三個點 → 「編輯儀表板」</h3>
-          <p>進入編輯模式，每張卡片右上角會出現筆刷圖示。</p>
+          <h3>右上角的編輯按鈕（鉛筆圖示）→ 「編輯儀表板」</h3>
+          <p>進入編輯模式，每張卡片右上角會出現筆刷圖示。（舊版是右上角三個點選單 →「編輯儀表板」。）</p>
           <figure class="shot">
             <img src="assets/screenshots/ch6/02_edit_mode.png" alt="編輯模式" />
             <figcaption><strong>圖 6-2</strong>編輯模式的入口。</figcaption>
@@ -126,7 +142,7 @@
             <li><strong>天氣</strong>（Weather 卡片）— 判斷今天要不要帶傘、開除濕。</li>
             <li><strong>「誰在家」</strong>（Person 卡片）— 一眼看誰在誰不在。</li>
             <li><strong>常用場景按鈕</strong>（Button 卡片）— 例如「回家」「離家」「睡覺」。</li>
-            <li><strong>各區域全開／全關</strong>（Button 卡片打服務）— 一鍵開關一樓所有燈。</li>
+            <li><strong>各區域全開／全關</strong>（Button 卡片執行動作 Action，舊版叫「呼叫服務 Service」；卡片的動作設定裡選 <code>perform-action</code>）— 一鍵開關一樓所有燈。</li>
           </ul>
         </li>
         <li>
@@ -197,7 +213,7 @@
       <h2 data-icon="advanced">常見卡關</h2>
       <details class="faq">
         <summary>拖不動卡片、也點不到編輯？</summary>
-        <div class="body">右上角三點選單要點「編輯儀表板」進入編輯模式。看不到那個選項通常是你不是這個儀表板的擁有者（例如用訪客帳號登入）。</div>
+        <div class="body">右上角的編輯按鈕（鉛筆圖示，舊版是三個點選單）要點下去選「編輯儀表板」才會進入編輯模式。看不到那個按鈕通常是你不是這個儀表板的擁有者（例如用訪客帳號登入）。</div>
       </details>
       <details class="faq">
         <summary>把預設 Overview 改壞了怎麼還原？</summary>

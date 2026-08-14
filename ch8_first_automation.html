@@ -34,6 +34,7 @@
     <div class="brand-sub">從零到能用</div>
     <h2>章節</h2>
     <ol>
+      <li class="part-label">基礎：從零到能用</li>
       <li><a href="ch1_login.html">登入 HA</a></li>
       <li><a href="ch2_system_settings.html">系統設定</a></li>
       <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
@@ -46,6 +47,19 @@
       <li><a href="ch10_scripts.html">腳本 Scripts</a></li>
       <li><a href="ch11_devices.html">裝置詳細設定</a></li>
       <li><a href="ch12_domains.html">Domain 控制圖鑑</a></li>
+      <li class="part-label">擴充：接上更多裝置</li>
+      <li><a href="ch13_themes.html">主題與外觀</a></li>
+      <li><a href="ch14_integrations.html">整合服務串接</a></li>
+      <li><a href="ch15_protocols.html">通訊協定大百科</a></li>
+      <li><a href="ch16_todo_calendar.html">待辦與行事曆</a></li>
+      <li class="part-label">數據、能源與 AI</li>
+      <li><a href="ch17_energy.html">能源儀表板</a></li>
+      <li><a href="ch18_history_data.html">歷史數據與導出</a></li>
+      <li><a href="ch19_voice_ai.html">語音助理與 AI</a></li>
+      <li class="part-label">進階架構與應用</li>
+      <li><a href="ch20_addons_docker.html">Add-on 與 Docker</a></li>
+      <li><a href="ch21_network_remote.html">網路與遠端連線</a></li>
+      <li><a href="ch22_life_logs.html">生活紀錄應用</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -62,6 +76,7 @@
       <h2>附錄</h2>
       <a href="appendix_hacs_addons.html">A · 生態圈：HACS/Add-ons/遠端</a>
       <a href="appendix_scenes_helpers_groups.html">B · 場景/輔助元件/群組</a>
+      <a href="appendix_hardware_install.html">C · 裝機前傳：硬體與 HAOS</a>
     </div>
   </aside>
 
@@ -108,6 +123,7 @@
     <section id="steps" data-nav="動手做：日落開燈">
       <h2 data-icon="steps">動手做：當日落時打開客廳燈</h2>
       <p>我們用最經典的「日落開燈」來實作。目標：太陽下山後 30 分鐘，把客廳主燈打開，並發一則手機推播通知。</p>
+      <div class="callout"><strong>名稱有改過：</strong>HA 2024.8 起把「服務（Service）」正式改叫「動作（Action）」，UI 上的「呼叫服務（Call service）」變成「執行動作（Perform action）」。2024.10 起自動化 YAML 的最外層三個鍵也改成複數：<code>trigger:</code> → <code>triggers:</code>、<code>condition:</code> → <code>conditions:</code>、<code>action:</code> → <code>actions:</code>；動作裡的 <code>service:</code> 改成 <code>action:</code>、<code>service_data:</code> 改成 <code>data:</code>。舊寫法官方沒有廢除、還是跑得動，所以你在網路上看到舊範例不用緊張。下面的步驟一律用新名稱，括號裡標的舊名就是舊版畫面上會看到的字。</div>
       <ol class="steps">
         <li>
           <h3>建立新的自動化</h3>
@@ -135,7 +151,7 @@
         </li>
         <li>
           <h3>設定動作：開燈</h3>
-          <p>點「新增動作」，選「呼叫服務」，服務選 <code>light.turn_on</code>。<strong>重點：目標欄請切換到「實體（Entity）」而非「裝置（Device）」</strong>，選 <code>light.livingroom_ceiling</code>（或你的客廳主燈 entity_id）。亮度可以設 60%。</p>
+          <p>點「新增動作」，選「執行動作（Perform action，舊版叫「呼叫服務 Call service」）」，動作選 <code>light.turn_on</code>。<strong>重點：目標欄請切換到「實體（Entity）」而非「裝置（Device）」</strong>，選 <code>light.livingroom_ceiling</code>（或你的客廳主燈 entity_id）。亮度可以設 60%。</p>
           <figure class="shot">
             <img src="assets/screenshots/ch8/04_step.png" alt="設定開燈動作" />
             <figcaption><strong>圖 8-4</strong>動作務必用 entity_id，見上一節說明。</figcaption>
@@ -143,7 +159,7 @@
         </li>
         <li>
           <h3>加一個推播通知動作</h3>
-          <p>再點「新增動作」，選 <code>notify.mobile_app_xxx</code>（第 7 章設定的<a href="ch7_notifications.html">通知服務</a>），訊息填「客廳燈已隨日落開啟」。</p>
+          <p>再點「新增動作」，選 <code>notify.mobile_app_xxx</code>（第 7 章設定的<a href="ch7_notifications.html">通知動作</a>），訊息填「客廳燈已隨日落開啟」。</p>
           <figure class="shot">
             <img src="assets/screenshots/ch8/05_step.png" alt="加推播動作" />
             <figcaption><strong>圖 8-5</strong>動作可以串很多個，會依序執行。</figcaption>
@@ -164,34 +180,34 @@
     <section id="modes" data-nav="執行模式">
       <h2 data-icon="modes">執行模式：single / restart / queued / parallel</h2>
       <p>當自動化在「還在跑」時又被觸發了一次，該怎麼辦？這就是執行模式要決定的事。到自動化編輯頁最下方可以看到「模式」設定。</p>
-      <table style="width:100%; border-collapse:collapse; margin:16px 0;">
+      <table class="data-table">
         <thead>
-          <tr style="background:rgba(0,0,0,0.04);">
-            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">模式</th>
-            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">行為</th>
-            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">適用情境</th>
+          <tr>
+            <th>模式</th>
+            <th>行為</th>
+            <th>適用情境</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);"><strong>single</strong>（預設）</td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">上一次還在跑就忽略新觸發</td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">日落開燈、每日備份這類「跑完就好」的自動化</td>
+            <td><strong>single</strong>（預設）</td>
+            <td>上一次還在跑就忽略新觸發</td>
+            <td>日落開燈、每日備份這類「跑完就好」的自動化</td>
           </tr>
           <tr>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);"><strong>restart</strong></td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">收到新觸發就中斷上一次，從頭跑</td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">動作感應器開燈 + 5 分鐘後關（每次有人動就重新計時）</td>
+            <td><strong>restart</strong></td>
+            <td>收到新觸發就中斷上一次，從頭跑</td>
+            <td>動作感應器開燈 + 5 分鐘後關（每次有人動就重新計時）</td>
           </tr>
           <tr>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);"><strong>queued</strong></td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">新觸發排隊，等前面跑完再依序執行</td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">按門鈴要「叮咚」一聲一聲不能疊，或短時間內大量事件</td>
+            <td><strong>queued</strong></td>
+            <td>新觸發排隊，等前面跑完再依序執行</td>
+            <td>按門鈴要「叮咚」一聲一聲不能疊，或短時間內大量事件</td>
           </tr>
           <tr>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);"><strong>parallel</strong></td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">同時跑多份</td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">很少用，只有明確要多份並行才選</td>
+            <td><strong>parallel</strong></td>
+            <td>同時跑多份</td>
+            <td>很少用，只有明確要多份並行才選</td>
           </tr>
         </tbody>
       </table>
@@ -224,7 +240,7 @@
       <p><strong>問題 2：觸發有發生，但條件把它擋掉。</strong></p>
       <p>Trace 會用顏色標示：條件那格如果變成灰色 / 白色，代表沒通過，滑鼠移上去會顯示當下實體的實際值。常見原因：<code>zone.home</code> 判斷成 <code>0</code>（大家都不在家）、時間條件與時區沒對齊。</p>
       <p><strong>問題 3：實體名字拼錯 / 已改名。</strong></p>
-      <p>如果你改了 entity_id，舊自動化不會自動跟著改，會安靜地跑不動。HA 2024 版之後新增了「未使用的實體」和「重新命名時提示更新」，但舊自動化建議手動用「開發者工具 → 檢查設定」跑一次驗證。</p>
+      <p>如果你改了 entity_id，舊自動化不會自動跟著改，會安靜地跑不動。HA 2024 版之後新增了「未使用的實體」和「重新命名時提示更新」，但舊自動化建議手動用「設定 → 工具 → YAML → 檢查設定」（Settings → Tools → YAML；這頁舊版叫「開發者工具」，2026.2 搬進「設定」底下、2026.8 再簡化成「工具」）跑一次驗證。</p>
     </section>
 
     <section id="faq" data-nav="常見問題">
@@ -239,7 +255,7 @@
       </details>
       <details class="faq">
         <summary>為什麼我的日落觸發時間跟實際天色差很多？</summary>
-        <div class="body">HA 的日落時間是根據第 2 章設定的「經緯度」計算的。如果經緯度沒設，會用預設值（可能是德國），時間就會歪。到「設定 → 系統 → 一般 → 位置」確認。</div>
+        <div class="body">HA 的日落時間是根據第 2 章設定的「經緯度」計算的。如果經緯度沒設，會用預設值（可能是德國），時間就會歪。到「設定 → 系統 → 家庭資訊（Home information，舊版叫「一般」）」確認。</div>
       </details>
       <details class="faq">
         <summary>有辦法讓一條自動化暫時停用嗎（例如出國期間）？</summary>

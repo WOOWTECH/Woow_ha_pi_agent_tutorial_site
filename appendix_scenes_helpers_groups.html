@@ -34,6 +34,7 @@
     <div class="brand-sub">從零到能用</div>
     <h2>章節</h2>
     <ol>
+      <li class="part-label">基礎：從零到能用</li>
       <li><a href="ch1_login.html">登入 HA</a></li>
       <li><a href="ch2_system_settings.html">系統設定</a></li>
       <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
@@ -46,6 +47,19 @@
       <li><a href="ch10_scripts.html">腳本 Scripts</a></li>
       <li><a href="ch11_devices.html">裝置詳細設定</a></li>
       <li><a href="ch12_domains.html">Domain 控制圖鑑</a></li>
+      <li class="part-label">擴充：接上更多裝置</li>
+      <li><a href="ch13_themes.html">主題與外觀</a></li>
+      <li><a href="ch14_integrations.html">整合服務串接</a></li>
+      <li><a href="ch15_protocols.html">通訊協定大百科</a></li>
+      <li><a href="ch16_todo_calendar.html">待辦與行事曆</a></li>
+      <li class="part-label">數據、能源與 AI</li>
+      <li><a href="ch17_energy.html">能源儀表板</a></li>
+      <li><a href="ch18_history_data.html">歷史數據與導出</a></li>
+      <li><a href="ch19_voice_ai.html">語音助理與 AI</a></li>
+      <li class="part-label">進階架構與應用</li>
+      <li><a href="ch20_addons_docker.html">Add-on 與 Docker</a></li>
+      <li><a href="ch21_network_remote.html">網路與遠端連線</a></li>
+      <li><a href="ch22_life_logs.html">生活紀錄應用</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -60,6 +74,7 @@
       <h2>附錄</h2>
       <a href="appendix_hacs_addons.html">A · 生態圈：HACS/Add-ons/遠端</a>
       <a href="appendix_scenes_helpers_groups.html" class="active">B · 場景/輔助元件/群組</a>
+      <a href="appendix_hardware_install.html">C · 裝機前傳：硬體與 HAOS</a>
     </div>
   </aside>
 
@@ -74,6 +89,7 @@
     <section id="scenes" data-nav="場景 Scenes">
       <h2 data-icon="concept">場景 Scenes — 一鍵回到某個狀態</h2>
       <p>場景 = 一組實體的「狀態快照」。呼叫時，所有實體瞬間回到你設定的狀態。</p>
+      <div class="callout"><strong>名詞更新：</strong>HA 2024.8 起把「服務（Service）」正式改名為「<strong>動作（Action）</strong>」，YAML 裡的 <code>service:</code> 跟著改成 <code>action:</code>、<code>service_data:</code> 改成 <code>data:</code>；2024.10 起自動化三段改成複數的 <code>triggers:</code> / <code>conditions:</code> / <code>actions:</code>，每個觸發器裡的 <code>platform:</code> 改寫成 <code>trigger:</code>。另外「開發者工具」2026.2 起搬進設定、2026.8 起簡化為「<strong>工具</strong>」，路徑是<strong>設定 → 工具（Settings → Tools）</strong>。本頁範例一律用新寫法，舊鍵名在目前版本還讀得懂，不用急著把家裡所有自動化一次改完。</div>
       <h3>建立方式一：從當下狀態錄</h3>
       <ol class="steps">
         <li>
@@ -103,13 +119,13 @@
       </ul>
       <h3>進階：呼叫時漸變（transition）</h3>
       <p>場景本身是「瞬間切換」，但呼叫時可以加 <code>transition: 5</code> 讓燈類實體 5 秒漸變過去：</p>
-<pre style="background:var(--surface-alt);padding:12px;border-radius:8px;overflow:auto;font-size:13px;"><code>service: scene.turn_on
+<pre style="background:var(--surface-alt);padding:12px;border-radius:8px;overflow:auto;font-size:13px;"><code>action: scene.turn_on
 target:
   entity_id: scene.movie_mode
 data:
   transition: 5</code></pre>
       <h3>場景 vs 腳本再次強調</h3>
-      <div class="callout"><strong>場景</strong>：只能設「所有實體最終狀態」，一次全下，沒排序、沒延遲、沒條件。<br><strong>腳本</strong>：可以有順序、延遲、條件、迴圈，但要一步一步寫每個服務呼叫。<br><strong>常見組合</strong>：腳本裡呼叫場景 —「電影模式腳本」= 呼叫「電影燈場景」+ 等 2 秒 + 拉窗簾 + 開電視。</div>
+      <div class="callout"><strong>場景</strong>：只能設「所有實體最終狀態」，一次全下，沒排序、沒延遲、沒條件。<br><strong>腳本</strong>：可以有順序、延遲、條件、迴圈，但要一步一步寫每個動作（Action，舊版叫服務 Service）。<br><strong>常見組合</strong>：腳本裡呼叫場景 —「電影模式腳本」= 呼叫「電影燈場景」+ 等 2 秒 + 拉窗簾 + 開電視。</div>
     </section>
 
     <!-- ============= HELPERS ============= -->
@@ -153,8 +169,8 @@ data:
 
       <h3>5. <code>input_datetime</code> — 日期 / 時間 / 兩者</h3>
       <p>讓家人自己設「起床時間」、「熱水器開機時間」。自動化用 <code>time</code> 觸發器選這個實體，時間到就跑。</p>
-<pre style="background:var(--surface-alt);padding:12px;border-radius:8px;overflow:auto;font-size:13px;"><code>trigger:
-  - platform: time
+<pre style="background:var(--surface-alt);padding:12px;border-radius:8px;overflow:auto;font-size:13px;"><code>triggers:
+  - trigger: time
     at: input_datetime.wake_up_time</code></pre>
 
       <h3>6. <code>timer</code> — 倒數計時器</h3>
@@ -205,18 +221,18 @@ data:
         <figcaption><strong>圖 B-3</strong>建立群組 — 選類型後多選成員即可，比 YAML 快。</figcaption>
       </figure>
       <h3>聚合行為</h3>
-      <table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:14px;">
+      <table class="data-table">
         <thead>
-          <tr style="background:rgba(0,0,0,0.04);">
-            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">類型</th>
-            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">預設 state 邏輯</th>
-            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">可調整</th>
+          <tr>
+            <th>類型</th>
+            <th>預設 state 邏輯</th>
+            <th>可調整</th>
           </tr>
         </thead>
         <tbody>
-          <tr><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">Light / Switch</td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">任一 on → group on</td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">可改「全部 on 才 on」</td></tr>
-          <tr><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">Binary sensor</td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">預設 all（全部 on 才 on）</td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">可改 any（任一 on）</td></tr>
-          <tr><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">Sensor</td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">數字聚合（min / max / mean / median / sum / last / range）</td><td style="padding:8px; border:1px solid rgba(0,0,0,0.1);">建立時選</td></tr>
+          <tr><td>Light / Switch</td><td>任一 on → group on</td><td>可改「全部 on 才 on」</td></tr>
+          <tr><td>Binary sensor</td><td>預設 all（全部 on 才 on）</td><td>可改 any（任一 on）</td></tr>
+          <tr><td>Sensor</td><td>數字聚合（min / max / mean / median / sum / last / range）</td><td>建立時選</td></tr>
         </tbody>
       </table>
       <h3>Group 對群組操作</h3>
@@ -253,28 +269,28 @@ data:
         </li>
         <li><strong>寫自動化</strong>：
 <pre style="background:var(--surface-alt);padding:12px;border-radius:8px;overflow:auto;font-size:13px;"><code>alias: 浴室夜間動作燈
-trigger:
-  - platform: state
+triggers:
+  - trigger: state
     entity_id: binary_sensor.bathroom_motion
     to: "on"
-condition:
+conditions:
   - condition: state
     entity_id: schedule.night_time
     state: "on"
-action:
-  - service: scene.turn_on
+actions:
+  - action: scene.turn_on
     target: { entity_id: scene.bathroom_night_soft }
-  - service: timer.start
+  - action: timer.start
     target: { entity_id: timer.bathroom_light }</code></pre>
         </li>
         <li><strong>再寫一條「timer 完成 → 關燈」</strong>：
 <pre style="background:var(--surface-alt);padding:12px;border-radius:8px;overflow:auto;font-size:13px;"><code>alias: 浴室動作燈熄滅
-trigger:
-  - platform: event
+triggers:
+  - trigger: event
     event_type: timer.finished
     event_data: { entity_id: timer.bathroom_light }
-action:
-  - service: light.turn_off
+actions:
+  - action: light.turn_off
     target: { entity_id: light.bathroom_all }
     data: { transition: 3 }</code></pre>
         </li>
@@ -299,7 +315,7 @@ action:
       </details>
       <details class="faq">
         <summary>刪 helper 會影響用到它的自動化嗎？</summary>
-        <div class="body">會，引用會變成錯誤（實體不存在）。刪前搜「開發者工具 → 狀態」看誰在引用，或直接改自動化把引用換掉。</div>
+        <div class="body">會，引用會變成錯誤（實體不存在）。刪前搜「設定 → 工具 → 狀態」（舊版是側欄的「開發者工具 → 狀態」）看誰在引用，或直接改自動化把引用換掉。</div>
       </details>
       <details class="faq">
         <summary>Timer 的準確性夠高嗎？可以做 30 秒烹飪計時？</summary>
@@ -312,9 +328,9 @@ action:
         <span class="label">← 附錄 A</span>
         <span class="title">生態圈：HACS/Add-ons/遠端</span>
       </a>
-      <a class="next" href="index.html">
-        <span class="label">回目錄 →</span>
-        <span class="title">全套完成！</span>
+      <a class="next" href="appendix_hardware_install.html">
+        <span class="label">下一附錄 →</span>
+        <span class="title">C · 裝機前傳：硬體與 HAOS</span>
       </a>
     </div>
 

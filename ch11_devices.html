@@ -34,6 +34,7 @@
     <div class="brand-sub">從零到能用</div>
     <h2>章節</h2>
     <ol>
+      <li class="part-label">基礎：從零到能用</li>
       <li><a href="ch1_login.html">登入 HA</a></li>
       <li><a href="ch2_system_settings.html">系統設定</a></li>
       <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
@@ -46,6 +47,19 @@
       <li><a href="ch10_scripts.html">腳本 Scripts</a></li>
       <li><a href="ch11_devices.html" class="active">裝置詳細設定</a></li>
       <li><a href="ch12_domains.html">Domain 控制圖鑑</a></li>
+      <li class="part-label">擴充：接上更多裝置</li>
+      <li><a href="ch13_themes.html">主題與外觀</a></li>
+      <li><a href="ch14_integrations.html">整合服務串接</a></li>
+      <li><a href="ch15_protocols.html">通訊協定大百科</a></li>
+      <li><a href="ch16_todo_calendar.html">待辦與行事曆</a></li>
+      <li class="part-label">數據、能源與 AI</li>
+      <li><a href="ch17_energy.html">能源儀表板</a></li>
+      <li><a href="ch18_history_data.html">歷史數據與導出</a></li>
+      <li><a href="ch19_voice_ai.html">語音助理與 AI</a></li>
+      <li class="part-label">進階架構與應用</li>
+      <li><a href="ch20_addons_docker.html">Add-on 與 Docker</a></li>
+      <li><a href="ch21_network_remote.html">網路與遠端連線</a></li>
+      <li><a href="ch22_life_logs.html">生活紀錄應用</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -62,6 +76,7 @@
       <h2>附錄</h2>
       <a href="appendix_hacs_addons.html">A · 生態圈：HACS/Add-ons/遠端</a>
       <a href="appendix_scenes_helpers_groups.html">B · 場景/輔助元件/群組</a>
+      <a href="appendix_hardware_install.html">C · 裝機前傳：硬體與 HAOS</a>
     </div>
   </aside>
 
@@ -136,33 +151,33 @@
     <section id="disable" data-nav="停用 vs 隱藏 vs 刪除">
       <h2 data-icon="concept">停用 vs 隱藏 vs 刪除 — 三個不一樣的按鈕</h2>
       <div class="callout warn"><strong>這三個常被搞混</strong>：新手常常想「刪掉」，其實 90% 的情況應該是「隱藏」或「停用」。刪錯有時要重新設定整合才能拿回來。</div>
-      <table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:14px;">
+      <table class="data-table">
         <thead>
-          <tr style="background:rgba(0,0,0,0.04);">
-            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">操作</th>
-            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">效果</th>
-            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">歷史保留？</th>
-            <th style="text-align:left; padding:10px; border:1px solid rgba(0,0,0,0.1);">怎麼還原</th>
+          <tr>
+            <th>操作</th>
+            <th>效果</th>
+            <th>歷史保留？</th>
+            <th>怎麼還原</th>
           </tr>
         </thead>
         <tbody>
           <tr>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);"><strong>隱藏 Hidden</strong></td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">實體仍在運作、資料仍在收，只是 UI 預設不顯示、卡片挑不到</td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">保留</td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">在實體頁把「隱藏」關掉</td>
+            <td><strong>隱藏 Hidden</strong></td>
+            <td>實體仍在運作、資料仍在收，只是 UI 預設不顯示、卡片挑不到</td>
+            <td>保留</td>
+            <td>在實體頁把「隱藏」關掉</td>
           </tr>
           <tr>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);"><strong>停用 Disabled</strong></td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">實體不再更新、不再收資料，變成 <code>unavailable</code></td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">歷史保留，停用後不新增</td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">實體頁把「已停用」關掉，通常要重載整合才會回來</td>
+            <td><strong>停用 Disabled</strong></td>
+            <td>實體不再更新、不再收資料，變成 <code>unavailable</code></td>
+            <td>歷史保留，停用後不新增</td>
+            <td>實體頁把「已停用」關掉，通常要重載整合才會回來</td>
           </tr>
           <tr>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);"><strong>刪除 Delete</strong></td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">實體與所有引用清掉</td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">保留（但無源頭）</td>
-            <td style="padding:10px; border:1px solid rgba(0,0,0,0.1);">通常要移除該裝置整合、重新配對</td>
+            <td><strong>刪除 Delete</strong></td>
+            <td>實體與所有引用清掉</td>
+            <td>保留（但無源頭）</td>
+            <td>通常要移除該裝置整合、重新配對</td>
           </tr>
         </tbody>
       </table>
@@ -183,7 +198,7 @@
           <p>總覽的「更新」卡會集中顯示。或到「設定 → 系統 → 更新」看全部。單一裝置的更新則在裝置頁下方 <code>update.*</code> 實體。</p>
           <figure class="shot">
             <img src="assets/screenshots/ch11/04_updates.png" alt="更新頁面" />
-            <figcaption><strong>圖 11-4</strong>設定 → 系統 → 更新 — HA Core、Add-ons、整合、裝置韌體集中在這。</figcaption>
+            <figcaption><strong>圖 11-4</strong>設定 → 系統 → 更新 — HA Core、應用程式（Apps，舊版叫附加元件 Add-on）、整合、裝置韌體集中在這。</figcaption>
           </figure>
         </li>
         <li>
@@ -204,11 +219,12 @@
 
     <section id="diagnostics" data-nav="診斷 &amp; Repairs">
       <h2 data-icon="advanced">診斷 & Repairs</h2>
+      <div class="callout"><strong>版本差異：</strong>修復中心（Repairs）現在的固定位置是<strong>設定 → 系統 → 修復（Settings → System → Repairs）</strong>，側欄的「設定」旁邊會用數字 badge 提醒你還有幾則沒處理。另外從 2026.2 起，「附加元件（Add-on）」正式改名為「應用程式（Apps）」，商店路徑變成<strong>設定 → 應用程式</strong>；舊版畫面上寫 Add-on 的地方，新版一律寫應用程式。</div>
       <p>設備怪怪的時 HA 有兩個工具：</p>
       <h3>1. 下載診斷（Download Diagnostics）</h3>
       <p>裝置頁 → 右上角「⋮」→「下載診斷」，會下載一個 JSON 檔，含這台設備所有狀態、屬性、整合原始資料（敏感資訊已遮蔽）。丟到 GitHub issue 或社群求救時附上，很有幫助。</p>
       <h3>2. Repairs（修復建議）</h3>
-      <p>「設定」入口左側最上方會有一個「Repairs」badge，這是 HA 主動偵測到的問題（整合停止工作、Add-on 過期、實體重複、資料庫過大等）。點進去每個 issue 都有「Fix Now」按鈕，通常是一鍵解決。</p>
+      <p>路徑是<strong>設定 → 系統 → 修復（Settings → System → Repairs）</strong>；側欄「設定」旁邊也會出現待處理則數的 badge。這是 HA 主動偵測到的問題（整合停止工作、應用程式過期、實體重複、資料庫過大等）。點進去每個 issue 都有「Fix Now」按鈕，通常是一鍵解決。</p>
       <figure class="shot">
         <img src="assets/screenshots/ch11/05_repairs.png" alt="Repairs 頁面" />
         <figcaption><strong>圖 11-5</strong>Repairs — HA 主動找出的問題，通常一鍵解決。</figcaption>

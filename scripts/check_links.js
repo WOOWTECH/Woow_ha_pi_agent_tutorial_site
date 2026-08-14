@@ -58,6 +58,39 @@ for (const file of htmlFiles) {
   }
 }
 
+// 6. data-icon 必須在 style.css 有對應字符，否則會顯示成空白方塊
+const cssPath = path.join(ROOT, 'assets', 'css', 'style.css');
+if (fs.existsSync(cssPath)) {
+  const css = fs.readFileSync(cssPath, 'utf8');
+  const defined = new Set(
+    [...css.matchAll(/section h2\[data-icon="([^"]+)"\]::before/g)].map((m) => m[1])
+  );
+  for (const file of htmlFiles) {
+    const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
+    const used = new Set([...html.matchAll(/<h2[^>]*\bdata-icon="([^"]+)"/g)].map((m) => m[1]));
+    for (const icon of used) {
+      if (!defined.has(icon)) {
+        errors.push(`${file}: data-icon="${icon}" 在 style.css 沒有對應字符（會顯示空白方塊）`);
+      }
+    }
+  }
+}
+
+// 7. 房規：內容頁不得夾帶 inline style 的表格，且 <head>/<aside>/<div class="pager"> 由產生器負責
+for (const file of htmlFiles) {
+  if (file === 'index.html' || file === '404.html') continue;
+  const html = fs.readFileSync(path.join(ROOT, file), 'utf8');
+  const inlineTables = (html.match(/<table[^>]*style=/g) || []).length;
+  if (inlineTables) {
+    errors.push(`${file}: 有 ${inlineTables} 個 <table> 用 inline style，請改成 class="data-table"`);
+  }
+  if (!/<div class="chapter-header">\s*<div class="kicker">/.test(html)) {
+    errors.push(`${file}: 找不到 chapter-header 的 kicker 區塊（build_nav.js 產生章節編號要用）`);
+  }
+  const faq = (html.match(/<details class="faq">/g) || []).length;
+  if (faq < 3) errors.push(`${file}: 常見問題只有 ${faq} 則，房規要求至少 4 則`);
+}
+
 // 5. chapters.json ↔ 檔案 ↔ sitemap
 const listed = [...cfg.chapters, ...cfg.appendices].map((c) => c.file);
 listed.forEach((f) => {

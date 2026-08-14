@@ -34,6 +34,7 @@
     <div class="brand-sub">從零到能用</div>
     <h2>章節</h2>
     <ol>
+      <li class="part-label">基礎：從零到能用</li>
       <li><a href="ch1_login.html">登入 HA</a></li>
       <li><a href="ch2_system_settings.html">系統設定</a></li>
       <li><a href="ch3_floors_areas.html">樓層與區域</a></li>
@@ -46,6 +47,19 @@
       <li><a href="ch10_scripts.html">腳本 Scripts</a></li>
       <li><a href="ch11_devices.html">裝置詳細設定</a></li>
       <li><a href="ch12_domains.html">Domain 控制圖鑑</a></li>
+      <li class="part-label">擴充：接上更多裝置</li>
+      <li><a href="ch13_themes.html">主題與外觀</a></li>
+      <li><a href="ch14_integrations.html">整合服務串接</a></li>
+      <li><a href="ch15_protocols.html">通訊協定大百科</a></li>
+      <li><a href="ch16_todo_calendar.html">待辦與行事曆</a></li>
+      <li class="part-label">數據、能源與 AI</li>
+      <li><a href="ch17_energy.html">能源儀表板</a></li>
+      <li><a href="ch18_history_data.html">歷史數據與導出</a></li>
+      <li><a href="ch19_voice_ai.html">語音助理與 AI</a></li>
+      <li class="part-label">進階架構與應用</li>
+      <li><a href="ch20_addons_docker.html">Add-on 與 Docker</a></li>
+      <li><a href="ch21_network_remote.html">網路與遠端連線</a></li>
+      <li><a href="ch22_life_logs.html">生活紀錄應用</a></li>
     </ol>
     <div class="toc-in-chapter">
       <h2>本章</h2>
@@ -63,6 +77,7 @@
       <h2>附錄</h2>
       <a href="appendix_hacs_addons.html">A · 生態圈：HACS/Add-ons/遠端</a>
       <a href="appendix_scenes_helpers_groups.html">B · 場景/輔助元件/群組</a>
+      <a href="appendix_hardware_install.html">C · 裝機前傳：硬體與 HAOS</a>
     </div>
   </aside>
 
@@ -100,7 +115,7 @@
       <h2 data-icon="steps">建立帳號步驟</h2>
       <ol class="steps">
         <li>
-          <h3>設定 → 使用者</h3>
+          <h3>設定 → 人員 → 使用者（Users）頁籤</h3>
           <figure class="shot">
             <img src="assets/screenshots/ch5/01_users_page.png" alt="使用者管理頁" />
             <figcaption><strong>圖 5-1</strong>使用者管理頁 — 顯示所有可登入帳號。</figcaption>
@@ -132,7 +147,7 @@
           <p>非管理員角色 + 開啟「僅限本地網路 (Local only)」，這樣帳號只能在家 WiFi 底下用，就算密碼外流也上不了外網。這是 HA 官方推薦的訪客帳號組合。</p>
         </li>
       </ol>
-      <div class="callout"><strong>驗證</strong>：登出後用新帳號登入一次，確認能進主頁；到「設定 → 人員」看得到剛建的使用者。如果是訪客帳號，用手機 4G（關 WiFi）試登入，應該擋下來。</div>
+      <div class="callout"><strong>驗證</strong>：登出後用新帳號登入一次，確認能進主頁；到「設定 → 人員 → 使用者」看得到剛建的使用者。如果是訪客帳號，用手機 4G（關 WiFi）試登入，應該擋下來。</div>
     </section>
 
     <section id="persons" data-nav="建立「人」">
@@ -186,7 +201,7 @@
           <p>先開啟進階模式，MFA 選項才會出現。</p>
         </li>
         <li>
-          <h3>個人資訊 → 多重要素驗證模組</h3>
+          <h3>個人資訊 → 安全性（Security）頁籤 → 多重要素驗證模組</h3>
           <p>啟用 TOTP，用手機上的 Authenticator App 掃描 QR Code。</p>
         </li>
         <li>
@@ -204,17 +219,18 @@
       </details>
       <details class="faq">
         <summary>手機 App 收到別人的通知？</summary>
-        <div class="body">通知服務 <code>notify.mobile_app_xxx</code> 綁的是「安裝這台手機的使用者」；請確認發送對象是不是選錯人。第 7 章會教。</div>
+        <div class="body">通知動作（Action，舊版叫「服務 Service」）<code>notify.mobile_app_xxx</code> 綁的是「安裝這台手機的使用者」；請確認發送對象是不是選錯人。第 7 章會教。</div>
       </details>
       <details class="faq">
         <summary>Person 一直顯示「離家」但人在家？</summary>
-        <div class="body">Companion App 位置權限沒開，或家裡 zone 半徑太小（預設 100m）。到「設定 → 區域 → home」把半徑調大到 150-200m。</div>
+        <div class="body">Companion App 位置權限沒開，或家裡 zone 半徑太小（預設 100m）。到「設定 → 區域、標籤與 Zone（Areas, labels &amp; zones）→ Zones 頁籤 → home」把半徑調大到 150-200m。</div>
       </details>
     </section>
 
     <section id="companion_flow" data-nav="家人手機端到端流程">
       <h2 data-icon="steps">家人手機端到端流程（Companion App）</h2>
       <p>剛才在 HA 建了 user + person，接下來要在家人手機端完成綁定，這一節從安裝到收到第一則推播完整走一次。</p>
+      <div class="callout"><strong>名字改過了：</strong>HA 2024.8 起把「服務（Service）」改叫「<strong>動作（Action）</strong>」，所以 <code>notify.mobile_app_xxx</code> 現在叫「通知動作」而不是「通知服務」。另外 2026.2 起「開發者工具」從側欄搬進設定、2026.8 起簡稱「<strong>工具</strong>」，所以測試發送的路徑是<strong>設定 → 工具 → 動作</strong>；你如果還在舊版，對應的是側欄的「開發者工具 → 服務」，功能一模一樣。</div>
       <ol class="steps">
         <li>
           <h3>家人下載 App</h3>
@@ -231,7 +247,7 @@
         </li>
         <li>
           <h3>登入用「他自己的帳號」，不是你的</h3>
-          <p>用剛才在第 5 章步驟為他建的 user 登入。<strong>這一步決定了他的手機是「他的」，通知服務會叫 <code>notify.mobile_app_家人使用者名</code>。</strong>用錯帳號登入是常見的「推播跑到別人手機」根因。</p>
+          <p>用剛才在第 5 章步驟為他建的 user 登入。<strong>這一步決定了他的手機是「他的」，通知動作會叫 <code>notify.mobile_app_家人使用者名</code>。</strong>用錯帳號登入是常見的「推播跑到別人手機」根因。</p>
         </li>
         <li>
           <h3>允許位置權限「一律允許」</h3>
@@ -248,7 +264,7 @@
         </li>
         <li>
           <h3>發第一則測試通知</h3>
-          <p>「開發者工具 → 服務」→ 選 <code>notify.mobile_app_家人使用者名</code> → 訊息「測試」→ 執行。家人手機應在 1-3 秒內收到。收不到就查通知權限。</p>
+          <p>「設定 → 工具 → 動作」→ 選 <code>notify.mobile_app_家人使用者名</code> → 訊息「測試」→ 執行動作。家人手機應在 1-3 秒內收到。收不到就查通知權限。</p>
         </li>
       </ol>
       <div class="callout"><strong>手機 App 常用實體</strong>（都自動出現）：<code>device_tracker.手機</code>（在家/離家）、<code>sensor.手機_battery_level</code>、<code>sensor.手機_battery_state</code>（充電中/放電中）、<code>sensor.手機_geocoded_location</code>（人話地址）。想開更多感測器：App「設定 → Companion App → 管理感測器」開你要的（步數、活動類型、藍牙裝置、電池溫度⋯）。</div>
@@ -259,7 +275,7 @@
       <p><code>zone.home</code> 是判斷「在家 / 離家」的圓形範圍，預設半徑 100 公尺。100m 對透天厚牆或大公寓常常太小，導致有人在家但被判成離家（GPS 飄移就出圓）。</p>
       <ol class="steps">
         <li>
-          <h3>設定 → 區域（Areas 的隔壁頁籤）</h3>
+          <h3>設定 → 區域、標籤與 Zone → Zones 頁籤</h3>
           <p><strong>注意</strong>：Zone 和 Area（區域）是<em>不同東西</em>。Area 是家裡的房間；Zone 是地圖上的圓圈範圍（家、公司、學校）。這裡點的是後者。</p>
         </li>
         <li>
@@ -269,7 +285,7 @@
         </li>
         <li>
           <h3>加公司 / 學校 zone</h3>
-          <p>「＋ 新增區域」→ 打字搜地址或直接點地圖 → 命名「公司」「小孩學校」。之後可寫「小孩到校自動通知媽媽」的自動化。</p>
+          <p>「＋ 新增 Zone（Create zone）」→ 打字搜地址或直接點地圖 → 命名「公司」「小孩學校」。之後可寫「小孩到校自動通知媽媽」的自動化。</p>
         </li>
         <li>
           <h3>「passive zone」用途</h3>
