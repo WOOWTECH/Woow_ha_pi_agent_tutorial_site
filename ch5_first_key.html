@@ -1,0 +1,458 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 5 章 · 加第一個 AI 大腦：申請 GLM 金鑰 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Pi Agent BYOK 第一步：申請智譜清言（GLM）的 API 金鑰，附註冊、實名、拿 key 每一步的截圖說明。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch5_first_key.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 5 章 · 加第一個 AI 大腦：申請 GLM 金鑰 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Pi Agent BYOK 第一步：申請智譜清言（GLM）的 API 金鑰，附註冊、實名、拿 key 每一步的截圖說明。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch5_first_key.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 5 章 · 加第一個 AI 大腦：申請 GLM 金鑰 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Pi Agent BYOK 第一步：申請智譜清言（GLM）的 API 金鑰，附註冊、實名、拿 key 每一步的截圖說明。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html" class="active">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要金鑰</a>
+      <a href="#concept">金鑰是什麼</a>
+      <a href="#compare">比 ChatGPT 差在哪</a>
+      <a href="#steps">申請流程</a>
+      <a href="#cost">費用與額度</a>
+      <a href="#realname">實名要不要做</a>
+      <a href="#security">金鑰放哪</a>
+      <a href="#alternatives">一定要用 GLM</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 5 章</div>
+      <h1>加第一個 AI 大腦：申請 GLM 金鑰</h1>
+      <p class="lead">Pi Agent 裝好、介面也逛過了，接下來要接第一個 AI 大腦進去。這一章帶你到「智譜清言（GLM）」的官網，一路點到「複製金鑰」，得到一串你等下要貼進 Pi Agent 的字。全程不用翻牆、不用綁信用卡，新戶還有送額度可以先玩。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼要金鑰">
+      <h2 data-icon="why">為什麼還要自己去申請一個金鑰</h2>
+      <p>你在<a href="ch1_intro.html">第 1 章</a>就聽過：Pi Agent 是「BYOK（Bring Your Own Key，帶你自己的鑰匙來）」的設計。也就是說，這個附加元件本身完全不會幫你決定要用哪家 AI、也不會幫你付錢——你要自己去 AI 廠商那邊申請一支鑰匙，貼進來它才會動。</p>
+      <p>可以把它想像成剛裝好的音響：<strong>喇叭、擴大機都齊了，但你要自己插上一台 CD 播放機它才唱得出來</strong>。這一章教你去買第一張 CD，<a href="ch6_paste_key.html">下一章</a>教你怎麼把 CD 塞進去。</p>
+      <p>那為什麼第一支選 GLM（智譜清言）？有三個直白的理由：</p>
+      <ul>
+        <li><strong>不用翻牆</strong>——GLM 是中國那邊的公司，服務就開在對岸，台灣家用光世代直連沒問題。相對地，OpenAI（ChatGPT 的公司）在台灣沒有官方入口，你要嘛用 VPN、要嘛透過中轉服務，麻煩很多。</li>
+        <li><strong>註冊就送額度</strong>——一支手機號碼註冊完，帳戶馬上有一筆免費配額可以直接開玩，不用先綁信用卡。輸個簡訊驗證碼你就可以在 Pi Agent 裡面聊了。</li>
+        <li><strong>中文回應最順</strong>——GLM 是為中文語境訓練的模型，回台灣中文比 OpenAI 或 Anthropic 的模型自然。你問「客廳幾坪要選幾噸冷氣」，它不會用翻譯腔回你。</li>
+      </ul>
+      <div class="callout tip"><strong>提示：</strong>不喜歡中國廠商的人可以直接跳到<a href="appendix_provider_keys.html">附錄 B</a>看七家 provider 對照，選 OpenAI 或 Anthropic 或 OpenRouter 都行，操作流程大同小異。但這章示範跟著做 GLM，是最快能看到 AI 回你話的路。</div>
+    </section>
+
+    <section id="concept" data-nav="金鑰是什麼">
+      <h2 data-icon="concept">API 金鑰（API key）到底是什麼</h2>
+      <p>你去餐廳吃飯，服務生會發你一張卡：上面有你的桌號、你點的東西都記在這張卡上，最後結帳的時候老闆看卡出帳。<strong>API 金鑰就是這張卡</strong>——AI 廠商認的不是你這個人，是這張卡。任何人拿著這張卡去點東西，都會算到你頭上。</p>
+      <p>技術上白話講：API 金鑰是一串長長的英文加數字（GLM 的長這樣：`abc123def456.XYZ789QWE0`，中間有一個「`.`」點號），大概 40-60 個字元。你把它貼進 Pi Agent 之後，Pi Agent 每次要問 AI 都會把這串字附在請求裡送過去，GLM 那邊看到就知道「這是誰在用、要跟誰扣錢」。</p>
+      <div class="callout warn"><strong>注意：</strong>金鑰外流最直接的後果是<strong>別人拿去花你的錢</strong>。有工具會掃 GitHub 公開 repo 上的洩漏金鑰，一天之內就能被別人抓去用到爆額度。所以金鑰只放兩個地方：（1）Pi Agent 的 Models 面板（存在你家 HA 硬碟上，別人碰不到）、（2）你自己的密碼管理器（1Password、Bitwarden 那類）。<strong>絕對不要</strong>貼到 GitHub、Line 群組、論壇問問題、或用截圖分享畫面。</div>
+      <p>Pi Agent 這邊有一個貼心的設計：從 v0.13.0 版開始，金鑰只存在你家 HA 主機的 <code>/data/pi-agent/models.json</code> 這個檔案裡，Woow 這邊看不到、其他人也看不到。你把 HA 主機 snapshot 備份的時候，金鑰會一起被打包走；主機壞了還原之後，金鑰也一起回來，不用重新申請。這在<a href="ch1_intro.html">第 1 章</a>就講過了。</p>
+    </section>
+
+    <section id="compare" data-nav="比 ChatGPT 差在哪">
+      <h2 data-icon="compare">GLM 是什麼、跟 ChatGPT 差在哪</h2>
+      <p>你可能沒聽過智譜清言（英文：Zhipu AI），但它在中國就跟 OpenAI 在美國一樣有名。這家公司總部在北京清華大學附近，主打的模型叫「GLM」系列。你這一章要申請的金鑰，主要拿來呼叫他們最新的 <strong>GLM-4.6</strong>。</p>
+      <p>下面這張表用你熟悉的 ChatGPT 當對照，讓你有個譜：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>比較項目</th>
+            <th>ChatGPT（OpenAI GPT-4o / GPT-4）</th>
+            <th>GLM（智譜清言 GLM-4.6）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>公司在哪</td>
+            <td>美國舊金山</td>
+            <td>中國北京</td>
+          </tr>
+          <tr>
+            <td>台灣直連</td>
+            <td>需要 VPN 或中轉（沒有官方支付通路）</td>
+            <td>可以直連（open.bigmodel.cn 沒被擋）</td>
+          </tr>
+          <tr>
+            <td>中文回應品質</td>
+            <td>好，但偶有翻譯腔</td>
+            <td>非常自然（原生為中文訓練）</td>
+          </tr>
+          <tr>
+            <td>英文回應品質</td>
+            <td>頂尖</td>
+            <td>好，日常對話沒問題，複雜英文寫作稍弱</td>
+          </tr>
+          <tr>
+            <td>寫程式能力</td>
+            <td>GPT-4 / o1 系列很強</td>
+            <td>GLM-4.6 對中文註解的程式相當強</td>
+          </tr>
+          <tr>
+            <td>價格（相對）</td>
+            <td>較貴</td>
+            <td>便宜（同任務可能只要 OpenAI 的 1/5～1/10）</td>
+          </tr>
+          <tr>
+            <td>敏感題目</td>
+            <td>會過濾色情、暴力、個資</td>
+            <td>會過濾色情、暴力、個資，另外會迴避政治相關（例如台灣政治定位、六四）</td>
+          </tr>
+          <tr>
+            <td>新戶額度</td>
+            <td>只有企業 API 帳號早期送過，個人現在通常不送</td>
+            <td>手機註冊完就送一筆可用配額</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout"><strong>觀念：</strong>沒有哪家 AI 是「全能第一」。實務上大家會同時掛 2-3 家 AI，日常聊天問家事用便宜快的 GLM／DeepSeek，寫困難程式或深入分析用貴一點的 Claude／GPT。這是<a href="ch10_why_multi.html">第 10 章</a>會展開講的「多接幾家」策略。這一章先讓你有一支能用的金鑰。</div>
+    </section>
+
+    <section id="steps" data-nav="申請流程">
+      <h2 data-icon="steps">申請 GLM 金鑰完整流程</h2>
+      <p>從打開網站到金鑰躺在你剪貼簿裡，總共八步，全程手機或電腦都可以做。以下步驟以電腦瀏覽器為準，手機上按鈕位置類似。</p>
+      <ol class="steps">
+        <li>
+          <h3>打開 GLM 開發平台</h3>
+          <p>在瀏覽器打 <code>https://open.bigmodel.cn/</code> 直接開這個網址。注意是 <strong>open.bigmodel.cn</strong> 不是 <code>chatglm.cn</code>——後者是一般消費者用的聊天網頁（類似 ChatGPT 網頁版），前者才是給開發者拿 API 金鑰的地方。你要進的是後者，也就是 open. 開頭那個。</p>
+        </li>
+        <li>
+          <h3>右上角按「登入 / 註冊」</h3>
+          <p>頁面右上角有「登錄」或「登入」的按鈕（介面可能只有簡體字，別緊張，操作是一樣的），按下去會跳到登入頁。第一次來的話下面會有一個「立即註冊」的連結，點它。</p>
+        </li>
+        <li>
+          <h3>用手機號碼註冊</h3>
+          <p>註冊頁預設是「手機號碼註冊」。國碼選 <strong>+886（台灣）</strong>，然後填你的手機號碼（開頭 9 開頭那 9 碼，例如 912345678 不用打前面的 0）。填完按「取得驗證碼」，等個 10-30 秒簡訊會到。把驗證碼填進去，設一個密碼（8 位以上，要英文加數字），按「註冊」就完成了。</p>
+        </li>
+        <li>
+          <h3>登入後進「個人中心」</h3>
+          <p>註冊完會自動登入，也可能被丟回首頁要你再登一次——都正常。登入之後，滑鼠移到右上角你的頭像（或者一個小小的人像圖示），會下拉一個選單，選「個人中心」（有些版本叫「工作台」或「控制台」）。你會進到一個左邊有側欄的後台頁面。</p>
+        </li>
+        <li>
+          <h3>在左邊側欄找「API 金鑰」</h3>
+          <p>左側欄找一個叫「API Keys」、「API 金鑰」、「APIKey 管理」的項目（不同版本文字略有差異，但一定有這個詞）。點進去，你會看到一個列表，第一次來是空的，只有一個「建立新的 API Key」或「+ 添加新的 API Key」的按鈕。</p>
+        </li>
+        <li>
+          <h3>按「建立新金鑰」，取一個好認的名字</h3>
+          <p>按「建立」按鈕會跳一個小視窗要你幫這個金鑰取名字。<strong>強烈建議取有意義的名字</strong>——例如 <code>pi-agent-家裡</code>、<code>pi-agent-辦公室</code>、<code>test-2026-08</code>。以後你如果會申請第二支、第三支給不同機器用，看名字就知道哪支是哪支，要作廢也不會作廢錯。</p>
+        </li>
+        <li>
+          <h3>複製金鑰（只顯示一次！）</h3>
+          <p>按確定之後，畫面會顯示這串金鑰，格式大概像 <code>abc123def456ghi789jkl012.XYZABCDEFGHIJKLM</code>——中間有一個「<strong>.</strong>」點號，兩段都要複製，一整串不能漏。右邊通常有一個「複製」的圖示按鈕，點它。<strong>這一串只顯示這一次</strong>，你關掉這個視窗、再回來看列表，金鑰只會顯示前幾碼（例如 `abc123def4...`），完整內容看不到了。</p>
+        </li>
+        <li>
+          <h3>馬上貼到密碼管理器或記事本存起來</h3>
+          <p>複製完不要直接關頁面。打開你的密碼管理器（1Password、Bitwarden、Apple Keychain 都行），開一筆新記錄，把金鑰貼進去，標題寫「GLM API Key - 家裡 Pi Agent」之類。如果你沒有密碼管理器，先貼在一個本地的記事本檔案裡（別放桌面截圖分享出去），等下一章教你怎麼貼進 Pi Agent 之後再刪掉。</p>
+        </li>
+      </ol>
+      <div class="callout warn"><strong>注意：</strong>第 7 步的「只顯示一次」不是嚇你的。如果你不小心關掉視窗、沒複製到，唯一的辦法是回列表把這支刪掉、重建一支新的。舊的作廢、新的重新開始。所以複製那一刻要專心。</div>
+    </section>
+
+    <section id="cost" data-nav="費用與額度">
+      <h2 data-icon="cost">費用怎麼算、新戶送多少</h2>
+      <p>GLM 的計費單位是「tokens（詞元）」。一個 token 大概等於半個中文字、或一個英文單字的一部分。你打「你好，今天天氣如何？」大概是 8-10 tokens，AI 回你「今天台北多雲時晴，最高 28 度，早晚較涼建議帶薄外套。」大概是 25-30 tokens。所以一輪對話 30-50 tokens 是常見數字。</p>
+      <p>GLM-4.6 的官方牌價（截至 2026 年 8 月，價格可能會變動，請到 <code>open.bigmodel.cn/pricing</code> 或官方定價頁確認）：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>項目</th>
+            <th>單價（人民幣）</th>
+            <th>換算台幣（1 CNY ≈ 4.4 TWD）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>GLM-4.6 輸入（你問的問題）</td>
+            <td>約 4 元 / 百萬 tokens</td>
+            <td>約 17.6 元 / 百萬 tokens</td>
+          </tr>
+          <tr>
+            <td>GLM-4.6 輸出（AI 回你的答）</td>
+            <td>約 16 元 / 百萬 tokens</td>
+            <td>約 70.4 元 / 百萬 tokens</td>
+          </tr>
+          <tr>
+            <td>GLM-4-Flash（輕量版，適合閒聊）</td>
+            <td>免費 或 幾毛錢 / 百萬 tokens</td>
+            <td>幾乎免費</td>
+          </tr>
+          <tr>
+            <td>新戶註冊贈送額度</td>
+            <td>常見 5-25 元人民幣可用額度（活動不定期，實際以官網公告為準）</td>
+            <td>約 22-110 元台幣</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>那實際使用一個月大概花多少？拿家用場景估算：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>使用強度</th>
+            <th>每天大概幾次對話</th>
+            <th>每月 GLM-4.6 費用估算</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>偶爾用（問問題、寫個自動化）</td>
+            <td>5-10 次</td>
+            <td>約 10-30 元台幣</td>
+          </tr>
+          <tr>
+            <td>日常用（每天聊天＋寫幾個自動化）</td>
+            <td>10-30 次</td>
+            <td>約 30-100 元台幣</td>
+          </tr>
+          <tr>
+            <td>重度用（研究資料＋寫程式＋長對話）</td>
+            <td>50-100 次</td>
+            <td>約 150-400 元台幣</td>
+          </tr>
+          <tr>
+            <td>拿來剪影片（<a href="ch17_video_pipeline.html">第 17 章</a>）</td>
+            <td>不一定</td>
+            <td>單次幾元～幾十元台幣</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout tip"><strong>提示：</strong>比 ChatGPT Plus 一個月 20 美金（約 650 元台幣）便宜很多。新戶送的額度光是自己玩通常撐得過第一個月，玩完再儲值就好。真的怕失控，GLM 後台可以設「用量上限」，達到就自動停止，不會半夜跑掉一萬塊。</div>
+    </section>
+
+    <section id="realname" data-nav="實名要不要做">
+      <h2 data-icon="advanced">實名認證要不要做</h2>
+      <p>你註冊完只填手機號碼、沒填身分證，這叫「未實名」帳號。未實名可以用完全部送的免費額度，但當你想儲值買更多額度、或想用某些進階模型（例如 GLM-Zero 之類 reasoning 模型）的時候，會被擋下來要求你先做「實名認證」。</p>
+      <p>實名認證要什麼？中國那邊的規則：需要中國大陸的身分證號＋支付寶 / 微信人臉辨識。<strong>如果你是台灣人，沒有中國身分證，這一關過不了。</strong>那怎麼辦？下面幾個選項：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>你的狀況</th>
+            <th>建議做法</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>只想試試看 AI 好不好用</td>
+            <td>不用實名，送的免費額度玩一玩就有感。玩完額度就換申請下一家（DeepSeek、OpenRouter）繼續玩。</td>
+          </tr>
+          <tr>
+            <td>用 GLM 用得很開心，額度快用完</td>
+            <td>選 A：找中國親友幫忙實名＋儲值（人情借用）。選 B：改用 OpenRouter 或其他中轉，用信用卡買 GLM 額度（會貴一點點）。</td>
+          </tr>
+          <tr>
+            <td>家裡就是不想接觸中國服務</td>
+            <td>看<a href="appendix_provider_keys.html">附錄 B</a>換一家：OpenAI、Anthropic、DeepSeek、Groq 都是好選擇，各家申請流程差不多。</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout"><strong>觀念：</strong>你可以先「不實名、拿免費額度、玩個兩三週」——這段時間就足夠讓你判斷 Pi Agent 對你家有沒有用。有用再想儲值的事，沒用直接停損也沒差。</div>
+    </section>
+
+    <section id="security" data-nav="金鑰放哪">
+      <h2 data-icon="security">金鑰放哪、不要放哪</h2>
+      <p>再講一次，因為這是最容易踩雷的地方。金鑰＝你的錢包裡的信用卡，處理方式要跟信用卡一樣小心。</p>
+      <p><strong>可以放的地方（安全）</strong>：</p>
+      <ul>
+        <li><strong>Pi Agent 的 Models 面板</strong>——這是這支金鑰的「家」，<a href="ch6_paste_key.html">下一章</a>會教你貼進去。它會存在你家 HA 主機的 <code>/data/pi-agent/models.json</code>，本地檔案，除非有人拿到你家 HA root 權限否則看不到。</li>
+        <li><strong>你自己的密碼管理器</strong>——1Password、Bitwarden、Apple Keychain、KeePass 都行。這些工具本來就是為「敏感字串」設計的，加密妥當。</li>
+        <li><strong>離線的紙本或加密隨身碟</strong>——最原始也最安全，如果你會這樣搞的話。</li>
+      </ul>
+      <p><strong>絕對不要放的地方（會被抓）</strong>：</p>
+      <ul>
+        <li><strong>GitHub 公開 repo</strong>——這是最經典的踩雷點。有大量爬蟲工具 24 小時掃 GitHub 找洩漏的金鑰，你 push 上去不到一小時就會被抓。就算你事後 delete commit 也救不回來，因為 git 歷史還留著。</li>
+        <li><strong>Line / Telegram / Discord 群組</strong>——群組管理員的伺服器紀錄裡有你的訊息。就算你事後撤回，別人手機截圖你也不知道。</li>
+        <li><strong>Google Docs / Notion 共享頁面</strong>——分享連結設「知道連結的人都能看」等於公開。就算設「僅特定人」，那個人的帳號被盜你就掰了。</li>
+        <li><strong>論壇貼文問問題</strong>——這是新手最愛踩的雷：「我這個金鑰貼進 Pi Agent 錯誤是這樣，請問怎麼辦？」<strong>貼之前記得把金鑰打掉</strong>，換成 <code>abc123.XXX...（打碼）</code>。</li>
+        <li><strong>電子郵件</strong>——email 傳輸通常不加密，中繼點都能看，別把金鑰用 email 傳給人。</li>
+        <li><strong>截圖分享</strong>——截圖裡看得到的字，AI OCR 都讀得出來。</li>
+      </ul>
+      <div class="callout danger"><strong>危險：</strong>如果你發現金鑰不小心外流（例如剛剛 push 到 public GitHub、或截圖不小心含到），立刻做一件事：<strong>回 GLM 後台的 API 金鑰列表，把這支金鑰「刪除」/「作廢」，然後重建一支新的</strong>。舊的一作廢，外面拿到的就沒用了。這件事幾分鐘的差距可能就是幾百幾千塊的差距，越快越好。</div>
+    </section>
+
+    <section id="alternatives" data-nav="一定要用 GLM">
+      <h2 data-icon="advanced">一定要用 GLM 嗎？可以先跳過嗎</h2>
+      <p>不一定。這一章拿 GLM 當第一支金鑰的示範，理由是「最省麻煩、最快看到 AI 回你話」，但你完全可以直接跳去其他家。下面這張表比較幾個常見選擇：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>你的偏好</th>
+            <th>推薦第一支金鑰</th>
+            <th>申請速度</th>
+            <th>看哪一章</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>最快能玩、免費配額大</td>
+            <td>GLM（智譜清言）</td>
+            <td>5 分鐘（手機驗證）</td>
+            <td>本章</td>
+          </tr>
+          <tr>
+            <td>寫程式最強、預算充裕</td>
+            <td>Anthropic Claude</td>
+            <td>15 分鐘（需信用卡）</td>
+            <td><a href="appendix_provider_keys.html">附錄 B</a></td>
+          </tr>
+          <tr>
+            <td>用最主流、想跟大家一樣</td>
+            <td>OpenAI GPT</td>
+            <td>15 分鐘（需信用卡＋在美國能收到的地址）</td>
+            <td><a href="appendix_provider_keys.html">附錄 B</a></td>
+          </tr>
+          <tr>
+            <td>要一支金鑰通吃所有 AI</td>
+            <td>OpenRouter（中轉商）</td>
+            <td>10 分鐘（信用卡儲值）</td>
+            <td><a href="appendix_provider_keys.html">附錄 B</a></td>
+          </tr>
+          <tr>
+            <td>只想閒聊、預算超低</td>
+            <td>DeepSeek</td>
+            <td>10 分鐘（手機驗證）</td>
+            <td><a href="appendix_provider_keys.html">附錄 B</a></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout tip"><strong>提示：</strong>不管你選哪一家，之後都會發現「一支不夠用」，回頭再加就好。這是<a href="ch10_why_multi.html">第 10 章</a>的主題——為什麼日常會同時掛 2-3 支金鑰。所以第一支不用糾結太久，能開始玩最重要。</div>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>手機收不到簡訊驗證碼</h3>
+          <p>幾個可能原因：（a）你的國碼選錯了——一定要選 <strong>+886（台灣）</strong>，不要選 +86。（b）手機號碼開頭那個「0」不用打，直接從 9 開始。（c）電信商可能擋到簡訊——等 3 分鐘按「重新發送」，還是不行的話換 email 註冊試試看（註冊頁通常有另一個 tab 叫「郵箱註冊」）。（d）真的都不行，你也可以用海外門號註冊，不一定要台灣號碼。</p>
+        </li>
+        <li>
+          <h3>金鑰複製沒複製到中間那個點</h3>
+          <p>金鑰的格式一定是「<code>前段.後段</code>」——中間有個「<strong>.</strong>」（小數點），兩段都要一起複製才是完整的一把。有人習慣選字元的時候用滑鼠拖，拖到那個點卡一下，結果只拖到前段。建議按複製按鈕，不要手動選字。如果不小心貼進 Pi Agent 之後跑 Test 說「invalid key」（金鑰無效），第一件事是回去看你手上這串有沒有中間那個點。</p>
+        </li>
+        <li>
+          <h3>金鑰忘記存、關掉視窗才發現沒複製</h3>
+          <p>沒救，這串就永久看不到了。GLM 這樣設計是為了安全——連他們自己資料庫裡也不明文存這串，只存 hash（用來比對）。做法只有一個：回 API 金鑰列表把這支「刪除」/「作廢」（沒用過的直接刪，不會有帳單問題），然後按「建立新金鑰」重來一次，這次專心複製。</p>
+        </li>
+        <li>
+          <h3>註冊送的額度顯示 0 或看不到</h3>
+          <p>先確認位置：後台左側欄找「資源總覽」、「資源包」、「我的套餐」、「Billing」這類詞，額度會顯示在那邊（不是在 API 金鑰頁）。如果那頁顯示 0，試試看：（a）按瀏覽器重新整理 <kbd>F5</kbd>——有時候是快取。（b）登出再登入一次。（c）如果都試過還是 0，可能你註冊的時間點剛好活動結束或還沒開始，這時候你 GLM-4-Flash（他們的輕量免費模型）通常還是能用，可以先用那個玩玩。或者你的帳號可能被判定為「非活躍」，過幾天再看看。</p>
+        </li>
+        <li>
+          <h3>網頁介面只有簡體字，看不習慣</h3>
+          <p>open.bigmodel.cn 目前只有簡中介面，沒有繁中或英文可切換。字型顯示會稍微怪但都看得懂。手機瀏覽器可以開「網頁翻譯」，Chrome 桌機可以用「Google 翻譯」擴充功能，把「注册」翻成「註冊」、「密钥」翻成「金鑰」，讀起來會順一點。</p>
+        </li>
+        <li>
+          <h3>網址打錯進到 chatglm.cn 找不到 API 金鑰</h3>
+          <p>chatglm.cn 是 GLM 給一般消費者聊天的網頁介面（類似 chat.openai.com），那邊沒有開發者 API 功能。<strong>要拿 API 金鑰只能到 open.bigmodel.cn</strong>——中間有個 open. 開頭，不要漏。如果你不小心跑到 chatglm.cn 註冊了帳號，理論上帳號是通的（同一家公司），直接切去 open.bigmodel.cn 登入試試看，通常可以直接進。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>一定要用 GLM 嗎？我可以用別家嗎？</summary>
+        <div class="body">當然可以。Pi Agent 支援七家主流 provider（GLM、OpenAI、Anthropic、DeepSeek、Groq、MiniMax、OpenRouter），細節在<a href="appendix_provider_keys.html">附錄 B</a>。這一章示範 GLM 純粹是因為它「不用翻牆＋註冊送額度＋中文順」，對台灣新手最友善。你如果本來就有 OpenAI 或 Anthropic 帳號，直接用那家的金鑰也完全沒問題，<a href="ch6_paste_key.html">下一章</a>教的貼金鑰操作是通用的。</div>
+      </details>
+      <details class="faq">
+        <summary>金鑰被別人拿走了怎麼辦？我怎麼知道有沒有被盜？</summary>
+        <div class="body">兩件事：（1）<strong>立刻作廢</strong>——登入 GLM 後台，到 API 金鑰列表，把那支金鑰刪除，這樣外面的人拿到也不能用了。然後重建一支新的，貼回 Pi Agent。（2）<strong>看用量歷史</strong>——後台通常有「用量統計」或「賬單」頁面，看看有沒有你沒印象的請求時段（例如你半夜在睡覺卻有大量 API 呼叫）。有的話就是被盜過，記得檢查儲值餘額有沒有異常。以後金鑰只放密碼管理器＋Pi Agent，不要放其他地方，就能大幅降低風險。</div>
+      </details>
+      <details class="faq">
+        <summary>我換 HA 主機，金鑰要重新申請嗎？</summary>
+        <div class="body">不用。金鑰是跟你的「GLM 帳號」綁定，不是跟你的 HA 主機綁定。你換一台新的 HA 主機，只要把金鑰重新貼進新機的 Pi Agent Models 面板就好（做法一樣）。而且如果你是走 HA snapshot 還原的方式搬家，因為 <code>/data/pi-agent/models.json</code> 會被 snapshot 帶走，還原完金鑰就自動回來了，連貼都不用貼——這是<a href="ch20_backup.html">第 20 章</a>會展開講的優點。</div>
+      </details>
+      <details class="faq">
+        <summary>一支金鑰能同時給幾台 Pi Agent 用？</summary>
+        <div class="body">技術上沒有限制——同一支金鑰可以貼在家裡的 Pi Agent、辦公室的 Pi Agent、你手機備用機的 Pi Agent，全部同時跑都不會被 GLM 擋。但實務上不建議這樣做，因為：（a）如果其中一台外流，你不知道是哪台外流的，全部都要重貼。（b）用量都算在同一支金鑰，很難分清楚是家裡消費的還是辦公室消費的。<strong>建議每一台裝置各申請一支金鑰，命名清楚</strong>（例如 <code>pi-agent-家裡</code>、<code>pi-agent-辦公室</code>），要作廢也不會誤傷其他機器。GLM 後台可以申請的金鑰數量通常沒有硬性上限，用不完不用怕。</div>
+      </details>
+      <details class="faq">
+        <summary>Pi Agent 會不會偷偷把我的金鑰上傳到 Woow 或別的地方？</summary>
+        <div class="body">不會。Pi Agent 是 MIT 開源專案（原始碼在 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on" rel="noopener">GitHub</a> 上，任何人都能檢查），金鑰只存本地 <code>/data/pi-agent/models.json</code>，網路封包只往你設定的 AI provider（例如 GLM 的 open.bigmodel.cn）跑，不會往 Woow 的伺服器跑。你如果懂技術，可以用 Wireshark 抓 HA 主機的網路封包確認。<a href="ch1_intro.html">第 1 章</a>已經強調過：Pi Agent 是「你家的工作站」，不是雲端服務。</div>
+      </details>
+      <details class="faq">
+        <summary>下一步該做什麼？</summary>
+        <div class="body">你手上（或密碼管理器裡）已經有一串金鑰了，接下來翻到<a href="ch6_paste_key.html">第 6 章：把金鑰貼進 Models 面板</a>，把它塞進 Pi Agent。整個過程大概 3 分鐘，塞好按「Test」看到綠燈，你就可以開始跟 AI 聊天了（<a href="ch7_first_chat.html">第 7 章</a>會帶你問第一個問題）。準備好就往下走。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch4_ui_tour.html">
+        <span class="label">← 上一章</span>
+        <span class="title">04 · 工作區導覽</span>
+      </a>
+      <a class="next" href="ch6_paste_key.html">
+        <span class="label">下一章 →</span>
+        <span class="title">06 · 貼金鑰到 Models</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

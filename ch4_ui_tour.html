@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 4 章 · 工作區長什麼樣 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Pi Agent 工作區主介面完整導覽：composer 打字區、模型下拉選單、Session 歷史列表與各面板入口的位置。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch4_ui_tour.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 4 章 · 工作區長什麼樣 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Pi Agent 工作區主介面完整導覽：composer 打字區、模型下拉選單、Session 歷史列表與各面板入口的位置。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch4_ui_tour.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 4 章 · 工作區長什麼樣 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Pi Agent 工作區主介面完整導覽：composer 打字區、模型下拉選單、Session 歷史列表與各面板入口的位置。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html" class="active">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼先認版面</a>
+      <a href="#concept">pi-web 是什麼</a>
+      <a href="#what">三大區塊速覽</a>
+      <a href="#steps">五個區塊逐一認識</a>
+      <a href="#modes">模型下拉細節</a>
+      <a href="#records">Session 三件事</a>
+      <a href="#tabs">右上四個面板</a>
+      <a href="#ai">對話串三種特殊塊</a>
+      <a href="#advanced">Settings 有什麼</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 4 章</div>
+      <h1>工作區長什麼樣</h1>
+      <p class="lead">第一次從側邊欄點進 Pi Agent，會看到一片空空的畫面：左邊沒任何對話、中間打字區灰灰的、模型下拉還是「未設定」。這章就是帶你把每一塊認過一遍，之後任何一章講「打開 xxx 面板」你都找得到。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼先認版面">
+      <h2 data-icon="why">為什麼先把版面認完再動手</h2>
+      <p>大部分人第一次打開 Pi Agent 都會愣三秒：畫面是英文的、打字區看起來能打字但按不下去、右上一排看不懂的圖示。這時候如果直接亂點，反而會被跳出來的表單問「baseUrl 是什麼」「thinkingFormat 選哪個」搞得更亂。</p>
+      <p>正確順序是這樣：<strong>先認版面</strong>（這章）→ <strong>去申請一支 AI 金鑰</strong>（<a href="ch5_first_key.html">第 5 章</a>）→ <strong>把金鑰貼進來</strong>（<a href="ch6_paste_key.html">第 6 章</a>）→ <strong>開第一次對話</strong>（第 7 章）。這章走完，你至少能指著任何一塊說出「這是幹嘛的」。</p>
+      <div class="callout"><strong>提醒：</strong>還沒設過 AI 金鑰是<strong>正常狀態</strong>。這一章刻意不叫你貼 key，就是要你先熟版面，別急。</div>
+    </section>
+
+    <section id="concept" data-nav="pi-web 是什麼">
+      <h2 data-icon="concept">先搞懂：pi-web 是什麼</h2>
+      <p>從 HA 側邊欄那顆「Pi Agent」按鈕點進去，看到的整個畫面，官方叫做 <strong>pi-web</strong>（就是 <code>@agegr/pi-web</code> 這個 npm 套件的執行結果）。它是一個「工作區（workspace）」，裡面裝了很多面板（panel），每個面板負責一件事。</p>
+      <p>pi-web 跟你熟悉的 HA 儀表板（Overview、Home Dashboard）<strong>是完全分開的兩個世界</strong>：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>比項</th><th>HA 儀表板</th><th>pi-web 工作區</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>用來做什麼</td><td>看家裡設備狀態、按開關</td><td>跟 AI 對話、叫它做事</td></tr>
+          <tr><td>資料存哪</td><td><code>/config/</code>（HA 內部）</td><td><code>/data/pi-agent/</code>（add-on 專屬）</td></tr>
+          <tr><td>怎麼進</td><td>側邊欄「Overview」</td><td>側邊欄「Pi Agent」</td></tr>
+          <tr><td>設備控制</td><td>用滑鼠點卡片</td><td>用文字叫 AI 幫你點</td></tr>
+          <tr><td>介面語言</td><td>跟隨 HA 系統語言</td><td>英文為主，含簡中切換</td></tr>
+        </tbody>
+      </table>
+      <div class="callout tip"><strong>心智模型：</strong>把 pi-web 想成「開在 HA 側邊欄裡的 VS Code」——它是一個獨立的工具，只是借住在 HA 的視窗裡。它不會偷改你的 HA 設定，除非你叫 AI 去改。</div>
+    </section>
+
+    <section id="what" data-nav="三大區塊速覽">
+      <h2 data-icon="what">主版面三大區塊速覽</h2>
+      <p>Pi Agent 一打開，畫面會分成三大塊（電腦寬螢幕看得最清楚，手機會摺起來——見後面的 troubleshoot）。用下面這張表建立第一印象：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>位置</th><th>裡面是什麼</th><th>什麼時候會用</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>左邊直欄</td><td>Session 歷史（過去每一次對話）</td><td>要接續之前聊到一半的話題</td></tr>
+          <tr><td>中間主區</td><td>對話串（上）＋ 打字區 composer（下）</td><td>絕大部分時間都在這</td></tr>
+          <tr><td>右上工具列</td><td>面板切換（Models／Skills／System prompt／Settings）</td><td>要換模型、裝技能、看設定時</td></tr>
+        </tbody>
+      </table>
+      <p>右上還有一顆你的頭像／字母圖示——那是 HA 傳過來的登入身份（第 3 章有講）。看到你自己的字母，就代表 Ingress cookie 有跟上。</p>
+      <div class="callout warn"><strong>注意：</strong>「面板（panel）」在 pi-web 裡是指「跳出來的一個抽屜視窗」，跟 HA 側邊欄那個「Panel」是不同東西，別搞混。以下講到 panel 都是指 pi-web 的抽屜。</div>
+    </section>
+
+    <section id="steps" data-nav="五個區塊逐一認識">
+      <h2 data-icon="steps">動手：把主要五個區塊逐一認識</h2>
+      <p>照下面順序把游標移過去看一次，不用點也不用打字。目的就是「認位置」。</p>
+      <ol class="steps">
+        <li>
+          <h3>找左上角的 <kbd>+ New session</kbd> 按鈕</h3>
+          <p>它在左欄最上面，通常寫「新對話 / New session」加一個 <code>+</code> 圖示。之後每次你想「跟 AI 從頭開始講一件事」，就按它。<strong>不要按</strong>——這章先認位置就好。</p>
+        </li>
+        <li>
+          <h3>掃一遍左邊的 Session 列表</h3>
+          <p>剛裝好的話這裡是空的（因為你還沒開過任何對話）。之後每開一次對話，就會多一列。每一列會顯示這次對話用的模型名稱、開始的日期時間、以及對話的第一句話當作標題。</p>
+        </li>
+        <li>
+          <h3>看中間下方的打字區 composer</h3>
+          <p>Composer 有三個東西：<strong>上方一個大文字框</strong>（打你要問的問題）、<strong>左下角一個模型下拉</strong>（Model dropdown，決定用哪家 AI）、<strong>右下角一顆送出按鈕</strong>（通常是一個紙飛機或 <code>↑</code> 圖示）。現在打字框應該是灰的、送出按鈕按不下去——那是「沒設模型」的正常狀態。</p>
+        </li>
+        <li>
+          <h3>看中間上方的對話串區</h3>
+          <p>剛裝好一片空白。之後 AI 回應、思考塊、工具卡、diff（修改對照）通通會出現在這。頁面會自動往下滾，最新的訊息在最下面，最上面是這次對話的第一則。</p>
+        </li>
+        <li>
+          <h3>把右上四個面板按鈕都認一遍（先別點）</h3>
+          <p>由左至右通常是：<strong>Models</strong>（模型與金鑰管理）、<strong>Skills</strong>（技能包管理）、<strong>System prompt</strong>（唯讀，看目前這 session 讀了哪些指示）、<strong>Settings</strong>（進階設定，日常不用碰）。滑鼠移上去會出現 tooltip 提示名稱。</p>
+        </li>
+      </ol>
+      <div class="callout tip"><strong>省時提示：</strong>五個區塊全部認完了嗎？下次別人問你「Models 面板在哪」，你要能立刻指著右上說「這一顆」——這就是這一章的目標。</div>
+    </section>
+
+    <section id="modes" data-nav="模型下拉細節">
+      <h2 data-icon="modes">模型下拉（Model dropdown）細節</h2>
+      <p>模型下拉是整個 Pi Agent 的靈魂，它決定你這一次講的話會送給哪家 AI 大腦處理。位置在 composer 打字框的左下角。</p>
+      <p>它會有三種狀態：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>你看到什麼</th><th>代表什麼</th><th>下一步</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>「未設定 / No provider configured」或灰灰不能點</td><td>還沒加過任何 AI 金鑰</td><td>去 <a href="ch5_first_key.html">第 5 章</a> 申請一支免費的 GLM</td></tr>
+          <tr><td>顯示某個模型名（例如 <code>glm-4.6</code>）</td><td>已經設好，之後送出的訊息會用這個模型</td><td>要換就點下拉挑另一個</td></tr>
+          <tr><td>下拉打開有「provider 名 → 模型清單」兩層</td><td>你設了多家 provider（例如 GLM ＋ OpenRouter）</td><td>依用途挑，例如便宜就 GLM、要看圖就 GPT-4o</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn"><strong>切換模型的規則：</strong>你在對話中途換模型，只影響「之後」的訊息，<strong>之前的對話不會重新跑一次</strong>。所以如果你發現 AI 亂答想換一家再試，得把問題再打一次貼過去。</div>
+      <p>金鑰是存在哪裡？pi-web 把 provider 設定寫進 <code>/data/pi-agent/models.json</code>，這個路徑會被 HA 的 snapshot（快照）備份帶走，換機或重灌都保得住。</p>
+    </section>
+
+    <section id="records" data-nav="Session 三件事">
+      <h2 data-icon="records">Session 列表要留意的三件事</h2>
+      <p>Session（對話 session）是 pi-web 的第一級單位。之後第 8 章會細講整個生命週期，這裡先認三件事：</p>
+      <ol class="steps">
+        <li>
+          <h3>檔案存在哪</h3>
+          <p>每個 session 是一個 <code>.jsonl</code> 檔（每行一則訊息的 JSON），位置在 add-on 的 <code>/data/pi-agent/sessions/&lt;工作目錄的編碼&gt;/&lt;時間戳&gt;_&lt;uuid&gt;.jsonl</code>。你不用手動去讀它，但要知道「session 是可以被搬走／備份的檔案」。</p>
+        </li>
+        <li>
+          <h3>每個 Session 帶自己的快照</h3>
+          <p>你在 session 一開始選了 GLM，之後就算換去別的 session 用 OpenRouter，回到這個 session 它還是記得原本用 GLM。skills（技能）也是類似的邏輯：session 開頭裝了什麼 skill，就吃那份清單。</p>
+        </li>
+        <li>
+          <h3>每一列右邊的三點選單能做什麼</h3>
+          <p>把游標移到某一列，右邊會冒出 <strong>⋮</strong>（三點選單）。點開常見選項：<strong>Rename</strong>（重新命名，讓你之後找得到這則對話）、<strong>Duplicate</strong>（複製一份繼續改）、<strong>Export</strong>（匯出成檔案）、<strong>Delete</strong>（刪除，會問你一次）。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="tabs" data-nav="右上四個面板">
+      <h2 data-icon="tabs">右上四個面板入口是幹嘛的</h2>
+      <p>右上工具列那幾顆按鈕，每一顆點下去會從右邊滑出一個抽屜（panel）。這章先講「這是什麼、什麼時候會用」，操作細節在後面的章節：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>面板名</th><th>做什麼</th><th>哪一章細講</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Models</strong>（模型）</td><td>加 provider、貼 API key、按 Test 測連線、切換預設模型</td><td><a href="ch6_paste_key.html">第 6 章</a></td></tr>
+          <tr><td><strong>Skills</strong>（技能）</td><td>從 GitHub 網址或 <code>owner/repo</code> 縮寫裝技能包，讓 AI 學新招</td><td>第 14–15 章</td></tr>
+          <tr><td><strong>System prompt</strong>（系統提示）</td><td>唯讀，攤開來看目前這個 session 讀了哪些技能、哪些指示</td><td>第 9 章</td></tr>
+          <tr><td><strong>Settings</strong>（設定）</td><td>語言切換（英/簡中）、字體大小、鍵位、進階選項</td><td>本章下段簡介</td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><strong>觀念：</strong>四個面板<strong>不是四個頁面</strong>——你不會離開對話。它們是「從右邊滑出來蓋在對話上」的抽屜，關掉之後對話還在原本的位置。</div>
+    </section>
+
+    <section id="ai" data-nav="對話串三種特殊塊">
+      <h2 data-icon="ai">對話串裡會冒出的三種特殊塊</h2>
+      <p>之後你開始跟 AI 講話後，中間對話串不只會顯示「你打的字」和「AI 回的字」。當你用夠強的模型（GLM-4.6、Claude、DeepSeek R1 這種會思考的），還會看到三種特別的塊，先預告一下，第 9 章會詳講：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>特殊塊</th><th>長什麼樣</th><th>代表什麼</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>思考塊（thinking block）</td><td>灰底、預設收起、標題寫「Thinking」或「思考中」，點開才看得到內容</td><td>AI 在心裡想什麼、怎麼推論。這段不算你的 token 錢，但很有參考價值</td></tr>
+          <tr><td>工具卡片（tool call card）</td><td>白底一張卡，標題寫工具名（例如 <code>Read</code>、<code>Bash</code>），下面是輸入輸出</td><td>AI 呼叫了外部工具（讀檔、跑指令）的紀錄</td></tr>
+          <tr><td>inline diff</td><td>紅綠對照，紅色是被刪掉的行、綠色是新加的行</td><td>AI 提議要改哪個檔案，你可以看完再決定接不接受</td></tr>
+        </tbody>
+      </table>
+      <div class="callout tip"><strong>看得懂三種塊 = 看得懂 AI 在做事，而不是黑箱吐答案。</strong>這是 Pi Agent 跟一般 ChatGPT 網頁最大的差別。</div>
+    </section>
+
+    <section id="advanced" data-nav="Settings 有什麼">
+      <h2 data-icon="advanced">Settings 面板裡有什麼（先看看不用改）</h2>
+      <p>Settings 面板打開，日常會用到的其實只有兩三個，其他都是進階：</p>
+      <ul>
+        <li><strong>Language（語言）</strong>：pi-web 上游支援英文 + 簡體中文。目前繁中未上，強迫症可以選簡中至少有中文，或維持英文（本書一律標註中英對照）。</li>
+        <li><strong>Appearance / Theme</strong>：深淺色主題。多半會跟隨系統，也可以強制指定。</li>
+        <li><strong>字體大小 / 密度</strong>：老花看不清就調大。</li>
+        <li><strong>Keyboard shortcuts</strong>：內建快捷鍵清單，最常用是 <kbd>Cmd/Ctrl</kbd>+<kbd>Enter</kbd> 送出訊息、<kbd>Cmd/Ctrl</kbd>+<kbd>K</kbd> 開 command palette。</li>
+        <li><strong>Advanced（進階）</strong>：例如壓縮策略、context 用量顯示——沒事別碰。</li>
+      </ul>
+      <div class="callout warn"><strong>注意：</strong>pi-web 的 Settings 跟 add-on 的 Configuration 是兩回事。前者在 pi-web 抽屜裡調 UI、模型行為；後者在 HA 的「Settings → Add-ons → Woow HA Pi Agent → Configuration」，只管 log 等級、時區、video-tools 重灌那種容器級開關。</div>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>中間對話串一直是空白，也不能打字</h3>
+          <p>先確認右上頭像有沒有你的字母（大寫首字，例如「E」）。<strong>看不到頭像 = HA Ingress cookie 沒帶進來</strong>，回<a href="ch3_open_it.html">第 3 章</a>重登 HA 再開一次側邊欄按鈕就會回來。頭像有出現、還是不能打字的話，多半是模型下拉是「未設定」，這是正常的——去<a href="ch5_first_key.html">第 5 章</a>設 key 就會亮。</p>
+        </li>
+        <li>
+          <h3>模型下拉點不開、按了沒反應</h3>
+          <p>按 <kbd>F12</kbd> 開瀏覽器 devtools 看 Console 有沒有紅字。九成是瀏覽器擋了 iframe 內的 cookie（Safari 預設會擋）。解法：換 Chrome 或 Edge、或到 Safari「網站設定 → Cross-Site Tracking → 允許」你的 HA 網址。</p>
+        </li>
+        <li>
+          <h3>左邊看不到 Session 列表</h3>
+          <p>可能是 sidebar 被收起來了（尤其瀏覽器視窗變窄時會自動摺起）。找一下 pi-web 左上角的「三線」或「側欄」圖示，點一下就會展開。手機版永遠是預設摺起的，點頁面左邊緣往右滑也能拉出來。</p>
+        </li>
+        <li>
+          <h3>介面全英文看不習慣</h3>
+          <p>Settings → Language 可以切成簡體中文，繁中還沒上線（roadmap）。本書所有重要按鈕都會標中英對照，習慣後你會發現版面就那幾個區塊，其實不需要中文也記得住。</p>
+        </li>
+        <li>
+          <h3>右上四顆面板圖示只看到兩三顆</h3>
+          <p>視窗太窄時 pi-web 會把後面的圖示收進 <strong>⋮</strong>（三點更多）選單。把瀏覽器視窗拉寬到 1200px 以上，四顆就會全部展開。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>介面能不能全部改成繁體中文？</summary>
+        <div class="body">目前 pi-web 上游（<code>@agegr/pi-web</code>）只有英文和簡體中文兩種語言。繁中還在 roadmap 上，Woow 這邊沒有另外 fork 翻譯（因為 pi-web 更新很快，fork 會很難跟）。想要中文的話先切簡中將就；不介意英文的話維持英文，本書會把每個按鈕的中英對照都寫出來。</div>
+      </details>
+      <details class="faq">
+        <summary>深色模式怎麼開？</summary>
+        <div class="body">兩層開關：一是 HA 本身的主題（在 HA 個人資料）；二是 pi-web 的 Appearance 設定。多半 pi-web 會自動跟隨 HA 主題，如果沒有，去 Settings → Appearance 手動選 Dark。手機版建議用「跟隨系統」，晚上護眼。</div>
+      </details>
+      <details class="faq">
+        <summary>有沒有快捷鍵可以背？</summary>
+        <div class="body">最實用的三個：<kbd>Cmd/Ctrl</kbd>+<kbd>Enter</kbd> 送出訊息（打完不用滑鼠去點紙飛機）、<kbd>Cmd/Ctrl</kbd>+<kbd>K</kbd> 開 command palette（快速搜尋 session）、<kbd>Cmd/Ctrl</kbd>+<kbd>N</kbd> 新開 session。完整清單在 Settings → Keyboard shortcuts。Mac 用 Cmd、Win/Linux 用 Ctrl。</div>
+      </details>
+      <details class="faq">
+        <summary>Session 開太多會不會拖慢？</summary>
+        <div class="body">Session 檔案是 <code>.jsonl</code>（一行一則），純文字，一個 session 通常幾十到幾百 KB。累積幾百個都不會有感。真的破幾千個嫌側欄捲不動的話，用三點選單 → Delete 或 Export 出來備份再刪，都是安全的（只會影響那一個檔）。</div>
+      </details>
+      <details class="faq">
+        <summary>模型下拉是空的（沒 provider）也能打字嗎？</summary>
+        <div class="body">不能——沒 provider 時打字框跟送出鈕都是灰的，就算硬複製一段字貼進去也送不出。這是刻意的，避免你打完一大串發現送不出。正確流程是先去 <a href="ch5_first_key.html">第 5 章</a> 拿到一支 GLM 免費 key，貼進來（<a href="ch6_paste_key.html">第 6 章</a>），下拉就會亮。</div>
+      </details>
+      <details class="faq">
+        <summary>右上的頭像可以換嗎？</summary>
+        <div class="body">那個字母／頭像是從 HA 的使用者資料直接抓的（Ingress 幫你帶進來的 header）。想換去 HA 的「使用者資料 → Avatar／顯示名稱」改，pi-web 這邊會自動更新。pi-web 沒有自己的帳號系統。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch3_open_it.html">
+        <span class="label">← 上一章</span>
+        <span class="title">03 · 從側邊欄打開</span>
+      </a>
+      <a class="next" href="ch5_first_key.html">
+        <span class="label">下一章 →</span>
+        <span class="title">05 · 申請 GLM 金鑰</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

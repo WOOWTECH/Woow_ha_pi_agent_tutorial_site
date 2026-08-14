@@ -1,0 +1,373 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>附錄 A · 設定參數速查 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Pi Agent add-on 設定分頁四個選項的完整參考：log_level 各等級、timezone IANA 寫法、reset_video_tools 一次性開關、env_vars 逃生口與限制。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/appendix_config_ref.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="附錄 A · 設定參數速查 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Pi Agent add-on 設定分頁四個選項的完整參考：log_level 各等級、timezone IANA 寫法、reset_video_tools 一次性開關、env_vars 逃生口與限制。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/appendix_config_ref.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="附錄 A · 設定參數速查 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Pi Agent add-on 設定分頁四個選項的完整參考：log_level 各等級、timezone IANA 寫法、reset_video_tools 一次性開關、env_vars 逃生口與限制。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">什麼時候會看這頁</a>
+      <a href="#concept">金鑰不在這裡</a>
+      <a href="#records">選項 1：log_level</a>
+      <a href="#location">選項 2：timezone</a>
+      <a href="#restore">選項 3：reset_video_tools</a>
+      <a href="#advanced">選項 4：env_vars</a>
+      <a href="#done">完整設定範例</a>
+      <a href="#history">v0.13.0 前的舊選項</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html" class="active">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">附錄 A</div>
+      <h1>設定參數速查</h1>
+      <p class="lead">Pi Agent 從 v0.13.0 之後，Add-on 的「Configuration」分頁只剩下 <strong>4 個開關</strong>。這附錄一次講清楚每個開關的意義、預設值、合法值、什麼時候該動、什麼時候不要動。日常你其實不會來這頁——但需要來的時候，這裡就是速查表。</p>
+    </div>
+
+    <section id="why" data-nav="什麼時候會看這頁">
+      <h2 data-icon="why">什麼時候會來翻這頁</h2>
+      <p>平常你根本不需要打開 Pi Agent 的 Add-on 設定分頁。裝好之後（<a href="ch2_install.html">第 2 章</a>）、金鑰貼進去（<a href="ch6_paste_key.html">第 6 章</a>），就直接從側邊欄用起來，一年不用碰 Configuration。</p>
+      <p>但下面這幾個情境會逼你打開它：</p>
+      <ul>
+        <li><strong>Log 找 bug</strong>：想看更詳細的訊息、把 <code>log_level</code> 調到 <code>debug</code>。</li>
+        <li><strong>時區跑掉</strong>：發現 Logs 的時間比實際早 8 小時、想把 <code>timezone</code> 設成 <code>Asia/Taipei</code>。</li>
+        <li><strong>影片管線壞了</strong>：Chromium 或 venv 環境爛掉，要重灌 video-tools（<a href="ch18_video_tools.html">第 18 章</a>會解釋為什麼）。</li>
+        <li><strong>環境變數逃生口</strong>：家裡走公司 proxy、或想改 Chromium 下載鏡像，得塞 <code>env_vars</code>。</li>
+      </ul>
+      <p>四個開關對應這四種情境，一個 section 講一個，格式一致：<strong>作用 / 預設 / 合法值 / 什麼時候動 / 踩雷 / 範例</strong>。</p>
+    </section>
+
+    <section id="concept" data-nav="金鑰不在這裡">
+      <h2 data-icon="concept">最重要的觀念：所有 API 金鑰都不在這裡</h2>
+      <p>這是升級到 v0.13.0 之後最容易踩的坑。<strong>Add-on 的 Configuration 分頁沒有任何 API key 欄位</strong>——所有 provider（GLM、OpenAI、Anthropic、DeepSeek、Groq、MiniMax、OpenRouter）的金鑰全部搬到 pi-web 內建的 <strong>Models 面板</strong>裡管理（<a href="ch6_paste_key.html">第 6 章</a>教過），詳細版本變更記在<a href="ch21_upgrade.html">第 21 章</a>。</p>
+      <p>這附錄講的四個選項是<strong>「Add-on 容器層」</strong>的設定——影響的是整個 add-on 怎麼跑、log 長怎樣、時區怎麼算、影片工具要不要重灌，跟「哪家 AI、用哪把 key」完全兩碼事。</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>你想改的東西</th><th>去哪裡改</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>加一家 AI provider、換 API 金鑰、改 baseUrl</td><td><strong>pi-web → Models 面板</strong>（<a href="ch6_paste_key.html">第 6 章</a>）</td></tr>
+          <tr><td>裝 skill、刪 skill</td><td><strong>pi-web → Skills 面板</strong>（<a href="ch14_skill_concept.html">第 14 章</a>）</td></tr>
+          <tr><td>Add-on log 詳細度、時區、重灌 video-tools、環境變數</td><td>本附錄講的 <strong>Add-on Configuration</strong> 分頁</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn"><strong>注意：</strong>如果你在這附錄找不到「怎麼加 OpenAI 金鑰」——沒錯，就是找不到。<strong>那不在這裡</strong>。回<a href="ch6_paste_key.html">第 6 章</a>。</div>
+    </section>
+
+    <section id="records" data-nav="選項 1：log_level">
+      <h2 data-icon="records">選項 1：<code>log_level</code>——訊息詳細度</h2>
+      <table class="data-table">
+        <thead>
+          <tr><th>項目</th><th>內容</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>作用</td><td>控制 Add-on 在 Logs 分頁印出多少細節，也影響 pi-web 後端的 log 冗長度。</td></tr>
+          <tr><td>合法值</td><td><code>error</code>、<code>warn</code>、<code>info</code>、<code>debug</code>（由少到多）</td></tr>
+          <tr><td>預設</td><td><code>info</code></td></tr>
+          <tr><td>是否需重啟</td><td>是。改完儲存後 add-on 會自動重啟套用。</td></tr>
+        </tbody>
+      </table>
+      <h3>什麼時候該調</h3>
+      <ul>
+        <li><strong>日常：</strong>保持 <code>info</code>，該有的訊息都在，也不會太吵。</li>
+        <li><strong>找 bug：</strong>調 <code>debug</code>——每一次 HTTP 請求、每一個 skill 掃描、每一個 provider 呼叫都會印出來。抓完 bug 記得調回去。</li>
+        <li><strong>只想看警告：</strong><code>warn</code>——只印 warning 以上，適合系統跑穩之後日常巡檢。</li>
+        <li><strong>極簡：</strong><code>error</code>——真的只留錯誤。<strong>不建議長期用</strong>，因為 warning 常常是「快壞掉了」的預兆。</li>
+      </ul>
+      <div class="callout warn"><strong>注意：</strong><code>debug</code> 開太久 log 檔會爆多——每分鐘可能幾千行。HA 的 log 是輪替的（超過大小會自動清），但如果你 SSH 進去主機直接看檔案，可能發現硬碟被吃掉幾百 MB。<strong>找完 bug 記得調回 <code>info</code>。</strong></div>
+      <h3>範例</h3>
+      <pre class="code-block"><code>log_level: debug</code></pre>
+      <p>用途：專門開來找「為什麼影片管線失敗」，可以看到 Playwright 啟動每一步、ffmpeg 每一個參數。找完之後改回：</p>
+      <pre class="code-block"><code>log_level: info</code></pre>
+    </section>
+
+    <section id="location" data-nav="選項 2：timezone">
+      <h2 data-icon="location">選項 2：<code>timezone</code>——時區</h2>
+      <table class="data-table">
+        <thead>
+          <tr><th>項目</th><th>內容</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>作用</td><td>影響三件事：（1）Add-on log 的時間戳（2）Session 檔案與備份的日期命名（3）影片管線輸出的 SRT 字幕 cue timing 顯示。</td></tr>
+          <tr><td>合法值</td><td><strong>IANA 時區字串</strong>，例如 <code>Asia/Taipei</code>、<code>Asia/Tokyo</code>、<code>America/New_York</code>、<code>Europe/London</code>。</td></tr>
+          <tr><td>預設</td><td>空（等同 <code>UTC</code>）</td></tr>
+          <tr><td>是否需重啟</td><td>是。改完儲存後 add-on 會自動重啟。</td></tr>
+        </tbody>
+      </table>
+      <h3>為什麼台灣使用者一定要設</h3>
+      <p>不設的話 Logs 分頁時間會是 <code>UTC</code>，比台灣時間<strong>早 8 小時</strong>。你晚上 8 點按了個操作、去 Logs 找對應紀錄，會看到「中午 12 點發生」——很容易以為 log 掉了。設成 <code>Asia/Taipei</code> 就跟你腦袋裡的時間對得起來。</p>
+      <p>Session 檔案的日期也會受影響——不設時區的話，深夜 11 點開的 session 檔名日期可能已經跳到「隔天」（因為 UTC 已經過午夜），對照起來很混亂。</p>
+      <div class="callout warn"><strong>注意：</strong>格式一定要寫完整的 IANA 字串。<strong>寫 <code>Taipei</code> 而不是 <code>Asia/Taipei</code> 會 fallback 回 UTC，而且不會報錯</strong>——你以為設好了，其實沒生效。同理 <code>+08:00</code>、<code>CST</code>、<code>GMT+8</code> 這些寫法也不吃。標準寫法一律是 <code>大洲/城市</code>。</div>
+      <h3>常用 IANA 字串速查</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>地區</th><th>IANA 寫法</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>台灣</td><td><code>Asia/Taipei</code></td></tr>
+          <tr><td>日本</td><td><code>Asia/Tokyo</code></td></tr>
+          <tr><td>香港</td><td><code>Asia/Hong_Kong</code></td></tr>
+          <tr><td>新加坡</td><td><code>Asia/Singapore</code></td></tr>
+          <tr><td>美東</td><td><code>America/New_York</code></td></tr>
+          <tr><td>美西</td><td><code>America/Los_Angeles</code></td></tr>
+          <tr><td>英國</td><td><code>Europe/London</code></td></tr>
+        </tbody>
+      </table>
+      <h3>範例</h3>
+      <pre class="code-block"><code>timezone: Asia/Taipei</code></pre>
+    </section>
+
+    <section id="restore" data-nav="選項 3：reset_video_tools">
+      <h2 data-icon="restore">選項 3：<code>reset_video_tools</code>——重灌影片工具</h2>
+      <table class="data-table">
+        <thead>
+          <tr><th>項目</th><th>內容</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>作用</td><td>下次 add-on 重啟時，把 <code>/data/pi-agent/video-tools/</code> 裡的 Python venv 與 Playwright（含 Chromium 瀏覽器）<strong>全部打掉重灌</strong>。</td></tr>
+          <tr><td>合法值</td><td><code>true</code> / <code>false</code></td></tr>
+          <tr><td>預設</td><td><code>false</code></td></tr>
+          <tr><td>是否需重啟</td><td>是。改完必須<strong>儲存 → 手動重啟 add-on</strong>才觸發。</td></tr>
+        </tbody>
+      </table>
+      <h3>什麼時候該開</h3>
+      <ul>
+        <li>影片管線一直失敗、但看 log 看不出根本原因（<a href="ch18_video_tools.html">第 18 章</a>教過 video-tools 是什麼）。</li>
+        <li>Chromium 版本太舊，某些網站截圖失敗（例如需要新版才能跑的網站）。</li>
+        <li>venv 裡的 Python 套件跟 add-on 主程式對不起來（升級後偶爾會發生）。</li>
+        <li>一年一次的「大掃除」——就算沒事，趁著低峰時段跑一次順便升級 Chromium 也 OK。</li>
+      </ul>
+      <div class="callout warn"><strong>注意：</strong>觸發流程一定是<strong>「儲存 Configuration → 手動重啟 add-on」</strong>兩件事都要做。光儲存不會發生任何事——add-on 是在<em>啟動時</em>檢查這個旗標的。觸發完成、重灌成功後，這個選項會<strong>自動變回 <code>false</code></strong>，所以不會每次重啟都重灌。</div>
+      <div class="callout warn"><strong>注意：</strong>重灌會下載約 <strong>720 MB</strong>（Chromium 就佔了 500 MB 左右），跟第一次裝 add-on 一樣。網速慢的話要等 5–10 分鐘。這段時間影片相關功能全部不能用，其他 AI 對話功能不受影響。</div>
+      <h3>範例（一次性使用）</h3>
+      <pre class="code-block"><code>reset_video_tools: true</code></pre>
+      <p>儲存 → 重啟 add-on → 等 Logs 出現 <code>video-tools-init: complete</code> → 這個值自動變回 <code>false</code>。之後不用管它。</p>
+    </section>
+
+    <section id="advanced" data-nav="選項 4：env_vars">
+      <h2 data-icon="advanced">選項 4：<code>env_vars</code>——環境變數逃生口</h2>
+      <table class="data-table">
+        <thead>
+          <tr><th>項目</th><th>內容</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>作用</td><td>塞任意環境變數給 pi-web 主程式讀。用來對付「add-on 沒開專屬設定，但底層工具吃某個環境變數」的邊緣情境。</td></tr>
+          <tr><td>格式</td><td>YAML list，每一項是 <code>{name: X, value: Y}</code>。</td></tr>
+          <tr><td>名稱規則</td><td>正則 <code>^[A-Za-z_][A-Za-z0-9_]*$</code>——大小寫英數與底線、<strong>開頭不能是數字</strong>。</td></tr>
+          <tr><td>預設</td><td><code>[]</code>（空 list）</td></tr>
+          <tr><td>是否需重啟</td><td>是。改完儲存後 add-on 會自動重啟。</td></tr>
+        </tbody>
+      </table>
+      <h3>常見用途</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>變數名</th><th>做什麼</th><th>典型情境</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>HTTP_PROXY</code> / <code>HTTPS_PROXY</code></td><td>叫 pi-web 走 HTTP proxy 出去</td><td>公司網路強制走 proxy 才能連外</td></tr>
+          <tr><td><code>NO_PROXY</code></td><td>指定某些主機不走 proxy</td><td>內網 HA API 不要繞 proxy</td></tr>
+          <tr><td><code>PLAYWRIGHT_DOWNLOAD_HOST</code></td><td>指定 Chromium 下載鏡像</td><td>直連 Playwright CDN 太慢，換成國內鏡像加速</td></tr>
+          <tr><td><code>OPENAI_BASE_URL</code></td><td>全域改寫 OpenAI SDK 的預設端點</td><td>想強制所有 <code>openai-completions</code> provider 走某個內部閘道</td></tr>
+        </tbody>
+      </table>
+      <div class="callout danger"><strong>危險：</strong><strong>不要把 API 金鑰塞在這裡</strong>——例如寫 <code>OPENAI_API_KEY</code>、<code>ANTHROPIC_API_KEY</code>。這些變數 pi-web <strong>不會讀</strong>，你以為設好了、實際上金鑰完全沒生效。所有 provider 金鑰都在 <a href="ch6_paste_key.html">pi-web Models 面板</a>裡管理，那是唯一正確的地方。</div>
+      <div class="callout warn"><strong>注意：</strong><code>OPENAI_BASE_URL</code> 是全域改寫——意思是所有<strong>用 openai-completions 通訊協定</strong>的 provider（含 DeepSeek、Groq、OpenRouter、MiniMax 等）都會被強制導到你設的網址。想單獨改一家的 baseUrl，還是回 Models 面板改那一家的設定，不要用這個環境變數。</div>
+      <h3>範例</h3>
+      <p>走公司 proxy：</p>
+      <pre class="code-block"><code>env_vars:
+  - name: HTTP_PROXY
+    value: http://192.168.1.1:8080
+  - name: HTTPS_PROXY
+    value: http://192.168.1.1:8080
+  - name: NO_PROXY
+    value: 127.0.0.1,localhost,homeassistant.local</code></pre>
+      <p>不需要就留空 list：</p>
+      <pre class="code-block"><code>env_vars: []</code></pre>
+    </section>
+
+    <section id="done" data-nav="完整設定範例">
+      <h2 data-icon="done">完整設定範例</h2>
+      <p>台灣一般家庭用戶最典型的設定長這樣，直接複製貼上就能用：</p>
+      <pre class="code-block"><code>log_level: info
+timezone: Asia/Taipei
+reset_video_tools: false
+env_vars: []</code></pre>
+      <p>如果你在追蹤某個 bug、想開詳細 log 又要走公司 proxy：</p>
+      <pre class="code-block"><code>log_level: debug
+timezone: Asia/Taipei
+reset_video_tools: false
+env_vars:
+  - name: HTTP_PROXY
+    value: http://192.168.1.1:8080
+  - name: HTTPS_PROXY
+    value: http://192.168.1.1:8080</code></pre>
+      <div class="callout tip"><strong>提示：</strong>Home Assistant Add-on 的 Configuration 分頁上方通常有一個「YAML／表單」的切換鈕。想直接貼上面這段就切到 YAML 模式；比較怕手滑的話就用表單模式一格一格填。兩種方式效果一樣。</div>
+    </section>
+
+    <section id="history" data-nav="v0.13.0 前的舊選項">
+      <h2 data-icon="history">v0.13.0 之前的舊選項在哪裡（歷史參考）</h2>
+      <p>從舊版升上來的老用戶會發現：Configuration 分頁少了一堆欄位。這不是壞掉——是<strong>搬家了</strong>。詳細的升級注意事項在<a href="ch21_upgrade.html">第 21 章</a>，這裡放對照表方便速查：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>v0.12.x 舊欄位</th><th>v0.13.0 之後去哪裡設</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>openai_api_key</code></td><td>pi-web Models 面板 → OpenAI provider → API Key 欄位</td></tr>
+          <tr><td><code>glm_api_key</code></td><td>pi-web Models 面板 → GLM (zai) provider → API Key</td></tr>
+          <tr><td><code>anthropic_api_key</code></td><td>pi-web Models 面板 → Anthropic provider → API Key</td></tr>
+          <tr><td><code>deepseek_api_key</code></td><td>pi-web Models 面板 → DeepSeek provider → API Key</td></tr>
+          <tr><td><code>groq_api_key</code></td><td>pi-web Models 面板 → Groq provider → API Key</td></tr>
+          <tr><td><code>openrouter_api_key</code></td><td>pi-web Models 面板 → OpenRouter provider → API Key</td></tr>
+          <tr><td><code>minimax_api_key</code></td><td>pi-web Models 面板 → MiniMax provider → API Key</td></tr>
+          <tr><td><code>openai_base_url</code>（單一 provider 用）</td><td>pi-web Models 面板 → 該 provider 的 baseUrl 欄</td></tr>
+          <tr><td><code>openai_base_url</code>（全域強制用）</td><td>本附錄的 <code>env_vars</code> → <code>OPENAI_BASE_URL</code></td></tr>
+        </tbody>
+      </table>
+      <div class="callout"><strong>觀念：</strong>為什麼要搬家？兩個原因：（1）金鑰跟著 pi-web 資料一起備份／還原更合理（<a href="ch20_backup.html">第 20 章</a>），跟 add-on 容器層設定分開；（2）UI 有 Test 按鈕即時驗證，比 add-on 表單摸黑貼、儲存、重啟才知道對不對，體驗好非常多。</div>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>改了設定完全沒反應</h3>
+          <p>Configuration 分頁改完之後<strong>要按最下方的「儲存」按鈕</strong>。有些 HA 版本按鈕會被浮動元件擋住，往下捲一點就會看到。儲存後 add-on 才會重啟套用；沒按等於白改。</p>
+        </li>
+        <li>
+          <h3>Add-on 重啟後選項變回預設值</h3>
+          <p>通常是 YAML 格式錯——例如 <code>timezone</code> 少了引號、<code>env_vars</code> 的縮排不對。打開 Logs 分頁，往上滾找 <code>parse error</code> 或 <code>invalid config</code> 這類字串，會有一行指出是哪個欄位壞了。改完再儲存。</p>
+        </li>
+        <li>
+          <h3>env_vars 加了但 pi-web 完全沒讀到</h3>
+          <p>三種可能：（1）名稱有非法字元（含連字號、開頭是數字、有中文）；（2）你設的環境變數不是 pi-web 會讀的——不是每個 <code>OPENAI_*</code> 或 <code>ANTHROPIC_*</code> 都有效，pi-web 只讀特定幾個（proxy 系列、Playwright 系列、少數 SDK 的 baseUrl）；（3）你想設的是 API 金鑰——那個永遠不會生效，回 Models 面板貼。</p>
+        </li>
+        <li>
+          <h3>reset_video_tools 開了但 video-tools 沒重下載</h3>
+          <p>你少做了第二步——<strong>儲存 + 手動重啟 add-on 兩件事都要做</strong>。光儲存不會觸發，因為這個旗標是在 add-on 啟動時檢查的。到 add-on 頁面按「重新啟動」，然後看 Logs 應該會出現 <code>video-tools-init: reset requested</code> 這行。</p>
+        </li>
+        <li>
+          <h3>timezone 設了 <code>Taipei</code> 但時間還是 UTC</h3>
+          <p>IANA 格式一定要寫完整——<code>Asia/Taipei</code>，不是 <code>Taipei</code>、不是 <code>CST</code>、不是 <code>+08:00</code>。寫錯了系統會 fallback 回 UTC 而且<strong>不報錯</strong>，很容易誤判「已經設了」。改成正確字串、儲存、等 add-on 重啟完，再回 Logs 看時間戳是否對上。</p>
+        </li>
+        <li>
+          <h3>debug log 太多，硬碟空間吃緊</h3>
+          <p>把 <code>log_level</code> 調回 <code>info</code> 或 <code>warn</code>。HA OS 通常會自動輪替 log 檔，但如果你在 Supervised／Container 安裝上手動看 <code>/var/log</code>，需要自己清一下舊檔。<strong>不要長期開 <code>debug</code></strong>，只在排錯時開。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>怎麼把 add-on 設定存起來下次還原？</summary>
+        <div class="body">用 <strong>HA Snapshot（備份）</strong>就好——Configuration 分頁的內容是 add-on 的一部分，會被完整寫進備份檔。還原備份時這 4 個選項一起回來，不用手動記。詳細備份流程在<a href="ch20_backup.html">第 20 章</a>。想手動抄一份的話也可以複製 Configuration 分頁的 YAML 內容存純文字檔，簡單粗暴但有效。</div>
+      </details>
+      <details class="faq">
+        <summary>有沒有地方可以看到目前 add-on 生效的完整設定 YAML？</summary>
+        <div class="body">有兩個地方：（1）Configuration 分頁本身，切到 YAML 模式就看得到；（2）SSH 進 HA 主機、看 <code>/data/options.json</code>（在 add-on container 內），那是 supervisor 實際 mount 進 add-on 的最終設定（JSON 格式）。第二種方式適合驗證「UI 上的 YAML 是否真的被解析成你想的樣子」。</div>
+      </details>
+      <details class="faq">
+        <summary><code>timezone</code> 會影響 AI 回應的內容嗎？例如 AI 問「現在幾點」</summary>
+        <div class="body"><strong>不會直接影響 AI 對話</strong>——AI 拿到的「現在時間」通常是 pi-web 主程式呼叫系統時間 API 取得，那個受 HA 主機本身的系統時區影響，不是這個 <code>timezone</code> 選項。這個選項只影響 <strong>log 時間戳、session 檔名日期、影片字幕 cue timing</strong>三件事。想改 HA 主機時區要回 HA 的「設定 → 系統 → 一般」那邊改，兩個是分開的。</div>
+      </details>
+      <details class="faq">
+        <summary>我改壞了 Configuration，怎麼回到預設值？</summary>
+        <div class="body">Configuration 分頁最下方（或右上角，看 HA 版本）有一顆 <strong>「重設為預設值」</strong>按鈕，按下去就會把 4 個選項全部歸零——<code>log_level: info</code>、<code>timezone</code> 空、<code>reset_video_tools: false</code>、<code>env_vars: []</code>。API 金鑰在 pi-web 那邊、不會被這顆按鈕動到，所以按了不用擔心金鑰不見。按完記得儲存。</div>
+      </details>
+      <details class="faq">
+        <summary>可以在 <code>env_vars</code> 裡塞 <code>TZ</code> 覆蓋時區嗎？</summary>
+        <div class="body">技術上可以塞 <code>TZ=Asia/Taipei</code>，某些底層工具（像 Python 的 <code>datetime</code>）會讀它。但<strong>強烈建議直接用 <code>timezone</code> 選項</strong>——那是 add-on 官方接口，會同時設好系統時區、log 時區、應用層時區三件事。<code>env_vars</code> 裡的 <code>TZ</code> 只影響部分場景，容易造成三個地方時區不一致，反而更難 debug。</div>
+      </details>
+      <details class="faq">
+        <summary>4 個選項可以在跑的時候動態改嗎？還是一定要重啟？</summary>
+        <div class="body">全部都<strong>要重啟</strong>——儲存 Configuration 之後 HA 會自動重啟 add-on，這個過程約 15–30 秒。<code>reset_video_tools</code> 又多一步「手動重啟才觸發」，因為 supervisor 自動重啟太快、還沒等 sentinel 檔被刪掉就跑完了。其他三個選項儲存後的自動重啟就會生效。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch22_troubleshoot.html">
+        <span class="label">← 上一章</span>
+        <span class="title">22 · 卡關手冊</span>
+      </a>
+      <a class="next" href="appendix_provider_keys.html">
+        <span class="label">下一附錄 →</span>
+        <span class="title">附錄 B · 金鑰申請速查</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

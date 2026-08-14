@@ -1,0 +1,487 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 19 章 · 成品自動傳 Google Drive：rclone 一次設好 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Pi Agent 影片管線接 Google Drive：rclone 設定精靈、OAuth 授權、token 存哪、跟 HA snapshot 的關係、上傳失敗的排錯清單。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch19_rclone.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 19 章 · 成品自動傳 Google Drive：rclone 一次設好 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Pi Agent 影片管線接 Google Drive：rclone 設定精靈、OAuth 授權、token 存哪、跟 HA snapshot 的關係、上傳失敗的排錯清單。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch19_rclone.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 19 章 · 成品自動傳 Google Drive：rclone 一次設好 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Pi Agent 影片管線接 Google Drive：rclone 設定精靈、OAuth 授權、token 存哪、跟 HA snapshot 的關係、上傳失敗的排錯清單。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html" class="active">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要設這個</a>
+      <a href="#concept">rclone 是什麼</a>
+      <a href="#security">OAuth 這件事</a>
+      <a href="#advanced">前提</a>
+      <a href="#steps">rclone config 精靈</a>
+      <a href="#test">驗證有沒有設好</a>
+      <a href="#integration">接進影片管線</a>
+      <a href="#restore">token 存哪</a>
+      <a href="#remote">換別家雲端</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 19 章</div>
+      <h1>成品自動傳 Google Drive：rclone 一次設好</h1>
+      <p class="lead">你在<a href="ch17_video_pipeline.html">第 17 章</a>認識了影片管線、<a href="ch18_video_tools.html">第 18 章</a>看完首次下載那 720MB 工具去了哪裡。這章把最後一哩補齊：影片跑完之後怎麼自動出現在你手機的 Google Drive App 裡。答案是 rclone——一個 Pi Agent 已經內建、但需要你花五分鐘做一次 OAuth 授權的檔案同步工具。做完這一次，之後每支影片都自動上傳、你手機順手滑一下就能分享出去。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼要設這個">
+      <h2 data-icon="why">為什麼要花時間設這個</h2>
+      <p><a href="ch17_video_pipeline.html">第 17 章</a>講完了「AI 幫你寫腳本、配音、抓畫面、剪接、燒字幕」，最後產出一個乾淨的 MP4。<a href="ch18_video_tools.html">第 18 章</a>解釋了工具放在哪、為什麼首次要下載那麼久。但這個 MP4 現在還躺在 HA host 的 <code>/data/pi-agent/</code> 底下的某個資料夾——你手機看不到、平板看不到、想傳給朋友還得 SSH 進去用 <code>scp</code> 拉出來，累。</p>
+      <ul>
+        <li><strong>不設 rclone 的日常</strong>：影片跑完 → 你打開電腦 → SSH 進 HA → 找到影片路徑 → <code>scp</code> 拉出來 → 傳 LINE 或上 Drive。每一步都在勸退你，久了就懶得做影片。</li>
+        <li><strong>設完 rclone 的日常</strong>：影片跑完 → 手機叮一聲（Google Drive App 通知有新檔）→ 點開 → 分享。整段從電腦拿掉了。</li>
+      </ul>
+      <p>Pi Agent 已經把 rclone 打包在 add-on 容器裡，你什麼都不用裝。你要做的只有一件事：<strong>跑一次 OAuth 授權精靈，告訴 rclone 你的 Google 帳號是哪一個</strong>。這件事第一次要在 terminal 做（因為 Google 的 OAuth 需要你手動貼一個驗證碼），但只要做一次，token 會存到 <code>/data/pi-agent/rclone/rclone.conf</code>，之後就永遠自動了——連 HA 整台重灌 restore 回來，token 也會跟著回來（<a href="ch20_backup.html">第 20 章</a>的 HA snapshot 有帶）。</p>
+      <div class="callout"><strong>觀念：</strong>這章是設定章不是知識章。你不需要「聽懂 OAuth 的原理」也能做完，跟著步驟按 Enter 就好。但因為第一次難免碰到「Google 頁面說 App 未認證要不要繼續」這種嚇人的畫面，我會逐格解釋，讓你按得心安。做完你就再也不用碰這個檔案。</p></div>
+    </section>
+
+    <section id="concept" data-nav="rclone 是什麼">
+      <h2 data-icon="concept">rclone 是什麼、為什麼要用它</h2>
+      <p><strong>rclone 是一個檔案同步工具</strong>，你可以把它想成「命令列版本的 Google Drive App」。差別是它支援 40 多家雲端硬碟：Google Drive、OneDrive、Dropbox、Box、iCloud Drive、Amazon S3、阿里雲 OSS、SFTP、WebDAV……你講得出來的雲端儲存服務幾乎都在裡面。用法都長得一樣：<code>rclone copy 本地路徑 遠端名稱:遠端資料夾</code>。</p>
+      <p>Pi Agent 為什麼選 rclone 而不是自己刻一個 Google Drive 上傳器？三個理由：</p>
+      <ul>
+        <li><strong>成熟穩定</strong>：rclone 開發超過十年，token 續期、斷線重試、大檔分片上傳這些細節都處理好了。自己刻大機率會踩到你想不到的坑。</li>
+        <li><strong>不綁一家雲端</strong>：今天你選 Google Drive，明天想改 OneDrive 或 Dropbox，只是多跑一次 <code>rclone config</code> 的差別，Pi Agent 這邊的設定改一行字就能切換。</li>
+        <li><strong>離線就是離線</strong>：rclone 純粹在你自己的 HA host 上跑，Pi Agent 本身沒有任何「雲」在中間中轉。你的檔案從家裡直接上傳到你 Google 的儲存空間，中間沒有第三方看過。</li>
+      </ul>
+      <p>Pi Agent 內建 rclone 的意思是：<strong>你不用另外 <code>apt install rclone</code>、也不用煩惱版本相容性</strong>。add-on 容器裡已經放好了一份，跑起來就能用。你要做的只有「告訴它你的 Google 帳號是哪一個」——這件事就是 OAuth 授權。</p>
+      <div class="callout tip"><strong>提示：</strong>rclone 對「來源」跟「目的地」兩端都可以是雲端。所以理論上你可以把 Google Drive 的檔案同步到 Dropbox，或把 S3 資料備份到 OneDrive。這章只講最單純的一個方向：本地檔案 → Google Drive。其他組合以後有需要再玩，原理都一樣。</p></div>
+    </section>
+
+    <section id="security" data-nav="OAuth 這件事">
+      <h2 data-icon="security">為什麼要 OAuth，不是貼帳號密碼</h2>
+      <p>你可能會想：「幹嘛搞這麼麻煩，rclone 讓我填 Google 帳號密碼不就好了？」——這個問題非常好，因為答案牽動整個網路 App 的安全設計。</p>
+      <p>Google 早就不接受這種做法了。原因很簡單：<strong>如果第三方軟體收得到你的 Google 密碼，它就能拿去做任何事</strong>——收你信、清你 Drive、關你 YouTube 頻道、盜刷你綁的信用卡。你信任 rclone 不代表你信任 rclone 一輩子不會被駭、也不代表你信任 rclone 開發者未來不會變壞。給密碼等於給整個帳號的鑰匙。</p>
+      <p>OAuth（Open Authorization）就是為了解決這個問題設計出來的。整個流程長這樣：</p>
+      <ol class="steps">
+        <li>
+          <h3>rclone 給你一個 URL</h3>
+          <p>那個 URL 是 Google 官方的授權頁，不是 rclone 自己刻的假冒頁面。你打開 URL 之後看到的是你熟悉的 Google 登入介面——密碼你是打進 Google 自己的頁面，不是打進 rclone。</p>
+        </li>
+        <li>
+          <h3>Google 問你「要不要讓 rclone 存取你的 Drive」</h3>
+          <p>你按同意（就跟你第一次讓 Notion 讀 Google Calendar 是一樣的畫面）。Google 幫你判斷：這個 App 想要什麼權限、你確認才給。</p>
+        </li>
+        <li>
+          <h3>Google 發給 rclone 一張 token</h3>
+          <p>token 就是一張「代幣」，長得像一串亂碼。它只能拿來做你剛才同意的那件事（存取 Drive），不能拿去做其他事（比如寄信）。而且 token 隨時可以撤銷——你到 Google 帳號 → 安全性 → 第三方 App 授權，把 rclone 從清單裡踢掉，token 立刻失效。</p>
+        </li>
+        <li>
+          <h3>之後 rclone 拿 token 傳檔，不再需要你的密碼</h3>
+          <p>rclone 每次上傳都是「帶著這張代幣」跟 Google 說「這是我的授權，可以放檔案進來嗎」。你的 Google 密碼從頭到尾沒離開過 Google 自己的伺服器。</p>
+        </li>
+      </ol>
+      <div class="callout"><strong>觀念：</strong>這就是為什麼 OAuth 流程必須「跳出來一個瀏覽器頁面」。這個「跳出來」不是設計不良、而是刻意的——它強迫你「用你信任的瀏覽器」去 Google 的網站確認一次，rclone 沒有機會偷看你打密碼。任何要求你把 Google 密碼直接貼到自己畫面裡的 App，你都應該立刻關掉不用。</p></div>
+    </section>
+
+    <section id="advanced" data-nav="前提">
+      <h2 data-icon="advanced">前提：你要能 SSH 進 HA</h2>
+      <p><code>rclone config</code> 精靈是互動式的（會一步步問你答），必須在 terminal 裡跑。這代表你要能 SSH 進 HA host、然後再進去 Pi Agent 的 add-on 容器裡。如果你從來沒 SSH 過 HA，先把這個環境準備好：</p>
+      <ol class="steps">
+        <li>
+          <h3>裝 Advanced SSH &amp; Web Terminal add-on</h3>
+          <p>HA 側邊欄 → 設定（Settings）→ 附加元件（Add-ons）→ 附加元件商店 → 搜「Advanced SSH &amp; Web Terminal」→ 安裝。這是官方推薦的最簡單方式，安裝完在 add-on 頁面按「開啟網頁 UI（Open Web UI）」就是一個瀏覽器裡的 terminal。你不需要在筆電裝什麼 SSH 客戶端。</p>
+        </li>
+        <li>
+          <h3>進去之後你在 HA host</h3>
+          <p>打開之後看到黑底白字的畫面，這時候你是站在 HA host 上（可以看到 <code>/config/</code>、<code>/mnt/</code> 這些 HA 系統目錄），但你還沒進到 Pi Agent 的 add-on 容器裡。想確認自己在哪，跑 <code>ls /data/pi-agent/</code>——會顯示「No such file or directory」，因為 <code>/data/pi-agent/</code> 是容器裡面的路徑，HA host 上看不到。</p>
+        </li>
+        <li>
+          <h3>用 docker exec 進 Pi Agent 容器</h3>
+          <p>在 terminal 裡跑：<code>docker exec -it addon_local_woow_ha_pi_agent bash</code>。跑完你會看到 shell prompt 換了樣子（通常變成 <code>root@某串英數字:/#</code>），這代表你已經在容器內。這時候再跑 <code>ls /data/pi-agent/</code> 就會看到 sessions、models、rclone 這些子資料夾。</p>
+        </li>
+        <li>
+          <h3>接下來所有指令都在容器內跑</h3>
+          <p>後面章節的 <code>rclone config</code>、<code>rclone lsd</code>、<code>rclone config reconnect</code> 這些指令，都必須在容器內執行——因為 HA host 上根本沒有 rclone 執行檔。跑錯地方會顯示「rclone: command not found」，記得先確認你的 prompt 有沒有換過來。</p>
+        </li>
+      </ol>
+      <div class="callout warn"><strong>注意：</strong>add-on 容器的名字 <code>addon_local_woow_ha_pi_agent</code> 是「local repository（自己加倉庫）」安裝版本的名字。如果你未來從別的來源裝 Pi Agent（例如官方 registry），名字可能變成 <code>addon_woowtech_ha_pi_agent</code> 或類似的。找不到就跑 <code>docker ps | grep pi</code>，看實際名字是什麼再對應。</p></div>
+    </section>
+
+    <section id="steps" data-nav="rclone config 精靈">
+      <h2 data-icon="steps">rclone config 精靈：一步一按 Enter</h2>
+      <p>準備好之後，在 add-on 容器裡跑 <code>rclone config</code>。精靈會問一連串問題，看起來嚇人但其實大部分都是按 Enter 走預設。下面每一步我把「螢幕會顯示什麼、你要打什麼」都寫清楚：</p>
+      <ol class="steps">
+        <li>
+          <h3>選 n）新增遠端</h3>
+          <p>精靈開場會列你已經有的 remote（第一次是空的），然後問你 <code>e/n/d/r/c/s/q&gt;</code>。打 <code>n</code> 再按 Enter，代表「new remote（新增一個）」。</p>
+        </li>
+        <li>
+          <h3>Name 取個好記的名字</h3>
+          <p>問 <code>name&gt;</code>。這個名字之後 Pi Agent 設定會用到，建議取簡短好記的 <code>gdrive</code>。它跟 Google 帳號沒關係、純粹是給你自己認的。以後你多加一個 Dropbox 就叫 <code>dropbox</code>、多加一個 OneDrive 就叫 <code>onedrive</code>。</p>
+        </li>
+        <li>
+          <h3>Storage 選 drive</h3>
+          <p>精靈會列 40 幾家雲端讓你選，每一家有一個編號。找到 <code>drive</code>（Google Drive）打它的編號，或直接打 <code>drive</code> 也可以。按 Enter。</p>
+        </li>
+        <li>
+          <h3>client_id / client_secret 空著按 Enter（見警告）</h3>
+          <p>問 <code>Google Application Client Id&gt;</code>。個人一次性用，直接按 Enter 走 rclone 內建的 client_id 就夠。<code>client_secret</code> 同樣空白按 Enter。<strong>但看下面那個警告方塊</strong>——2026 年之後這個做法會不能用，重度使用者建議自己申請一組。</p>
+        </li>
+        <li>
+          <h3>Scope 選 1（完整存取）</h3>
+          <p>精靈會列五個選項，選 <code>1</code>：Full access all files, excluding Application Data Folder（完整存取除了 App 資料夾以外的所有檔案）。這個是最常用的權限，讓 rclone 可以在你 Drive 的任何資料夾放檔案、也能讀既有檔案。想更保守可以選 <code>3</code>（只能碰 rclone 自己建立的檔案），但這樣你手機的 Drive App 就看不到影片，失去意義。</p>
+        </li>
+        <li>
+          <h3>service_account_file 空著按 Enter</h3>
+          <p>問你有沒有 service account JSON 檔。個人用途沒有，空白按 Enter。</p>
+        </li>
+        <li>
+          <h3>Edit advanced config? 選 n</h3>
+          <p>問要不要改進階設定（傳輸 chunk 大小、代理、SSL 什麼的）。第一次用選 <code>n</code>，預設值對 99% 的家庭場景都夠。</p>
+        </li>
+        <li>
+          <h3>Use auto config? 選 n（HA 沒瀏覽器）</h3>
+          <p>問 <code>Use web browser to automatically authenticate rclone with remote?</code>。這是<strong>整個流程最容易錯的一步</strong>。<code>y</code> 是給筆電、桌機這種「本機就有 Firefox / Chrome」的環境用的——rclone 會自動開瀏覽器。但 HA host 是伺服器、沒有 GUI、開不了瀏覽器，選 <code>y</code> 會卡住在 <code>waiting for code...</code>。選 <code>n</code>，走 headless 手動模式。</p>
+        </li>
+        <li>
+          <h3>螢幕會印出一段 URL，用你自己的電腦或手機打開</h3>
+          <p>精靈會印出類似 <code>https://accounts.google.com/o/oauth2/auth?access_type=offline&amp;client_id=...&amp;scope=...&amp;response_type=code</code> 這樣一長串。<strong>整段複製</strong>（含中間的 <code>:</code>、<code>_</code>、<code>&amp;</code>），貼到你手機或筆電的瀏覽器打開。這時候你會看到熟悉的 Google 登入頁。</p>
+        </li>
+        <li>
+          <h3>Google 登入 → 授權 → 拿到驗證碼</h3>
+          <p>用你要接的 Google 帳號登入。可能看到「Google 尚未驗證此應用程式」的警告——這是因為 rclone 用的是共用 client_id，不是每個使用者都幫它「認證」過。點「進階」→「前往 rclone（不安全）」→ 繼續。授權完 Google 會顯示一段驗證碼（Verification code），複製那段驗證碼。</p>
+        </li>
+        <li>
+          <h3>驗證碼貼回 terminal</h3>
+          <p>回到你的 terminal，rclone 這時候在等 <code>Enter verification code&gt;</code>。把剛才那段驗證碼貼進去按 Enter。看到 <code>Got code</code> 就代表 OAuth 完成、token 已存進 <code>rclone.conf</code>。</p>
+        </li>
+        <li>
+          <h3>Configure this as a Shared Drive? 選 n</h3>
+          <p>問你這個 remote 要不要接你公司的共用雲端硬碟（Team Drive）。個人 Google 帳號選 <code>n</code>。</p>
+        </li>
+        <li>
+          <h3>看到摘要，選 y 存檔</h3>
+          <p>精靈會秀你剛才填的所有值（type = drive、scope = drive 之類），問 <code>Keep this "gdrive" remote?</code>，選 <code>y</code>（keep）。回到主選單後打 <code>q</code>（quit）離開精靈。</p>
+        </li>
+      </ol>
+      <div class="callout warn"><strong>注意（2026 年 client_id 政策）：</strong>rclone 官方近期加了一段警告：<strong>共用（內建）client_id 會在 2026 年停用</strong>，rclone 官方文件已把「Making your own client_id」從「optional（選項）」改成「strongly recommended（強烈建議）」。個人少量使用短期內還能用，但如果你長期依賴這個上傳（比如每週產十幾支影片），花 15 分鐘去 Google Cloud Console 申請一組自己的 client_id / client_secret 貼回精靈裡，能避免 2026 年之後突然失效。步驟麻煩但一次搞定，rclone 官網 <code>rclone.org/drive/#making-your-own-client-id</code> 有完整教學。</p></div>
+      <div class="callout danger"><strong>危險：</strong>驗證碼那段是「一次性通行證」，貼到 terminal 之後 rclone 會拿去跟 Google 換一張長期 token。<strong>不要把驗證碼截圖貼到 LINE 群、Discord 求助</strong>——雖然它一分鐘內會失效，但那一分鐘內誰拿到都能綁到自己的 rclone 冒充你。同理，terminal 印出來的那段 URL 也不要公開，那條 URL 綁的是「這一次授權請求」，誰打開誰就能授權自己的 Google 帳號進去。</p></div>
+    </section>
+
+    <section id="test" data-nav="驗證有沒有設好">
+      <h2 data-icon="test">驗證：真的能通了嗎</h2>
+      <p>精靈跑完你可能還是不放心「這樣就好了？」，來確認一下。在 add-on 容器裡跑：</p>
+      <pre class="code-block"><code>rclone lsd gdrive:</code></pre>
+      <p>這個指令的意思是「列出（ls）gdrive 這個 remote 根目錄的資料夾（d = directories only）」。跑完應該會列一堆你 Google Drive 首頁看到的資料夾——「我的雲端硬碟」、「共用檔案」、你自己建的資料夾都會出現。長這樣：</p>
+      <pre class="code-block"><code>          -1 2024-03-15 08:22:14        -1 相簿
+          -1 2025-06-20 14:11:03        -1 工作備份
+          -1 2026-01-08 22:45:56        -1 家裡影片</code></pre>
+      <p>看到列表 = 成功。如果什麼都沒印出（空的但沒錯誤訊息），代表你的 Drive 根目錄真的沒東西，也算成功——去建個資料夾再試就會看到。</p>
+      <p>如果看到錯誤訊息，對應解法看下面「常見卡關」那節。最常見的兩種：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>錯誤訊息</th>
+            <th>意思</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>Failed to lsd: couldn't list directory: Get "https://...": oauth2: token expired</code></td>
+            <td>token 過期，跑 <code>rclone config reconnect gdrive:</code> 重新 OAuth</td>
+          </tr>
+          <tr>
+            <td><code>Failed to lsd: didn't find section in config file</code></td>
+            <td>你 remote 名字打錯了，跑 <code>rclone config</code> 看一下實際名字（有些人打成 <code>Gdrive:</code> 大寫，這是錯的）</td>
+          </tr>
+          <tr>
+            <td><code>rclone: command not found</code></td>
+            <td>你不在 add-on 容器裡。回去看前提那節，重跑 <code>docker exec</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <p>還想更確定？跑一個測試上傳：</p>
+      <pre class="code-block"><code>echo "hello from pi agent" &gt; /tmp/test.txt
+rclone copy /tmp/test.txt gdrive:</code></pre>
+      <p>跑完打開手機的 Google Drive App，最上面「最近」那個分頁應該就看到 <code>test.txt</code>。看到就是穩了，這個測試檔可以直接在手機 Drive 上刪掉。</p>
+      <div class="callout tip"><strong>提示：</strong>rclone 每個指令都可以加 <code>-v</code>（verbose）看它到底在幹嘛，加 <code>-vv</code>（extra verbose）看得更細。除錯的時候超好用，例如 <code>rclone lsd gdrive: -vv</code> 會印出它連到哪個 API endpoint、token 是什麼時候發的、response 花多久。平常不用加。</p></div>
+    </section>
+
+    <section id="integration" data-nav="接進影片管線">
+      <h2 data-icon="integration">把 gdrive 接進 pitch_video 管線</h2>
+      <p>rclone 設好只完成一半——Pi Agent 還不知道「影片跑完要傳去哪」。你要告訴 pitch_video skill 的 config：把成品送去 <code>gdrive:某某資料夾</code>。實作細節每個 skill 版本不太一樣，這一節講最常見的三種寫法。</p>
+      <p>先在 Google Drive 手動建一個資料夾當家（比如 <code>PiAgent/Videos</code>）。你也可以省略這步，rclone 上傳的時候會自動建，但先建好可以順便設分享權限、加上 icon 認明。</p>
+      <p>然後打開 pitch_video skill 的 <code>SKILL.md</code> 或它自己的 README 找 <code>upload_to</code> 或 <code>output_upload</code> 之類的欄位。三種常見寫法：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Skill 寫法</th>
+            <th>你要填什麼</th>
+            <th>備註</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>YAML frontmatter 裡 <code>upload_to: ...</code></td>
+            <td><code>upload_to: gdrive:PiAgent/Videos/</code></td>
+            <td>最單純，改完存檔就生效</td>
+          </tr>
+          <tr>
+            <td>單獨的 <code>config.yaml</code> 或 <code>.env</code></td>
+            <td><code>RCLONE_DEST=gdrive:PiAgent/Videos/</code></td>
+            <td>skill 啟動時讀環境變數</td>
+          </tr>
+          <tr>
+            <td>直接改 <code>push_drive.sh</code> 或類似 shell script</td>
+            <td>把 <code>rclone copy "$OUTPUT" gdrive:</code> 改成 <code>rclone copy "$OUTPUT" gdrive:PiAgent/Videos/</code></td>
+            <td>硬 code 進 script，最直接但比較粗</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>三種寫法的<strong>結尾都要有斜線 <code>/</code></strong>——沒斜線 rclone 會把 <code>gdrive:PiAgent/Videos</code> 當成「叫 Videos 的檔案」而不是資料夾，會踩雷。</p>
+      <p>改完之後跑一次完整影片管線（<a href="ch17_video_pipeline.html">第 17 章</a>教過），最後一個階段你會看到類似這樣的 log：</p>
+      <pre class="code-block"><code>[push_drive] Uploading final.mp4 (42MB) to gdrive:PiAgent/Videos/
+[push_drive] Transferred: 42.1 MiB / 42.1 MiB, 100%, 3.2 MiB/s
+[push_drive] Uploaded final.mp4 successfully in 13s</code></pre>
+      <p>沒看到 push_drive 的 log？代表 skill 沒讀到你的設定，或設定寫在錯的地方。回頭確認 <code>upload_to</code> 那欄有沒有存到、有沒有拼錯 remote 名字（大小寫敏感）。</p>
+      <div class="callout tip"><strong>提示：</strong>資料夾名字建議用英數，不要用中文。中文技術上 rclone 能吃，但你之後想從 terminal <code>rclone ls gdrive:我的影片/</code> 會少一個 URL-encoding 的機會踩雷。取 <code>PiAgent/Videos/</code>、<code>Home/Recordings/</code> 這種一目瞭然的英文，日後你自己也好敲。</p></div>
+    </section>
+
+    <section id="restore" data-nav="token 存哪">
+      <h2 data-icon="restore">token 存哪、跟 HA snapshot 什麼關係</h2>
+      <p>做完 OAuth 之後，你剛才辛苦換來的 token 存在這個位置：</p>
+      <pre class="code-block"><code>/data/pi-agent/rclone/rclone.conf</code></pre>
+      <p>這個檔案長這樣（截取重點）：</p>
+      <pre class="code-block"><code>[gdrive]
+type = drive
+scope = drive
+token = {"access_token":"ya29.a0Af...","token_type":"Bearer","refresh_token":"1//0e...","expiry":"2026-08-14T15:30:00.000000Z"}
+team_drive =</code></pre>
+      <p>看到那段 <code>refresh_token</code> 沒有？<strong>那段就是靈魂</strong>——rclone 拿它去跟 Google 續期短期的 access_token，讓你不用每天重跑 OAuth。這也是為什麼「rclone.conf 不要外流」——refresh_token 等於長期通行證，被別人拿到就能持續用你帳號傳檔（除非你在 Google 那邊撤授權）。</p>
+      <p>然後看它的路徑：<code>/data/pi-agent/</code> 是 Pi Agent add-on 的持久儲存區。這個資料夾符合兩個條件：</p>
+      <ol class="steps">
+        <li>
+          <h3>add-on 升級不會清掉</h3>
+          <p>你升級 Pi Agent 到新版（<a href="ch21_upgrade.html">第 21 章</a>會教），add-on 本身的檔案系統會換一份新的，但 <code>/data/</code> 底下的東西會保留。所以升級後不用重跑 OAuth。</p>
+        </li>
+        <li>
+          <h3>HA snapshot 會備份到</h3>
+          <p>HA 的整機備份（<a href="ch20_backup.html">第 20 章</a>）會把 add-on 的 <code>/data/</code> 一起打包。所以你哪天 HA 主機壞了、換 SD 卡從 snapshot 還原，rclone.conf 會跟著回來——不用重跑 OAuth，你重新開機 Pi Agent 影片就繼續傳。</p>
+        </li>
+      </ol>
+      <p>那什麼時候會需要重跑 OAuth？三種情況：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>情況</th>
+            <th>要不要重跑 OAuth</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Pi Agent 升級 / 重啟 add-on</td>
+            <td>不用</td>
+          </tr>
+          <tr>
+            <td>HA 從 snapshot 還原（同一台或新機）</td>
+            <td>不用（token 跟著回來）</td>
+          </tr>
+          <tr>
+            <td>你去 Google 帳號 → 安全性 → 移除 rclone 授權</td>
+            <td>要重跑（token 已作廢）</td>
+          </tr>
+          <tr>
+            <td>你把 rclone.conf 誤刪</td>
+            <td>要重跑</td>
+          </tr>
+          <tr>
+            <td>Google 判定「異常活動」把 token 撤了（很少見）</td>
+            <td>要重跑</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout warn"><strong>注意：</strong>Pi Agent 未來的備份章節（<a href="ch20_backup.html">第 20 章</a>）會更詳細講「什麼進 snapshot、什麼不進」。這裡先記得 rclone.conf 是進的、Google 帳號密碼是沒有存在你 HA 任何地方的（OAuth 的重點就是密碼不落地）。所以就算 snapshot 檔案外流，泄的最多是 refresh_token（你去 Google 撤授權就作廢），密碼絕對不會外流。</p></div>
+    </section>
+
+    <section id="remote" data-nav="換別家雲端">
+      <h2 data-icon="remote">想改用 Dropbox / OneDrive / S3</h2>
+      <p>rclone 支援 40 幾家，換一家的成本是「多跑一次 <code>rclone config</code>」。你甚至可以<strong>同時保留多家</strong>——把最重要的 Google Drive 傳一份、順便備份一份到 Dropbox 當異地備援，兩個 remote 並存。步驟一樣：</p>
+      <ol class="steps">
+        <li>
+          <h3>再跑一次 rclone config</h3>
+          <p>選 <code>n</code>（new）加一個新 remote，name 取好記的 <code>dropbox</code> / <code>onedrive</code> / <code>s3</code>。</p>
+        </li>
+        <li>
+          <h3>Storage 選對應的家</h3>
+          <p>Dropbox 選 <code>dropbox</code>、OneDrive 選 <code>onedrive</code>、S3 選 <code>s3</code>（再選 provider AWS 或 CloudFlare R2）。每一家的欄位略有不同，但精靈都會幫你走：</p>
+          <ul>
+            <li><strong>Dropbox</strong>：跟 Google Drive 幾乎一樣，OAuth 流程一樣要選 <code>n</code>（headless）拿 URL 貼驗證碼。</li>
+            <li><strong>OneDrive</strong>：多一步問你是 personal 還是 business 帳號（onedrive.com vs Microsoft 365）。個人選 personal，公司帳號選 business。</li>
+            <li><strong>S3</strong>：不用 OAuth，改成貼 access_key_id 跟 secret_access_key（去 AWS Console → IAM 建）。適合已經有 AWS 帳號的人。</li>
+          </ul>
+        </li>
+        <li>
+          <h3>pitch_video 的 upload_to 改對應的 remote</h3>
+          <p>把 <code>gdrive:</code> 改成 <code>dropbox:</code> 或 <code>onedrive:</code> 或 <code>s3:mybucket/</code>。設完照樣可以跑 <code>rclone lsd dropbox:</code> 確認。</p>
+        </li>
+        <li>
+          <h3>想兩家一起傳？寫兩段 rclone copy</h3>
+          <p>Skill 的 push script 裡加兩行：<code>rclone copy final.mp4 gdrive:PiAgent/Videos/</code> 跟 <code>rclone copy final.mp4 dropbox:PiAgent/Videos/</code>。兩家 quota 都會消耗，但你多一份備援。</p>
+        </li>
+      </ol>
+      <div class="callout tip"><strong>提示：</strong>如果你家有 NAS（Synology、QNAP、TrueNAS），rclone 也支援 SFTP、SMB、WebDAV，可以把影片直接同步進 NAS，完全不動用外部雲端。這條路網路速度快（純內網）、也不吃你雲端 quota。適合有大量影片檔的人。指令一樣是 <code>rclone config</code> → Storage 選 sftp。</p></div>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>授權 URL 太長打不開、貼到瀏覽器變成搜尋</h3>
+          <p>rclone 印出的 URL 有 200-400 個字元、中間充滿 <code>&amp;</code>、<code>:</code>、<code>_</code> 這些符號，很多人在 terminal 裡「反白到一半」漏掉了尾巴。做法：（a）在瀏覽器 terminal（比如 Advanced SSH Web UI）直接三擊全選那一整行、Ctrl+C 複製。（b）貼到瀏覽器的<strong>網址列</strong>，不是搜尋列——貼進 Google 首頁的搜尋框會被當關鍵字。（c）如果你用手機瀏覽器貼，長按網址列選「貼上並前往」，別按錯選成「搜尋」。實在不行，把 URL 用電子郵件寄給自己，在信裡點連結。</p>
+        </li>
+        <li>
+          <h3>Google 顯示「Google 尚未驗證此應用程式」不敢按繼續</h3>
+          <p>這是預期的畫面、不是 bug。因為 rclone 用的 client_id 是所有人共用的，Google 沒辦法「認證」rclone 這個 App（畢竟每個使用者的用途都不同）。做法：點畫面下方的<strong>「進階（Advanced）」</strong>展開 → 點<strong>「前往 rclone（不安全）」</strong>連結 → 繼續授權。這只是 Google 的保守警告，你信 rclone 就繼續。想避免看到這個畫面，就是前面提過的「自己去 Google Cloud Console 申請 client_id」，申請完把自己的 App 標成 verified 就不會跳警告。</p>
+        </li>
+        <li>
+          <h3>上傳失敗顯示 quota exceeded</h3>
+          <p>Google Drive 個人免費空間 15 GB（跟 Gmail、Google Photos 共用），影片吃很兇很快就爆。做法（優先順序）：（a）先手動去 Drive 清一波用不到的舊檔（Gmail 的大信件附件是常見大宗）。（b）改傳到 <a href="ch19_rclone.html#remote">上一節</a>提到的 Dropbox、OneDrive 分散 quota。（c）長期方案是 Google One 升級（100 GB 一年約 700 台幣、200 GB 約 900 元），或改用 S3 / R2 這種以量計價的雲儲存（每 GB 幾分錢）。（d）在 skill 的 push script 加個「傳完就刪本地檔」的邏輯，至少 HA host 上不會累積。</p>
+        </li>
+        <li>
+          <h3>token 過期 / 好久沒用之後上傳報 401</h3>
+          <p>refresh_token 一般可以續期很久（Google 官方說「不會過期」但實際上有些邊角情況會失效——例如你長期沒用、Google 帳號改過密碼、或 Google 判定異常）。錯誤訊息通常是 <code>oauth2: token expired</code> 或 <code>401 Unauthorized</code>。做法：在 add-on 容器裡跑 <code>rclone config reconnect gdrive:</code>，會走一次快速版的 OAuth（跟精靈一樣印 URL 貼驗證碼，但省掉前面那些選項）。跑完 token 就更新了。</p>
+        </li>
+        <li>
+          <h3>rclone lsd 一直很慢 / 卡住不回應</h3>
+          <p>兩個常見原因：（a）你家網路對 Google 不順（有些 ISP 對 accounts.google.com 有降速）。跑 <code>ping accounts.google.com</code> 看有沒有丟包，有的話重開路由器、或換 Google DNS <code>8.8.8.8</code>。（b）rclone 在做「列出整個根目錄」，你 Drive 檔案超多（幾萬個）時，第一次 lsd 會慢好幾十秒。這是正常的。改用 <code>rclone lsd gdrive:PiAgent/</code> 只列子資料夾會快很多。</p>
+        </li>
+        <li>
+          <h3>docker exec 進去之後 prompt 沒變、指令一樣說 command not found</h3>
+          <p>你可能連 docker exec 都沒跑成功（HA 有些版本沒有 docker command，是用 <code>ha</code> CLI 或直接 podman）。做法：先跑 <code>docker ps</code> 看有沒有回列表——沒有的話換 <code>ha addons info local_woow_ha_pi_agent</code>，再看 add-on 頁面右上角有沒有「開啟網頁終端機」按鈕（有些 add-on 內建 shell），從那邊進去就直接在容器內。真的都不行，跟 Pi Agent 客服拿最新的容器名字。</p>
+        </li>
+        <li>
+          <h3>影片跑完 push_drive 那一段整個沒執行</h3>
+          <p>可能三個原因：（a）你 upload_to 沒設對，回<a href="ch19_rclone.html#integration">上一節</a>檢查。（b）你的 pitch_video skill 版本太舊還沒支援自動上傳。看 skill 的 CHANGELOG，如果沒 <code>upload_to</code> 這個欄位就是版本太舊，去 GitHub 拉新版。（c）skill 的 push_drive.sh 因為 rclone 沒設好整個被 skip 掉——去看 skill 的執行 log，會告訴你它為什麼跳過。</p>
+        </li>
+        <li>
+          <h3>OneDrive 傳到一半失敗 / 有些檔名 Google Drive 可以但 OneDrive 不行</h3>
+          <p>OneDrive 對檔名的限制比 Google Drive 嚴（<code>:</code>、<code>?</code>、<code>*</code>、<code>&lt;</code>、<code>&gt;</code>、<code>|</code> 這些字元都不能用）。你的影片檔名如果含這些字元（例如「客廳：先開燈？」）OneDrive 會拒收。做法：在 rclone 那邊加 <code>--onedrive-server-side-across-configs</code> 或在檔名生成時就用底線代替特殊字元。最簡單的做法是叫 pitch_video skill 產生檔名時就走英數限制（例如 <code>living_room_lights_20260814.mp4</code>）。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>一定要用 Google Drive 嗎？我不想給 Google 更多我的資料。</summary>
+        <div class="body">不用。rclone 支援 40 多家雲端，這章舉 Google Drive 是因為「大多數人手機已經有 Drive App、看影片最順」。想避開 Google 可以選 <strong>Dropbox</strong>（跟 Drive 差不多好用）、<strong>OneDrive</strong>（有 Microsoft 帳號的人配 Office 365 順手）、<strong>iCloud Drive</strong>（Apple 生態圈完美整合，但 rclone 只支援有限功能）。更保守的選擇是完全不上雲，用 rclone 的 <strong>SFTP / WebDAV / SMB</strong> mode 直接傳到你家 NAS 或另一台電腦，這樣連家門都沒出。指令跟這章一樣是 <code>rclone config</code>，只差在 Storage 那步選不同項目。</div>
+      </details>
+      <details class="faq">
+        <summary>rclone 傳檔會消耗我家的網路頻寬嗎？</summary>
+        <div class="body">會，而且是消耗<strong>上傳頻寬</strong>（家用網路的上傳通常比下載慢很多）。你一支 300MB 的影片在 30 Mbps 上傳的網路，大約要 80 秒。傳的時候你視訊會議、直播如果剛好也在用上傳，會互搶。建議：（a）如果你會在意，去 rclone 的 skill config 加 <code>--bwlimit 5M</code>（限速 5 MB/s）留頻寬給其他事。（b）把影片上傳排在半夜跑，家裡沒人搶。（c）家用 Wi-Fi 差的話，HA host 接有線比較穩。上傳流量不算 Google Drive quota，只算你 ISP 的月流量（無限量方案不用擔心）。</div>
+      </details>
+      <details class="faq">
+        <summary>我有兩台 HA（比如老家一台、公司一台），可以共用同一個 rclone 設定嗎？</summary>
+        <div class="body">可以。做法是把設定好的 <code>/data/pi-agent/rclone/rclone.conf</code> 從 A 台複製到 B 台的同一個位置就行（用 <code>scp</code> 或 HA 的檔案管理員都可以）。B 台開機後 rclone 直接吃這份 config、共用同一個 refresh_token、傳到同一個 Drive 帳號。<strong>但兩台上傳可能會撞名</strong>——如果兩支影片都叫 <code>final.mp4</code>，後傳的會蓋掉前傳的。解決方式：在 skill 的檔名生成規則裡加 hostname，讓 A 台傳 <code>final_hostA.mp4</code>、B 台傳 <code>final_hostB.mp4</code>。或者一台傳 <code>gdrive:PiAgent/HouseA/</code>、另一台傳 <code>gdrive:PiAgent/HouseB/</code> 分家。</div>
+      </details>
+      <details class="faq">
+        <summary>token 被別人拿到怎麼辦？</summary>
+        <div class="body">立刻做兩件事：（1）到 <strong>Google 帳號 → 安全性 → 你有存取權的第三方應用程式和服務</strong> → 找到 rclone → 移除存取權。這步做完，那張 token 立刻作廢，對方拿去也沒用。（2）在你 HA 上重跑 <code>rclone config reconnect gdrive:</code> 拿一張新的。這樣你自己還能繼續傳，作廢的只是外流那張。如果你不確定是不是外流、只是覺得可疑，一樣做這兩步一次「洗牌」，成本很低（重跑 OAuth 只花一分鐘）。順便建議這時候在 Google 帳號的<strong>「安全性事件」</strong>看一下最近登入紀錄，確認沒有奇怪的 IP。</div>
+      </details>
+      <details class="faq">
+        <summary>rclone.conf 我可以直接手動編輯嗎？不想每次都跑精靈。</summary>
+        <div class="body">可以，rclone.conf 就是純 INI 格式文字檔，任何編輯器都能改。常見的手動編輯場景：改 <code>scope</code>（從 <code>drive</code> 收窄成 <code>drive.file</code>）、改 <code>team_drive</code> ID、加一段 <code>root_folder_id</code> 讓 rclone 只看你 Drive 裡某個特定子資料夾。<strong>但 token 那段千萬別手改</strong>——它是 JSON、字段順序敏感、還帶 base64 encoded 內容，改壞了 rclone 就完全連不上，只能重跑 OAuth。改之前先 <code>cp rclone.conf rclone.conf.bak</code> 備份。</div>
+      </details>
+      <details class="faq">
+        <summary>有辦法讓 rclone 只傳新的、不重傳已經在 Drive 上的檔案嗎？</summary>
+        <div class="body">有，用 <code>rclone copy</code> 就已經是這個行為了——它會比對來源跟目的地，只傳目的地沒有的檔案（比對 size + modtime）。如果你想更嚴格（連檔案內容都比對），加 <code>--checksum</code>。反過來，<code>rclone sync</code> 是「把目的地變成跟來源一模一樣」——來源沒有的檔案會被<strong>刪掉</strong>，很危險，第一次跑務必加 <code>--dry-run</code> 預演。Pi Agent 的 push_drive.sh 通常用 <code>copy</code> 不用 <code>sync</code>，就是這個安全考量。</div>
+      </details>
+      <details class="faq">
+        <summary>如果我把 Pi Agent 換到另一個 HA（不是 restore、是新裝），token 能搬過去嗎？</summary>
+        <div class="body">可以。把舊 HA 的 <code>/data/pi-agent/rclone/rclone.conf</code> 複製到新 HA 對應位置（要先在新 HA 裝好 Pi Agent、跑一次好讓 <code>/data/pi-agent/</code> 資料夾產生）就行。或者，最偷懶的做法：在舊 HA 做一次 <strong>Partial Backup</strong> 只勾 Pi Agent add-on，把備份檔 restore 到新 HA。這樣不只 rclone.conf 過去，連 API keys、Session 歷史都一起搬過去。就跟<a href="ch20_backup.html">第 20 章</a>做整機備份是同一個機制，只是勾的東西不一樣。</div>
+      </details>
+      <details class="faq">
+        <summary>下一章要看什麼？</summary>
+        <div class="body">你現在會用 rclone 把影片自動送去 Drive，等於把「創作 → 儲存 → 分享」整條線接起來了。<a href="ch20_backup.html">下一章</a>會拉高一層講「這些東西——你辛苦調好的 API keys、幾百輪的 Session 對話、剛剛設好的 rclone.conf——到底怎麼被 HA snapshot 備份、還原之後要補做什麼」。這章你其實已經摸到一半（rclone.conf 那節），下一章補完全景。做完你就可以放心大膽玩 Pi Agent，不怕哪天 SD 卡壞了要從頭來過。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch18_video_tools.html">
+        <span class="label">← 上一章</span>
+        <span class="title">18 · 首次 720MB 下載</span>
+      </a>
+      <a class="next" href="ch20_backup.html">
+        <span class="label">下一章 →</span>
+        <span class="title">20 · 對話與金鑰備份</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

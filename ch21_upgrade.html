@@ -1,0 +1,467 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 21 章 · 升級 Pi Agent：v0.13.0 API key 搬家踩雷筆記 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Pi Agent 升級流程與版本變更提醒：v0.13.0 的 API key 從 add-on config 移到 pi-web UI、reset_video_tools 該怎麼用、版本回退策略。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch21_upgrade.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 21 章 · 升級 Pi Agent：v0.13.0 API key 搬家踩雷筆記 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Pi Agent 升級流程與版本變更提醒：v0.13.0 的 API key 從 add-on config 移到 pi-web UI、reset_video_tools 該怎麼用、版本回退策略。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch21_upgrade.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 21 章 · 升級 Pi Agent：v0.13.0 API key 搬家踩雷筆記 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Pi Agent 升級流程與版本變更提醒：v0.13.0 的 API key 從 add-on config 移到 pi-web UI、reset_video_tools 該怎麼用、版本回退策略。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html" class="active">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要注意升級</a>
+      <a href="#concept">版本時間軸</a>
+      <a href="#what">0.13.0 到底改了什麼</a>
+      <a href="#steps">升級 SOP</a>
+      <a href="#done">升級後檢查清單</a>
+      <a href="#restore">怎麼降回舊版</a>
+      <a href="#compare">升級後症狀對照</a>
+      <a href="#url">看發布說明</a>
+      <a href="#auto">要不要自動更新</a>
+      <a href="#troubleshoot">升級卡關手冊</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 21 章</div>
+      <h1>升級 Pi Agent：v0.13.0 API key 搬家踩雷筆記</h1>
+      <p class="lead">Pi Agent 幾乎每個月都會有一版更新，多數是修 bug 或加小功能，直接按下去就好。但 <strong>v0.13.0</strong> 這一版動了一個很大的東西——把 API 金鑰欄位從 add-on 設定分頁整組搬到 pi-web 的 Models 面板裡面。第一次遇到的人會嚇一跳：「我原本填 GLM key 的欄位不見了？金鑰被刪了嗎？」沒有，是搬家。這章教你怎麼安全地升級、遇到 breaking change 時該怎麼補救、以及為什麼不建議開自動更新。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼要注意升級">
+      <h2 data-icon="why">為什麼升級這件事值得單獨開一章</h2>
+      <p>Home Assistant 生態的 add-on 更新頻率比一般 App 高很多——Pi Agent 從 <code>0.1.0</code> 到 <code>0.13.1</code> 大概半年就出了 20 幾版。多數是幕後修正（Ingress 相關的 nginx 修 bug、log 訊息改得更清楚），你按「更新」直接走人不會有事。但每隔一段時間會出現一種<strong>「打破你既有設定」的版本</strong>，官方叫它 breaking change。</p>
+      <p>Pi Agent 目前最有感的一次就是 <code>v0.13.0</code>：本來你在 HA 的 Add-on → 設定分頁能看到「GLM API Key」、「OpenAI API Key」、「Anthropic API Key」……七個密碼欄位，升上去之後<strong>整組通通消失</strong>。畫面乾淨到讓人以為裝壞了。實際上金鑰沒被刪，只是它們現在住在<a href="ch6_paste_key.html">第 6 章</a>講的那個 pi-web Models 面板裡面，需要你手動再貼一次。</p>
+      <p>這章想給你三個實用的能力：</p>
+      <ul>
+        <li><strong>升級前的固定動作</strong>——做一次 HA snapshot（<a href="ch20_backup.html">第 20 章</a>教的）、把當下的金鑰複製到密碼管理器，就算升壞了也能 3 分鐘救回來。</li>
+        <li><strong>看得懂 CHANGELOG</strong>——每個版本裡面有沒有 <em>Breaking</em>、<em>Migration required</em> 這幾個關鍵字，看到了就要停下來讀完再按更新。</li>
+        <li><strong>降級（downgrade）策略</strong>——Pi Agent 沒有一鍵回退按鈕，靠的就是升級前那個 snapshot。這章告訴你怎麼還原、還原後對話會不會不見。</li>
+      </ul>
+      <div class="callout tip"><strong>提示：</strong>養成「每次按更新前先做 snapshot、把金鑰記好」的兩步驟習慣，之後任何 breaking change 都只是花你 5 分鐘補貼金鑰，而不是「東西壞了不知道怎麼辦」的慌張。</div>
+    </section>
+
+    <section id="concept" data-nav="版本時間軸">
+      <h2 data-icon="history">Pi Agent 版本時間軸：你會經過哪些關卡</h2>
+      <p>如果你今天才裝 Pi Agent，直接就是最新版，這節可以當背景知識略讀。如果你是從舊版一路升上來的老用戶，這張時間軸會告訴你「哪幾個版本我升上去要特別注意」。</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>版本</th><th>做了什麼</th><th>要不要特別注意</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>v0.1.0 ~ v0.7.x</code></td>
+            <td>早期版本，主要在修 HA Ingress 的相容性——側邊欄按鈕出不來、iframe 白畫面、<code>/_next/*</code> 404、RSC prefetch 逃出 ingress 前綴等一連串 Next.js 應用跑在 HA 底下才會遇到的問題。</td>
+            <td>沒在用的話跳過。這區間的更新頻繁，但都是修 bug，升上去就對了。</td>
+          </tr>
+          <tr>
+            <td><code>v0.8.0</code></td>
+            <td>三個運維上的破口一起修：sidebar 按鈕自動出現（不用再自己去點 Show in sidebar）、開機時每家 provider 都做一次 self-check 把 401 直接寫在 Logs 裡、pi-web 的 stderr 併進 s6 log 免得錯誤看不到。</td>
+            <td>這一版之後 sidebar 消失的問題基本不會再出現。</td>
+          </tr>
+          <tr>
+            <td><code>v0.9.x</code></td>
+            <td>Provider 從 GLM+MiniMax 擴充到 GLM/MiniMax/OpenAI/OpenRouter 四家，並補上一堆 PWA 相關的資源 404 修正（<code>manifest.webmanifest</code>、<code>/icons/*</code>、字型檔）。</td>
+            <td>用戶端沒感覺，是背景清乾淨。</td>
+          </tr>
+          <tr>
+            <td><code>v0.10.0</code></td>
+            <td>再加三家 provider：Anthropic 直連、DeepSeek 直連、Groq——整套提升到 <strong>7 家</strong>。更重要的是加了 <strong>Supervisor watchdog</strong>（pi-web 卡死會自動被重啟）跟 <strong>worktree 持久化</strong>（<code>HOME</code> 改指 <code>/data/pi-agent/home</code>，你的 pi coding agent 對話與檔案不會因為升級被清掉）。</td>
+            <td>從 <code>v0.9.x</code> 或更早升上來的人這一版是里程碑——你的對話終於在升級之間保住了。</td>
+          </tr>
+          <tr>
+            <td><code>v0.11.0</code></td>
+            <td>影片管線第一次進駐：Python venv、Playwright、Chromium、ffmpeg、rclone 全部裝好，第一次開機會下載約 <strong>720 MB</strong>（詳細在<a href="ch18_video_tools.html">第 18 章</a>）。<code>backup_exclude</code> 也調整了，把可重建的 <code>venv/</code> 跟 <code>playwright-cache/</code> 從 snapshot 裡剃除保持備份精簡。</td>
+            <td>升級後要留一段時間讓 <code>video-tools-init</code> 跑完，Logs 分頁看得到進度。等它跑完再開始用影片功能。</td>
+          </tr>
+          <tr>
+            <td><code>v0.12.0</code></td>
+            <td>Skills 系統的完整支援：映像檔裡加了 <code>git</code> + <code>openssh-client</code>，這樣 pi-web 的「從 GitHub 加 Skill」按鈕才能實際去 <code>git clone</code>。</td>
+            <td>沒在用 Skills 的話沒感覺；有在用的話這一版之後 <a href="ch15_install_skill.html">Skill 安裝流程</a>才會穩定。</td>
+          </tr>
+          <tr>
+            <td><code>v0.13.0</code></td>
+            <td><strong>Breaking</strong>：API key 從 add-on 設定分頁整組移到 pi-web Models 面板；同時加了三個 container 層級選項 <code>log_level</code>、<code>timezone</code>、<code>reset_video_tools</code>、<code>env_vars</code>，介面完全改頭換面。</td>
+            <td><strong>本章重點。</strong>詳細見下一節。</td>
+          </tr>
+          <tr>
+            <td><code>v0.13.1</code></td>
+            <td>修 nginx 的 <code>client_max_body_size</code>——升上去之前傳超過 1 MB 的圖片會回 <code>413 Request Entity Too Large</code>，看起來像是 HA Ingress 的限制其實是 Pi Agent 自己的 sidecar 沒設。修完可以正常上傳到 100 MB。</td>
+            <td>常常給 AI 看照片（家電型號、平面圖、螢幕截圖）的人一定要升。</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout"><strong>觀念：</strong>版號的三段（例如 <code>0.13.1</code>）依 semver 慣例分別代表 major / minor / patch。Pi Agent 現在還在 <code>0.x</code>，意思是「還沒到 1.0 正式版，中間版號（minor）拉高就可能帶 breaking change」。<code>0.13.0</code> 這種 minor 版號跳一格的更新最值得停下來讀 CHANGELOG。</div>
+    </section>
+
+    <section id="what" data-nav="0.13.0 到底改了什麼">
+      <h2 data-icon="warning">v0.13.0 breaking 的來龍去脈</h2>
+      <p>這是這章最重要的一節，因為 90% 從舊版升上來的人踩的坑都是這個。</p>
+      <p><strong>舊版（v0.12.x 及以前）的世界</strong>：打開 HA → Add-on → Pi Agent → <em>設定</em> 分頁，你會看到一整排密碼欄位——</p>
+      <pre class="code-block"><code>api_key:              &lt;GLM 金鑰&gt;
+minimax_api_key:      &lt;MiniMax 金鑰&gt;
+openai_api_key:       &lt;OpenAI 金鑰&gt;
+openrouter_api_key:   &lt;OpenRouter 金鑰&gt;
+anthropic_api_key:    &lt;Anthropic 金鑰&gt;
+deepseek_api_key:     &lt;DeepSeek 金鑰&gt;
+groq_api_key:         &lt;Groq 金鑰&gt;</code></pre>
+      <p>你在這裡貼金鑰、按儲存、按重啟，pi-web 就會在開機時把這些 key 寫進 <code>/data/pi-agent/models.json</code>，然後聊天頁就跑得動。</p>
+      <p><strong>新版（v0.13.0 之後）的世界</strong>：那七個密碼欄位<strong>整組刪除</strong>。設定分頁改成放四個 container 層級的選項：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>選項</th><th>意義</th><th>預設</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>log_level</code></td><td>log 詳細度：<code>error / warn / info / debug</code></td><td><code>info</code></td></tr>
+          <tr><td><code>timezone</code></td><td>時區的 IANA 名稱，例如 <code>Asia/Taipei</code></td><td>空（＝UTC）</td></tr>
+          <tr><td><code>reset_video_tools</code></td><td>下次開機時砍掉重灌 <code>venv/</code> + <code>playwright-cache/</code>（重跑 720MB）</td><td><code>false</code></td></tr>
+          <tr><td><code>env_vars</code></td><td>進階環境變數列表，proxy、鏡像等用</td><td><code>[]</code></td></tr>
+        </tbody>
+      </table>
+      <p>金鑰的家搬到 <a href="ch6_paste_key.html">pi-web Models 面板</a>——就是你左邊 tab 點「Models」進去、按「+ Add Provider」、填 baseUrl 跟 key 那個地方。</p>
+      <p><strong>為什麼要動這麼大？</strong>官方 CHANGELOG 給的理由很直白：以前有<strong>兩個地方</strong>都在寫 <code>/data/pi-agent/models.json</code>——HA 的 Configuration 分頁跟 pi-web 的 UI，兩邊會互相蓋來蓋去。你在 pi-web 加了一家新的 provider（例如 xAI Grok），一重啟 add-on，開機腳本又把它拿掉，因為它「不在 HA 設定分頁的白名單」。同一件事只交給一個地方管，是這個 refactor 的動機。</p>
+      <p><strong>不會自動搬家</strong>：CHANGELOG 明講「no auto-migration; hard cut」——升級不會幫你把舊金鑰塞進 Models 面板。舊的 <code>models.json</code> 檔還在，但裡面那些 <code>"$GLM_API_KEY"</code> 這種環境變數占位符會解析成空字串，所以你聊天就會全部 401。這是官方預期的過渡狀態，不是 bug。</p>
+      <div class="callout warn"><strong>注意：</strong>從 <code>v0.12.x</code> 或更早升到 <code>v0.13.x</code>，你 <strong>一定</strong> 要在按下更新之前把當下設定分頁那七欄的金鑰複製到密碼管理器（1Password、Bitwarden、KeePass 都行）。升級後那些欄位就消失了，你會回不去複製它們。找不到金鑰的話只剩回原廠拿新的一條路。</div>
+    </section>
+
+    <section id="steps" data-nav="升級 SOP">
+      <h2 data-icon="steps">從 v0.12.x 升到 v0.13.x 的完整 SOP</h2>
+      <p>下面這一串照著做，就算是完全不敢動系統的人也能安全走過去。</p>
+      <ol class="steps">
+        <li>
+          <h3>升級前先做 HA snapshot</h3>
+          <p><a href="ch20_backup.html">第 20 章</a>詳細講過：HA 側邊欄「設定 → 系統 → 備份 → 建立備份」，勾「完整備份」或至少勾 Pi Agent 這個 add-on。取名叫 <code>pre_pi_agent_0.13.0</code> 之類的方便日後找。等它跑完（約 1-3 分鐘），這是你的救命底牌。</p>
+        </li>
+        <li>
+          <h3>複製所有 API 金鑰到密碼管理器</h3>
+          <p>打開 Add-on → Pi Agent → <em>設定</em> 分頁，眼睛看到的每一個 <code>*_api_key</code> 欄位都按顯示、複製、貼到密碼管理器。至少要有 GLM、OpenAI、Anthropic、DeepSeek、Groq、OpenRouter、MiniMax 這七個（有填哪幾個就複製哪幾個）。這一步是升級後救回金鑰的唯一路徑。</p>
+        </li>
+        <li>
+          <h3>回 Add-on 頁按「更新」</h3>
+          <p>Add-on → Pi Agent → 資訊分頁，最上面會顯示新版號跟「更新」按鈕。按下去，Supervisor 會拉新映像、重啟容器，整個過程 2-5 分鐘（首次拉 image 可能長一點）。期間 Logs 分頁會刷過一堆訊息，正常。</p>
+        </li>
+        <li>
+          <h3>升級完成後，先看 Logs 分頁確認沒錯</h3>
+          <p>看到 <code>pi-web listening on :30141</code> 或類似的訊息代表 pi-web 起來了。同時因為 <code>models.json</code> 裡的 key 都空掉，Logs 可能會有 401 警告——這是預期的，不用慌。</p>
+        </li>
+        <li>
+          <h3>打開 pi-web，把金鑰逐家貼回 Models 面板</h3>
+          <p>側邊欄按「Pi Agent」進去，左邊 tab 切到 <strong>Models</strong>。每一家 provider 你會看到 API Key 欄位是空的或標成「未設定」。按下編輯，把剛剛從密碼管理器複製的金鑰貼回去。按 <strong>Test</strong>，看到綠色勾勾表示連得上，按 <strong>Save</strong>。七家一次做完。詳細操作跟<a href="ch6_paste_key.html">第 6 章</a>一模一樣。</p>
+        </li>
+        <li>
+          <h3>回主聊天頁開新對話驗證</h3>
+          <p>主聊天畫面 → 開新 session → 隨便選一家 provider → 送「你好」出去。收到正常回覆就代表升級 + 金鑰搬家全部完成。舊的 session（升級前開的那些）也還會在，直接繼續講也 OK。</p>
+        </li>
+        <li>
+          <h3>順手看看新增的四個 container 選項</h3>
+          <p>回 Add-on → 設定分頁，看看 <code>log_level</code>、<code>timezone</code>、<code>reset_video_tools</code>、<code>env_vars</code> 這四個新選項。多數人只需要把 <code>timezone</code> 改成 <code>Asia/Taipei</code>——之後 log 的時間戳跟排程都會對到台灣時區。其他三個先不動，用預設就好。</p>
+        </li>
+      </ol>
+      <div class="callout tip"><strong>提示：</strong>整套 SOP 老手大概 10 分鐘搞定，新手第一次做半小時。做完之後有一種「原來也不難」的成就感，往後再遇到任何 breaking change 都是這套模式的變形。</div>
+    </section>
+
+    <section id="done" data-nav="升級後檢查清單">
+      <h2 data-icon="done">升級後的固定檢查清單（每次都做）</h2>
+      <p>不管是升 v0.13.0 這種大改版還是升 v0.13.1 這種小補丁，養成升完馬上跑一次下面這張清單的習慣。3 分鐘走完，有問題馬上抓到、不會拖到某天要用的時候才發現。</p>
+      <ol class="steps">
+        <li>
+          <h3>HA 側邊欄的 Pi Agent 按鈕還在嗎</h3>
+          <p>刷新一次 HA 網頁，看左邊側邊欄「Pi Agent」（機器人圖示）還在不在。<code>v0.8.0</code> 之後這個按鈕會在開機時自動被啟用，正常情況不會消失。消失了看下方 troubleshoot 第 3 條。</p>
+        </li>
+        <li>
+          <h3>Models 面板每家 provider 都在、都是綠燈</h3>
+          <p>左邊 tab → Models。你原本設定的 7 家 provider 應該一家不漏地列在那裡。每一家按一下 <strong>Test</strong>，全部綠燈才算數。有紅叉的通常是金鑰失效或該家 baseUrl 改了名字（極少見）。</p>
+        </li>
+        <li>
+          <h3>Session 列表歷史對話都在</h3>
+          <p>主聊天畫面 → 側欄的 Sessions 列表。你升級前有的每一個對話應該都還列在那，點進去內容也還在。少了要立刻 restore snapshot（見下方降級章節）。</p>
+        </li>
+        <li>
+          <h3>Skills 列表沒少</h3>
+          <p>左邊 tab → Skills。以前裝過的 skill 應該都還列在那。<code>v0.12.0</code> 之後有 <code>git</code> + <code>openssh-client</code> 撐著，重灌 skill 也不會壞。</p>
+        </li>
+        <li>
+          <h3>開新對話送一句，收到回覆算完成</h3>
+          <p>開新 session、選一家 provider、送「hello」。3 秒內看到回覆＝一切 OK。收到 401＝金鑰沒貼；收到 timeout＝該家 peak 時段擁塞或 VPN 斷；收到 404＝模型名寫錯（少數狀況新版可能改了 default 模型清單）。</p>
+        </li>
+      </ol>
+      <div class="callout"><strong>觀念：</strong>這 5 個檢查點是 Pi Agent 對外能運作的最小訊號集合。任何一項有異常，代表升級沒完全順利。有系統地檢查而不是「感覺沒事就繼續用」，日後才不會踩到「原來這功能升級後就壞了但我 3 個月後才發現」這種尾巴問題。</div>
+    </section>
+
+    <section id="restore" data-nav="怎麼降回舊版">
+      <h2 data-icon="restore">降級（downgrade）怎麼做</h2>
+      <p>Pi Agent 本身<strong>沒有</strong>「一鍵回退到舊版」的按鈕——這是所有 HA add-on 的通性，不是 Pi Agent 特別壞。要回舊版有兩條路，第一條是主流做法，第二條是進階解法。</p>
+      <ol class="steps">
+        <li>
+          <h3>主流做法：從 snapshot restore</h3>
+          <p>HA 側邊欄「設定 → 系統 → 備份」，找到你升級前建立的那個 snapshot（就是 SOP 第 1 步做的那個），按「還原」→ 選「只還原 Pi Agent 這個 add-on」，等 3-5 分鐘 Supervisor 重新裝一次舊版映像檔＋還原舊 <code>/data/pi-agent/</code> 目錄。做完之後 add-on 就完全回到升級前的狀態，包括版本、金鑰、Session、Skills。這是為什麼<a href="ch20_backup.html">第 20 章</a>一直強調「升級前備份」不是可有可無的建議。</p>
+        </li>
+        <li>
+          <h3>進階做法：安裝指定版本</h3>
+          <p>Add-on → Pi Agent → 資訊分頁最下面通常有「安裝特定版本」的三點選單。填舊版號（例如 <code>0.12.0</code>），Supervisor 會去 GHCR 拉那個 tag 重新裝一次。<strong>但</strong>——你的 <code>/data/pi-agent/</code> 目錄不會變，還是新版寫進去的狀態，可能有相容性問題（新版寫的 <code>models.json</code> schema 舊版讀不動之類）。這條路只推薦給熟系統的人，一般人優先走 restore snapshot。</p>
+        </li>
+        <li>
+          <h3>還原後新對話會不會不見？</h3>
+          <p>會。snapshot 是「時光機」——還原之後你在升級後開的那幾個 session、貼的新金鑰、裝的新 skill，全部回到升級前那一刻的狀態，之後做的東西全部消失。所以還原前要想清楚：如果你升級後已經開了重要對話，考慮先把那些 session 的 <code>.jsonl</code> 檔手動 export 出來（<a href="ch8_session.html">第 8 章</a>教過怎麼找 session 檔），還原完再手動貼回 <code>/data/pi-agent/sessions/</code>。</p>
+        </li>
+        <li>
+          <h3>還原之後最好也把新版更新按鈕先關掉</h3>
+          <p>不然過幾天你不小心按了「更新」，又升上去一次。HA 沒有「暫停這個 add-on 的更新提醒」的正式開關，但你可以在 Add-on 頁把「Auto update」關掉（如果之前不小心打開了），並在心裡標記「這個版本我暫時不要升」，等原廠出下一版修好 breaking 影響的問題再考慮。</p>
+        </li>
+      </ol>
+      <div class="callout warn"><strong>注意：</strong>Restore snapshot 是一個「全或無」的操作——不能只還原部分東西。所以如果 snapshot 太舊（例如三個月前），中間的 HA 主機更新、其他 add-on 的更新也會一併被還原掉。這也是為什麼要「升級前立刻做 snapshot」——那份剛做的 snapshot 只包含你升級這一刻的變動，還原不會傷到別的東西。</div>
+    </section>
+
+    <section id="compare" data-nav="升級後症狀對照">
+      <h2 data-icon="compare">升級後常見症狀對照表</h2>
+      <p>升完發現不對勁的時候，先看這張表比對你的症狀，多數狀況對得上。對不上再往下翻 troubleshoot 一節。</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>症狀</th><th>可能的版本</th><th>可能的原因</th><th>怎麼救</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>每次送訊息都回 401 Unauthorized</td>
+            <td><code>v0.13.0</code> 升上來</td>
+            <td>API 金鑰欄位搬家後沒貼回 pi-web Models 面板，<code>models.json</code> 裡的 <code>$XXX_API_KEY</code> 解析成空字串。</td>
+            <td>照這章 SOP 第 5 步逐家貼回金鑰。密碼管理器有存的話 5 分鐘搞定。</td>
+          </tr>
+          <tr>
+            <td>影片管線的按鈕按下去噴錯</td>
+            <td><code>v0.11.0</code> / <code>v0.13.0</code> 升上來</td>
+            <td><code>video-tools-init</code> oneshot 在跑（下載 720MB venv + Chromium），還沒完成。或 <code>v0.13.0</code> 你不小心把 <code>reset_video_tools: true</code> 打開了觸發重灌。</td>
+            <td>去 Logs 分頁看，找 <code>video-tools-init</code> 相關訊息，等它顯示 install completed 就好。手機不要一直重整。</td>
+          </tr>
+          <tr>
+            <td>Skills 列表變空的</td>
+            <td>從很早的版本（<code>v0.7.x</code> 前）跳升</td>
+            <td><code>/data/pi-agent/skills/</code> 的路徑或 schema 變過，舊 skill 定義不再被辨識。極罕見。</td>
+            <td>要嘛 restore snapshot 回舊版、要嘛把 skill 手動重裝一次（<a href="ch15_install_skill.html">第 15 章</a>）。</td>
+          </tr>
+          <tr>
+            <td>HA 側邊欄的 Pi Agent 按鈕不見了</td>
+            <td>只有 <code>v0.8.0</code> 之前才會發生</td>
+            <td>Supervisor 的 <code>ingress_panel</code> flag 沒被打開；<code>v0.8.0</code> 之後開機腳本會自動 POST 讓它一直保持 true。</td>
+            <td>Add-on → 資訊分頁 → 把「Show in sidebar」滑動開關手動打開。或直接升到 <code>v0.8.0</code> 以上永久解決。</td>
+          </tr>
+          <tr>
+            <td>上傳圖片超過 1 MB 就 413 錯誤</td>
+            <td><code>v0.11.0 ~ v0.13.0</code></td>
+            <td>nginx sidecar 的 <code>client_max_body_size</code> 沒設，走 1 MB 預設值。</td>
+            <td>升到 <code>v0.13.1</code> 或以上，caps 拉到 100 MB。</td>
+          </tr>
+          <tr>
+            <td>Chat SSE 串流講到一半斷掉</td>
+            <td>只有 <code>v0.8.0</code> 之前</td>
+            <td>HA Supervisor 對 ingress 連線有 60 秒緩衝，長回答會被截斷。</td>
+            <td><code>v0.8.0</code> 加了 <code>ingress_stream: true</code>，升到那版以上自動解決。</td>
+          </tr>
+          <tr>
+            <td>Pi coding agent 的 worktree 內容不見</td>
+            <td>從 <code>v0.9.x</code> 或更早升上來</td>
+            <td>那些版本 <code>HOME</code> 在容器 rootfs，升級一次就沒。<code>v0.10.0</code> 之後改指 <code>/data/pi-agent/home</code> 永久保留。</td>
+            <td>沒救——只能從 restore snapshot 回舊版找回檔案，或接受損失。之後保持在 <code>v0.10.0</code> 以上就不會再發生。</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout tip"><strong>提示：</strong>這張表也可以反過來看——你如果卡在很舊版本（例如 <code>v0.7.x</code>），這裡列的多數症狀就是你會遇到的坑，直接升到最新版比逐個修來得省事。前提是升級前的 snapshot 有做。</div>
+    </section>
+
+    <section id="url" data-nav="看發布說明">
+      <h2 data-icon="url">怎麼看發布說明（CHANGELOG）</h2>
+      <p>Pi Agent 的每一版都會把「改了什麼、為什麼改、有沒有 breaking」寫在同一個 <code>CHANGELOG.md</code> 檔案裡，公開在 GitHub 上：</p>
+      <pre class="code-block"><code>https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on/blob/main/CHANGELOG.md</code></pre>
+      <p>不會看 GitHub 也沒關係——用瀏覽器打開這個網址，最上面就是最新版，往下滑一版一版排。每一版下面都是條列式的「這版做了什麼」。</p>
+      <p><strong>看的時候盯這幾個關鍵字</strong>：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>關鍵字</th><th>意義</th><th>該怎麼做</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>BREAKING</strong> / <strong>Breaking</strong></td><td>會改變你既有設定或行為</td><td>停下來讀完那條，先做 snapshot 再升。</td></tr>
+          <tr><td><strong>Migration</strong> / <strong>Migration required</strong></td><td>要手動搬家</td><td>照它寫的「Migration:」步驟做，或參考本章 SOP。</td></tr>
+          <tr><td><strong>Fix</strong> / <strong>Emergency hotfix</strong></td><td>修 bug</td><td>看是不是修到你在意的問題。是的話趕快升。</td></tr>
+          <tr><td><strong>Add</strong> / <strong>New</strong></td><td>加新功能</td><td>看要不要用。不需要就晚一週再升觀察別人踩雷回報。</td></tr>
+          <tr><td><strong>Deprecated</strong> / <strong>Removed</strong></td><td>某功能被廢掉</td><td>如果你有用那功能，讀完知道之後要用什麼替代。</td></tr>
+        </tbody>
+      </table>
+      <p>以 <code>v0.13.0</code> 為例，第一條就直接是「<strong>BREAKING</strong>: AI provider API keys moved out of the addon Configuration tab into the pi-web UI」——關鍵字大寫、位置在條目最前，就是要你別漏看。條目裡還有一段「<strong>Migration</strong>: after upgrade, open pi-web and re-enter each key inside the Models panel.」，直接告訴你搬家怎麼做。</p>
+      <div class="callout"><strong>觀念：</strong>看 CHANGELOG 這件事很像看電器產品的使用說明書——多數人不看沒事，但一旦踩雷才會後悔沒花那 3 分鐘。Pi Agent 的 CHANGELOG 寫得算是詳細（每條都有「為什麼」不只有「改了什麼」），值得培養升級前掃一遍的習慣。</div>
+    </section>
+
+    <section id="auto" data-nav="要不要自動更新">
+      <h2 data-icon="warning">要不要打開自動更新</h2>
+      <p>HA 的 Add-on 頁面有一個 <strong>Auto update</strong> 開關，打開之後 Supervisor 會自己去拉新版裝上。理論上很方便，但對 Pi Agent 這種還在快速演進（<code>0.x</code>）的 add-on，<strong>不建議</strong>——原因三個：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>原因</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. 升級前該備份，自動就沒機會</strong></td>
+            <td>自動更新是「Supervisor 判斷有新版就直接裝」，不會停下來提醒你「先做 snapshot 喔」。你錯過的那個備份時機，可能就是日後救命的關鍵。</td>
+          </tr>
+          <tr>
+            <td><strong>2. Breaking change 需要手動處理</strong></td>
+            <td>像 <code>v0.13.0</code> 那種需要「複製金鑰、貼回 Models 面板」的 migration，自動更新完不會有人幫你做——你會發現某天早上打開 Pi Agent 全部 401，然後才發現是幾天前自動升的。</td>
+          </tr>
+          <tr>
+            <td><strong>3. 新版剛出可能有小 bug</strong></td>
+            <td>再嚴謹的測試也擋不住「特定使用情境才會遇到的 bug」。晚一週再升，讓別人先當白老鼠、幫你踩到 bug 觸發原廠出 <code>x.y.1</code> hotfix，你直接升修好的那版最省事。<code>v0.13.0</code> 就是很好的例子——<code>v0.13.1</code> 才修好 nginx 413 的問題。</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>建議的節奏</strong>：手動更新，一週一次或有空的週末去 Add-on 頁看一眼有沒有新版。有的話先讀 CHANGELOG 決定要不要升。不趕的話讓子彈飛一週再說。急的（例如你正好被某個 bug 卡到，看 CHANGELOG 剛好在新版修）就升。</p>
+      <div class="callout tip"><strong>提示：</strong>如果你有兩台以上的 HA（例如自己家一台、爸媽家一台），推薦「先在其中一台升、觀察一週穩了再升另一台」。這樣萬一新版有 bug，另一台還在舊版可用，你有時間慢慢除錯。</div>
+    </section>
+
+    <section id="troubleshoot" data-nav="升級卡關手冊">
+      <h2 data-icon="troubleshoot">升級過程常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>按下「更新」之後 add-on 起不來、Logs 全是紅字</h3>
+          <p>先別急著重灌。開 Logs 分頁往下滑找第一個「Error」或「Fatal」訊息（後面的多半是連鎖反應）。常見原因：（a）Docker 拉映像檔失敗——網路問題或 GHCR 暫時掛掉，等 5 分鐘按重啟；（b）設定分頁的欄位格式變了——例如 <code>v0.13.0</code> 之前 <code>api_key: "xxx"</code> 是字串，如果你自己手動改過 <code>options.json</code> 格式錯了，schema 驗證會 fatal；（c）你在 <code>env_vars</code> 打了不合法的變數名（不能以數字開頭、不能有連字號），CHANGELOG 說會在 <code>set -e</code> 階段停下來。找到第一條錯就八九不離十。</p>
+        </li>
+        <li>
+          <h3>Add-on 頁面找不到「更新」按鈕</h3>
+          <p>兩種可能：（a）你已經在最新版了——上面小字會顯示 <code>Current version: 0.13.1 (latest)</code> 之類；（b）Supervisor 的 add-on 倉庫還沒重新整理索引——去 <em>設定 → 附加元件商店</em> → 右上三點 → 「重新載入」，等 30 秒回來看。都不是的話重啟 HA Supervisor（設定 → 系統 → 重啟 Supervisor），通常就會抓到新版。</p>
+        </li>
+        <li>
+          <h3>更新跑到一半卡住不動</h3>
+          <p>不要重啟 HA！等它自己跑完。Docker 拉大 image（Pi Agent 因為含 Chromium + ffmpeg 有數百 MB）第一次可能拉 5-10 分鐘、慢一點的網路 15 分鐘都可能。如果超過 20 分鐘還沒動，去 Logs 分頁看有沒有錯誤訊息。真的完全卡死才考慮重啟 Supervisor 讓它重來，那之前的下載會作廢從頭來過。</p>
+        </li>
+        <li>
+          <h3>更新後金鑰貼回，但還是 401</h3>
+          <p>可能性：（a）貼的時候多按了一個空白或換行——回去密碼管理器複製時避開前後空白；（b）你把 GLM 的金鑰貼進了 OpenAI 那家 provider——金鑰不會通用，每家對得上才行；（c）新版預設模型名改了，例如 <code>gpt-4o</code> 已經沒有你要的變體了。開 Pi Agent 的 session log（在 <a href="ch8_session.html">第 8 章</a>有教怎麼找 <code>.jsonl</code>）看實際的錯誤訊息，多半直接告訴你是哪家哪個模型 401 / 404。或直接參考<a href="ch22_troubleshoot.html">第 22 章</a>的整套錯誤代碼對照。</p>
+        </li>
+        <li>
+          <h3>更新後 video-tools 一直在跑，聊天很慢</h3>
+          <p><code>v0.11.0</code> 或 <code>v0.13.0</code>（其中一次你觸發了 <code>reset_video_tools</code>）之後首次開機都要重新下載 720MB 的 Chromium + venv。這期間 pi-web 本身可以用（聊天不會壞），但影片管線相關功能會等到裝完。Logs 分頁裡搜 <code>video-tools-init</code> 看進度。裝完會建一個 sentinel 檔 <code>/data/pi-agent/.video-tools-installed</code>，之後每次開機它看到 sentinel 就 100 毫秒內結束不會再拖。詳細在<a href="ch18_video_tools.html">第 18 章</a>。</p>
+        </li>
+        <li>
+          <h3>Watchdog 一直重啟 add-on 每 5 分鐘一次</h3>
+          <p><code>v0.10.0</code> 之後有 Supervisor watchdog 探 <code>/api/home</code>，pi-web 如果一直回 5xx 或不回，Supervisor 每分鐘會重啟一次。你在 Logs 分頁會看到「Watchdog restart of add-on pi-agent」不斷刷。這代表 pi-web 開機真的有問題（不是網路），跟第 1 條一起看第一個 error 訊息。無限重啟的解法：先把 add-on 手動關掉（Add-on 資訊分頁），再從第 1 條的方向 diagnose。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>Pi Agent 大概多久升一次比較好？</summary>
+        <div class="body">一個月一次左右夠了。CHANGELOG 掛在 GitHub 上你隨時能翻，急著要新功能或你被特定 bug 卡到才即時升，不然月初或月中隨手看一眼、把累積的幾個小版本一次升上去，同時做一次 snapshot。這樣「升級」跟「備份」剛好綁在一起變成月度習慣，不用刻意去記。</div>
+      </details>
+      <details class="faq">
+        <summary>新版一定要跟嗎？我用得好好的能不升嗎？</summary>
+        <div class="body">可以，但要看新版做什麼。<strong>修 bug 的版本值得升</strong>——例如 <code>v0.13.1</code> 修的是「上傳圖片超過 1MB 會 413」，你常給 AI 看照片就一定要跟。<strong>加大功能的版本看你要不要</strong>——例如 <code>v0.11.0</code> 的影片管線，你不做影片內容就沒必要為了它多裝 720MB。<strong>Breaking change 的版本要跟</strong>——因為之後的新版通常會建立在新的架構上，你越晚升越難跨（升 <code>v0.12.x</code> 到 <code>v0.13.x</code> 有時候要處理的東西，等半年後累到升 <code>v0.15.x</code> 可能一次要處理三個 breaking）。原則：修 bug 的即時跟，加功能的看需求，breaking 的越早越好。</div>
+      </details>
+      <details class="faq">
+        <summary>我有兩台以上 HA，要一起升還是分開升？</summary>
+        <div class="body"><strong>分開升</strong>，中間至少隔一週。挑其中一台當「白老鼠」（通常是自己家那台），先升上去用一週看穩不穩定、有沒有踩到 CHANGELOG 沒寫的 bug。穩了再升其他台（爸媽家、辦公室）。這樣萬一新版對你使用情境有 regression，你只弄壞一台可以先 restore；如果同時升三台一起壞，同時搶救很累。這個原則對任何 add-on、任何系統升級都適用，不只 Pi Agent。</div>
+      </details>
+      <details class="faq">
+        <summary>降級 restore 之後，我升級後開的那幾個新對話有辦法保留嗎？</summary>
+        <div class="body">要靠手動搬檔案。Restore snapshot 是把整個 <code>/data/pi-agent/</code> 資料夾覆蓋回舊狀態，所以升級後開的 session 檔（放在 <code>/data/pi-agent/sessions/</code> 底下的 <code>.jsonl</code>）會被抹掉。<strong>順序</strong>：（1）restore 前先透過 SSH 或 HA File Editor 把 <code>/data/pi-agent/sessions/</code> 底下升級後開的那些 <code>.jsonl</code> 檔複製一份到別的地方（例如 <code>/config/backup_sessions/</code>）；（2）restore snapshot；（3）restore 完成後再把那些 <code>.jsonl</code> 檔複製回 <code>/data/pi-agent/sessions/</code>，重啟 add-on，pi-web 會重新掃到它們。要注意舊版可能不完全支援新版寫的 session 格式，複製回去可能會顯示錯誤——但至少內容還在你手上，不至於全部丟。</div>
+      </details>
+      <details class="faq">
+        <summary>升級後 pi-web 的 URL 或 port 會不會變？</summary>
+        <div class="body">不會。Pi Agent 一律走 HA Ingress——你進去的方式永遠是 HA 側邊欄「Pi Agent」按鈕，或 URL <code>https://&lt;你的 HA&gt;/hassio/ingress/&lt;token&gt;/</code>。內部 nginx sidecar 綁在 <code>:30142</code>、pi-web 綁在 <code>:30141</code>，這些都在容器裡不對外，所以升級即使把內部 port 改了也不會影響你怎麼進去。網頁書籤如果你有存 ingress 的 <code>&lt;token&gt;</code> URL，那個 token 是 HA Supervisor 動態發的、你每次進側邊欄按鈕都會拿一個新 token，不用擔心 token 變會影響你（永遠從側邊欄進就對了）。</div>
+      </details>
+      <details class="faq">
+        <summary>可以只升 pi-web 不升整個 add-on 嗎？例如我看 pi-web 出了新版但 add-on 還沒 rebuild？</summary>
+        <div class="body">不行，也不建議。Pi Agent add-on 的 Dockerfile 從 <code>v0.10.0</code> 開始把 pi-web pin 在特定版本（例如 <code>0.8.4</code>）而不是 <code>@latest</code>——原因是 add-on 的 nginx shim 針對特定版 pi-web 的 <code>/api/*</code> 路徑跟 Next.js chunk 名稱做了 40 多條 rewrite。你自己去容器裡跑 <code>npm update</code> 把 pi-web 升到最新，那些 rewrite 可能就對不上、UI 白畫面。等 Pi Agent add-on 出下一版把 pi-web 同步升上來（順便驗證所有 shim 還通），你按 add-on 的更新按鈕就行。要看 pi-web 有沒有新版可以去它的 GitHub repo 追，但實際套用要等 add-on 打包好。</div>
+      </details>
+      <details class="faq">
+        <summary>Auto update 到底能不能開？我看 HA 說明說可以開？</summary>
+        <div class="body">技術上可以開，實務上不建議——尤其對 Pi Agent 這種還在 <code>0.x</code> 快速迭代的 add-on。HA 官方的 Auto update 適合已經穩定的 add-on（例如 <code>1.x</code> 之後的 File Editor、Terminal & SSH 這種），改動幾乎都是安全的 patch。Pi Agent 現在 minor 版號跳一格（<code>0.12 → 0.13</code>）就可能帶 breaking，自動升上去只會讓你某天早上發現東西壞了不知道從哪查起。等 Pi Agent 進 <code>1.x</code>、breaking change 開始收斂再考慮打開。也可以在其他相對穩定的 add-on 上開 Auto update 練手感——Pi Agent 這種前沿工具留給你手動控制。</div>
+      </details>
+      <details class="faq">
+        <summary>下一步該讀哪一章？</summary>
+        <div class="body">升級沒踩到雷、日常運作順的話，可以看<a href="ch22_troubleshoot.html">第 22 章：常見卡關手冊</a>把所有錯誤代碼（401/402/404、Ingress 掉、影片管線失敗、Skill 裝不起來）的對照表整套熟一次，日後遇到任何症狀第一時間對得上。想把備份策略進一步優化的話回<a href="ch20_backup.html">第 20 章</a>複習「什麼會被備到 HA snapshot 什麼不會」——理解那份表之後，你就知道每次升級前該手動另存哪些檔案才萬無一失。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch20_backup.html">
+        <span class="label">← 上一章</span>
+        <span class="title">20 · 對話與金鑰備份</span>
+      </a>
+      <a class="next" href="ch22_troubleshoot.html">
+        <span class="label">下一章 →</span>
+        <span class="title">22 · 卡關手冊</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

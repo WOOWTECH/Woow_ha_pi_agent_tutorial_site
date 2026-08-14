@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 22 章 · 常見卡關手冊 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Pi Agent 常見卡關全集：401 金鑰錯、402 沒額度、404 ingress 掉、Sidebar 消失、影片管線失敗、Skill 裝不起來、Watchdog 反覆重啟，每個症狀對應解法。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch22_troubleshoot.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 22 章 · 常見卡關手冊 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Pi Agent 常見卡關全集：401 金鑰錯、402 沒額度、404 ingress 掉、Sidebar 消失、影片管線失敗、Skill 裝不起來、Watchdog 反覆重啟，每個症狀對應解法。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch22_troubleshoot.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 22 章 · 常見卡關手冊 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Pi Agent 常見卡關全集：401 金鑰錯、402 沒額度、404 ingress 掉、Sidebar 消失、影片管線失敗、Skill 裝不起來、Watchdog 反覆重啟，每個症狀對應解法。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html" class="active">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">這章怎麼用</a>
+      <a href="#test">先跑快速自檢</a>
+      <a href="#login">401 金鑰的問題</a>
+      <a href="#cost">402 額度不夠</a>
+      <a href="#url">404 找不到頁面</a>
+      <a href="#protocol">對話轉圈不回</a>
+      <a href="#records">影片管線失敗</a>
+      <a href="#hacs">Skill 裝不起來</a>
+      <a href="#tabs">Sidebar 按鈕消失</a>
+      <a href="#warning">Add-on 反覆重啟</a>
+      <a href="#advanced">Logs 怎麼看</a>
+      <a href="#assign">求救的正確方式</a>
+      <a href="#troubleshoot">其他速查條</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 22 章</div>
+      <h1>常見卡關手冊</h1>
+      <p class="lead">前面 21 章都在教「怎麼做」，這章反過來——當你卡住了，從<strong>症狀反查解法</strong>。401／402／404、Ingress 掉線、影片管線失敗、Skill 裝不起來，每一項都給 2-3 分鐘級別的可行動處置。這是全書最後一頁，也是你未來最常翻回來的一頁。</p>
+    </div>
+
+    <section id="why" data-nav="這章怎麼用">
+      <h2 data-icon="why">這章怎麼用</h2>
+      <p>寫這章的動機很簡單：<strong>你不會照書本順序卡關</strong>。可能第 6 章貼完金鑰兩個月都沒事，某天早上突然 401；可能第 18 章的影片管線平時順順跑，某個週末忽然全黑畫面。這時候你不會想從頭翻教學，你只想知道「現在跳這個錯，我下一步該點哪裡」。</p>
+      <p>所以這章的結構是<strong>症狀優先</strong>：</p>
+      <ul>
+        <li>先跑 5 秒鐘的「快速自檢」——排除 80% 的低級失誤。</li>
+        <li>剩下的按<strong>你看到的畫面</strong>找章節——右上跳 401？找 401 那一節。點側邊欄跳 404？找 404 那一節。</li>
+        <li>每一節末尾標「該回哪一章重讀」——這章負責「馬上救火」，深入原理還是回原本章節看。</li>
+      </ul>
+      <p>你不會看完這章，你會<strong>需要的時候翻</strong>。所以每一節都獨立成篇、標題直接寫症狀、不假設你讀過其他節。書籤存起來、之後有事再回來翻就好。</p>
+      <div class="callout"><strong>觀念：</strong>教學文件有兩種寫法——一種是「教程」，從零帶你走到會；另一種是「速查」，你已經會、只是卡住需要提示。前面 21 章是教程，這一章是速查。兩種都需要，兩種寫法不同，這章刻意用速查的方式寫。</div>
+    </section>
+
+    <section id="test" data-nav="先跑快速自檢">
+      <h2 data-icon="test">快速自檢（先跑這個）</h2>
+      <p>打開 Pi Agent 遇到問題，<strong>先跑這三個檢查再對症下藥</strong>。80% 的問題會在這裡就找到原因，不用往下翻。</p>
+      <ol class="steps">
+        <li>
+          <h3>Add-on 是不是還 Running</h3>
+          <p>回 HA 主頁 → 設定 → 附加元件 → 找到 <strong>Woow HA Pi Agent</strong> → 看狀態。「已啟動」（Started）綠色圓點才算活著。如果是「已停止」或紅色，按一下 <strong>Start</strong>，等 30-60 秒讓它跑完初始化再回來。</p>
+        </li>
+        <li>
+          <h3>模型下拉有沒有選對 Provider</h3>
+          <p>回 Pi Agent 對話畫面，看聊天框上方的<strong>模型下拉</strong>——顯示的是「Provider ／ 模型名」（例如 GLM ／ glm-4.6）。如果下拉是灰的、或顯示「No model」，代表 Models 面板還沒設對。回<a href="ch6_paste_key.html">第 6 章</a>把金鑰貼好、按 Test 綠燈。</p>
+        </li>
+        <li>
+          <h3>電腦本身能不能對外</h3>
+          <p>開瀏覽器新分頁打 <code>https://www.google.com</code>——打得開就是網路正常。如果連 Google 都打不開，先修家裡網路，這不是 Pi Agent 的問題。網路正常但特定 provider（例如 GLM 那家）連不上，通常是那家 API 服務暫時中斷，去該家 status page 查。</p>
+        </li>
+      </ol>
+      <p>三項全綠還是有問題？<strong>繼續往下按症狀找</strong>。</p>
+      <div class="callout tip"><strong>提示：</strong>10 個「Pi Agent 壞了」的求救訊息，8 個是 Add-on 被 HA 自動更新後沒重啟乾淨、金鑰跑掉、或家裡 WiFi 掉了。這三個檢查花不到 30 秒，值得每次先跑。</div>
+    </section>
+
+    <section id="login" data-nav="401 金鑰的問題">
+      <h2 data-icon="login">401 Unauthorized：金鑰的問題</h2>
+      <p><strong>症狀</strong>：對話送出後右上角跳紅色訊息「401」或「Unauthorized」，AI 沒回應。</p>
+      <p><strong>白話翻譯</strong>：AI provider 的門口大爺說「你這張門票是假的」。九成是金鑰問題，一成是別的。</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>可能原因</th><th>發生機率</th><th>怎麼修</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>API 金鑰打錯／過期</td>
+            <td>90%</td>
+            <td>回 <a href="ch6_paste_key.html">第 6 章</a>教過的 Models 面板 → 該 provider → 貼一次新金鑰 → 按 <strong>Test</strong>，看見綠燈才算數。</td>
+          </tr>
+          <tr>
+            <td>baseUrl 打錯</td>
+            <td>5%</td>
+            <td>回 <a href="ch11_provider_map.html">第 11 章</a>對照該 provider 的正確 baseUrl，Models 面板編輯 provider 貼正確的。</td>
+          </tr>
+          <tr>
+            <td>Provider 服務中斷</td>
+            <td>5%</td>
+            <td>去該家的 status page 查（GLM、OpenAI、Anthropic 都有官方 status 頁）。等他們恢復，你什麼都不用做。急的話<a href="ch13_switch_model.html">切別家</a>。</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>常見誤解</strong>：401 不代表你網路壞、不代表 Add-on 壞、不代表你電腦有問題。就是<strong>「這張門票 provider 不認」</strong>而已。冷靜換金鑰就對了。</p>
+      <div class="callout warn"><strong>注意：</strong>複製金鑰的時候，字串前後不要多空格、不要多換行、不要漏字元。金鑰通常很長（40-60 字），有時瀏覽器只選到一半你沒注意。<strong>建議先貼到記事本再貼回 Pi Agent</strong>，這樣看得到有沒有選對。</div>
+    </section>
+
+    <section id="cost" data-nav="402 額度不夠">
+      <h2 data-icon="cost">402 Payment Required：額度不夠</h2>
+      <p><strong>症狀</strong>：對話送出後跳 402、或錯誤訊息裡有「insufficient_balance」「余额不足」「rate limit」「quota exceeded」這類字眼。</p>
+      <p><strong>白話翻譯</strong>：金鑰是對的，但那個帳戶「錢用完了」或「今天配額用完了」。</p>
+      <ol class="steps">
+        <li>
+          <h3>先判斷是「花完錢」還是「暫時被限流」</h3>
+          <p>錯誤訊息裡有 <code>insufficient_balance</code>、<code>余额不足</code>、<code>credits</code>、<code>quota</code>——是花完錢。有 <code>rate_limit</code>、<code>too many requests</code>——是暫時被限流（等 1-2 分鐘就好）。</p>
+        </li>
+        <li>
+          <h3>加值（花完錢的話）</h3>
+          <p>回該 provider 原網站的帳戶頁儲值。GLM 在 <code>bigmodel.cn</code>、OpenAI 在 <code>platform.openai.com</code>、Anthropic 在 <code>console.anthropic.com</code>、OpenRouter 在 <code>openrouter.ai</code>。<strong>儲值完不用重啟 Add-on</strong>，下一次對話就會恢復。</p>
+        </li>
+        <li>
+          <h3>或者切別家（<a href="ch13_switch_model.html">第 13 章</a>教過）</h3>
+          <p>切換到另一個 provider 是零成本的——只要模型下拉切過去就好。這也是為什麼<a href="ch10_why_multi.html">第 10 章</a>建議至少接兩家 provider。單押一家某天用完額度就完全不能用 AI，接兩家就有備援。</p>
+        </li>
+      </ol>
+      <p><strong>常見「一天到晚額度用完」的 provider</strong>：GLM 新戶送的額度（幾百萬 token 用完就沒了）、Groq 免費配額（每天有限額，隔天重置）、OpenRouter 少量試用金。這幾家用起來要有心理準備，主力模型建議挑要付費但穩定的。</p>
+      <div class="callout tip"><strong>提示：</strong>看到 402／429 不要慌，也不要以為 Pi Agent 壞了。這是最<strong>正常</strong>的錯誤——用 AI 就是燒 token，用一定會遇到。學會秒切 provider 才是長期解法。</div>
+    </section>
+
+    <section id="url" data-nav="404 找不到頁面">
+      <h2 data-icon="url">404 Not Found：Ingress 或路徑錯</h2>
+      <p><strong>症狀</strong>：點側邊欄 <strong>Pi Agent</strong>、或 Add-on 頁按 <strong>Open Web UI</strong> 之後，看到白底黑字「404 Not Found」或「Ingress token invalid」。</p>
+      <p>404 幾乎都跟 <strong>Ingress</strong>（HA 用來代理 Add-on 網頁的機制）有關。三種常見狀況：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>狀況</th><th>症狀細節</th><th>解法</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Ingress token 過期</td>
+            <td>剛才明明可以用，隔一陣子回來就 404</td>
+            <td>回 HA 主頁重按一次側邊欄的 <strong>Pi Agent</strong>——HA 會重新發一張 token，通常就通了。極少數要 <strong>ha core restart</strong>。</td>
+          </tr>
+          <tr>
+            <td>Add-on 沒 Running</td>
+            <td>整個 Pi Agent 打不開，Open Web UI 沒反應</td>
+            <td>回附加元件頁 → Info 分頁看狀態。停止的話按 <strong>Start</strong> 再等 30-60 秒。</td>
+          </tr>
+          <tr>
+            <td>側邊欄按鈕不見</td>
+            <td>Pi Agent 好好的，但 HA 左邊側欄找不到入口</td>
+            <td>去 Add-on 的 Info 分頁 → <strong>「顯示在側邊欄」（Show in sidebar）</strong>開關要打開。這在 v0.8.0 之後 Add-on 會自動開，但偶爾 Supervisor 太忙沒開成功，手動打一次。</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><a href="ch3_open_it.html">第 3 章</a>詳細講過側邊欄與 Ingress 的關係。這裡是速查——先把三個狀況照上面表格排除。</p>
+      <div class="callout"><strong>觀念：</strong>Ingress 就像旅館櫃檯：每次你要用 Pi Agent，HA 幫你發一張門卡（token），過幾小時門卡失效就要重發。所以 404「重按一次側邊欄」通常就好——等同於回櫃檯拿新門卡。</div>
+    </section>
+
+    <section id="protocol" data-nav="對話轉圈不回">
+      <h2 data-icon="protocol">對話一直轉圈不回</h2>
+      <p><strong>症狀</strong>：訊息送出去了，右下角出現轉圈圈的動畫，但等了很久 AI 都沒回應。沒有明顯錯誤訊息。</p>
+      <p>這狀況比 401／402／404 難診斷，因為<strong>看不到明確錯誤</strong>。按下面順序排除：</p>
+      <ol class="steps">
+        <li>
+          <h3>先確認前置條件</h3>
+          <p>模型下拉有選？對應 provider 的 Models 面板 <strong>Test</strong> 有綠燈？兩個都沒 → 回<a href="ch6_paste_key.html">第 6 章</a>先修這個。都有 → 往下。</p>
+        </li>
+        <li>
+          <h3>模型「思考很久」是正常</h3>
+          <p>Reasoning 模型（GLM-4.6、Claude Sonnet 4、DeepSeek-R1）在回答之前會<strong>先想 30-60 秒</strong>，看起來像卡住但其實在算。<a href="ch12_reasoning.html">第 12 章</a>講過原理。等到 90 秒還沒動再懷疑真的卡住。</p>
+        </li>
+        <li>
+          <h3>網路擋到 provider baseUrl</h3>
+          <p>有些網路環境（企業 VPN、學校 WiFi、某些國家）會擋 OpenAI／Anthropic 的網域。從瀏覽器開新分頁打 provider 的 baseUrl（例如 <code>https://api.openai.com</code>），看得到頁面代表通、看不到代表被擋。被擋就<a href="ch13_switch_model.html">切別家</a>（例如換成 GLM，中國網段 GLM 通、OpenAI 常被擋）。</p>
+        </li>
+        <li>
+          <h3>Add-on 本身 hang 住了</h3>
+          <p>極少見但會發生：pi-web 那個程式偶爾會 hang，看起來還在跑但實際上不回應。<strong>不用手動處理</strong>——Add-on 有裝 Watchdog（v0.10.0 加的），Supervisor 會每分鐘 probe 一次 <code>/api/home</code>，發現沒回應就自動重啟。等 60-90 秒它會自己好。</p>
+        </li>
+      </ol>
+      <p>都試過還是不回，開 Add-on 的 <strong>Logs 分頁</strong>看最後 30 行——通常會有紅字訊息告訴你哪裡卡。看不懂 log 也沒關係，把最後 30 行複製起來去<a href="#faq">GitHub Issue</a> 求救。</p>
+      <div class="callout warn"><strong>注意：</strong>「對話很慢」跟「對話卡住」是兩件事。<strong>Reasoning 模型的 30-60 秒思考時間是正常的，不要在等待中一直重按送出</strong>——連按 3 次送出等於送了 3 個 request，AI 會照順序回 3 次，反而更慢、也更燒 token。</p></div>
+    </section>
+
+    <section id="records" data-nav="影片管線失敗">
+      <h2 data-icon="records">影片管線失敗（一表通）</h2>
+      <p>影片管線（<a href="ch18_video_tools.html">第 18 章</a>教的 pitch_video）是最容易卡的地方，因為<strong>它串了 5-6 個工具</strong>——TTS、Playwright 截圖、ffmpeg 合成、字幕燒、rclone 上傳——任何一環壞都會整條掉。按你看到「卡在哪一步」對症下藥：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>你看到的症狀</th><th>大概率原因</th><th>怎麼修</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>AI 一直卡在寫腳本（<code>script.yaml</code>）階段，寫出來的東西亂七八糟</td>
+            <td>模型太輕，寫不出結構化的影片腳本</td>
+            <td>切 reasoning 模型（GLM-4.6、Sonnet 4）。<a href="ch12_reasoning.html">第 12 章</a>講過為什麼。</td>
+          </tr>
+          <tr>
+            <td>Playwright 錄畫面產出的影片<strong>全黑</strong>或全灰</td>
+            <td>Chromium 沒下好、或 Playwright cache 壞了</td>
+            <td>Configuration 分頁把 <code>reset_video_tools</code> 打開 → 重啟 Add-on → 等 3-8 分鐘讓它重新下 720MB → 這個開關會<strong>自動彈回 false</strong>，不會每次都重下。<a href="ch18_video_tools.html">第 18 章</a>末段有詳細步驟。</td>
+          </tr>
+          <tr>
+            <td>影片有畫面但<strong>沒配音</strong></td>
+            <td>edge-tts 被擋（微軟 TTS 端點）</td>
+            <td>Logs 分頁搜 <code>edge-tts</code>，看有沒有 timeout／network error。有的話代表家裡網路擋 <code>speech.platform.bing.com</code>，換 VPN 或叫 AI 改用別的 TTS。</td>
+          </tr>
+          <tr>
+            <td>影片有畫面有配音但<strong>沒字幕</strong></td>
+            <td>SRT 產生了但沒燒進畫面</td>
+            <td>看 pitch_video skill 的 <code>SKILL.md</code>——燒字幕是 ffmpeg <code>-vf subtitles=</code> 的步驟。Logs 搜 <code>subtitles</code>，通常是字型不見（<code>fonts-noto-cjk</code> 沒裝到）或 SRT 檔路徑錯。前者叫 AI 重跑 <code>reset_video_tools</code>；後者叫 AI 看 <code>script.yaml</code> 對照。</td>
+          </tr>
+          <tr>
+            <td>影片做好了但<strong>上傳失敗</strong></td>
+            <td>rclone Google Drive token 過期</td>
+            <td>回<a href="ch19_rclone.html">第 19 章</a>教過的 <code>rclone --config=/data/pi-agent/rclone/rclone.conf config</code> 重新過一次 OAuth。token 通常一個月不動會失效，過期後這樣重新 auth 就好。</td>
+          </tr>
+          <tr>
+            <td>整條管線一開始就跑不動、找不到 <code>python</code>／<code>ffmpeg</code>／<code>rclone</code></td>
+            <td><code>video-tools-init</code> 第一次啟動沒跑完</td>
+            <td>Configuration 分頁 <code>reset_video_tools</code> 開 → 重啟 → 等它 <strong>3-8 分鐘</strong>把 720MB 下完（第一次真的需要這麼久）。Logs 分頁搜 <code>video-tools-init</code> 看進度。</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout tip"><strong>提示：</strong>影片管線的 debug 有一個屢試不爽的萬能招——<strong>把 Add-on 的 <code>log_level</code> 改成 <code>debug</code>，重啟，Logs 分頁會有超詳細的每一步輸出</strong>。看完問題找到之後記得改回 <code>info</code>，不然 log 會爆量。</div>
+    </section>
+
+    <section id="hacs" data-nav="Skill 裝不起來">
+      <h2 data-icon="hacs">Skill 裝不起來</h2>
+      <p><a href="ch15_install_skill.html">第 15 章</a>教過 Add from URL、<a href="ch16_write_skill.html">第 16 章</a>教過自己寫。裝不上的常見狀況：</p>
+      <ol class="steps">
+        <li>
+          <h3>Add from URL 按下去<strong>完全沒反應</strong></h3>
+          <p>兩個可能：<strong>（1）URL 打錯</strong>——檢查 GitHub 網址有沒有多空格、少字元；owner/repo 縮寫（例如 <code>elmo/fridge-check</code>）也可以，但拼錯就抓不到。<strong>（2）repo 是 private</strong>——Pi Agent 用預設 git 客戶端 clone，private repo 沒有 token 抓不到。改 public，或用<a href="#tabs">SCP 本地上傳</a>繞過。</p>
+        </li>
+        <li>
+          <h3>clone 完 Skills 面板<strong>看不到新 skill</strong></h3>
+          <p>先重整 pi-web 頁面（<kbd>F5</kbd>）——面板通常懶得自動更新。還是沒有 → 確認 clone 進來的 repo 根目錄有 <code>SKILL.md</code>（大寫 SKILL、小寫 <code>.md</code>）。有些 repo 把 skill 放子資料夾，Pi Agent 抓不到。</p>
+        </li>
+        <li>
+          <h3>Skill 出現在列表<strong>但 AI 沒用到</strong></h3>
+          <p>問題出在 <code>SKILL.md</code> 的 <strong>description</strong> 欄——AI 靠這欄判斷「這一輪要不要啟用這個 skill」。寫得太籠統（例如「幫使用者做家事」）AI 就不會 match。回<a href="ch16_write_skill.html">第 16 章</a>教的三原則之一：<strong>description 要具體、要提到「使用者說什麼／做什麼」時觸發</strong>。</p>
+        </li>
+        <li>
+          <h3>Skill 出現、description 也寫對了，AI 還是不用</h3>
+          <p>切 reasoning 模型再試。非 reasoning 模型（GLM-4-Flash、Haiku 這類輕量的）常常忽略 system prompt 裡的 skill——這在<a href="ch12_reasoning.html">第 12 章</a>解釋過原理。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="tabs" data-nav="Sidebar 按鈕消失">
+      <h2 data-icon="tabs">Sidebar 按鈕消失</h2>
+      <p>HA 左邊側欄找不到 <strong>Pi Agent</strong> 這個入口？三個檢查點：</p>
+      <ol class="steps">
+        <li>
+          <h3>Add-on 的 Info 分頁「顯示在側邊欄」有沒有開</h3>
+          <p>設定 → 附加元件 → Woow HA Pi Agent → Info 分頁 → 找到 <strong>顯示在側邊欄（Show in sidebar）</strong> 開關。v0.8.0 之後 Add-on 每次開機都會透過 Supervisor API 自動打開，但偶爾會失敗——手動打開就好，不會影響其他設定。</p>
+        </li>
+        <li>
+          <h3>你登入的 HA 帳號是不是 Administrator</h3>
+          <p>Pi Agent 側欄用 <code>panel_admin: true</code> 設定，<strong>只有 Administrator 角色看得到</strong>。如果你是家人分享出來的一般帳號，看不到側欄是正常的。<a href="ch3_open_it.html">第 3 章</a>提過。想給家人開權限的話，設定 → 使用者 → 該使用者 → 勾 <strong>Administrator</strong>。</p>
+        </li>
+        <li>
+          <h3>HA 重啟一次</h3>
+          <p>極少見的 side panel registration bug：Supervisor 有時候沒把 Panel 註冊到 HA Core，重啟 HA 一次會重新註冊。<strong>ha core restart</strong> 或 HA UI 的「重新啟動 Home Assistant」都可以。</p>
+        </li>
+      </ol>
+      <div class="callout"><strong>觀念：</strong>側欄按鈕、Ingress token、Add-on 狀態這三件事是<strong>三層不同的機制</strong>。側欄按鈕消失不代表 Add-on 掛了，Add-on 綠燈不代表 Ingress 通。這章各節分開講就是這個原因，別把不同層的錯誤混在一起診斷。</div>
+    </section>
+
+    <section id="warning" data-nav="Add-on 反覆重啟">
+      <h2 data-icon="warning">Add-on 反覆重啟（每 60 秒）</h2>
+      <p><strong>症狀</strong>：Add-on 狀態顯示綠燈，但 Logs 分頁看起來每 60 秒就從頭跑一次 <code>video-tools-init</code>／<code>pi-web starting…</code>。用起來也很不穩，對話進行到一半突然斷。</p>
+      <p><strong>白話翻譯</strong>：HA Supervisor 的 <strong>Watchdog</strong> 每分鐘 probe 一次 <code>/api/home</code>，發現沒回應就自動重啟 Add-on。這是 Pi Agent v0.10.0 之後的保護機制——防止 Add-on hang 住害使用者一直看白畫面。但如果 Add-on 本身<strong>初始化就會掛</strong>，Watchdog 會變成「每 60 秒殺一次」的無限迴圈。</p>
+      <ol class="steps">
+        <li>
+          <h3>先看 Logs 最後幾行找 error</h3>
+          <p>Logs 分頁往下捲到最新——<strong>看紅字或 <code>Error</code>／<code>Failed</code>／<code>fatal</code></strong>。常見的問題：<code>video-tools-init</code> 過程中斷（Chromium 下一半失敗）、pi-web 端口被佔用、pi-web 讀不到 <code>models.json</code>。</p>
+        </li>
+        <li>
+          <h3>如果是 video-tools-init 掛</h3>
+          <p>Configuration 分頁把 <code>reset_video_tools</code> 打開 → 重啟 → 讓它重下一次。這是 <a href="#records">影片管線那一節</a>的 fallback 大招。</p>
+        </li>
+        <li>
+          <h3>暫時關掉 Watchdog 好 debug</h3>
+          <p>Watchdog 一直重啟會讓你連 log 都來不及看清楚。應用程式（Apps）→ Woow HA Pi Agent → 停用 <strong>Watchdog</strong> 開關 → 現在它掛了就是掛了，不會被自動重啟——你有時間慢慢看 log 找原因。debug 完記得<strong>把 Watchdog 再開回來</strong>，這是長期運轉的重要保護。</p>
+        </li>
+        <li>
+          <h3>還是找不到原因就整組重灌</h3>
+          <p>Add-on 頁 → Info 分頁 → <strong>解除安裝</strong> → 重新從商店 <strong>安裝</strong>。你的 <code>/data/pi-agent/</code>（session、skills、models.json）不會被刪，重裝是純 <strong>image 換新</strong>。重裝之後 <code>video-tools-init</code> 會重跑一次，等 3-8 分鐘。</p>
+        </li>
+      </ol>
+      <div class="callout warn"><strong>注意：</strong>Watchdog 關掉 debug 完務必開回來。長期關 Watchdog 會讓真的 hang 住的時候沒人叫醒它，你會等半天發現對話全部沒回應——結果只是 Add-on 需要重啟。這是 v0.10.0 加的重要保護，別長期關。</div>
+    </section>
+
+    <section id="advanced" data-nav="Logs 怎麼看">
+      <h2 data-icon="advanced">Logs 該怎麼看</h2>
+      <p>Add-on 的 Logs 分頁是<strong>診斷 90% 問題的地方</strong>。但第一次看起來像天書。這裡教三招看 log 的技巧。</p>
+      <ol class="steps">
+        <li>
+          <h3>從哪裡打開</h3>
+          <p>設定 → 附加元件 → Woow HA Pi Agent → 上方分頁列選 <strong>Log</strong>。頁面下半部就是 log 內容，會自動捲到最新。</p>
+        </li>
+        <li>
+          <h3>只看最後 30 行</h3>
+          <p>log 動輒好幾千行，往前翻沒意義——<strong>問題永遠在最後幾十行</strong>。捲到最底、往上抓 30 行就夠診斷絕大多數狀況。</p>
+        </li>
+        <li>
+          <h3>搜這幾個關鍵字</h3>
+          <p>用瀏覽器 <kbd>Ctrl</kbd>+<kbd>F</kbd> 搜以下字眼，命中的那一行通常就是問題所在：</p>
+          <table class="data-table">
+            <thead>
+              <tr><th>關鍵字</th><th>意義</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>Error</code> / <code>ERROR</code></td><td>一般錯誤——最常見，看命中行的訊息</td></tr>
+              <tr><td><code>Failed</code> / <code>failed</code></td><td>某個步驟失敗——通常後面跟原因</td></tr>
+              <tr><td><code>fatal</code></td><td>致命錯誤——Add-on 會 crash</td></tr>
+              <tr><td><code>denied</code> / <code>Permission</code></td><td>權限問題——通常是檔案／目錄 chmod 或 SELinux</td></tr>
+              <tr><td><code>timeout</code></td><td>網路超時——連不上 provider／upstream</td></tr>
+              <tr><td><code>401</code> / <code>402</code> / <code>404</code></td><td>HTTP 錯誤碼——對應本章前面幾節</td></tr>
+              <tr><td><code>ENOENT</code></td><td>找不到檔案／指令——通常是路徑錯或工具沒裝</td></tr>
+              <tr><td><code>EADDRINUSE</code></td><td>端口被佔用——通常是 Add-on 沒完全關就重啟了</td></tr>
+            </tbody>
+          </table>
+        </li>
+        <li>
+          <h3>想更詳細就開 debug log</h3>
+          <p>Configuration 分頁 → <code>log_level</code> 從 <code>info</code> 改 <code>debug</code> → 儲存 → Info 分頁 <strong>Restart</strong>。<strong>debug log 會爆量</strong>（一分鐘幾千行）——只在 debug 特定問題時開，找到問題就改回 <code>info</code>，不然 <code>/var/log</code> 會被塞滿。</p>
+        </li>
+      </ol>
+      <div class="callout tip"><strong>提示：</strong>debug log 開了之後跑一次「重現問題的操作」（例如再送一次會 401 的訊息），log 就會有那一次操作的<strong>完整詳細內容</strong>——包括發給 provider 的 request、收到的 response 全文。這對「明明按對步驟卻壞掉」的怪 bug 特別有用。</div>
+    </section>
+
+    <section id="assign" data-nav="求救的正確方式">
+      <h2 data-icon="assign">求救的正確方式</h2>
+      <p>試過本章所有節還是搞不定？<strong>去 GitHub Issue</strong>。但發 issue 也有正確跟錯誤的方式，發對了兩天有人回、發錯了石沉大海。</p>
+      <ol class="steps">
+        <li>
+          <h3>發 Issue 的地點</h3>
+          <p><a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on/issues"><code>https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on/issues</code></a></p>
+          <p>先在 issue 列表上方搜尋框輸入你的關鍵字（例如「401」「video-tools」「blank iframe」），<strong>八成問題已經有人問過</strong>，直接看回答就好，不用重發。</p>
+        </li>
+        <li>
+          <h3>要附的資訊（缺一不可）</h3>
+          <p>沒附這些的 issue 通常會被要求補、然後你就要等更久：</p>
+          <ul>
+            <li><strong>Pi Agent 版本</strong>（Add-on 頁 Info 分頁最上方，例如 <code>0.13.1</code>）</li>
+            <li><strong>Home Assistant 版本</strong>（HA UI 開發者工具 → About，或設定 → 系統 → 修復裡的版本號）</li>
+            <li><strong>Logs 分頁最後 30 行</strong>（用三個 backtick 圍起來貼，issue 才會排版好看）</li>
+            <li><strong>你已經試過什麼</strong>（例如「重啟過、換過金鑰、Test 綠燈但送訊息就 401」）</li>
+          </ul>
+        </li>
+        <li>
+          <h3>絕對不要貼的東西</h3>
+          <p>Issue 是公開的，全世界都看得到。<strong>以下絕對不要貼</strong>：</p>
+          <ul>
+            <li>API 金鑰（貼了立刻換一組，你的舊金鑰要當作已洩漏）</li>
+            <li>家裡對外 IP（Nabu Casa 網址、DuckDNS 網址、家裡 public IP）</li>
+            <li>任何個資（家人姓名、地址、電話）</li>
+            <li>Session 檔案（可能有你跟 AI 的完整對話，包含隱私）</li>
+          </ul>
+          <p>Log 貼之前用眼睛掃一遍，把敏感字串換成 <code>&lt;REDACTED&gt;</code>。</p>
+        </li>
+        <li>
+          <h3>用英文寫（如果你敢）</h3>
+          <p>維護者能讀中文，但 issue 用英文寫的話有機會被<strong>全球其他使用者看到並幫忙回答</strong>——不只維護者一個人。不敢英文寫的話用中文也 OK，維護者會回。</p>
+        </li>
+      </ol>
+      <div class="callout danger"><strong>危險：</strong>Log 貼之前<strong>務必</strong>掃一遍有沒有 API 金鑰在裡面——某些錯誤訊息會把 request header 印出來，Authorization 那行就會有金鑰。看到就換成 <code>Bearer &lt;REDACTED&gt;</code>。萬一貼出去了，立刻回原 provider 網站 revoke 那組金鑰、重發一組新的。</div>
+    </section>
+
+    <section id="troubleshoot" data-nav="其他速查條">
+      <h2 data-icon="troubleshoot">其他常見卡關（快速條列）</h2>
+      <p>前面幾節覆蓋了 90% 的問題。這邊補充一些邊緣狀況：</p>
+      <ol class="steps">
+        <li>
+          <h3>整個 pi-web 頁面完全打不開（不是 404、是連載入都沒有）</h3>
+          <p>先確認 HA 本身是不是好的——開另一個瀏覽器分頁進 HA 主頁，能開就 HA 正常。<strong>HA 也開不了</strong>那是 HA 掛了不是 Pi Agent 的問題，先修 HA。HA 好、只有 Pi Agent 打不開，回<a href="#url">404 那一節</a>檢查 Add-on 狀態。</p>
+        </li>
+        <li>
+          <h3>頁面打得開但整片<strong>空白／灰白</strong></h3>
+          <p>按 <kbd>F12</kbd> 開瀏覽器 DevTools → Console 分頁看紅字。常見的：<code>Failed to load /_next/...</code>（Ingress asset 沒轉好，Add-on 重啟一次）、<code>ChunkLoadError</code>（瀏覽器 cache 壞了，<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd> 強制重整）。</p>
+        </li>
+        <li>
+          <h3>對話送不出去（Send 按鈕灰的）</h3>
+          <p>模型下拉<strong>沒選任何東西</strong>——Send 就會灰。模型下拉點一下、選一個 provider 的模型，Send 就會亮。這個超常見，尤其是 session 剛開的時候。</p>
+        </li>
+        <li>
+          <h3>覺得一切正常但 Logs 分頁空空的</h3>
+          <p><code>log_level</code> 設得太高——預設 <code>info</code> 只印重要事件，設 <code>error</code> 只印錯誤。想看正常運作也要 log，改 <code>info</code> 或 <code>debug</code>。</p>
+        </li>
+        <li>
+          <h3>Session 開一開就<strong>自動退出</strong>，回到首頁</h3>
+          <p>你不小心把 session 檔案刪了或改壞了。<code>/data/pi-agent/sessions/</code> 底下的 <code>.jsonl</code> 檔是每個對話的完整內容，改壞它 pi-web 讀取失敗會退回首頁。回<a href="ch20_backup.html">第 20 章</a>教的還原方式，把 HA snapshot 裡的 sessions 資料夾拉回來。</p>
+        </li>
+        <li>
+          <h3>更新後好像變慢了</h3>
+          <p><a href="ch21_upgrade.html">第 21 章</a>教過的：更新後第一次啟動會重跑 <code>video-tools-init</code> 檢查（雖然 sentinel 存在會秒過，但還是要跑）；另外 pi-web 的 <code>.next</code> cache 會重建。<strong>第一次慢很正常，第二次啟動之後就會恢復</strong>。連續慢兩三次以上再懷疑真的變慢。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>本章沒寫到我的症狀怎麼辦？</summary>
+        <div class="body">先重跑<a href="#test">快速自檢三檢查</a>——大概率是那三個之一。都沒中的話：<strong>（1）</strong> 打開 Logs 分頁看最後 30 行有沒有 error 訊息，跟本章任一節對照；<strong>（2）</strong> 去 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on/issues">GitHub Issues</a> 搜關鍵字看有沒有人遇過；<strong>（3）</strong> 都沒有就自己開 Issue，附上本章 <a href="#assign">「求救的正確方式」</a>那節列的四樣資訊。</div>
+      </details>
+      <details class="faq">
+        <summary>發 GitHub Issue 多久會有人回？</summary>
+        <div class="body">這是<strong>純社群開源專案</strong>，沒有 SLA。維護者用愛發電、有空才回。實務上：資訊附得完整的 issue，通常 1-3 天有人回（可能是維護者、可能是其他使用者）。資訊不完整、只寫「壞了」的，可能永遠沒人回。想被回，重點是<strong>把診斷資訊附齊</strong>（見<a href="#assign">求救那一節</a>），減少維護者猜的成本。</div>
+      </details>
+      <details class="faq">
+        <summary>有沒有付費支援？急件想快點解決</summary>
+        <div class="body">目前<strong>沒有正式的付費支援方案</strong>——Woow HA Pi Agent 是 Woowtech 開源給社群的 HA add-on，不是商業產品。急件的話最快兩條路：<strong>（1）</strong> 自己排除——本章覆蓋 90% 常見問題，照著查通常兩三小時就能自己解決；<strong>（2）</strong> 找社群協助——GitHub Discussions、HA 官方論壇、或中文 HA 社群（Facebook 群、Discord 群）通常都有懂的人。</div>
+      </details>
+      <details class="faq">
+        <summary>我發現本章寫錯了、或有更好的解法想貢獻，怎麼辦？</summary>
+        <div class="body">歡迎！三種方式：<strong>（1）PR</strong>——教學檔案在 <code>Woow_ha_pi_agent_tutorial</code> repo，直接改 <code>ch22_troubleshoot.html</code> 送 PR。<strong>（2）Issue</strong>——不會 git 的話直接開 issue 寫「第 22 章的 X 節建議改成 Y」，維護者會處理。<strong>（3）GitHub Discussion</strong>——不確定該不該進正式手冊的技巧，貼 Discussion 大家交流。教學文件跟軟體一樣是活的，社群回饋越多越好。</div>
+      </details>
+      <details class="faq">
+        <summary>Add-on 更新前要先看什麼避免踩坑？</summary>
+        <div class="body">回<a href="ch21_upgrade.html">第 21 章</a>——那章專門講升級策略。快速版：<strong>（1）</strong> 更新前<a href="ch20_backup.html">做一次 HA snapshot</a>，出事可以還原；<strong>（2）</strong> 看 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on/blob/main/CHANGELOG.md">CHANGELOG.md</a>——尤其看有沒有 <strong>BREAKING</strong> 字樣（例如 v0.13.0 把 API 金鑰從 Add-on 設定搬到 pi-web UI，就是 breaking change，升級後要重貼金鑰）；<strong>（3）</strong> 大版號更新（0.10 → 0.11 這種）晚兩三天再升，讓早期升級的人先踩雷。</div>
+      </details>
+      <details class="faq">
+        <summary>升到 v0.13 之後所有對話都 401，是不是壞了？</summary>
+        <div class="body"><strong>不是壞了，是 breaking change</strong>。v0.13.0 把 API 金鑰從 Add-on Configuration 分頁移到 pi-web 內部的 <strong>Models 面板</strong>，Add-on 那邊的欄位沒了，舊金鑰讀不到、每次對話都 401。解法：打開 Pi Agent → Models 面板 → 每一個 provider 重貼一次金鑰、按 Test 綠燈。<strong>沒有自動搬移</strong>，是硬切換。這在 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on/blob/main/CHANGELOG.md">CHANGELOG</a> v0.13.0 那一段有寫。</div>
+      </details>
+      <details class="faq">
+        <summary>影片管線第一次跑就失敗，有辦法先確認工具都裝好了嗎？</summary>
+        <div class="body">開 Add-on Info 分頁下方的 <strong>Terminal</strong>（或 <code>docker exec -it addon_b9cf5676_woow_ha_pi_agent bash</code>），在裡面依序打 <code>which python3</code>、<code>which ffmpeg</code>、<code>which rclone</code>、<code>which chromium</code>——每一個都要回出路徑（<code>/data/pi-agent/venv/bin/python3</code>、<code>/usr/bin/ffmpeg</code>...）才代表裝好。有<code>not found</code>就代表 <code>video-tools-init</code> 沒跑完，回<a href="#records">影片管線那節</a>用 <code>reset_video_tools</code> 重跑。</div>
+      </details>
+      <details class="faq">
+        <summary>tablet 或手機瀏覽器上傳圖片給 AI 一直失敗，PC 就沒事</summary>
+        <div class="body">這是 v0.13.1 修過的 <strong>413 Request Entity Too Large</strong>——舊版 nginx 預設 body 限 1 MB，手機拍的照片動輒 3-5 MB 就被擋。升到 v0.13.1 之後上限拉到 100 MB（單檔 25 MB），tablet／手機拍照上傳就正常了。你的 Add-on 版本 &lt; 0.13.1 的話升上去；已經在 0.13.1 之後還遇到，可能是照片超過 25 MB，先在手機縮圖再傳。</div>
+      </details>
+      <details class="faq">
+        <summary>更新之後我的 skill／session／設定會不會不見？</summary>
+        <div class="body"><strong>不會</strong>。所有使用者資料都在 <code>/data/pi-agent/</code> 底下（sessions、skills、models.json、rclone.conf、venv、playwright-cache），這個資料夾是 HA 幫 Add-on 掛的 persistent volume，更新只換 image、不動 <code>/data</code>。唯一例外是 v0.10.0 之前——那時 pi 的 worktree 存在 container rootfs 會被更新洗掉，v0.10.0 之後改 <code>HOME=/data/pi-agent/home</code> 就修了。現在你的資料都是安全的，也都在 <a href="ch20_backup.html">HA snapshot 備份範圍</a>內。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch21_upgrade.html">
+        <span class="label">← 上一章</span>
+        <span class="title">21 · 升級注意事項</span>
+      </a>
+      <a class="next" href="appendix_config_ref.html">
+        <span class="label">附錄 A →</span>
+        <span class="title">附錄 A · 設定參數速查</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

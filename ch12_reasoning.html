@@ -1,0 +1,544 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 12 章 · 有想的、沒想的：Reasoning 模型是什麼 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Reasoning（推理）模型與一般模型的差別、thinking format 各家寫法（zai／deepseek／native／none）、什麼場景值得開啟。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch12_reasoning.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 12 章 · 有想的、沒想的：Reasoning 模型是什麼 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Reasoning（推理）模型與一般模型的差別、thinking format 各家寫法（zai／deepseek／native／none）、什麼場景值得開啟。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch12_reasoning.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 12 章 · 有想的、沒想的：Reasoning 模型是什麼 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Reasoning（推理）模型與一般模型的差別、thinking format 各家寫法（zai／deepseek／native／none）、什麼場景值得開啟。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html" class="active">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要懂</a>
+      <a href="#concept">差在哪</a>
+      <a href="#what">哪些是 reasoning</a>
+      <a href="#protocol">thinking format</a>
+      <a href="#cost">有想的花多少</a>
+      <a href="#plan">什麼時候值得</a>
+      <a href="#tips">關掉≠省錢</a>
+      <a href="#modes">混搭策略</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 12 章</div>
+      <h1>有想的、沒想的：Reasoning 模型是什麼</h1>
+      <p class="lead">你在<a href="ch9_thinking_diff.html">第 9 章</a>看過對話裡的「思考塊」——AI 回答前面那一坨可以摺疊起來的小字。這章要回答的是：為什麼有些 AI 會先在心裡想一輪、有些不會、想的那一輪要不要算你錢、什麼時候值得多花那個錢。讀完你就會知道，同一個 Session 遇到「幫我挑冷氣」跟「順便關個燈」，該分別派哪一種模型上場。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼要懂">
+      <h2 data-icon="why">為什麼要懂「有想」跟「沒想」</h2>
+      <p>你在<a href="ch9_thinking_diff.html">第 9 章</a>已經知道「思考塊長什麼樣、怎麼展開看」，但沒解釋為什麼有些模型會冒出這塊、有些不會。這章補上這一課，因為它牽動兩件很實際的事：<strong>錢包跟等待</strong>。</p>
+      <ul>
+        <li><strong>錢包</strong>：會思考的模型比不會思考的模型，同樣一個問題可能貴 10 倍、20 倍，甚至 100 倍。因為那一整坨思考文字，AI 廠商都當成「輸出（output）」在計價，跟你看到的回答一起算 tokens。</li>
+        <li><strong>等待</strong>：會思考的模型從你按下 Enter 到看到第一個字，通常要多等 5-30 秒（複雜問題有時候一分鐘以上）。因為它真的在後台跑「草稿紙」那一輪。</li>
+      </ul>
+      <p>但反過來說，會思考的模型答案品質也顯著比較好。所以這章的目標是讓你有能力做這個判斷：<strong>什麼問題值得多花那些錢跟時間、什麼問題根本用便宜的就好</strong>。做完你就能自信地在<a href="ch13_switch_model.html">下一章</a>的模型下拉裡挑對那一個。</p>
+      <div class="callout"><strong>觀念：</strong>這章跟<a href="ch10_why_multi.html">第 10 章</a>「為什麼要接不只一家 AI」是一體兩面。第 10 章說的「一支不夠用」，其中一個很大的原因就是「日常聊天不需要思考、遇到硬題目要有會思考的頂上」。有想、沒想，是你多支金鑰的分工邏輯。</p></div>
+    </section>
+
+    <section id="concept" data-nav="差在哪">
+      <h2 data-icon="concept">Reasoning 模型和一般模型到底差在哪</h2>
+      <p>拿你國三數學考試當比喻，就很清楚。</p>
+      <ul>
+        <li><strong>一般模型（沒想的）</strong>：像你背九九乘法的時候，「七八五十六」直接脫口而出，中間沒有思考過程。老師問你、你就答，快、便宜、大部分時候夠用。適合的題目是「客廳燈是哪個 entity_id」、「北北基下雨的話回你什麼」這種一秒鐘就能答的。</li>
+        <li><strong>Reasoning 模型（有想的）</strong>：像你算一題應用題，先在草稿紙上寫「已知條件是 A、B、C，先算 X、再算 Y、代回原式得到答案」，寫滿半張紙，最後才在答案欄寫一個數字。慢、貴、但複雜題目答對率高很多。適合的題目是「幫我把家裡三支冷氣、月份、電費、每人使用時段全部考慮進去，算哪種夜間排程最省」。</li>
+      </ul>
+      <p>Reasoning 模型那張「草稿紙」，就是<a href="ch9_thinking_diff.html">第 9 章</a>你看過可以展開的思考塊。它不是裝飾，是模型真的在裡面推理、驗算、換個角度想。所以答案品質好，但那一整張草稿紙的字也是 AI 產出的 tokens，一樣要算你錢。</p>
+      <div class="callout tip"><strong>提示：</strong>你可能想問「那我叫一般模型『請你先想一想再回答』，效果會不會一樣？」——效果會好一點點，但差得遠。因為 reasoning 模型的思考能力是「訓練時特別練過」的，不是靠 prompt 硬要就能開出來。這一點很多人搞混。</p></div>
+    </section>
+
+    <section id="what" data-nav="哪些是 reasoning">
+      <h2 data-icon="what">哪些模型是 reasoning、哪些不是</h2>
+      <p>Pi Agent 支援的六家 provider 都有 reasoning 和非 reasoning 兩類模型。下面這張速查表（截至 2026 年 8 月）幫你分清楚哪個是哪個：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>模型</th>
+            <th>Provider</th>
+            <th>是不是 reasoning</th>
+            <th>思考塊會不會給你看</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>GLM-4.6</td>
+            <td>智譜清言</td>
+            <td>是</td>
+            <td>會（用 zai 格式包在特殊 tag 裡）</td>
+          </tr>
+          <tr>
+            <td>GLM-4-Flash</td>
+            <td>智譜清言</td>
+            <td>否</td>
+            <td>沒有思考塊</td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1</td>
+            <td>DeepSeek</td>
+            <td>是</td>
+            <td>會（用 native reasoning 欄位）</td>
+          </tr>
+          <tr>
+            <td>DeepSeek-Chat（V3）</td>
+            <td>DeepSeek</td>
+            <td>否</td>
+            <td>沒有</td>
+          </tr>
+          <tr>
+            <td>Claude Opus 4.7</td>
+            <td>Anthropic</td>
+            <td>是</td>
+            <td>會（thinking content block）</td>
+          </tr>
+          <tr>
+            <td>Claude Sonnet 4.6</td>
+            <td>Anthropic</td>
+            <td>是（可開可關）</td>
+            <td>會，但只顯示 summary（Anthropic 官方會摘要過）</td>
+          </tr>
+          <tr>
+            <td>Claude Haiku 4.5</td>
+            <td>Anthropic</td>
+            <td>否（輕量款）</td>
+            <td>沒有</td>
+          </tr>
+          <tr>
+            <td>OpenAI o1 / o3-mini</td>
+            <td>OpenAI</td>
+            <td>是</td>
+            <td>不給你看（OpenAI 政策；只給你看最後答案跟 token 用量）</td>
+          </tr>
+          <tr>
+            <td>GPT-4o / GPT-4.1</td>
+            <td>OpenAI</td>
+            <td>否</td>
+            <td>沒有</td>
+          </tr>
+          <tr>
+            <td>Kimi K2（走 Groq）</td>
+            <td>Groq</td>
+            <td>是（看 provider 有沒有暴露）</td>
+            <td>視 provider 而定</td>
+          </tr>
+          <tr>
+            <td>Llama 3.3 70B（走 Groq）</td>
+            <td>Groq</td>
+            <td>否</td>
+            <td>沒有</td>
+          </tr>
+          <tr>
+            <td>MiniMax abab-6.5</td>
+            <td>MiniMax</td>
+            <td>否</td>
+            <td>沒有</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout warn"><strong>注意：</strong>「OpenAI o1 有 reasoning 但不給你看」這件事很多新人踩雷——你在 Pi Agent 選了 o1，覺得「怎麼沒有思考塊、是不是我設錯了」，其實是 OpenAI 官方就不吐這一段給任何 client（他們把思考內容當成商業機密）。你在對話介面看不到思考塊，但錢還是照樣算了那一大堆思考 tokens。這是這章後面「隱藏思考塊不等於省錢」的活教材。</p></div>
+    </section>
+
+    <section id="protocol" data-nav="thinking format">
+      <h2 data-icon="protocol">thinking format 是什麼（Pi Agent 專有名詞）</h2>
+      <p>你在<a href="ch6_paste_key.html">第 6 章</a>貼金鑰的時候，Add Model 對話框裡有一個欄位叫 <code>thinkingFormat</code>，下拉選單通常有這幾個選項：<code>zai</code>、<code>deepseek</code>、<code>native</code>、或空白（不填）。這個欄位在告訴 Pi Agent「等一下收到 AI 回應的時候，思考塊會用哪種格式包裝、要怎麼拆出來給使用者看」。</p>
+      <p>四個選項對應的意思：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>thinkingFormat 值</th>
+            <th>誰在用</th>
+            <th>思考塊怎麼藏</th>
+            <th>典型模型</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>zai</code></td>
+            <td>智譜（Zhipu）家</td>
+            <td>思考文字包在 <code>&lt;think&gt;…&lt;/think&gt;</code> 這類特殊 tag 裡，藏在 message content 前段</td>
+            <td>GLM-4.6、GLM-Zero、glm-4-plus</td>
+          </tr>
+          <tr>
+            <td><code>deepseek</code></td>
+            <td>DeepSeek 家（MiniMax 相容格式也吃這個）</td>
+            <td>思考文字放在 API 回應的 <code>reasoning_content</code> 欄位，跟正式答案 <code>content</code> 分開放</td>
+            <td>DeepSeek-R1、DeepSeek-Reasoner、部分 MiniMax reasoning 模型</td>
+          </tr>
+          <tr>
+            <td><code>native</code></td>
+            <td>Anthropic（走 Messages API）</td>
+            <td>思考變成一個獨立的 content block（<code>type: "thinking"</code>），跟 <code>type: "text"</code> 平行擺</td>
+            <td>Claude Opus 4.7 / Sonnet 4.6 / Sonnet 4.5 / Opus 4.5，只要開了 thinking</td>
+          </tr>
+          <tr>
+            <td>空白（不填）</td>
+            <td>非 reasoning 模型</td>
+            <td>沒有思考塊，回應就是純答案</td>
+            <td>GLM-4-Flash、DeepSeek-Chat、GPT-4o、Claude Haiku、Llama 3.3</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Pi Agent 用這個欄位決定「要不要在對話介面上多渲染一個可展開的思考塊卡片」。填對，你才看得到那塊漂亮的灰底摺疊區。填錯的後果，看你怎麼錯法：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>錯誤情境</th>
+            <th>後果</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>GLM-4.6 選成空白</td>
+            <td>對話會出來，但你會看到答案前面出現一坨莫名其妙的 <code>&lt;think&gt;</code> tag 跟一大段草稿——因為沒人幫你拆出來變成獨立卡片</td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1 選成 zai</td>
+            <td>思考塊完全消失（因為 R1 沒有把思考藏在 <code>&lt;think&gt;</code> tag 裡，而是塞到另一個欄位），但你會發現「怎麼這個模型好像沒在想」——其實有，只是你看不到</td>
+          </tr>
+          <tr>
+            <td>Claude Opus 選成 zai 或 deepseek</td>
+            <td>看不到思考塊，且可能整個回應解析失敗，畫面顯示「error parsing response」之類的訊息</td>
+          </tr>
+          <tr>
+            <td>GPT-4o 選成 native</td>
+            <td>沒有實際傷害（GPT 本來就沒思考塊），但那個 flag 意義不大，Pi Agent 收到後會發現沒有 thinking block 就當一般回應處理</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout"><strong>觀念：</strong>Anthropic 走 <code>api: "anthropic"</code> 模式的時候（不是 <code>openai-compatible</code>），Pi Agent 會自動用 native 格式處理思考塊，你甚至不用手動選——thinking block 是 Anthropic Messages API 原生就有的欄位。這是<a href="ch11_provider_map.html">第 11 章</a>提到的「Anthropic 走自己的路」的其中一個好處：格式全部自動化。</p></div>
+    </section>
+
+    <section id="cost" data-nav="有想的花多少">
+      <h2 data-icon="cost">有想的到底比沒想的貴多少</h2>
+      <p>抽象講「貴 10 倍」沒感覺，我們拿同一個問題，實地比一次。假設你問這個問題（很典型的家庭自動化題目）：</p>
+      <pre class="code-block"><code>幫我寫一個自動化：晚上 10 點開始，慢慢把客廳燈調暗到 20%，
+到 10 點半完全變成夜燈色溫，過程要平滑，不要突然變暗。</code></pre>
+      <p>這是一個「有點難、需要想清楚 transition 與時間邏輯」的問題。同樣一句話，丟給不同模型會發生什麼事：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>模型</th>
+            <th>會不會想</th>
+            <th>思考 tokens</th>
+            <th>回答 tokens</th>
+            <th>估算費用（台幣）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>GLM-4-Flash</td>
+            <td>不會</td>
+            <td>0</td>
+            <td>約 500</td>
+            <td>約 0.01 元</td>
+          </tr>
+          <tr>
+            <td>DeepSeek-Chat（V3）</td>
+            <td>不會</td>
+            <td>0</td>
+            <td>約 500</td>
+            <td>約 0.05 元</td>
+          </tr>
+          <tr>
+            <td>GLM-4.6</td>
+            <td>會</td>
+            <td>約 2,000</td>
+            <td>約 600</td>
+            <td>約 0.5 元</td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1</td>
+            <td>會</td>
+            <td>約 3,000</td>
+            <td>約 600</td>
+            <td>約 1.5 元</td>
+          </tr>
+          <tr>
+            <td>Claude Sonnet 4.6（開 thinking）</td>
+            <td>會</td>
+            <td>約 3,000</td>
+            <td>約 600</td>
+            <td>約 4 元</td>
+          </tr>
+          <tr>
+            <td>Claude Opus 4.7</td>
+            <td>會</td>
+            <td>約 3,000</td>
+            <td>約 600</td>
+            <td>約 15 元</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>看得出來：同樣一個問題，<strong>最貴（Claude Opus）是最便宜（GLM-4-Flash）的 1,500 倍</strong>。差 1,500 倍能買什麼？1,500 個問題 vs 1 個問題。所以這件事真的不能亂選。</p>
+      <div class="callout warn"><strong>注意：</strong>思考 tokens 全部都算成「輸出 tokens」在跟你收費，不管是 Anthropic、DeepSeek 還是 GLM 都一樣。你在 Anthropic 官方文件會看到一段話「thinking tokens count toward the max_tokens limit for the turn」——直接明說思考塊算在 max_tokens 裡，跟正式回答共用同一個計費池子。DeepSeek 那邊的 API 回應則會用 <code>usage.completion_tokens_details.reasoning_tokens</code> 這個欄位單獨顯示你這輪花了多少思考 tokens，方便你事後查帳。</p></div>
+    </section>
+
+    <section id="plan" data-nav="什麼時候值得">
+      <h2 data-icon="plan">什麼時候值得多花那個錢開 reasoning</h2>
+      <p>不是所有問題都值得叫 reasoning 模型上場。下面這張表列常見場景，判斷你這一題該不該切過去：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>場景</th>
+            <th>值得開 reasoning 嗎</th>
+            <th>建議模型</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>「客廳燈叫什麼名字」「儲藏室有沒有溫度感測」這種查東西</td>
+            <td>不值得</td>
+            <td>GLM-4-Flash、DeepSeek-Chat、GPT-4o-mini</td>
+          </tr>
+          <tr>
+            <td>「今天天氣如何」「跟我聊聊今天想吃什麼」閒聊</td>
+            <td>不值得（reasoning 反而顯得囉唆）</td>
+            <td>GLM-4-Flash、Claude Haiku</td>
+          </tr>
+          <tr>
+            <td>「客廳燈開起來」「主臥冷氣調 26 度」單一動作</td>
+            <td>不值得（叫 tool 就好）</td>
+            <td>GLM-4-Flash</td>
+          </tr>
+          <tr>
+            <td>「幫我看這個自動化為什麼半夜跑不起來」除錯</td>
+            <td>值得</td>
+            <td>GLM-4.6、Claude Sonnet 4.6</td>
+          </tr>
+          <tr>
+            <td>「我要買冷氣，考慮房間坪數／隔熱／預算，推薦兩三款」重要決策</td>
+            <td>非常值得</td>
+            <td>Claude Opus 4.7、DeepSeek-R1、GLM-4.6</td>
+          </tr>
+          <tr>
+            <td>「幫我把客廳＋餐廳＋房間三支冷氣、每個人的作息、時電區間，全部算進去，寫成一份省電排程」複雜規劃</td>
+            <td>非常值得</td>
+            <td>Claude Opus 4.7</td>
+          </tr>
+          <tr>
+            <td>「幫我寫這個複雜的 Jinja 模板，把三個 sensor 的歷史平均起來算能耗」寫程式</td>
+            <td>值得</td>
+            <td>GLM-4.6、Claude Sonnet 4.6、DeepSeek-R1</td>
+          </tr>
+          <tr>
+            <td>「幫我把這個 YAML 從 3 段格式改成新版 triggers/actions」機械式改寫</td>
+            <td>不值得</td>
+            <td>GLM-4-Flash、DeepSeek-Chat</td>
+          </tr>
+          <tr>
+            <td>「這個 Skill 該怎麼設計 SKILL.md 的 frontmatter」設計討論</td>
+            <td>值得</td>
+            <td>Claude Sonnet 4.6、GLM-4.6</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>一個好用的心法：<strong>如果這個問題就算 AI 答錯了、你損失不大（比如問錯燈的名字大不了再問一次），用便宜的。如果這個問題答錯了會讓你多花錢、多修東西、或做錯決策（買錯冷氣、寫錯排程跑了一個月才發現），花錢開 reasoning 值得。</strong>把 AI 費用當成「保費」在看，就不會覺得多花那 15 塊台幣心痛。</p>
+      <div class="callout tip"><strong>提示：</strong>還有一個小竅門：<strong>看 AI 有沒有工具可以用</strong>。如果這個問題本質是「叫 tool 拉資料」（HA 查 state、開關燈這種），不需要 reasoning——這種題目誰想都是一樣答案，快就好。如果本質是「要在腦袋裡權衡多個方案、想清楚順序」，reasoning 幫得上忙。</p></div>
+    </section>
+
+    <section id="tips" data-nav="關掉≠省錢">
+      <h2 data-icon="tips">關掉思考塊顯示≠省錢，這個要搞清楚</h2>
+      <p>Pi Agent 某些版本的對話介面上，有一個小小的「隱藏思考塊」開關（通常在 Session 右上角三個點展開的選單裡），按下去思考塊就摺起來、視覺上乾淨很多。很多人一按下去就以為「太好了，我叫它不要想，錢包鬆一口氣」。</p>
+      <p><strong>大錯特錯</strong>。這個開關只是 UI 上把那塊灰底卡片藏起來——AI 那邊照樣在想、照樣產出那些思考 tokens、照樣跟你收錢。你少的只是眼睛看到的視覺負擔，不是荷包裡的錢。</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>你以為</th>
+            <th>實際上</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>按「隱藏思考塊」= AI 不會想 = 不花錢</td>
+            <td>只是眼睛看不到，AI 一樣想、一樣花錢</td>
+          </tr>
+          <tr>
+            <td>OpenAI o1 沒顯示思考塊 = o1 沒思考</td>
+            <td>o1 有思考（很大量），只是 OpenAI 不給你看，錢一樣算</td>
+          </tr>
+          <tr>
+            <td>選 Claude Sonnet 4.6 但不開 thinking = 便宜的 Sonnet</td>
+            <td>沒開 thinking 確實比較便宜（沒思考 tokens），但答案品質就退回普通模型水準</td>
+          </tr>
+          <tr>
+            <td>把 thinking budget 設 1024（最小）= 幾乎不花錢</td>
+            <td>是有省一點，但 AI 只想那一點通常也答不出好答案，這錢等於白花</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>真正省錢的做法只有一個：<strong>換一個不會思考的模型</strong>。GLM-4.6 換 GLM-4-Flash、Claude Opus 換 Claude Haiku、DeepSeek-R1 換 DeepSeek-Chat。或者，同一個模型如果 provider 支援關 thinking（比如 Claude Sonnet 4.6 就可以），那就把 thinking 關掉。</p>
+      <div class="callout"><strong>觀念：</strong>Anthropic 官方文件對 thinking 費用的說法很直白：「thinking tokens count as billed output tokens」——它們就是輸出 tokens，跟你看到的答案共用同一個計費規則。DeepSeek 也是。GLM 那邊 zai 格式的思考文字則是包在整段 output 裡一起計費。所以隱藏 UI 對錢沒幫助。</p></div>
+    </section>
+
+    <section id="modes" data-nav="混搭策略">
+      <h2 data-icon="modes">混搭策略：一個對話怎麼跨模型</h2>
+      <p>實務上，很多人的做法是：<strong>一個 Session 裡不同階段用不同模型</strong>。這是<a href="ch10_why_multi.html">第 10 章</a>「多接幾家」策略在同一個對話裡的具體應用。</p>
+      <p>典型的節奏長這樣：</p>
+      <ol class="steps">
+        <li>
+          <h3>開場探路用便宜的</h3>
+          <p>Session 剛開的前幾輪，你在描述問題、探索背景、確認 AI 有沒有找到對的 entity——這階段用 GLM-4-Flash 或 DeepSeek-Chat 就夠。快、便宜、答對率也不差。這時候花大錢請 Opus 幫你「查一下客廳燈叫什麼」，就是拿獅子殺雞。</p>
+        </li>
+        <li>
+          <h3>發現要深想的時候切過去</h3>
+          <p>當你發現「這個問題有點複雜，需要 AI 幫忙好好想一輪」（比如它前面已經幫你查完所有相關 entity，現在要規劃一個橫跨三個房間、四個裝置、六個時段的自動化），這時候在<a href="ch13_switch_model.html">下一章</a>教的模型下拉切成 GLM-4.6 或 Claude Sonnet 4.6。</p>
+        </li>
+        <li>
+          <h3>切完之後前面的訊息不會重跑</h3>
+          <p>切模型的當下，前面所有訊息不會重新丟給 AI 跑一遍（那樣太浪費）。但下一次你發訊息，前面所有累積的對話會被新模型「讀過一次」當上下文——這一讀是要算 input tokens 的錢，不算免費。所以切模型有一個一次性成本，但通常還是划算，因為你等於在最需要的那一步才動用重砲。</p>
+        </li>
+        <li>
+          <h3>深想結束可以再切回便宜的</h3>
+          <p>Opus 幫你想出方案、也寫好初版 YAML 之後，接下來如果只是「你幫我把冷氣的溫度改成 24 度」這種小修，切回 GLM-4-Flash 繼續改。這樣整個 Session 只在「真的需要想」的中段花大錢，前後都便宜。</p>
+        </li>
+      </ol>
+      <div class="callout tip"><strong>提示：</strong>怕忘記切回來？可以在 Session 名稱加個註記，比如「客廳自動化規劃（用 Opus 中段）」。<a href="ch8_session.html">第 8 章</a>教你怎麼改 Session 名字。這樣下次打開就記得這是需要換模型的 Session。</p></div>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>選了 GLM-4.6 但看不到思考塊</h3>
+          <p>回<a href="ch6_paste_key.html">第 6 章</a>教你貼金鑰的 Add Model 對話框，檢查那個 <code>thinkingFormat</code> 欄位是不是選了 <code>zai</code>。空白的話 Pi Agent 不知道怎麼拆思考塊，會把 <code>&lt;think&gt;…&lt;/think&gt;</code> 那段當普通文字塞給你看（很醜的一坨）。選成 <code>deepseek</code> 或 <code>native</code> 的話思考塊會完全消失。改成 <code>zai</code>、按 Save，重開一個新的 Session（舊 Session 通常也會生效）再試一次。</p>
+        </li>
+        <li>
+          <h3>明明是 reasoning 模型但答案品質很爛</h3>
+          <p>兩個可能：（a）思考 token budget 太小——如果你的 provider 支援手動設 budget（Anthropic Claude 4.5 那代還有 <code>budget_tokens</code>、DeepSeek 有隱含上限），試著調高一點。Anthropic 官方建議：簡單題目從 1,024 開始加、複雜題目從 16,000 起跳。（b）題目本身就不適合 reasoning——如果你問的是「客廳燈叫什麼名字」這種查資料題，reasoning 模型答得比普通模型還慢還囉唆，因為它會「想不必要的東西」。這種題目換 GLM-4-Flash 反而更好。</p>
+        </li>
+        <li>
+          <h3>從有想切成沒想後 AI 好像「變笨」了</h3>
+          <p>正常，你少了那張草稿紙。GLM-4.6 切成 GLM-4-Flash、Opus 切成 Haiku，答案深度會下降。如果你剛才問的問題本來就需要深想（比如規劃自動化），切回便宜模型之後它可能給你比較平面、少考慮邊角情境的答案。如果你切回便宜的之後感覺失望，就是該切回貴的訊號——說明這個問題確實需要 reasoning。</p>
+        </li>
+        <li>
+          <h3>DeepSeek-R1 一直觸發 rate limit 或超時</h3>
+          <p>DeepSeek-R1 在中國白天／傍晚 peak 時段常常伺服器爆滿，request 會被排隊、甚至超時。解法（優先順序）：（a）暫時切成 GLM-4.6 頂替，一樣是會思考的模型，中文品質也好。（b）晚一點再試（台灣時間深夜通常暢通）。（c）在 Pi Agent 的 Session 設定裡加 fallback 模型，讓主模型失敗自動切到備援，這樣不會整個對話卡住。</p>
+        </li>
+        <li>
+          <h3>思考塊超級長，跑了 30 秒還在轉</h3>
+          <p>複雜問題 reasoning 模型跑一分多鐘都算正常，別以為壞了就狂按停止。可以先切到 Pi Agent 的其他分頁（比如 Skills）去看點別的，回頭看那邊自己會跑完。真的太慢，下次同類問題把 thinking budget 調低一點（如果 provider 支援），或直接換家 provider——DeepSeek-R1 的思考通常比 GLM-4.6 深、也比較久。</p>
+        </li>
+        <li>
+          <h3>換到 OpenAI o1 之後對話介面完全沒思考塊</h3>
+          <p>這不是 bug 是設計。OpenAI 官方就不吐 o1 的思考內容給任何 client（他們把 chain-of-thought 當成商業機密），Pi Agent 拿不到就沒得渲染。你只會看到最後答案跟 usage 那邊統計出來的 reasoning_tokens 數字——證明有想過、但看不到內容。可以接受就繼續用 o1，想看思考塊就換 GLM-4.6 或 Claude。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>思考塊我到底要不要展開來看？</summary>
+        <div class="body">看場合。<strong>品質檢查的時候要看</strong>——例如你叫 Opus 規劃一份複雜自動化，展開思考塊可以確認它有沒有想到你在意的邊角情境（比如夜間、假日、有客人的時候）。有的話你就放心，沒的話你可以在下一輪追問。<strong>日常聊天不用看</strong>——那些草稿是給 AI 自己用的，對你沒特別價值。Pi Agent 的介面預設會把思考塊摺起來，就是這個道理：你想看再點開，不然不用干擾。</div>
+      </details>
+      <details class="faq">
+        <summary>Reasoning 模型可以叫它「不要想、直接答」嗎？</summary>
+        <div class="body">看是誰家的模型：（1）Claude Sonnet 4.6 可以——Anthropic 支援 <code>thinking: {type: "enabled"}</code> 開關，不開就是普通模型模式，也比較便宜。（2）Claude Opus 4.7 不行——這代的 Opus 只支援 adaptive thinking，模型自己決定要不要想、想多深。（3）DeepSeek-R1、GLM-4.6 主要靠 provider 一鍵決定，你在 client 端很難精確控制。（4）OpenAI o1／o3-mini 一定會想，這是它的設計本質。所以答案是「多數場合是 provider 決定的，你只能決定要不要選 reasoning 模型」。</div>
+      </details>
+      <details class="faq">
+        <summary>思考塊裡的內容可以直接複製給別人看嗎？</summary>
+        <div class="body">技術上可以（就是普通文字），但要挑對象。<strong>行家看得懂</strong>——同樣搞 HA 自動化的朋友、寫過程式的同事、AI 圈內人，展開思考塊看模型的推理過程對他們很有價值，可以幫忙判斷 AI 有沒有搞錯方向。<strong>一般人不建議</strong>——思考塊往往有大量自言自語、換來換去、否定又肯定的過程，非技術背景的人看了會困惑「AI 是不是不確定？我還能信嗎？」這時候你貼最終答案給他就好，思考塊留自己看。</div>
+      </details>
+      <details class="faq">
+        <summary>未來會不會全部模型都變成 reasoning？普通模型會消失嗎？</summary>
+        <div class="body">短期兩年不會，長期可能。業界趨勢很明顯（Anthropic 從 4.7 開始只支援 adaptive thinking，OpenAI o1／o3 系列全 reasoning，GLM／DeepSeek 主打的都是 reasoning 版），但「輕量非 reasoning 模型」還是會被保留很久，理由是成本考量：日常大量、簡單、批次的任務（客服 chatbot、關鍵字查詢、格式轉換），根本不需要 reasoning，用便宜的划算多了。你未來的 Pi Agent 大概率會長這樣：主力用有 reasoning 的頂尖模型、日常查詢跟 tool call 用非 reasoning 的輕量模型，一起跑。跟現在的策略沒有本質差別。</div>
+      </details>
+      <details class="faq">
+        <summary>Pi Agent 有沒有辦法自動幫我判斷這題該用哪個模型？</summary>
+        <div class="body">現階段沒有官方的「auto model selector」功能——切模型還是要你自己決定，用<a href="ch13_switch_model.html">下一章</a>教的模型下拉手動切。有一個變通做法：某些 provider（比如 OpenRouter）有自動 fallback 或路由功能，你叫它接一個複雜問題進來，它會幫你分派到適合的下游模型。這在 Pi Agent 裡表現成「你選 OpenRouter 的 auto 模型，實際幫你跑的可能是 Claude、GPT 或 DeepSeek」。方便但透明度低（你不知道這一輪到底是誰在答），適合不太在意成本、想要一鍵解決的人。</div>
+      </details>
+      <details class="faq">
+        <summary>思考塊會佔用 context window（上下文長度）嗎？</summary>
+        <div class="body">會，但看 provider 怎麼處理。Anthropic 官方文件說明得很清楚：Claude 4.6 以上的模型，前幾輪的 thinking blocks 會被保留在 context 裡當作 input tokens 計費；Sonnet 4.5、Haiku 4.5、更早的 Claude 4 系列則會把前幾輪的 thinking blocks 從 context 裡拿掉（節省 context 空間）。DeepSeek-R1 的 <code>reasoning_content</code> 通常不會被自動放進下一輪 context（除非你程式端手動塞回去）。實務影響：長對話配 reasoning 模型，context 消耗速度會顯著快於非 reasoning 模型。發現對話跑到後面 AI 開始「忘記前面說什麼」的時候，這是原因之一——這時候該 fork 一個新 Session 從關鍵訊息重來（<a href="ch8_session.html">第 8 章</a>教過 fork）。</div>
+      </details>
+      <details class="faq">
+        <summary>下一步該做什麼？</summary>
+        <div class="body">你現在對「有想、沒想」有觀念了，也知道各家 provider 的 thinking format 怎麼標。但你可能還沒動手在 Session 裡切模型——這正是<a href="ch13_switch_model.html">下一章</a>的主題：一句話切換 AI 的實際操作，包含模型下拉的位置、切換後 context 保留規則、以及怎麼拿同一個問題比對不同 AI 的答案品質。翻過去把這個技能練熟，你就能真正玩「日常便宜、關鍵時刻頂級」的混搭策略了。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch11_provider_map.html">
+        <span class="label">← 上一章</span>
+        <span class="title">11 · 六家 provider 對照</span>
+      </a>
+      <a class="next" href="ch13_switch_model.html">
+        <span class="label">下一章 →</span>
+        <span class="title">13 · 切換 AI</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

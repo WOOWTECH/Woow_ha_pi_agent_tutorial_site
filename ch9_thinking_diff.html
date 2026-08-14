@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 9 章 · 對話裡的思考塊、工具卡片、diff 是什麼 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="看懂 Pi Agent 對話介面的三種特殊區塊：思考塊（reasoning）、工具呼叫卡片（tool call）、內嵌程式碼差異（inline diff）。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch9_thinking_diff.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 9 章 · 對話裡的思考塊、工具卡片、diff 是什麼 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="看懂 Pi Agent 對話介面的三種特殊區塊：思考塊（reasoning）、工具呼叫卡片（tool call）、內嵌程式碼差異（inline diff）。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch9_thinking_diff.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 9 章 · 對話裡的思考塊、工具卡片、diff 是什麼 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="看懂 Pi Agent 對話介面的三種特殊區塊：思考塊（reasoning）、工具呼叫卡片（tool call）、內嵌程式碼差異（inline diff）。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html" class="active">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要學看區塊</a>
+      <a href="#concept">三種區塊的分工</a>
+      <a href="#what">思考塊詳解</a>
+      <a href="#integration">工具卡片詳解</a>
+      <a href="#protocol">Inline diff 詳解</a>
+      <a href="#records">真實例子解剖</a>
+      <a href="#cost">會不會很花錢</a>
+      <a href="#theme">關掉思考塊顯示</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 9 章</div>
+      <h1>對話裡的思考塊、工具卡片、diff 是什麼</h1>
+      <p class="lead">開始跟 AI 講話後，你會發現它的回答旁邊冒出一些奇怪的方塊：灰色可以展開的、白色寫著工具名稱的、紅綠對照的程式碼。這章一次講清楚每一種是幹嘛的、什麼時候該打開來看、什麼時候可以直接無視。讀完你就不再是「看 AI 黑箱吐答案」，而是「看 AI 在做事」。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼要學看區塊">
+      <h2 data-icon="why">為什麼要學會看這些方塊</h2>
+      <p>還記得 <a href="ch7_first_chat.html">第 7 章</a>開第一個對話時，那些「AI 回答上下多出來的東西」嗎？灰色可以按 ▶ 展開的、白色像卡片的、紅一段綠一段像考卷改錯的——那些不是介面裝飾，也不是 bug，而是 Pi Agent 跟一般 ChatGPT 網頁最大的差別：<strong>它把 AI「內心的想法」和「動手做的紀錄」通通攤在你面前</strong>。</p>
+      <p>會看的人可以做到：
+      <ul>
+        <li>答案怪怪的時候，展開思考塊追出 AI 是哪一步想歪了。</li>
+        <li>AI 說「我幫你讀了 <code>configuration.yaml</code>」的時候，展開工具卡確認它到底讀了哪個檔、有沒有讀對。</li>
+        <li>AI 提議改設定檔之前，展開 diff 逐行檢查再決定接不接受——這是「你允許 AI 動你的家」之前最後一道人眼把關。</li>
+      </ul></p>
+      <p>不會看的人：AI 亂改配置檔弄壞 HA、跑錯指令、讀了不該讀的檔，你都是事後才發現。所以這一章的目標很單純：<strong>看到每一種方塊，你都能一秒說出「這是什麼、要不要展開」</strong>。</p>
+      <div class="callout"><strong>觀念：</strong>這三種方塊在正式術語裡叫 <em>reasoning block</em>（思考塊）、<em>tool call card</em>（工具卡片）、<em>inline diff</em>（內嵌差異）。中英夾雜的原因是它們在 pi-web 介面上就這樣寫，你之後排查問題找官方文件也會撞到這幾個詞。</p></div>
+    </section>
+
+    <section id="concept" data-nav="三種區塊的分工">
+      <h2 data-icon="concept">三種特殊區塊的分工（一句話版）</h2>
+      <p>先給一張總覽，之後每一節會逐一拆解。看完這張表你就有心智模型，後面的細節都是掛在這張表上的補充：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>區塊</th><th>一句話</th><th>顏色／樣式</th><th>來自</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>思考塊<br>Reasoning</td><td>AI 在腦袋裡想什麼</td><td>灰底、預設收起、旁邊有 ▶</td><td>只有 reasoning 模型才有</td></tr>
+          <tr><td>工具卡片<br>Tool call</td><td>AI 呼叫了外部工具做了什麼</td><td>白色卡片、上方寫工具名</td><td>任何模型都可能有，看 skill</td></tr>
+          <tr><td>內嵌差異<br>Inline diff</td><td>AI 建議你改哪個檔（紅刪綠加）</td><td>紅底＋綠底交錯</td><td>AI 要動你檔案時才有</td></tr>
+        </tbody>
+      </table>
+      <div class="callout tip"><strong>記憶法：</strong>思考塊是「AI 內心戲」、工具卡是「AI 動手紀錄」、diff 是「AI 給你的修改提案」。三個層次由虛到實，一步比一步值得認真看。</div>
+    </section>
+
+    <section id="what" data-nav="思考塊詳解">
+      <h2 data-icon="what">思考塊（Reasoning block）詳解</h2>
+      <p>思考塊是三種區塊裡最容易被忽略的一種——因為它預設是收起的，很多人根本不知道它可以點開。</p>
+      <h3>長什麼樣</h3>
+      <p>灰色底、標題寫「Thinking」或「思考中」（依語言設定），左邊有一個小三角 ▶ 或 <code>+</code>。它出現在 AI 正式回答的<strong>上方</strong>，代表「AI 是先想過這一段，才給你下面那個答案」。點一下 ▶ 展開，就會看到 AI 逐步推理的內容，通常是一大段自言自語的文字。</p>
+      <h3>什麼時候會出現</h3>
+      <p>只有 <strong>reasoning（推理）模型</strong>才會有。目前 Pi Agent 支援的 reasoning 模型：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>模型</th><th>Provider</th><th>思考塊格式</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>GLM-4.6</td><td>智譜（Z.ai）</td><td><code>zai</code></td></tr>
+          <tr><td>DeepSeek-R1</td><td>DeepSeek</td><td><code>deepseek</code></td></tr>
+          <tr><td>Claude Opus 4 / Sonnet 4（extended thinking）</td><td>Anthropic</td><td><code>native</code></td></tr>
+          <tr><td>o1 / o3 系列</td><td>OpenAI</td><td><code>native</code></td></tr>
+        </tbody>
+      </table>
+      <p>非 reasoning 模型（GLM-4-Flash、GPT-4o、Claude Haiku 那種）就沒有思考塊——它們是「直接吐答案不留過程」。</p>
+      <h3>展開能讀到什麼</h3>
+      <p>會看到 AI 在給你正式答案前的推理過程，例如：「使用者想要一個晚上 10 點關客廳燈的自動化。我需要用 time 觸發，動作是 <code>light.turn_off</code>，還要考慮如果沒人在家的話⋯⋯」這種一連串的自言自語。有時候長達幾百字，有時候只有兩三行。</p>
+      <h3>什麼時候該讀</h3>
+      <ul>
+        <li>答案怪怪的、跟你預期差很多，想追蹤 AI 為什麼這樣回。</li>
+        <li>想學它的分析框架（例如 AI 怎麼把「晚上 10 點關燈」分解成觸發／條件／動作）。</li>
+        <li>想確認 AI 有沒有考慮到某個特殊條件（例如「有人在家才不要關」）。</li>
+      </ul>
+      <h3>什麼時候可以不用讀</h3>
+      <ul>
+        <li>一般家用問題、AI 回得對且乾淨。</li>
+        <li>只是問一個查詢型的問題（「HA 支援幾種 domain」這種）。</li>
+        <li>反正你也不打算採用這個答案。</li>
+      </ul>
+      <h3>為什麼有時候明明選了 reasoning 模型卻看不到思考塊</h3>
+      <p>兩個可能：
+      <ol>
+        <li><strong>Provider 設定沒開對 thinkingFormat</strong>——你在 Models 面板加 provider 時，那個下拉沒設對值（GLM 要選 <code>zai</code>、DeepSeek 選 <code>deepseek</code>、Anthropic 選 <code>native</code>）。回<a href="ch6_paste_key.html">第 6 章</a>檢查一次。</li>
+        <li><strong>你選到了 provider 底下的非 reasoning 模型</strong>——例如智譜的下拉裡除了 GLM-4.6 還有 GLM-4-Flash，後者是非 reasoning。看模型下拉的名字對照一下。</li>
+      </ol></p>
+    </section>
+
+    <section id="integration" data-nav="工具卡片詳解">
+      <h2 data-icon="integration">工具卡片（Tool call）詳解</h2>
+      <p>工具卡片是三種區塊裡最重要的一種——因為它代表「AI 真的動了東西」，你必須知道它動了什麼。</p>
+      <h3>長什麼樣</h3>
+      <p>白色的卡片、上方寫「Tool: xxx」或「Calling xxx」，中間有一個小區塊列出<strong>輸入（parameters）</strong>與<strong>輸出（result）</strong>的摘要。點卡片可以展開看完整內容。有些卡片跑到一半會顯示「Running⋯⋯」轉圈，跑完會亮綠燈（成功）或紅燈（失敗）。</p>
+      <h3>什麼時候會出現</h3>
+      <p>AI 需要「動手做」而不只是「回答文字」時。動手包含：讀你貼過來的檔案、跑一段 bash 指令、抓網頁、查天氣、搜資料庫等。哪一種工具會被叫出來，取決於你裝了哪些 skill（<a href="ch16_write_skill.html">第 16 章</a>會教你自己寫 skill）以及 AI 覺得該不該用。</p>
+      <h3>常見的工具名稱速查</h3>
+      <table class="data-table">
+        <thead>
+          <tr><th>工具名</th><th>做什麼</th><th>你要不要展開看</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>read_file</code> / <code>Read</code></td><td>讀一個檔案</td><td>建議看，確認讀對檔</td></tr>
+          <tr><td><code>write_file</code> / <code>Write</code></td><td>寫入／覆蓋一個檔案</td><td><strong>一定要看</strong>，確認路徑跟內容都對</td></tr>
+          <tr><td><code>bash</code> / <code>Bash</code></td><td>跑一段 shell 指令</td><td>建議看，尤其是 <code>rm</code>、<code>mv</code>、<code>sudo</code></td></tr>
+          <tr><td><code>web_fetch</code> / <code>WebFetch</code></td><td>去抓一個網頁的內容</td><td>看網址對不對即可</td></tr>
+          <tr><td><code>search</code> / <code>Grep</code></td><td>在檔案裡搜關鍵字</td><td>通常不用看，除非結果怪</td></tr>
+        </tbody>
+      </table>
+      <h3>展開能讀到什麼</h3>
+      <p>兩塊：實際傳給工具的參數（例如 <code>read_file</code> 的 <code>path</code> 是什麼）、以及工具回傳的結果（檔案內容、指令輸出、網頁 HTML 摘要等）。這是「AI 到底做了什麼」的證據，比 AI 自己說的更可靠。</p>
+      <h3>什麼時候該讀</h3>
+      <ul>
+        <li>AI 說「我讀了 xxx」的時候，展開對應的 <code>read_file</code> 卡確認它讀對了。</li>
+        <li>看到 <code>write_file</code>／<code>Write</code>／<code>Edit</code> 這類會動檔案的，<strong>一定要展開看</strong>，尤其是 <code>path</code> 對不對。</li>
+        <li>看到 <code>bash</code>／<code>Bash</code> 卡片，展開看指令有沒有危險字（<code>rm -rf</code>、<code>chmod 777</code>、<code>curl | sh</code>）。</li>
+        <li>AI 給的結論跟你預期不同，想追工具的原始輸出，看是不是資料本來就是那樣。</li>
+      </ul>
+      <div class="callout warn"><strong>注意：</strong>工具卡片如果亮紅燈（error），AI 會嘗試繼續往下講但那句話很可能是編出來的（因為工具沒真的跑成功）。看到紅燈先展開讀錯誤訊息，決定要不要叫 AI 重試。</div>
+    </section>
+
+    <section id="protocol" data-nav="Inline diff 詳解">
+      <h2 data-icon="protocol">Inline diff 詳解（改檔前的最後把關）</h2>
+      <p>Inline diff 是三種區塊裡最需要你「動眼看」的一種——因為它是「AI 給你的修改提案」，你點頭它才會改。</p>
+      <h3>長什麼樣</h3>
+      <p>一段一段的紅色（<code>-</code> 開頭，被刪除的行）＋ 綠色（<code>+</code> 開頭，新增的行）程式碼區塊，中間夾著沒變的白色行做為對照。跟 GitHub 的 pull request diff 是同一種東西。</p>
+      <h3>什麼時候會出現</h3>
+      <p>AI 提議改你貼上去的檔案時。例如你把 <code>configuration.yaml</code> 貼進對話說「幫我加個 MQTT integration」，AI 就會回一段 diff 給你看要在第幾行插什麼、刪什麼。</p>
+      <h3>展開能讀到什麼</h3>
+      <p>完整的變更 patch。有的版本會把 diff 折起來只顯示前後幾行，點「展開」可以看到 full context。旁邊通常會有一個「Apply」或「Copy」按鈕。</p>
+      <h3>什麼時候該讀</h3>
+      <p><strong>每一次都要讀。</strong>沒有例外。這是「你允許 AI 動你的檔案」之前的最後一道人眼把關。</p>
+      <h3>怎麼採用 diff（三種方式）</h3>
+      <ol class="steps">
+        <li>
+          <h3>方式 A：手動複製整段修改後版本</h3>
+          <p>最保守。點 diff 上方的「Copy after」或「Show final」，把改完後的完整版複製起來，自己去 <code>configuration.yaml</code> 貼上取代原本內容。適合「不信任 AI 自動改檔」或「只想套用其中一部分」的情境。</p>
+        </li>
+        <li>
+          <h3>方式 B：叫 AI 用 write_file 工具直接改</h3>
+          <p>回一句「幫我寫進去」，AI 會呼叫 <code>write_file</code>／<code>Write</code> 工具直接改檔。這時候<strong>你要盯緊那張工具卡片</strong>：展開看 <code>path</code> 是不是你想的那個檔、內容有沒有跟 diff 對上。適合「已經看過 diff 覺得沒問題」的情境。</p>
+        </li>
+        <li>
+          <h3>方式 C：說「不要」讓 AI 另外想</h3>
+          <p>如果你看完 diff 覺得方向錯了、或有一段不能刪，直接回覆「這樣不對，我要保留 xxx」「請改用 yyy 方式」。AI 會重新生一段 diff。這是最省事的迭代方式，比自己去改半天再貼回來快多了。</p>
+        </li>
+      </ol>
+      <div class="callout danger"><strong>危險：</strong>看到 diff 是動 <code>configuration.yaml</code>／<code>automations.yaml</code>／<code>scripts.yaml</code>／<code>.storage/</code> 這幾個關鍵路徑時，<strong>務必先備份</strong>再套用。<a href="ch12_reasoning.html">第 12 章</a>會講怎麼判斷 AI 提議的改動是不是安全，但通用原則是：改前先做一次 HA snapshot。</div>
+    </section>
+
+    <section id="records" data-nav="真實例子解剖">
+      <h2 data-icon="records">一個真實例子的解剖</h2>
+      <p>假設你問 AI：「幫我加一個晚上 10 點自動關客廳燈的自動化」。用 GLM-4.6（有 reasoning）＋ 裝了 <em>home-assistant-best-practices</em> skill（有 read_file／write_file 工具能力）。AI 的回應會依序長成這樣：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>#</th><th>你看到什麼區塊</th><th>裡面是什麼</th><th>你要不要打開看</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>1</td><td>思考塊（灰）</td><td>AI 自言自語：「使用者要 22:00 關客廳燈。要用 time 觸發，動作是 <code>light.turn_off</code>，target 是 <code>light.living_room</code>。要不要加條件？先做最簡單的版本。」</td><td>可看可不看，好奇的話展開學它的分解方式</td></tr>
+          <tr><td>2</td><td>工具卡：<code>read_file</code>（白）</td><td>Input: <code>path: /config/automations.yaml</code>；Output: 原本檔案內容</td><td>建議看，確認讀的是 <code>/config/automations.yaml</code> 不是別的檔</td></tr>
+          <tr><td>3</td><td>Inline diff（紅綠）</td><td>在檔尾加入新的 automation entry，含 alias、triggers、actions</td><td><strong>一定要看</strong>——尤其確認 entity_id 是不是 <code>light.living_room</code> 而不是別間的燈</td></tr>
+          <tr><td>4</td><td>工具卡：<code>write_file</code>（白）</td><td>Input: <code>path: /config/automations.yaml</code>, <code>content: ...</code>；Output: <code>success</code></td><td><strong>一定要看</strong>——確認 path 對、內容跟 diff 一致</td></tr>
+          <tr><td>5</td><td>正式回答（無框）</td><td>「已經幫你在 <code>automations.yaml</code> 加了新規則，記得去 開發者工具 → YAML → 重新載入自動化 讓它生效。」</td><td>照做</td></tr>
+        </tbody>
+      </table>
+      <p>看到沒？如果你不會讀這些區塊，你只會看到最後那句「已經幫你加了」——聽起來很爽，實際上你完全不知道它有沒有動對檔、有沒有寫錯 entity_id、有沒有把原本的自動化蓋掉。會讀的人可以在第 3 步 diff 就攔下錯誤，不必等 HA 出問題才回頭找。</p>
+      <div class="callout"><strong>觀念：</strong>Pi Agent 的哲學是「透明」——不藏 AI 的想法、不藏 AI 動的手腳、不藏 AI 要動的檔。這對新手一開始有點壓力，但玩熟後你會發現，這才是敢把家交給 AI 管的前提。</div>
+    </section>
+
+    <section id="cost" data-nav="會不會很花錢">
+      <h2 data-icon="cost">這些區塊會不會占很多 context（會不會很花錢）</h2>
+      <p>會。而且比你想的多。三種區塊都算 tokens（就是 AI provider 計費的單位）：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>區塊</th><th>tokens 佔比</th><th>誰付</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>思考塊</td><td>可能很多（一次幾百到幾千字）</td><td>你付（算 output tokens）</td></tr>
+          <tr><td>工具卡輸入</td><td>看你叫它讀什麼檔（<code>read_file</code> 讀大檔就吃很多）</td><td>下一輪 AI 要「看到」這段的話，算 input tokens</td></tr>
+          <tr><td>工具卡輸出</td><td>同上</td><td>同上</td></tr>
+          <tr><td>Diff</td><td>看檔多長</td><td>算 output tokens</td></tr>
+        </tbody>
+      </table>
+      <p>省 tokens 的三個原則（<a href="ch12_reasoning.html">第 12 章</a>會詳講）：</p>
+      <ol>
+        <li><strong>只在需要深想的時候用 reasoning 模型。</strong>家用日常問題（「查一下今天天氣」「開客廳燈」）用非 reasoning 的 GLM-4-Flash 就好，快又便宜、還沒思考塊佔位。</li>
+        <li><strong>叫 AI 讀檔前先想它需不需要讀整份。</strong>如果只是要改一段，可以說「只讀第 X 到第 Y 行」，別讓它把整個 <code>automations.yaml</code>（可能幾千行）通通拉進 context。</li>
+        <li><strong>對話變太長就開新 session。</strong>前面累積的思考塊、工具輸出都會被帶進每一輪的 context，一路加下去 tokens 會爆。看到 pi-web 底部 context 進度條變黃就該收工另起爐灶。</li>
+      </ol>
+    </section>
+
+    <section id="theme" data-nav="關掉思考塊顯示">
+      <h2 data-icon="theme">關掉思考塊顯示（純看答案）</h2>
+      <p>有些人覺得思考塊很吵、佔畫面又看不習慣，想關掉。有些 pi-web 版本可以在 <strong>Settings 面板</strong>找到「Show reasoning blocks / 顯示思考塊」的開關，關掉之後 UI 就只顯示 AI 的正式答案。</p>
+      <div class="callout warn"><strong>注意：</strong>這個開關只是<strong>關掉「你看不到」</strong>——AI 還是照樣在想、tokens 照樣花。要真的省錢，正確做法是<strong>換非 reasoning 模型</strong>（把模型下拉切到 GLM-4-Flash、GPT-4o 這類），而不是關 UI。</div>
+      <p>另一種折衷：把「重要的深度問題」跟「日常快問快答」分兩個 session 用不同模型。深度那個開 GLM-4.6 展開思考塊看它推理；日常那個用 GLM-4-Flash 秒答不留過程。這樣兩邊都爽。</p>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>思考塊點不開、按了沒反應</h3>
+          <p>先看 AI 有沒有跑完——右下角的送出鈕如果還在轉圈，代表答案還在生，思考塊要等它結束才會可展開。等它跑完還是點不開，按 <kbd>F12</kbd> 開瀏覽器 devtools 看 Console 有沒有紅字。九成是瀏覽器擴充套件擋 JS，試無痕視窗（Incognito）看看有沒有解。</p>
+        </li>
+        <li>
+          <h3>工具卡片顯示 error（紅燈）</h3>
+          <p>展開卡片看 output 欄位的錯誤訊息。常見原因：檔案路徑錯（AI 拼錯 <code>/config/automations.yaml</code> 或缺前面的斜線）、bash 指令 exit 1（權限不夠、指令找不到）、web_fetch 超時。看到訊息後回覆 AI「這個 tool 失敗了，訊息是⋯⋯，改用別的方式」，讓它重試。</p>
+        </li>
+        <li>
+          <h3>Diff 貼上去對不齊、YAML 縮排錯</h3>
+          <p>pi-web 的 diff render 有時候有 whitespace 顯示問題（tab 跟 space 看起來一樣但貼出去差很多）。解法：叫 AI 「請重新輸出完整檔案內容而不是 diff」，然後整份複製貼上取代。或叫它用 <code>write_file</code> 工具直接寫進去，避開你手動複製這一步。</p>
+        </li>
+        <li>
+          <h3>我明明選了 GLM-4.6 為什麼沒有思考塊</h3>
+          <p>去 Models 面板檢查 provider 的 <code>thinkingFormat</code> 有沒有設 <code>zai</code>（<a href="ch6_paste_key.html">第 6 章</a>教過的欄位）。沒設或設錯的話，pi-web 收得到思考內容但不知道要拆出來顯示，就會全部塞進正式答案裡或者直接吃掉。改完 provider 設定要新開一個 session 才會生效。</p>
+        </li>
+        <li>
+          <h3>工具卡卡在「Running⋯⋯」轉圈很久</h3>
+          <p>大部分工具幾秒內會結束，超過 30 秒還在轉的話通常是網路問題（web_fetch 卡在對方 server）或 bash 指令跑太久（<code>find /</code> 那種）。點卡片右上角有時候有「Cancel」可以中止；沒有的話，重新整理頁面（Session 會保住不會不見，只是那次 tool call 會標記失敗）。</p>
+        </li>
+        <li>
+          <h3>Diff 一直都不出現，AI 只給我一段程式碼</h3>
+          <p>Diff 只有在「AI 認得出你原本檔案內容」時才會產生。如果你只丟一句「幫我寫一個 automation」而沒有貼原本的 <code>automations.yaml</code>，AI 沒有「舊版」可以對照，只能給你「新版全文」。想看 diff 就先把原檔貼進來當 baseline。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>思考塊很長是好還是壞？</summary>
+        <div class="body">不一定。長的思考塊代表 AI 有認真拆問題（好），也可能代表它一直在鑽牛角尖或猶豫（壞）。判斷方式：展開讀一小段看它有沒有在「圍繞你的問題轉」還是「在講不相關的事」。太長太亂的話，通常換一個模型（例如從 DeepSeek-R1 換到 Claude 或 GLM-4.6）會有截然不同的思路。</div>
+      </details>
+      <details class="faq">
+        <summary>工具卡片可以我自己觸發嗎？</summary>
+        <div class="body">不能直接點按鈕觸發，但可以在對話裡「請求」AI 用某個工具。例如你可以講「請用 <code>read_file</code> 讀 <code>/config/configuration.yaml</code>」，AI 就會叫那個工具。前提是那個工具已經被裝在 session 裡（透過 skill）。工具清單在 System prompt 面板的 <code>&lt;available_tools&gt;</code> 塊裡可以查（<a href="ch14_skill_concept.html">第 14 章</a>會講）。</div>
+      </details>
+      <details class="faq">
+        <summary>Diff 裡的程式碼可以完全信任嗎？</summary>
+        <div class="body">不行。<strong>要人眼看過。</strong>AI 常見的錯誤有：entity_id 拼錯（<code>light.living_room</code> 拼成 <code>light.liveing_room</code>）、路徑錯（漏了前面 <code>/</code>）、動作用了舊語法（用 <code>service:</code> 而不是新版的 <code>action:</code>）、把不該刪的行刪掉。這些在 diff 裡都會直接看得到，逐行掃過去只要 30 秒。這 30 秒比事後找 bug 快多了。</div>
+      </details>
+      <details class="faq">
+        <summary>這些區塊有辦法一次全部展開嗎？</summary>
+        <div class="body">沒有內建的「全部展開」按鈕。想全部看的最快方式：滑鼠對著頁面按 <kbd>Ctrl</kbd>+<kbd>F</kbd> 搜「Thinking」逐一點開，或按 <kbd>F12</kbd> 開 devtools 用 <code>document.querySelectorAll('details').forEach(d =&gt; d.open = true)</code> 一次全展（要看你 pi-web 版本用不用 <code>&lt;details&gt;</code>）。日常用不到，通常只有匯出 session 做筆記時才需要。</div>
+      </details>
+      <details class="faq">
+        <summary>把思考塊當自己的推理筆記可以嗎？</summary>
+        <div class="body">可以，而且很多老手就是這樣用——把 GLM-4.6 或 Claude 的思考塊當「AI 陪你想」的草稿，抄下來當 study note。<strong>但別直接引用當作事實依據</strong>，因為思考塊裡 AI 常常會提出假設、自我糾正、甚至講錯話（那才叫「想」）。有價值的是它的分解框架，不是每一句結論。</div>
+      </details>
+      <details class="faq">
+        <summary>工具卡片跑失敗會扣我的 API 費用嗎？</summary>
+        <div class="body">工具本身跑失敗（例如檔案不存在、bash exit 1）不會扣 API 費用——因為工具是在你本機（add-on 容器內）跑的，跟 AI provider 無關。但「工具失敗訊息會被塞回下一輪對話讓 AI 讀」，這個「讀」是要算 input tokens 的。所以失敗多幾次還是會累積一點點費用。</div>
+      </details>
+      <details class="faq">
+        <summary>Diff 我看不懂 YAML 縮排怎麼辦？</summary>
+        <div class="body">直接問 AI「這段 diff 我看不懂，請用中文一步一步解釋每一段在改什麼、為什麼要這樣改」。AI 會逐行翻譯給你聽。這是我最推薦新手用 Pi Agent 的方式——把它當「會解釋自己在做什麼的家教」，而不是「會做事的機器人」。慢慢就會看懂 YAML 了。</div>
+      </details>
+      <details class="faq">
+        <summary>可以叫 AI 不要顯示工具卡片、只給結論嗎？</summary>
+        <div class="body">技術上不行——只要 AI 呼叫了工具，卡片就會出現（這是 pi-web 的機制，不是 AI 決定的）。但你可以在對話裡講「請直接回答不用查檔」，AI 就不會叫工具。缺點是它可能會憑印象亂答（因為沒查證），所以看情況：閒聊可以省、動 HA 設定務必讓它查。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch8_session.html">
+        <span class="label">← 上一章</span>
+        <span class="title">08 · Session 概念</span>
+      </a>
+      <a class="next" href="ch10_why_multi.html">
+        <span class="label">下一章 →</span>
+        <span class="title">10 · 為什麼多接幾家</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

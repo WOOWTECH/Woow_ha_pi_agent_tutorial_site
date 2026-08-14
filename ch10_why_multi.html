@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 10 章 · 為什麼要接不只一家 AI · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Pi Agent 多 provider 策略：為什麼一家不夠用、成本速度品質怎麼互補、什麼場景該切換到哪家。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch10_why_multi.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 10 章 · 為什麼要接不只一家 AI · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Pi Agent 多 provider 策略：為什麼一家不夠用、成本速度品質怎麼互補、什麼場景該切換到哪家。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch10_why_multi.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 10 章 · 為什麼要接不只一家 AI · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Pi Agent 多 provider 策略：為什麼一家不夠用、成本速度品質怎麼互補、什麼場景該切換到哪家。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html" class="active">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼多接幾家</a>
+      <a href="#concept">AI 之間差什麼</a>
+      <a href="#what">三種角色分工</a>
+      <a href="#assign">家用場景怎麼配</a>
+      <a href="#cost">成本差多少</a>
+      <a href="#warning">只有一家會怎樣</a>
+      <a href="#compare">多家的具體好處</a>
+      <a href="#plan">加第二家的心理準備</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 10 章</div>
+      <h1>為什麼要接不只一家 AI</h1>
+      <p class="lead">前面九章你都只接了一家 GLM，其實已經很好用了。這章不叫你動手，只是先坐下來聊清楚：為什麼熟一點的人手上都會有兩三家 AI 可以切？搞懂之後，第 11 到 13 章教你把第二、第三家加進來時，你才知道自己是在幹嘛，不會亂加一堆用不到。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼多接幾家">
+      <h2 data-icon="why">為什麼要接不只一家 AI</h2>
+      <p>從第 5 章開始，你手上就一直只有一家：GLM（智譜 AI）。用到現在你可能覺得「這樣就夠了啊，我一句話丟出去，它會回，也會開燈關燈」，是的，日常閒聊跟簡單自動化 GLM 完全撐得住。這章不是要推翻它，而是告訴你：<strong>當你開始用得多、用得深，會撞到三面牆</strong>，這三面牆不是 GLM 的問題，是「只有一家 AI」這件事本身的問題。</p>
+      <p>三面牆長這樣：</p>
+      <ul>
+        <li><strong>擅長的事情不一樣</strong>——同一句話，A 家 AI 回得像神，B 家 AI 回得像剛睡醒。你要看圖辨識家電型號，找不會看圖的 AI 講半天都沒用。</li>
+        <li><strong>成本差 10 倍以上</strong>——你每天問「今天穿什麼」跟你偶爾問「我該不該花 5 萬買新冷氣」，值得付的錢完全是兩個等級，但只有一家 AI 的話，你要嘛全用便宜的（重要時刻不夠力）、要嘛全用貴的（月費爆炸）。</li>
+        <li><strong>沒備援</strong>——AI 廠商的雲端也是會壞的，只有一家的時候，那一家壞你就整個 Pi Agent 罷工。多接一家是你的降落傘。</li>
+      </ul>
+      <p>這章要建立的心態很簡單一句話：<strong>AI 不是一個「大家都一樣」的東西，就像沒有一台家電能全部包辦——你不會只有一支手機、一雙鞋、一種調味料</strong>。日常用哪家、重要時刻用哪家、看圖用哪家，這是一個「工具箱」概念，不是「選一家最強」概念。</p>
+      <div class="callout"><strong>提醒：</strong>這章從頭到尾都不需要你打開電腦按任何東西。看完就好，動手加第二家在<a href="ch11_provider_map.html">第 11 章</a>。</div>
+    </section>
+
+    <section id="concept" data-nav="AI 之間差什麼">
+      <h2 data-icon="concept">AI 之間差的到底是什麼</h2>
+      <p>先建立詞彙。你之後看任何 AI 廠商官網、任何比較文章，都會看到這幾個名詞在飛，先把它們白話翻譯完：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>官方講法</th><th>白話翻譯</th><th>為什麼你要在意</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>模型參數量（parameters）</td>
+            <td>「腦子大不大」。從幾十億（B）到幾兆都有。</td>
+            <td>腦子大理論上答得深、看得懂細節，但也貴、也慢。</td>
+          </tr>
+          <tr>
+            <td>回覆速度（tokens per second, tok/s）</td>
+            <td>「打字快不快」。從每秒 20 字到每秒 500 字都有。</td>
+            <td>你問「客廳燈開一下」，慢的要等 5 秒，快的 1 秒就回。日常差很多。</td>
+          </tr>
+          <tr>
+            <td>推理模型（reasoning model）</td>
+            <td>「會不會先想再說」。回答前會先冒一段思考塊，才給結論。</td>
+            <td>重要問題（要花錢、要改結構）用會想的比較穩，別亂省這個。</td>
+          </tr>
+          <tr>
+            <td>Context 視窗（context window）</td>
+            <td>「肯不肯講很細、記憶多長」。從 8K 字到 200 萬字都有。</td>
+            <td>你要它讀整份自動化 YAML、記整段對話，短的就爆掉截斷。</td>
+          </tr>
+          <tr>
+            <td>多模態（multimodal）</td>
+            <td>「能不能看圖聽聲音」。純文字模型只看得懂字。</td>
+            <td>你拍冷氣型號牌問「這是什麼型號」，非多模態直接投降。</td>
+          </tr>
+          <tr>
+            <td>中文能力</td>
+            <td>「中文順不順」。美系模型英文最強，中文有時卡；中系模型反過來。</td>
+            <td>你都用繁中在問，這條差很多。GLM、DeepSeek 中文很自然。</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout tip"><strong>心智模型：</strong>把 AI 想成「請不同人來幫忙」。一個會打報告的高中生、一個能沉思一小時的哲學系博士、一個能一眼看出照片是什麼的攝影師——你要的不是「誰最強」，而是「這件事該叫誰」。</div>
+    </section>
+
+    <section id="what" data-nav="三種角色分工">
+      <h2 data-icon="what">AI 的三種角色分工</h2>
+      <p>雖然市面上號稱有幾十家 AI 公司、幾百個模型，但用起來大概就分成三種角色。你手上有這三種角色至少各一個，日常九成情境就都罩得住了：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>角色</th><th>特徵</th><th>代表模型</th><th>什麼時候派它上場</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>打底 AI</strong>（快而便宜）</td>
+            <td>回應快到像即時對話（每秒幾百字），單價很低甚至有免費額度</td>
+            <td>Groq 上的 Llama、GLM-4-Flash</td>
+            <td>日常閒聊、「開燈」「今天氣溫」、菜色建議這種問一下就丟的問題</td>
+          </tr>
+          <tr>
+            <td><strong>思考 AI</strong>（深而慢）</td>
+            <td>回答前先想（reasoning），慢，貴，但很少講錯話、邏輯縝密</td>
+            <td>Anthropic Claude Opus、DeepSeek-R1、GLM-4.6 思考模式</td>
+            <td>要不要買冷氣、自動化到底該用哪種觸發、家裡預算怎麼分</td>
+          </tr>
+          <tr>
+            <td><strong>多模態 AI</strong>（會看圖）</td>
+            <td>吃得下圖片、有些吃得下聲音／影片，看完能描述能推論</td>
+            <td>OpenAI GPT-4o、Anthropic Claude 系列、Gemini</td>
+            <td>拍家電銘牌問型號、拍網路線問插對沒、拍配電盤問開關順序</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>這三種不是互斥——Claude Opus 又會想、又會看圖、又貴。但你不會日常閒聊都叫 Claude Opus，就跟你不會為了拿郵件開跑車一樣。<strong>把「便宜快」的那家當你每天用的鞋、「思考深」的那家當正式場合的皮鞋、「看得懂圖」的那家當雨鞋</strong>，需要哪個穿哪個。</p>
+      <div class="callout"><strong>觀念：</strong>Pi Agent 的設計就是為了讓你「一個 session 中途也能換模型」（<a href="ch4_ui_tour.html">第 4 章</a>提過模型下拉）。這代表你不需要為了不同角色開三個 App，切下拉就好。這件事光是網頁版 ChatGPT 就做不到。</div>
+    </section>
+
+    <section id="assign" data-nav="家用場景怎麼配">
+      <h2 data-icon="assign">典型家用場景該叫哪家上場</h2>
+      <p>抽象講完，來看具體情境。下面這張表是「如果我今天要問這件事，用哪家最順？」你不用背，未來每次覺得「這個問題 A 家答得怪」時，回來查表就好：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>你想做的事</th><th>推薦角色</th><th>具體模型舉例</th><th>為什麼</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>「今天穿什麼」「晚餐吃什麼」</td>
+            <td>打底</td>
+            <td>GLM-4-Flash / Groq Llama</td>
+            <td>簡單問題，重點是快跟便宜，答錯了也沒差</td>
+          </tr>
+          <tr>
+            <td>「幫我把玄關那盞燈設成日落自動開」</td>
+            <td>思考</td>
+            <td>GLM-4.6 / Anthropic Claude</td>
+            <td>要寫自動化 YAML，格式錯了自動化跑不起來，穩比快重要</td>
+          </tr>
+          <tr>
+            <td>「這張是誰家的冷氣、什麼型號」（附照片）</td>
+            <td>多模態</td>
+            <td>OpenAI GPT-4o / Gemini</td>
+            <td>純文字模型看不到圖，你貼過去它只能瞎猜</td>
+          </tr>
+          <tr>
+            <td>「要不要升級成全屋分離式冷氣、預算 20 萬」</td>
+            <td>思考</td>
+            <td>Anthropic Claude Opus / DeepSeek-R1</td>
+            <td>牽涉錢、要考慮多種變因，讓它想 30 秒再答比一秒的答案值錢</td>
+          </tr>
+          <tr>
+            <td>「幫我摘要這 200 行日誌看有沒有錯」</td>
+            <td>大 context 思考</td>
+            <td>Claude / Gemini 長 context 模型</td>
+            <td>短 context 模型會直接截斷讀不完</td>
+          </tr>
+          <tr>
+            <td>「用繁中幫我把這段簡中文章改順」</td>
+            <td>中文打底</td>
+            <td>GLM-4-Flash / DeepSeek Chat</td>
+            <td>中系模型對中文語感比較穩，不會出現翻譯腔</td>
+          </tr>
+          <tr>
+            <td>「幫我看這個 HA 錯誤訊息怎麼修」</td>
+            <td>思考</td>
+            <td>Claude / GLM-4.6</td>
+            <td>技術除錯要邏輯完整，別用會硬猜的模型</td>
+          </tr>
+          <tr>
+            <td>「陪我聊天想事情」</td>
+            <td>看喜好</td>
+            <td>你覺得回話最舒服的那家</td>
+            <td>這個沒對錯，每家「性格」不太一樣，多用幾家你會有偏好</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>看完你會發現一件事：<strong>沒有一家包辦全部</strong>。GLM 便宜好用但看圖是弱項；OpenAI 什麼都會但貴；Anthropic Claude 很聰明但月費驚人。這就是為什麼熟練的人手上會有兩三家的原因。</p>
+    </section>
+
+    <section id="cost" data-nav="成本差多少">
+      <h2 data-icon="cost">成本到底差多少（新台幣估）</h2>
+      <p>AI 廠商都用 <strong>token</strong>（詞元）計價。粗略換算：<strong>中文一個字大約 2 個 tokens，英文一個字大約 1.3 個 tokens</strong>。所以你問一句「幫我開客廳燈」大概 20 個 tokens，一次比較長的對話含 AI 回覆可能是 3,000-5,000 tokens。</p>
+      <p>各家的價目是「每 100 萬 tokens」多少錢，換算新台幣（<strong>2026 年估價，實際以官方為準</strong>）大概像這樣：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>模型</th><th>角色</th><th>輸入 100 萬 tokens</th><th>輸出 100 萬 tokens</th><th>一次 5000-token 對話約</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Groq Llama-3 / GLM-4-Flash</td>
+            <td>打底</td>
+            <td>約 NT$ 3-10</td>
+            <td>約 NT$ 3-15</td>
+            <td>約 NT$ 0.05（不到一毛）</td>
+          </tr>
+          <tr>
+            <td>GLM-4.6</td>
+            <td>思考中檔</td>
+            <td>約 NT$ 20-30</td>
+            <td>約 NT$ 60-90</td>
+            <td>約 NT$ 0.3</td>
+          </tr>
+          <tr>
+            <td>OpenAI GPT-4o</td>
+            <td>多模態旗艦</td>
+            <td>約 NT$ 80-150</td>
+            <td>約 NT$ 300-450</td>
+            <td>約 NT$ 1-2</td>
+          </tr>
+          <tr>
+            <td>Anthropic Claude Opus</td>
+            <td>頂級思考</td>
+            <td>約 NT$ 450-600</td>
+            <td>約 NT$ 2000-2500</td>
+            <td>約 NT$ 8-12</td>
+          </tr>
+          <tr>
+            <td>DeepSeek-R1</td>
+            <td>推理但便宜</td>
+            <td>約 NT$ 15-25</td>
+            <td>約 NT$ 60-90</td>
+            <td>約 NT$ 0.3</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>看到差距了嗎？<strong>同樣一次對話，Groq 是 5 毛，Claude Opus 是 10 塊，差了 200 倍</strong>。如果你不分場景全用 Claude Opus，一天問 30 次就 300 塊、一個月 9,000 塊——超過 Netflix 訂閱月費 40 倍。</p>
+      <p>反過來，如果你全用 Groq，遇到重要決策時它給你隨口一答，你聽了就決定，可能買錯 5 萬塊的冷氣。<strong>省錯地方比花錯錢更貴</strong>。</p>
+      <div class="callout warn"><strong>注意：</strong>上面數字是<strong>粗估</strong>，各家隨時改價。動筆買之前一律去該廠商 pricing 頁面（Google 搜「<em>公司名</em> pricing」）確認當下價格。第 12 章會教你怎麼在 Pi Agent 看自己每次對話花了幾個 tokens。</div>
+    </section>
+
+    <section id="warning" data-nav="只有一家會怎樣">
+      <h2 data-icon="warning">只用一家會遇到的三種真實情境</h2>
+      <p>抽象講「單點故障不好」你可能沒感覺，來看三個實際會發生的狀況：</p>
+      <ol class="steps">
+        <li>
+          <h3>情境一：某類問題那家 AI 就是不肯答</h3>
+          <p>每家 AI 都有自己的「敏感話題禁區」。舉個真實例子——你想請 AI 幫忙查某個中國藝人的爭議事件、或某些政治話題、或某些醫療用藥細節，GLM 會直接回「無法討論」；反過來，你問某些台灣本地時事，OpenAI 的資料可能就不太熟。<strong>沒有第二家可切，你就卡在那</strong>。有第二家的話，直接下拉換 Anthropic 或 OpenAI，多半就通了。</p>
+        </li>
+        <li>
+          <h3>情境二：日常問題也上頂級 AI，月費爆炸</h3>
+          <p>看過剛入門的朋友這樣做：因為 Claude Opus 回話最好聽，所以什麼都問它。「今天穿短袖嗎」問它、「早餐吃什麼」問它、「這集韓劇好看嗎」問它。一個月下來收到 API 帳單 6,000 塊，比 Netflix + Spotify + YouTube Premium 加起來還貴——而且他 90% 的問題其實 Groq 一個月免費額度就能解決。<strong>沒有便宜的那家在下拉裡讓他選，就會全部黏在最貴那家上</strong>。</p>
+        </li>
+        <li>
+          <h3>情境三：唯一那家服務中斷</h3>
+          <p>AI 廠商也是有 status page 的（例如 <code>status.anthropic.com</code>、<code>status.openai.com</code>），三不五時就會維護、就會壞。GLM 過去也遇過幾次幾小時的中斷。如果你手上只有 GLM，那幾小時你的 Pi Agent 完全講不動話。這對「只是玩玩」的人沒差，但如果你已經把 AI 綁進日常語音助理、綁進自動化，那幾小時就是家裡「智慧」全罷工。多一家備援，切下拉就活過來。</p>
+        </li>
+      </ol>
+      <div class="callout danger"><strong>危險等級的例子：</strong>如果你把 AI 綁進「有沒有人在家」這種安全相關的判斷（例如自動報警），單一 provider 停擺可能讓你整晚沒有防護。安全類自動化建議永遠有<strong>非 AI 的 fallback</strong>（例如純感應器邏輯），不要 100% 依賴 AI 判斷。</div>
+    </section>
+
+    <section id="compare" data-nav="多家的具體好處">
+      <h2 data-icon="compare">多接幾家 provider 具體有哪五個好處</h2>
+      <p>整理一下多家 provider 帶給你的能力，剛好五條：</p>
+      <ul>
+        <li><strong>分工</strong>：日常小事給便宜的、重要決策給會想的、看圖給多模態的，錢花在刀口上。</li>
+        <li><strong>備援</strong>：一家壞了、被 rate limit 卡住、當週免費額度用完，切下拉直接續命。</li>
+        <li><strong>比對答案</strong>：重要問題你可以問 GLM 一次、問 Claude 一次，兩個答案不一樣時，你就知道這題有爭議、值得再研究，而不是照單全收。</li>
+        <li><strong>控制月費</strong>：你可以定「Claude Opus 我一個月只用 20 次做決策」，其他全用 Groq，總月費壓在 100 元以內都做得到。</li>
+        <li><strong>學會挑最適合的模型</strong>：這是最容易被忽略的——用多家用久了，你會建立起「這種問題該找誰」的直覺，這個直覺本身就是價值。以後遇到新的 AI 廠商出來，你能秒判斷「它算哪一種角色、要不要加」。</li>
+      </ul>
+      <p>你可能問：「有沒有一個服務幫我一次接完全部？」有，叫做<strong>聚合器（aggregator）</strong>，最有名的是 OpenRouter。它給你一支 key 讓你叫用幾十家的模型。優點是省申請流程，缺點是它抽一層費用、而且有些頂級模型（Claude Opus 深度思考、Anthropic prompt caching）用聚合器會少一些功能。<strong>本書的做法是原生為主、聚合器為輔</strong>，第 11 章會列清單教你選。</p>
+    </section>
+
+    <section id="plan" data-nav="加第二家的心理準備">
+      <h2 data-icon="plan">開始加第二家 provider 前的心理準備</h2>
+      <p>你可能會擔心「加第二家很麻煩吧？」實際上比想像簡單。回想第 5、6 章你申請 GLM 的流程：註冊、拿 key、回 pi-web 貼、按 Test、選為預設。這整套流程加第二家一模一樣，<strong>每家大概 15 分鐘、只做一次、之後永久用</strong>。</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>步驟</th><th>做一次要多久</th><th>後續維護</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>去該廠商官網註冊帳號</td>
+            <td>3-5 分鐘（有些要驗信箱、有些要綁信用卡）</td>
+            <td>永久，除非它倒了</td>
+          </tr>
+          <tr>
+            <td>從 API keys 頁產生一支 key、複製</td>
+            <td>1 分鐘</td>
+            <td>建議一年輪替一次比較安全</td>
+          </tr>
+          <tr>
+            <td>回 pi-web Models 面板貼、按 Test</td>
+            <td>2 分鐘（<a href="ch6_paste_key.html">第 6 章</a>流程）</td>
+            <td>沒事不用碰</td>
+          </tr>
+          <tr>
+            <td>幫這張 provider 卡取個好認的名字</td>
+            <td>30 秒</td>
+            <td>之後下拉時你才知道哪個是哪個</td>
+          </tr>
+          <tr>
+            <td>存進去、下次要用時下拉選就好</td>
+            <td>—</td>
+            <td>就這樣</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout tip"><strong>省時提示：</strong>不要一次想接 5 家把自己搞暈。<strong>建議節奏：第一個月只加一家「思考」角色</strong>（例如 Anthropic 或 DeepSeek-R1），先感受一下「重要問題有更深的答案」是什麼感覺；用一陣子熟了再加第三家。慢慢來比較不會亂。</div>
+      <p>安全方面你也不用怕：<strong>每家 provider 只認得自己的 key，不會被其他家竊取</strong>——所有 key 都是加密存在你自己 HA 的 <code>/data/pi-agent/models.json</code>，pi-web 送 API 呼叫時只會把對應那家的 key 塞進 header，別家 provider 看不到。你如果不放心，可以每張 provider 卡設一個花費上限（各家 dashboard 都有 usage limit 或 budget），最壞情況也就是那家花到上限自動停，不會出事。</p>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見的心理卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>「金鑰多了我怕管不好，會忘記哪個是哪個」</h3>
+          <p>這是最常見的擔憂。解法：<strong>Models 面板每張 provider 卡都可以自己命名</strong>，取容易辨認的名字，例如「GLM-家裡日常」「Claude-重要決策」「GPT4o-看圖」。第 6 章教你貼 key 時就順便命名了。名字取好，下拉就是清單，一眼認完，不會混。</p>
+        </li>
+        <li>
+          <h3>「錢會不會一直悄悄流出去我不知道」</h3>
+          <p>不會。原因有二：（1）每家 provider dashboard 都能看到累積用量與花費，登進去一看就知；（2）Pi Agent 本身 <a href="ch12_reasoning.html">第 12 章</a>會教你怎麼在對話下方看每則訊息花了幾個 tokens、第 21 章會講怎麼設月度預算並自動切回便宜模型。看不到才可怕，看得到就管得住。</p>
+        </li>
+        <li>
+          <h3>「不同家 API 格式一樣嗎？我不會寫程式怎麼辦」</h3>
+          <p>你不需要寫程式，Pi Agent 幫你處理。技術上：<strong>絕大多數 provider 都相容 OpenAI API 格式</strong>（GLM、DeepSeek、Groq、OpenRouter、xAI、Together、Fireworks、幾乎所有中系與新創都是），所以你貼 key + 填 baseUrl 就通。只有 <strong>Anthropic 用自己的格式</strong>（叫 Anthropic Messages API），但 pi-web 也內建支援了，你選 provider type 為 Anthropic 就行，不用手動改任何東西。</p>
+        </li>
+        <li>
+          <h3>「我已經有 Nabu Casa 訂閱了，AI 應該包含在裡面吧？」</h3>
+          <p>沒有。<strong>Nabu Casa 是 HA 官方雲端服務</strong>（遠端連線、Alexa/Google 整合、TTS/STT），<strong>它不是 AI 廠商</strong>，本身不做語言模型。你用 HA 內建的 Assist 對話助理時，可以「選一個 AI provider 給它用」，但那個 provider 還是要你自己去 OpenAI／Anthropic／GLM 拿 key。Nabu Casa 幫不了你這一段。Pi Agent 也是一樣，AI 那層一律要你自己接。</p>
+        </li>
+        <li>
+          <h3>「我怕自己選錯家、花冤枉時間」</h3>
+          <p>選錯的成本很低。每張 provider 卡都可以隨時刪掉重加，key 也可以在原廠 dashboard revoke。<strong>沒申請費、沒綁約、沒最低消費</strong>（除了少數頂級模型可能要綁卡預付）。實際做法：先按第 11 章的建議清單挑一家最不像 GLM 的（例如 Anthropic），用兩週看你有沒有真的用到，沒用就刪，成本就是 15 分鐘。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>我一定要接很多家嗎？只用 GLM 到底不行嗎？</summary>
+        <div class="body">完全可以只用 GLM。這章不是逼你多接，是解釋「為什麼進階玩家會多接」。判斷標準很簡單：<strong>如果你目前遇不到痛點</strong>（GLM 每題都答得好、月費你能接受、沒中斷過）——那就繼續一家就好，不用勉強。<strong>當你開始覺得「這題 GLM 答得怪」或「我需要看圖」或「這太重要不敢只信一家」時</strong>，再回來加第二家也不遲。工具是為了解決問題，沒問題就別加工具。</div>
+      </details>
+      <details class="faq">
+        <summary>如果只能推薦一家「第二家」，是哪家？</summary>
+        <div class="body">看你缺什麼角色。<strong>缺思考深度</strong>：加 Anthropic Claude（頂級但貴）或 DeepSeek-R1（推理很強但便宜）。<strong>缺看圖</strong>：加 OpenAI GPT-4o（多模態最成熟）或 Google Gemini。<strong>缺速度快到即時</strong>：加 Groq（LPU 硬體加速，每秒吐字破 500）。<strong>缺廣度想什麼都試</strong>：加 OpenRouter（一支 key 通吃幾十家，但頂級模型少功能）。第 11 章有完整對照表教你怎麼挑。</div>
+      </details>
+      <details class="faq">
+        <summary>Pi Agent 目前支援哪幾家 provider？</summary>
+        <div class="body">pi-web 內建支援七大類：<strong>Anthropic</strong>（Claude 全系列）、<strong>OpenAI</strong>（GPT 全系列）、<strong>GLM</strong>（智譜）、<strong>DeepSeek</strong>、<strong>Groq</strong>、<strong>OpenRouter</strong>（聚合器）、以及任何相容 OpenAI 格式的自訂 endpoint（拿來接 xAI Grok、Together、Fireworks、Cerebras、Mistral、本地 Ollama 都行）。詳細清單、每家的 baseUrl 與適用模型在 <a href="ch11_provider_map.html">第 11 章</a>與 <a href="appendix_provider_keys.html">附錄</a>。</div>
+      </details>
+      <details class="faq">
+        <summary>金鑰不會被跨家竊取或外洩吧？我有點擔心</summary>
+        <div class="body">不會。技術面：所有 provider 金鑰是分開加密存在你自己 HA 的 <code>/data/pi-agent/models.json</code>，只有你的 HA 本機讀得到。pi-web 發送 API 請求時，會依照你當下選的模型只塞對應那一家的 key 進 HTTP header，別家 provider 完全看不到別家的 key。<strong>真正的風險不是 provider 之間，而是「HA 系統本身被外人登入」</strong>——所以第 2 章講的 MFA（雙重驗證）務必開；還有別把 HA 直接暴露到公網。Pi Agent 走 HA Ingress，天生就不外露到網路。</div>
+      </details>
+      <details class="faq">
+        <summary>我用不用 pi-web 手動切模型？可以自動根據問題挑嗎？</summary>
+        <div class="body">目前 pi-web 是「你手動下拉選一次，整個 session 就用那家」，沒有「自動路由」功能。動手切一下也很快（<a href="ch13_switch_model.html">第 13 章</a>會教）。想自動路由的話，聚合器如 OpenRouter 有 auto 模式（它會依成本／速度自動幫你挑），但控制權就交出去了。建議先手動熟悉，等你直覺養成再考慮自動。</div>
+      </details>
+      <details class="faq">
+        <summary>免費額度用完會自動切到我另一張卡嗎？還是就報錯？</summary>
+        <div class="body"><strong>會直接報錯</strong>，不會自動切別家——因為 pi-web 不知道你希望切到哪一家。這是設計上刻意保守：AI 廠商不同家收費差異可能是 200 倍，自動切到別家有可能一句話就花掉本來一整天的量。實務做法：看到 rate limit 或 quota exceeded 錯誤時，你自己下拉切到另一張 provider 卡再送出。第 21 章會介紹進階的「預算控管」設定，可以在某家用到某額度時提示你切換。</div>
+      </details>
+      <details class="faq">
+        <summary>每家 provider 我要一個月付多少最合理？</summary>
+        <div class="body">參考數字（一般家庭用戶，每天 20-50 則對話）：<strong>Groq 或 GLM-Flash 打底</strong>——多數家庭一個月不到 30 元；<strong>GLM-4.6 或 DeepSeek 思考中檔</strong>——月費約 100-300 元；<strong>Anthropic Claude Opus 頂級</strong>——如果只用在重要決策（每月 30-50 次），約 500-1500 元。三家全接、正確分工的話，總月費 <strong>500 到 2000 元</strong>之間，比一家全部用 Claude Opus（動輒 6000 元起跳）划算得多。實際數字取決於你問話長短，第 12 章會教你估算。</div>
+      </details>
+      <details class="faq">
+        <summary>接了第二家會不會拖慢 pi-web？</summary>
+        <div class="body">完全不會。pi-web 一次只跟一家講話（你當下下拉選的那家），加更多 provider 只是讓下拉的選項變多，不會同時發 request、不會多耗網路、不會多耗 CPU。<strong>唯一「多消耗」的是你腦袋——選項多一點時，你會多花兩秒思考「這題用哪家」</strong>，但這其實就是這章想要你培養的能力。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch9_thinking_diff.html">
+        <span class="label">← 上一章</span>
+        <span class="title">09 · 思考塊與 diff</span>
+      </a>
+      <a class="next" href="ch11_provider_map.html">
+        <span class="label">下一章 →</span>
+        <span class="title">11 · 六家 provider 對照</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

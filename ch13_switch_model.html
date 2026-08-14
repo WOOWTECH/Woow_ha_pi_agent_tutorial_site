@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 13 章 · 一句話切換 AI：模型下拉的正確用法 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Pi Agent 對話中切換模型的實務：模型下拉的位置、切換後 context 保留規則、拿同一個問題比對不同 AI 的操作流程。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch13_switch_model.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 13 章 · 一句話切換 AI：模型下拉的正確用法 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Pi Agent 對話中切換模型的實務：模型下拉的位置、切換後 context 保留規則、拿同一個問題比對不同 AI 的操作流程。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch13_switch_model.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 13 章 · 一句話切換 AI：模型下拉的正確用法 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Pi Agent 對話中切換模型的實務：模型下拉的位置、切換後 context 保留規則、拿同一個問題比對不同 AI 的操作流程。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html" class="active">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要會切</a>
+      <a href="#concept">切換的即時性</a>
+      <a href="#steps">切換示範</a>
+      <a href="#modes">三種切換場景</a>
+      <a href="#cost">切換的隱藏成本</a>
+      <a href="#compare">切換 vs 新session vs fork</a>
+      <a href="#warning">切換會失敗的情況</a>
+      <a href="#tips">快速切換技巧</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 13 章</div>
+      <h1>一句話切換 AI：模型下拉的正確用法</h1>
+      <p class="lead">前面三章講完了為什麼要多接幾家 AI、六家 provider 各適合什麼場合、reasoning 模型是什麼。這一章走實務：<strong>對話開到一半，怎麼一按就換另一顆腦子繼續講</strong>。學完你就能在同一個 Session 裡玩「便宜快出草稿 → 貴的深模型 code review」這種組合技，也知道切換的時候什麼會保留、什麼會不見。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼要會切">
+      <h2 data-icon="why">為什麼「切模型」是日常必備動作</h2>
+      <p><a href="ch10_why_multi.html">第 10 章</a>告訴你「一家不夠用」，<a href="ch11_provider_map.html">第 11 章</a>幫你把六家 provider 排成一張速查表，<a href="ch12_reasoning.html">第 12 章</a>解釋了為什麼有些模型「會先想一輪」。這些都是「知」的部分。但真正把 AI 用起來的關鍵，是「行」——<strong>你要能在同一場對話裡，一句話換一顆腦子繼續講</strong>。</p>
+      <p>舉一個很日常的場景：你問 GLM-4-Flash「幫我寫一個晚上關燈的自動化」，30 秒就給你一個 YAML。你直覺覺得「好像有點粗糙，這樣寫真的穩嗎？」——這時候你不用開新的 Session、也不用把整段複製貼到另一個工具，只要在 composer 下方那個模型下拉點一下、選 Anthropic Claude Sonnet、追問一句「請 review 上面那段自動化有沒有問題」，Claude 就會把整場對話（包含 GLM 的答案）當成上下文，直接給你意見。這叫做 <strong>draft-then-review（先草稿再審稿）</strong>，是最常見也最省錢的組合技。</p>
+      <p>學完這章，你會知道三件事：怎麼切、切了會發生什麼、什麼時候該切什麼時候該開新 Session。</p>
+      <div class="callout"><strong>觀念：</strong>切模型不是「重來一次對話」，而是「同一個對話從下一句起換一顆腦子講」。之前的每一句話都還在，新模型會用它自己的方式再讀一次。</div>
+    </section>
+
+    <section id="concept" data-nav="切換的即時性">
+      <h2 data-icon="concept">模型下拉在哪、切了是什麼時候生效</h2>
+      <p>模型下拉的位置<a href="ch4_ui_tour.html">第 4 章</a>已經指過：在 composer（打字區）的<strong>左下角</strong>，長得像一個帶小箭頭的按鈕，上面通常顯示你目前使用的模型名稱（例如「GLM-4-Flash」、「Claude Sonnet 4.5」、「未設定」）。點一下會彈出一個下拉清單，把你在 Models 面板加過的<strong>所有 provider 底下所有可用模型</strong>都列出來。</p>
+      <p>它的行為有兩個關鍵點：</p>
+      <ul>
+        <li><strong>切了立刻生效，但不會回頭重跑</strong>——你選了新模型，<em>下一句</em>送出去就是用新模型答；<em>之前</em>已經送出去的訊息不會重新問一次、AI 已經給的答案也不會消失。也就是說「切模型」不會扣你之前那些對話的錢。</li>
+        <li><strong>整場對話一起送給新模型</strong>——新模型接手第一句時，它會把「這場 Session 從第一句到你剛剛那句」<strong>全部當成 input tokens 讀一次</strong>。所以它接得住前面的話題，但也表示 input tokens 會多算一輪。這一點在後面的「隱藏成本」段會展開。</li>
+      </ul>
+      <div class="callout tip"><strong>提示：</strong>切模型跟按送出鍵是<strong>兩個分開的動作</strong>。你在下拉選了新模型之後畫面不會馬上有反應——那是正常的。等你在打字框輸入下一句、按送出，新模型才會被真正呼叫到。想確認有切成功，看模型下拉按鈕上顯示的文字有沒有變就好。</div>
+    </section>
+
+    <section id="steps" data-nav="切換示範">
+      <h2 data-icon="steps">動手切一次：從 GLM-Flash 切到 Claude 做 review</h2>
+      <p>假設你已經照<a href="ch5_first_key.html">第 5 章</a>接了 GLM、也照<a href="appendix_provider_keys.html">附錄 B</a>再多接一家 Anthropic（Claude）。現在來玩一次 draft-then-review。</p>
+      <ol class="steps">
+        <li>
+          <h3>開一個新的 Session，把模型下拉切到 GLM-4-Flash</h3>
+          <p>左上角按 <kbd>+ New session</kbd>，畫面清空。到 composer 左下角，點模型下拉，找 GLM 那一組，選 <code>glm-4-flash</code>（或你熟悉的便宜快模型）。按鈕上的字會變成「GLM-4-Flash」。</p>
+        </li>
+        <li>
+          <h3>問一個真的家庭問題，讓它給你草稿</h3>
+          <p>打字框輸入：<em>「幫我寫一個 Home Assistant 自動化，晚上 11:30 把客廳所有燈關掉，如果那時候還有人在客廳就等 10 分鐘再關。」</em>按送出。GLM-4-Flash 大概 20-40 秒會給你一段 YAML，可能包含 <code>triggers</code>、<code>conditions</code>、<code>actions</code>。</p>
+        </li>
+        <li>
+          <h3>看完覺得「不知道穩不穩」，就切到 Claude Sonnet</h3>
+          <p>不要清畫面、不要開新 Session。<strong>就在原本的對話裡</strong>，把模型下拉點開，這次選 Anthropic 底下的 <code>claude-sonnet-4-5</code>（或當前 Sonnet 最新版）。按鈕上的字變成「Claude Sonnet 4.5」。</p>
+        </li>
+        <li>
+          <h3>追問一句：請它 review 前面的答案</h3>
+          <p>在打字框輸入：<em>「請 review 上面那段自動化，有沒有邏輯漏洞、有沒有踩到 HA 常見雷（例如 device_id 陷阱、mode 選錯、entity_id 不存在的偵測）？」</em>按送出。Claude 會把整場對話（包含你的問題＋GLM 的 YAML＋你這句 review 請求）一起讀進去，然後給你逐條意見。</p>
+        </li>
+        <li>
+          <h3>看兩家答案的差異，決定哪個要用</h3>
+          <p>Claude 通常會指出幾件事：GLM 用了 <code>device_id</code> 而不是 <code>entity_id</code>（<a href="ch8_session.html">第 8 章</a>提過的雷）、<code>mode</code> 應該用 <code>restart</code> 而不是預設的 <code>single</code>、triggers/conditions/actions 有沒有寫成新版的複數形式。這一輪走完，你手上有一個「便宜模型草稿＋深模型審稿意見」的完整包，可以直接改改就用。</p>
+        </li>
+        <li>
+          <h3>（進階）想更省，切回 GLM 讓它照 Claude 的意見改</h3>
+          <p>拿到 Claude 的意見後，你可以再把模型下拉切回 <code>glm-4-flash</code>，追問：「請照 Claude 剛剛的意見把 YAML 重新寫一次。」GLM 便宜、寫 YAML 也夠用，改稿這件事沒必要一直花 Claude 的錢。這叫做 <strong>三段式切換：draft (Flash) → review (Sonnet) → rewrite (Flash)</strong>，是熟手的日常。</p>
+        </li>
+      </ol>
+      <div class="callout tip"><strong>提示：</strong>你會發現整場對話結束後，左邊 Session 列表這一條的「模型名稱」欄位顯示的是「最後用的那個模型」。這只是視覺標記，不代表整場都用它，實際上每則訊息用哪個模型是各自記錄的。</div>
+    </section>
+
+    <section id="modes" data-nav="三種切換場景">
+      <h2 data-icon="modes">切換的三種常見情境</h2>
+      <p>切模型不是隨便切，通常你會落在下面三種模式的其中一種。認清楚自己這一次是哪一種，效率跟花費會差很多。</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>情境</th>
+            <th>怎麼切</th>
+            <th>什麼時候用</th>
+            <th>典型花費</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>draft-then-review</strong>（先草稿再審稿）</td>
+            <td>便宜快模型出第一版 → 切深模型做 code review → 可選擇再切回便宜模型改稿</td>
+            <td>寫自動化、寫腳本、寫 email、任何「有標準答案但要小心細節」的產出</td>
+            <td>比全程用深模型省 60-80%，比全程用便宜模型可靠得多</td>
+          </tr>
+          <tr>
+            <td><strong>深挖某段</strong>（zoom in）</td>
+            <td>日常閒聊用便宜模型 → 聊到某段突然想深入（例如問到冷氣噸位計算、線材耐流） → 切 reasoning 模型追問 → 追問完切回便宜模型繼續</td>
+            <td>對話中出現一個需要「認真想」的分支，但整場不需要都用深模型</td>
+            <td>只在深挖那 2-3 則多花錢，前後閒聊維持便宜</td>
+          </tr>
+          <tr>
+            <td><strong>同題比對</strong>（A/B）</td>
+            <td>問完問題拿到答案 A → <strong>fork</strong> 這個 session 一份（<a href="ch8_session.html">第 8 章</a>教過）→ 在 fork 出來的那份切另一家 provider → 送同一個問題拿到答案 B → 兩個視窗放旁邊比</td>
+            <td>買房裝潢類重要決策、學術性問題、想看不同模型會不會有偏見</td>
+            <td>兩家各花一份，但省下自己來回試錯的時間</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout"><strong>觀念：</strong>三種情境的共通點是「你有意識地在選哪顆腦子答哪一段」。最貴的錯誤是「反射性一路用最貴的模型講到底」——你以為深模型比較好，但便宜模型答得出來的東西你付了 10 倍的錢。</div>
+    </section>
+
+    <section id="cost" data-nav="切換的隱藏成本">
+      <h2 data-icon="cost">切換的隱藏成本：input tokens 會重算</h2>
+      <p>這是很多人第一個月被帳單嚇到的原因。切模型看起來只是點一下下拉，但每切一次，新模型接手第一句的時候都會<strong>把整場對話從第一句到目前為止全部當 input tokens 讀一次</strong>。原因很簡單——它是新來的，之前的對話它沒看過，你要它接話就得先把上下文塞給它。</p>
+      <p>拿一個例子算一下。假設你的對話目前累積了 5,000 tokens（大約 15-20 則往返），你在同一場 session 切了 4 次模型：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>動作</th>
+            <th>累積對話 tokens</th>
+            <th>這一次切換要重讀的 input tokens</th>
+            <th>備註</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>第 1 次切（Flash → Sonnet）</td><td>5,000</td><td>5,000</td><td>Sonnet 第一次接手</td></tr>
+          <tr><td>Sonnet 回了 500 tokens，你又切回 Flash</td><td>5,500</td><td>5,500</td><td>Flash 也要從頭讀一次（它不記得剛剛是自己講的）</td></tr>
+          <tr><td>Flash 回了 400，你切 GPT-4o</td><td>5,900</td><td>5,900</td><td>又一輪</td></tr>
+          <tr><td>GPT 回了 600，你切回 Sonnet</td><td>6,500</td><td>6,500</td><td>Sonnet 之前接手過但 pi-web 不會「記住」它，仍會重讀</td></tr>
+          <tr><td><strong>總計切換成本</strong></td><td>—</td><td><strong>22,900 input tokens</strong></td><td>還沒算輸出的 tokens</td></tr>
+        </tbody>
+      </table>
+      <p>對比：如果你一路用 Flash 講到底，只有你送出的那幾則會累加 input，沒有「重讀」的成本。切模型的錢就是花在「新腦子讀舊對話」這件事上。</p>
+      <div class="callout warn"><strong>注意：</strong>長 Session（超過 30 則往返）＋頻繁切模型，是最容易失控的花錢方式。省錢做法有兩個：（1）非必要不切，先想清楚哪一段真的需要另一顆腦子。（2）發現對話太長了，請 AI 幫你「總結上面的討論成 5 點」，然後開新 Session 貼進總結繼續，等於把上下文壓縮過再繼續。</div>
+    </section>
+
+    <section id="compare" data-nav="切換 vs 新session vs fork">
+      <h2 data-icon="compare">切模型 vs 開新 Session vs Fork：三個選擇怎麼分</h2>
+      <p>「換一顆腦子繼續講」不是只有切模型下拉這一招。實務上你有三個操作可以選，各自的用途不一樣：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>操作</th>
+            <th>之前對話發生什麼</th>
+            <th>新模型知道舊事嗎</th>
+            <th>什麼時候用</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>切模型下拉</strong></td>
+            <td>完整保留在同一場 session</td>
+            <td>知道（會把整場當 input 讀一次）</td>
+            <td>要另一顆腦子接續同一個話題，例如 review、繼續深挖</td>
+          </tr>
+          <tr>
+            <td><strong>開新 Session</strong>（+ New session）</td>
+            <td>留在左邊列表，但新對話完全空白</td>
+            <td>不知道（完全從零開始）</td>
+            <td>換一個完全不相干的話題、或想要模型不受之前對話影響給乾淨的答案</td>
+          </tr>
+          <tr>
+            <td><strong>Fork Session</strong>（<a href="ch8_session.html">第 8 章</a>）</td>
+            <td>從當前這一則分岔出一份完整副本</td>
+            <td>知道（新分支包含分岔點以前的所有內容）</td>
+            <td>想試「如果剛剛不是這樣答會怎樣」、想 A/B 比對、想保留原對話同時走另一條路</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>用一個買冷氣的例子區分：</p>
+      <ul>
+        <li><strong>切模型</strong>：你問 Flash「客廳 6 坪要選幾噸冷氣」，它給你 1 噸。你切 Claude 追問「請 review 這個建議」——同一場對話，Claude 順著往下講。</li>
+        <li><strong>開新 Session</strong>：你 Flash 給完答案，滿意收工。三天後想問「冷氣噪音怎麼比較」，這跟前面的坪數討論無關，開新 Session 更清爽。</li>
+        <li><strong>Fork</strong>：你想同時看 Flash 跟 Claude 對「1 噸夠不夠」的看法，但你不想失去 Flash 那條線。就 Fork 一份、在 fork 裡切 Claude、送同一個問題，兩個視窗並排比。</li>
+      </ul>
+      <div class="callout tip"><strong>提示：</strong>Fork 比切模型「乾淨」但成本比較高（因為你有兩個 session 各自累積），切模型比 Fork 「連貫」但混在一起可能之後想追溯哪則是哪個模型講的會麻煩。看你的目的選。</div>
+    </section>
+
+    <section id="warning" data-nav="切換會失敗的情況">
+      <h2 data-icon="warning">有些切換會「隱形失敗」：thinking blocks 被丟掉</h2>
+      <p><a href="ch12_reasoning.html">第 12 章</a>提過，Anthropic 的 Claude 用的是「native thinking blocks」——那些思考內容是模型回應裡真正的一段結構化資料，不只是文字。相對地，OpenAI-compatible 的 provider（GLM、DeepSeek、Groq、OpenRouter 等）沒有這個結構，只有純文字答案。</p>
+      <p>這造成一個容易踩到的雷：<strong>從 Claude 切到任何 OpenAI-compatible 模型時，之前那些 native thinking blocks 會被丟掉、不會送給新模型看。</strong>如果你之前的對話很依賴那段思考內容（例如你有一則訊息是「請照你剛剛想的步驟繼續」），新模型會 confuse，因為它看不到那段「剛剛想的」。</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>切換路徑</th>
+            <th>thinking blocks 會保留嗎</th>
+            <th>建議做法</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Claude → Claude（換一個 Claude 型號）</td>
+            <td>會保留</td>
+            <td>放心切</td>
+          </tr>
+          <tr>
+            <td>Claude → GLM / DeepSeek / GPT / 任何 OpenAI-compatible</td>
+            <td><strong>不會保留</strong>（新模型看不到 thinking blocks）</td>
+            <td>如果對話依賴那些思考內容，建議<strong>用 Fork 分岔</strong>而不是直接切；或者切之前先請 Claude 把思考過程「明文寫進正文」再切</td>
+          </tr>
+          <tr>
+            <td>GLM 有 reasoning 內容 → 切 Claude</td>
+            <td>reasoning 內容是純文字，會被讀到（但格式跟 Claude 原生的不一樣，可能被當成一般敘述）</td>
+            <td>大多沒問題，Claude 會當成前文脈絡</td>
+          </tr>
+          <tr>
+            <td>任一 reasoning 模型 → 非 reasoning 模型</td>
+            <td>reasoning 內容還在，但新模型不會啟動自己的 reasoning</td>
+            <td>沒關係，只是新模型不會再自己想一輪</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout warn"><strong>注意：</strong>「隱形失敗」指的是<strong>不會跳錯誤</strong>——新模型還是會回答你，但可能答得莫名其妙（因為它少看了關鍵資訊）。感覺到「怎麼答非所問」的時候，先想一下是不是剛剛做了 Claude 切到非 Claude 的動作。</div>
+    </section>
+
+    <section id="tips" data-nav="快速切換技巧">
+      <h2 data-icon="tips">快速切換的鍵盤與滑鼠技巧</h2>
+      <p>如果你會頻繁切模型（例如做 draft-then-review 是你的日常），下面幾個小技巧會讓你省很多滑鼠移動：</p>
+      <ul>
+        <li><strong>鍵盤搜尋</strong>：部分 pi-web 版本支援打開下拉後直接用鍵盤打字搜尋模型名稱。例如點開下拉、打「son」，清單會自動過濾到 Sonnet 系列。手指不用離開鍵盤。</li>
+        <li><strong>Cmd/Ctrl+K 快速面板</strong>：新版 pi-web 有 command palette（命令面板），按 <kbd>Cmd</kbd>+<kbd>K</kbd>（Mac）或 <kbd>Ctrl</kbd>+<kbd>K</kbd>（Windows/Linux）可能會彈出快速搜尋。打「model」或直接打模型名字，Enter 就切。<strong>不同 pi-web 版本支援程度不一，按下去沒反應就代表你這版本沒有</strong>，退回用滑鼠點下拉即可。</li>
+        <li><strong>模型別名</strong>：Models 面板裡新增 provider 時，你可以幫每個模型取一個 display name（顯示名稱）。把常用的三個模型取短名字，例如「快」「深」「便宜」，下拉找起來一秒鐘。</li>
+        <li><strong>Default 模型</strong>：在 Models 面板選一個模型設為 default（預設），之後每次 <kbd>+ New session</kbd> 都會自動用這個模型開頭，不用再點一次下拉。日常聊天型的 provider 適合當 default。</li>
+      </ul>
+      <div class="callout tip"><strong>提示：</strong>不確定你的 pi-web 版本支不支援 <kbd>Ctrl</kbd>+<kbd>K</kbd>？打開 pi-web 之後按一下就知道——有就有反應，沒有就沒反應。不會弄壞任何東西。</div>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">切模型的常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>切完下拉沒反應、AI 還是用舊模型回</h3>
+          <p>三個地方檢查：（a）看模型下拉按鈕上顯示的字有沒有變成你選的那個——沒變就是根本沒切成功，可能你點下拉的時候手滑點到別的地方。（b）看你送出去的那則訊息，右上角通常會標記模型名稱，如果標記還是舊模型，代表你送出的時候還沒切生效。（c）打開瀏覽器 F12 開發者工具的 Console，看有沒有紅字（例如 <code>models.json parse error</code>），有的話代表模型設定檔壞了，回 Models 面板重新存一次。</p>
+        </li>
+        <li>
+          <h3>切完之後 AI 答案突然變英文</h3>
+          <p>某些 provider 的模型（尤其 Anthropic Claude、OpenAI GPT）預設偏好用英文答。切過去之後你追問中文，它可能還是用英文回。解法：在你切完後的第一句話裡明確加一句「<strong>請用繁體中文（台灣用語）回答</strong>」，之後這場 session 就會維持中文。這比重新切回中文友善的 GLM 划算。</p>
+        </li>
+        <li>
+          <h3>切完之後跳「402 Payment Required」或「餘額不足」</h3>
+          <p>402 代表這家 provider 的錢用完了。看錯誤訊息裡是哪家 provider（例如 <code>anthropic: insufficient credits</code>），你有兩條路：（1）回那家的官網後台儲值。（2）切回原本還有錢的 provider 繼續。<strong>你的對話還在</strong>，沒送成功的那則訊息重打一次就好，不會扣到已經花掉的錢。這一類錯誤 detail 在<a href="ch22_troubleshoot.html">第 22 章</a>還會展開。</p>
+        </li>
+        <li>
+          <h3>切完發現「之前的思考塊不見了」或 AI 答非所問</h3>
+          <p>這是前面 warning 段講過的「native thinking blocks 被丟掉」問題。你如果從 Claude 切到 GLM/DeepSeek 之類，之前 Claude 的思考塊會消失，新模型看不到。<strong>正常現象，不是 bug</strong>。補救做法：把想保留的關鍵思考內容自己複製一段貼到新訊息裡當上下文；或者下次遇到這種情境改用 Fork 而不是切換。</p>
+        </li>
+        <li>
+          <h3>下拉裡完全沒有另一家 provider 的模型</h3>
+          <p>代表你沒在 Models 面板加過那家。回<a href="ch6_paste_key.html">第 6 章</a>的做法再加一家：右上工具列點 Models → Add Provider → 選 provider → 貼 baseUrl 與 API key → 按 Test 綠燈 → 存檔。回到 composer，下拉就會多出這家的模型列表。</p>
+        </li>
+        <li>
+          <h3>下拉列表模型太多，找不到想要的那個</h3>
+          <p>接了 5-6 家 provider 之後下拉會很長（動輒 30-50 個模型）。四個做法：（a）用下拉裡的搜尋框（如果有）打模型名關鍵字。（b）在 Models 面板隱藏用不到的模型（有些版本支援 hide toggle）。（c）幫常用模型取好記的 display name。（d）用 <kbd>Ctrl</kbd>+<kbd>K</kbd> command palette 搜尋（如果版本支援）。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>一場 Session 切太多次會不會出事？</summary>
+        <div class="body">不會出事，但會很花錢。前面「切換的隱藏成本」段算過：每切一次，新模型都要把整場對話當 input tokens 重讀一次。10 則對話累積 5,000 tokens，切 4 次就多花 22,900 input tokens。技術上不會爆掉、也不會 rate limit（除非 context window 超過該模型上限，那會跳明確錯誤），但你的月帳單會有感。做法：只在必要時切、或請 AI 摘要成短版再開新 session 繼續。</div>
+      </details>
+      <details class="faq">
+        <summary>切模型會影響對話品質嗎？新模型會不會答得比較差？</summary>
+        <div class="body">會有一點影響，但不是「差」，是「風格變」。每個模型有自己讀對話的方式：Claude 通常會很認真讀完整場然後給結構化的答案；GPT 傾向直接接下一句往下講；GLM 偏簡短。所以你切模型後可能覺得答案「感覺不太一樣」——不是模型變笨，是它本來就長這樣。真正影響品質的是<strong>切到能力不夠的模型</strong>（例如寫複雜程式的對話從 Sonnet 切到 GLM-4-Flash），這時候會明顯感覺答得粗糙——那是選錯模型的問題，不是切換本身的問題。</div>
+      </details>
+      <details class="faq">
+        <summary>哪個模型是「預設模型」？我沒選過的話它用哪一個？</summary>
+        <div class="body">預設模型是你在 Models 面板可以自己設的。做法：右上工具列點 Models 面板 → 找到你想當預設的模型 → 通常有一個「Set as default」或星號的按鈕。設完之後每次 <kbd>+ New session</kbd> 開新對話都會自動用它。如果你沒設過，pi-web 通常會用「你 Models 面板裡第一個加的 provider 的第一個模型」，或者顯示「未設定」讓你手動選。</div>
+      </details>
+      <details class="faq">
+        <summary>有沒有「自動選最適合模型」的功能？我不想自己判斷</summary>
+        <div class="body">目前 pi-web 是<strong>手動選</strong>——它不會替你判斷「這個問題該用哪家」。這是刻意的設計：官方認為「哪個模型好」是使用者自己的選擇，工具不應該幫你決定要花誰的錢。未來可能會有 auto-select 之類的 skill（<a href="ch14_skill_concept.html">第 14 章</a>會講 skill 是什麼），例如「偵測到 code review 請求時自動切 Claude」，但目前還沒有官方版本。想省事的話，實務上大家的做法是「default 設便宜快模型，遇到需要深模型時手動切」，這樣覆蓋 80% 的日常。</div>
+      </details>
+      <details class="faq">
+        <summary>切模型會不會不小心把我之前的對話刪掉？</summary>
+        <div class="body">不會。切模型純粹是「決定下一句用哪個模型答」，對已經存在的訊息完全沒有動作——不會刪、不會改、不會重跑。這跟按 <kbd>+ New session</kbd> 是<strong>兩件事</strong>：新 session 才是「開一個空白的新對話」，切模型只是換腦子繼續同一場。真的要清對話就用<a href="ch8_session.html">第 8 章</a>教的 delete session；不清而只切模型，對話全部保留。</div>
+      </details>
+      <details class="faq">
+        <summary>下一步該學什麼？</summary>
+        <div class="body">你會切模型了，多 AI 這個 part 也就走完了——你已經知道為什麼要多家、六家各適合什麼、reasoning 是什麼、怎麼切換組合。接下來翻到<a href="ch14_skill_concept.html">第 14 章：Skill 是什麼</a>，開始玩「教 AI 一項專門手藝」的 skill 系統。Skill 是 pi-web 的核心特色之一，也是 draft-then-review 這種工作流之外，另一個把 AI 用得更好的方向。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch12_reasoning.html">
+        <span class="label">← 上一章</span>
+        <span class="title">12 · Reasoning 模型</span>
+      </a>
+      <a class="next" href="ch14_skill_concept.html">
+        <span class="label">下一章 →</span>
+        <span class="title">14 · Skill 概念</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 6 章 · 把金鑰貼進 Models 面板 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="把 GLM 或其他 AI 金鑰貼進 Pi Agent 的 Models 面板：Add Provider 表單欄位、Test 按鈕確認、金鑰存在哪裡。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch6_paste_key.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 6 章 · 把金鑰貼進 Models 面板 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="把 GLM 或其他 AI 金鑰貼進 Pi Agent 的 Models 面板：Add Provider 表單欄位、Test 按鈕確認、金鑰存在哪裡。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch6_paste_key.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 6 章 · 把金鑰貼進 Models 面板 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="把 GLM 或其他 AI 金鑰貼進 Pi Agent 的 Models 面板：Add Provider 表單欄位、Test 按鈕確認、金鑰存在哪裡。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html" class="active">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">金鑰還在剪貼簿</a>
+      <a href="#concept">Models 面板是什麼</a>
+      <a href="#what">三個欄位在填什麼</a>
+      <a href="#steps">8 步貼完到綠燈</a>
+      <a href="#troubleshoot">Test 沒過怎麼辦</a>
+      <a href="#security">金鑰存哪</a>
+      <a href="#advanced">同一家加兩把</a>
+      <a href="#tips">修改和刪除</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 6 章</div>
+      <h1>把金鑰貼進 Models 面板</h1>
+      <p class="lead">上一章你在智譜清言（GLM）後台拿到一支金鑰。可是 Pi Agent 現在還不認識這支金鑰，你要當中間人把它「介紹」過去。這一章就帶你打開 Models 面板、填一張供應商（Provider）表格、按 Test 看到綠色勾勾——做完你就有一顆會回話的 AI 大腦，可以直接翻到<a href="ch7_first_chat.html">第 7 章</a>開第一個對話。</p>
+    </div>
+
+    <section id="why" data-nav="金鑰還在剪貼簿">
+      <h2 data-icon="why">金鑰還在剪貼簿，Pi Agent 不知道</h2>
+      <p>你手上這支 <code>glm-abc123...</code> 的字串，對 Pi Agent 來說就是一段陌生的英數字。它不會自己去猜「這是 GLM 的」「這是誰的錢包」「該打去哪一台伺服器」。這些事情要你手動告訴它。</p>
+      <p>好消息是，這個動作是<strong>一次性</strong>的——今天填完、按 Test 綠燈通過，Pi Agent 就把這組資料寫進 <code>/data/pi-agent/models.json</code>，往後你打開 pi-web、選模型下拉、開新對話，通通都會用這一組。你以後只有這幾種情況會回來這頁：金鑰不小心洩漏要換一支、想加第二家 AI（第 <a href="ch10_why_multi.html">10</a> 章）、或者上線一個月後想調整常用模型。</p>
+      <div class="callout"><strong>觀念：</strong>Pi Agent 走的是 BYOK（Bring Your Own Key，自帶金鑰）。它自己不賣 AI，只是一個介面；真正的 AI 大腦在雲端 GLM 那邊。你把「你和 GLM 的鑰匙」交給 Pi Agent 保管，它才能替你去敲門。這支鑰匙留在你家 HA 硬碟裡，不會外傳。</div>
+      <p>做完這一章，你會有：一個叫 <code>GLM</code>（或你自己取的名字）的 provider 卡片出現在 Models 面板、對話下方的模型下拉會多出 <code>glm-4.6</code> 這個選項、按 Test 那顆按鈕會亮綠色勾勾。</p>
+    </section>
+
+    <section id="concept" data-nav="Models 面板是什麼">
+      <h2 data-icon="concept">Models 面板是什麼</h2>
+      <p>回想<a href="ch4_ui_tour.html">第 4 章</a>介紹的 pi-web 主畫面：中間是聊天區、右上角有幾顆小圖示（Sessions、Skills、Models、Settings…）。<strong>Models</strong> 就是「所有 AI 大腦的登記本」——你把哪一家、走哪個地址、用哪把鑰匙、想開哪幾個模型，全部登記在這裡。</p>
+      <p>把它想成家裡冰箱門上那張「電話簿」磁貼：水電行、鎖匠、瓦斯行、外送店家。你打電話叫水電時翻冰箱看號碼，Pi Agent 要問 AI 時也翻這本登記簿。差別是：一家 provider 可以列很多支不同的模型（就像一家水電行有三個師傅可以叫）。</p>
+      <div class="callout"><strong>觀念：</strong>面板裡看到的每一張卡片＝一個 provider（供應商）。一個 provider 底下可以再列很多個 model（模型）。GLM 這家 provider 目前主要就用 <code>glm-4.6</code> 一顆，之後 GLM 出新模型你再回來 Add Model 就好。</div>
+      <p>這個面板背後對應的檔案是 <code>/data/pi-agent/models.json</code>——你在面板點 Save，pi-web 就把最新內容寫進這個 JSON。要看檔案本人，可以進 HA 的 File Editor add-on 打開它（權限被鎖成 <code>600</code>，只有 root 讀得到）。你完全不需要手動編這個檔，UI 幫你搞定；<strong>知道它存在的意義是</strong>：HA 的備份（snapshot）會連帶這個檔案一起打包，之後換主機、還原 snapshot，金鑰不用重申請。第 <a href="ch20_backup.html">20</a> 章會細講。</p>
+    </section>
+
+    <section id="what" data-nav="三個欄位在填什麼">
+      <h2 data-icon="what">baseUrl／apiKey／models 三個欄位在填什麼</h2>
+      <p>Add Provider 表單看起來欄位很多，其實核心就三個。用「打電話叫外送」的比喻一次講完：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>欄位</th>
+            <th>外送比喻</th>
+            <th>GLM 這家要填什麼</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>baseUrl</code></td>
+            <td>店家的<strong>地址</strong>——Pi Agent 打電話要打去哪裡</td>
+            <td><code>https://open.bigmodel.cn/api/paas/v4</code></td>
+          </tr>
+          <tr>
+            <td><code>apiKey</code></td>
+            <td>你的<strong>會員卡號</strong>——證明是你打的，帳算你頭上</td>
+            <td>上一章從智譜開放平台複製的那串（開頭通常是英數字混合）</td>
+          </tr>
+          <tr>
+            <td><code>models[].name</code></td>
+            <td>你要點<strong>哪一道菜</strong>——這家有很多料理，你選這次要用的</td>
+            <td><code>glm-4.6</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <p>三個要同時對。錯一個都會出事：</p>
+      <ul>
+        <li><strong>地址錯</strong>（<code>baseUrl</code> 打成 <code>https://api.openai.com/v1</code>）：Pi Agent 拿 GLM 的鑰匙去敲 OpenAI 的門，對方不認、回你 401 或 404。</li>
+        <li><strong>會員卡錯</strong>（<code>apiKey</code> 貼到過期的、或多了空白字元）：地址對了，可是門房看你卡不對，回 401 Unauthorized。</li>
+        <li><strong>點錯菜</strong>（<code>models[].name</code> 打成 <code>glm-4</code>、少了 <code>.6</code>）：門開了、菜單沒有這一道，回 404 model not found。</li>
+      </ul>
+      <div class="callout warn"><strong>注意：</strong>複製金鑰時最常見的坑是「多了頭尾空白字元」——特別是在網頁選字段時多選到一格空白。貼進 Pi Agent 前，可以先貼到記事本檢查一下前後有沒有多餘空格。</div>
+      <p>還有一個小欄位叫 <strong>API mode</strong>（API 模式），下拉可以選 <code>openai-completions</code>、<code>anthropic-messages</code> 等等。GLM 相容 OpenAI 的請求格式，所以選 <code>openai-completions</code>。這一格代表「Pi Agent 要用哪種語言跟這家講話」——選錯了對方會聽不懂，同樣 400/404。</p>
+    </section>
+
+    <section id="steps" data-nav="8 步貼完到綠燈">
+      <h2 data-icon="steps">從打開 Models 面板到 Test 綠燈的 8 步</h2>
+      <p>下面每一步做完就會看到明確的畫面變化，一步一步照著點。整個流程不會超過 3 分鐘。</p>
+      <ol class="steps">
+        <li>
+          <h3>打開 Pi Agent</h3>
+          <p>從 HA 左邊側邊欄點 Pi Agent 圖示（<a href="ch3_open_it.html">第 3 章</a>教過怎麼認）。進到 pi-web 主畫面，中間是空白的對話區、下面有一個 composer 打字框，這代表你已經站對地方。手機上開也行，只是右上角圖示會小一點。</p>
+        </li>
+        <li>
+          <h3>找到右上角 Models 圖示</h3>
+          <p>畫面右上角一排小圖示裡，找像是「幾個方塊疊起來」的那顆——就是 Models。滑鼠移上去會顯示 tooltip「Models」確認。點它，右邊會滑出一個抽屜（drawer）。第一次打開，裡面是空的，只有一顆大大的「Add Provider」按鈕。</p>
+        </li>
+        <li>
+          <h3>按 Add Provider（新增供應商）</h3>
+          <p>按下去會彈出一個表單。上半段是 provider 本身的資料（Name、API mode、baseUrl、apiKey），下半段是 <strong>Models</strong> 的清單（一開始是空的，等會加）。</p>
+        </li>
+        <li>
+          <h3>Name 取一個好認的名字</h3>
+          <p>填 <code>GLM</code> 或 <code>智譜</code> 都可以，這個名字只給你自己看，之後對話下方的模型下拉會顯示「GLM ／ glm-4.6」。取名建議短、一眼認得。如果之後打算辦第二支金鑰分家裡跟辦公室的帳，這個名字就填 <code>GLM-家裡</code>、<code>GLM-辦公室</code>——這樣看 GLM 後台帳單時清清楚楚。</p>
+        </li>
+        <li>
+          <h3>API mode 選 openai-completions</h3>
+          <p>下拉裡會列幾個選項：<code>openai-completions</code>、<code>anthropic-messages</code>、<code>google-generative</code>… GLM 是「OpenAI 相容」的供應商，選 <strong><code>openai-completions</code></strong>。之後如果加 Anthropic 的 Claude，就選 <code>anthropic-messages</code>；每家對應哪一個，第 <a href="ch11_provider_map.html">11</a> 章有完整對照。</p>
+        </li>
+        <li>
+          <h3>baseUrl 填 GLM 的地址</h3>
+          <p>整段一字不差複製貼上：</p>
+          <pre class="code-block"><code>https://open.bigmodel.cn/api/paas/v4</code></pre>
+          <p>注意：<strong>結尾不要多一個斜線</strong>（<code>/v4/</code> 會 404）、<strong>開頭一定要 https</strong>（http 會被智譜拒絕）。這是 GLM 官方公告的 API 端點，只有這一個地址，不會有第二個。</p>
+        </li>
+        <li>
+          <h3>apiKey 貼上上一章的金鑰</h3>
+          <p>回到你放金鑰的地方（第 5 章教過的建議：先貼在密碼管理器裡）、複製、貼進來。輸入框預設會用小黑點遮起來只顯示長度，右邊有個「眼睛」圖示可以按一下讓你看內容確認。<strong>貼完看一眼有沒有頭尾空白</strong>——如果金鑰前後有多的空格，先按 Backspace / Delete 修掉。</p>
+        </li>
+        <li>
+          <h3>加一個模型 entry：glm-4.6</h3>
+          <p>下半段的 Models 區塊按「Add Model」，會多出一列欄位：</p>
+          <ul>
+            <li><code>name</code>：填 <code>glm-4.6</code>（一字不差，這是 GLM 現在的旗艦模型）</li>
+            <li><code>contextWindow</code>：填 <code>200000</code>（GLM-4.6 的上下文窗口，代表一次對話能塞多少字進去，第 <a href="ch9_thinking_diff.html">9</a> 章會解釋這個數字的實際意義）</li>
+          </ul>
+          <p>接下來滑到「進階（Advanced）」區塊，找到 <strong>thinkingFormat</strong> 欄位，下拉選 <code>zai</code>。這是告訴 Pi Agent「這家會回思考塊（reasoning block），格式用智譜（zhipu-ai／zai）的規格解析」。不設也能對話，只是你會看不到 AI 「內心話」，體驗差很多。</p>
+          <p>最後按表單底部的 <strong>Test</strong>。Pi Agent 會用你剛剛填的資料真的打一次 GLM，發一句「Hi」看能不能拿到回覆。等 3-5 秒，出現綠色勾勾（<span aria-label="check">✔</span>）就成功。按 Save 存起來，Models 面板關掉，這一章的動手部分就完成。</p>
+        </li>
+      </ol>
+      <div class="callout tip"><strong>提示：</strong>Test 按下去大部分只等 3-5 秒。如果超過 15 秒都沒動靜，多半是網路卡住或 baseUrl 拼錯；直接看下一節的「Test 沒過怎麼辦」對照。</div>
+    </section>
+
+    <section id="troubleshoot" data-nav="Test 沒過怎麼辦">
+      <h2 data-icon="troubleshoot">Test 沒過的三個常見錯誤</h2>
+      <p>Test 按下去如果不是綠色勾勾、而是紅色叉叉，看回傳的錯誤碼對照這張表：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>錯誤碼</th>
+            <th>什麼意思</th>
+            <th>怎麼修</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>401 Unauthorized</code></td>
+            <td>地址對了、鑰匙不對——GLM 說「你這張卡我不認」</td>
+            <td>先按眼睛圖示看金鑰內容，檢查頭尾空白、拼字有沒有掉字元。還是不行就去 GLM 後台看這支 key 有沒有被停用、有沒有過期，最保險是重發一支新的貼回來。</td>
+          </tr>
+          <tr>
+            <td><code>404 Not Found</code></td>
+            <td>連地址都找不到——路走錯了</td>
+            <td>回頭檢查 <code>baseUrl</code> 是不是完全等於 <code>https://open.bigmodel.cn/api/paas/v4</code>。最常見是結尾多一個 <code>/</code>、或多了 <code>/chat/completions</code>（那個 Pi Agent 會自己接，你不用打）。也可能是 <code>models[].name</code> 打錯——GLM 找不到叫這個名字的模型。</td>
+          </tr>
+          <tr>
+            <td><code>timeout</code>／一直轉圈</td>
+            <td>電話打出去沒人接——網路擋在半路</td>
+            <td>三種可能：（1）家裡網路擋大陸站，用 <code>ping open.bigmodel.cn</code> 測看看；（2）HA 主機本身沒對外網（同一台試 <code>ping 8.8.8.8</code>）；（3）GLM 那邊臨時故障，等 5 分鐘再按一次 Test。</td>
+          </tr>
+          <tr>
+            <td><code>400 Bad Request</code></td>
+            <td>格式不對——講的話對方聽不懂</td>
+            <td>八成是 <code>API mode</code> 選錯——例如你選了 <code>anthropic-messages</code> 送給 GLM，對方會退回。改成 <code>openai-completions</code> 再 Test 一次。</td>
+          </tr>
+          <tr>
+            <td><code>402 Payment Required</code></td>
+            <td>金鑰對、地址對，但你的 GLM 帳戶餘額不夠</td>
+            <td>去 GLM 後台儲值（第 5 章有教）。GLM 新戶通常送幾千 tokens 免費額度，用完才會出現。</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>其他偶爾會撞到的坑：</p>
+      <ol class="steps">
+        <li>
+          <h3>Test 一直轉圈 30 秒以上都不回</h3>
+          <p>不是網路的話，可能是 pi-web 前端沒抓到你剛新增的 provider（快取問題）。按瀏覽器 <kbd>F5</kbd> 或 <kbd>Ctrl</kbd>+<kbd>R</kbd> 重整整個 pi-web 頁面，重新打開 Models 面板再試一次。極少數情況要重啟 add-on（HA → 設定 → 附加元件 → Pi Agent → 重新啟動）。</p>
+        </li>
+        <li>
+          <h3>Test 綠燈通過，但等下開對話還是 401</h3>
+          <p>對話裡實際用的模型名，可能跟你 Models 面板填的名字不一樣。例如你面板裡填 <code>glm-4.6</code>，但對話下方模型下拉選到「GLM ／ glm-4」（少了 .6）。回到 Models 面板把 <code>models[].name</code> 對一次，確定跟下拉顯示的一致。</p>
+        </li>
+        <li>
+          <h3>覺得每次回覆都很慢，都等 20 秒以上</h3>
+          <p>先排除 <code>baseUrl</code> 是不是打錯連到 OpenAI 或別家——大陸境外的服務台灣直連常常很慢。GLM 本體從台灣連線通常 2-5 秒就有第一個字，超過 10 秒才回話幾乎都是連錯地方。順便看一下 <code>API mode</code> 有沒有選錯，錯的 mode 會多幾輪重試。</p>
+        </li>
+        <li>
+          <h3>加完 provider，對話下方模型下拉還是顯示「未設定」</h3>
+          <p>先按左上角「New session」開一個新對話——舊 session 的模型選擇是 session 建立當下就決定的，不會自動吃到新加的 provider。或者刷新整個 pi-web 頁面（<kbd>F5</kbd>）。都做過還是空的，去 File Editor 看一下 <code>/data/pi-agent/models.json</code> 是不是真的有寫進去。</p>
+        </li>
+        <li>
+          <h3>Test 綠燈但下拉列出的是「未命名 provider」</h3>
+          <p>Name 欄位空白就會這樣。回 Models 面板卡片右上三點 → Edit，補上一個名字（<code>GLM</code>）再 Save，下拉會立刻更新。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="security" data-nav="金鑰存哪">
+      <h2 data-icon="security">金鑰存哪、備份怎麼帶</h2>
+      <p>這是最多人第二個問的問題（第一個是「這個要多少錢」）。一次講完：</p>
+      <ul>
+        <li><strong>金鑰在硬碟哪裡？</strong> <code>/data/pi-agent/models.json</code>，權限被鎖成 <code>600</code>（只有 root 讀得到）。這是 pi-web add-on 的 volume 掛載目錄，也是 HA snapshot 會備份的位置。</li>
+        <li><strong>會不會傳給 Woow？</strong> 不會。Pi Agent add-on 不會把 <code>models.json</code> 上傳到任何地方。它只在你打字問問題時，把「金鑰＋你這一句話」丟到 <code>baseUrl</code>（也就是 GLM 那邊），拿到回覆再顯示給你。</li>
+        <li><strong>會不會出現在 add-on 記錄檔？</strong> 不會。<a href="appendix_provider_keys.html">附錄 B</a> 有提到，log_level 就算開到 <code>debug</code>，金鑰欄位在寫 log 前也會被 redact 成 <code>***</code>。</li>
+        <li><strong>換 HA 主機怎麼辦？</strong> 建 snapshot（HA → 設定 → 系統 → 備份 → 建立備份）→ 把 <code>.tar</code> 檔搬到新主機 → Restore。金鑰＋所有對話一起回來，不用重申請。</li>
+        <li><strong>金鑰洩漏怎麼辦？</strong> 去 GLM 後台把這支 key 停用（會立刻失效），重新發一支新的。回到 Models 面板卡片右上三點 → Edit → 更新 apiKey → Save。整個流程 2 分鐘。</li>
+      </ul>
+      <div class="callout tip"><strong>提示：</strong>養成好習慣：每次新增或換金鑰後，順便手動觸發一次 HA snapshot。這樣萬一主機隔天壞掉，剛拿到手的新金鑰也在備份裡。</div>
+    </section>
+
+    <section id="advanced" data-nav="同一家加兩把">
+      <h2 data-icon="advanced">同一家 provider 可以加兩把嗎？</h2>
+      <p>可以，而且很好用。三個常見情境：</p>
+      <ul>
+        <li><strong>家用／辦公分帳</strong>：申請兩支 GLM 金鑰，Provider Name 一支叫 <code>GLM-家裡</code>、另一支叫 <code>GLM-辦公室</code>。日常聊天選家裡那支、工作用選辦公室那支。GLM 後台看帳單就能看到兩支消耗多少，報公司帳很方便。</li>
+        <li><strong>大人／小孩分帳</strong>：小孩用一支限額度的 key（GLM 後台可以設每月上限），大人用另一支。他問問題就走小孩那把，用完就自己付不了，不會不小心一晚燒掉一千塊。</li>
+        <li><strong>備用切換</strong>：主用 key 有時會被 GLM 端限流（rate limit），先加一支備用 key，主 key 撞到限流時對話下拉切過去繼續用。</li>
+      </ul>
+      <p>加第二支的方法：Models 面板再按一次「Add Provider」，Name 取不同的、baseUrl 一樣、apiKey 貼新的那支、Models 一樣加 <code>glm-4.6</code>。兩個 provider 就會並排出現在面板上，對話下方模型下拉會顯示兩個 GLM 選項。</p>
+      <div class="callout"><strong>觀念：</strong>面板上 provider 是「按名字」認的，不是按 baseUrl。所以就算兩支 key 走同一個 <code>open.bigmodel.cn</code>，只要 Name 不同，Pi Agent 就當兩家不同的 provider。</div>
+    </section>
+
+    <section id="tips" data-nav="修改和刪除">
+      <h2 data-icon="tips">怎麼改、怎麼刪、要不要重啟</h2>
+      <p>每張 provider 卡片右上角都有三點選單（<code>⋮</code>），點開有兩個動作：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>動作</th>
+            <th>會發生什麼</th>
+            <th>什麼時候用</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Edit</strong>（編輯）</td>
+            <td>重新打開這張表單，你可以改 baseUrl、換 apiKey、增減 models 清單、調 thinkingFormat</td>
+            <td>金鑰洩漏要換、GLM 出新模型（<code>glm-4.7</code>）要加、調整 contextWindow 上限</td>
+          </tr>
+          <tr>
+            <td><strong>Delete</strong>（刪除）</td>
+            <td>整家 provider 從登記本移除，對應的 Session 之後不能重跑（但歷史對話還讀得到）</td>
+            <td>整家 provider 不用了（例如換供應商）、或是不小心加錯要打掉重來</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>要不要重啟 Pi Agent？</strong> 不用。改完按 Save 之後，下一次你按送出對話就會用新的設定。pi-web 是即時去讀 <code>models.json</code> 的，不用 restart add-on。</p>
+      <div class="callout warn"><strong>注意：</strong>刪除 provider 前先想清楚——過去用這個 provider 開的 Session，之後再打開想「續聊」就會失敗（模型找不到）。第 <a href="ch8_session.html">8</a> 章會說明 Session 跟 provider 的綁定關係。如果只是想暫停不用，比較保險是留著卡片、但把它的 model 改成不會選到的名字。</div>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>這支金鑰會不會被 Woow 拿去用？</summary>
+        <div class="body">不會。整個流程是「你的瀏覽器 → 你家 HA 主機的 pi-web → GLM 官方端點（<code>open.bigmodel.cn</code>）」，中間沒有經過 Woow 的伺服器。add-on 本身也是開源的（MIT）——你可以自己去 GitHub 上讀 <code>pi-web-start.sh</code>、<code>models.json</code> 的處理邏輯，沒有任何一行程式碼會把金鑰上傳到外面。這也是「Bring Your Own Key」的核心承諾：鑰匙留在你家。</div>
+      </details>
+      <details class="faq">
+        <summary>一定要設 thinkingFormat 嗎？不設會怎樣？</summary>
+        <div class="body">不設也能用，回答一樣正確。差別只在對話介面——設了 <code>zai</code>，GLM 回覆前會多一個可以展開的「思考塊（reasoning block）」，你點開能看到它推理的過程，很像老師寫解題步驟；不設，那段思考會被吃掉，你只看到最後答案。<strong>建議一開始就設 <code>zai</code></strong>，看它怎麼想是最快學會怎麼問問題的方式，第 <a href="ch9_thinking_diff.html">9</a> 章會整章講怎麼讀思考塊。之後若嫌介面吵，隨時 Edit 拿掉。</div>
+      </details>
+      <details class="faq">
+        <summary>Models 面板改的東西存到哪個檔案？</summary>
+        <div class="body">存在 HA 主機的 <code>/data/pi-agent/models.json</code>，權限鎖 <code>600</code>。這是 pi-web add-on 的 persistent volume，HA snapshot 會一起備份走。你不用手動編這個 JSON，UI 存檔時 pi-web 會即時寫入。想看檔案內容可以用 File Editor add-on 打開，會看到一個 providers 陣列，每個元素長得像：<code>{"name":"GLM","baseUrl":"...","apiKey":"...","models":[...]}</code>。</div>
+      </details>
+      <details class="faq">
+        <summary>同一個 provider 可以塞很多不同的模型嗎？</summary>
+        <div class="body">可以。Models 面板編輯 provider 時，Models 區塊按 <strong>Add Model</strong> 就多一列。GLM 你可以同時加 <code>glm-4.6</code>（旗艦，會思考、貴一點）、<code>glm-4-air</code>（輕量版，便宜快）、<code>glm-4-flashx</code>（極速版，適合日常閒聊）。三個共用同一支 apiKey，對話下拉會顯示 <code>GLM ／ glm-4.6</code>、<code>GLM ／ glm-4-air</code>、<code>GLM ／ glm-4-flashx</code> 三個選項——想省錢用便宜的、想思考用旗艦的。第 <a href="ch13_switch_model.html">13</a> 章會示範怎麼一句話切換。</div>
+      </details>
+      <details class="faq">
+        <summary>API mode 有這麼多選項，我怎麼知道哪家配哪個？</summary>
+        <div class="body">記三個大原則：GLM／DeepSeek／Groq／OpenRouter／MiniMax 都是「相容 OpenAI 格式」的，選 <code>openai-completions</code>；Anthropic Claude 自己一套，選 <code>anthropic-messages</code>；OpenAI 官方也選 <code>openai-completions</code>。<a href="appendix_provider_keys.html">附錄 B</a> 有七家 provider 一家一頁的完整對照，包含每家的 baseUrl、API mode、常見模型名，你之後照著抄就對了。</div>
+      </details>
+      <details class="faq">
+        <summary>我可以直接手動編 <code>models.json</code> 嗎？</summary>
+        <div class="body">可以，但不建議。你要用 File Editor 打開、改 JSON、存檔，然後刷新 pi-web 頁面才會生效。手動編最容易踩兩個坑：（1）JSON 逗號漏掉／多一個，整個檔案壞掉，pi-web 就打不開了；（2）權限被你改動變成 <code>644</code>，下次 add-on 重啟會被自動修回 <code>600</code>——這個沒事，只是 pi-web 有個 chmod loop。所以能用 UI 就用 UI，除非你要一次批次改 20 個 provider（那種情境去看第 <a href="appendix_internals.html">附錄 C</a> 的內部結構）。</div>
+      </details>
+      <details class="faq">
+        <summary>金鑰不見了、後台也刪掉了、還有救嗎？</summary>
+        <div class="body">GLM 這支金鑰只在你「產生的當下」看得到完整值，之後回後台只看得到前後幾碼。所以真的「不見了」的意思是：Pi Agent 的 <code>models.json</code> 也沒有備份、你也沒存在別的地方。<strong>唯一解法就是回 GLM 後台重發一支新的</strong>，把舊的停用。這也是為什麼上一章一直強調要用密碼管理器（Bitwarden、1Password）存一份——金鑰是不可再生的，弄丟只能重來。</div>
+      </details>
+      <details class="faq">
+        <summary>Test 綠燈，可是我還沒付錢，這樣會被扣款嗎？</summary>
+        <div class="body">Test 這一下確實會消耗你的 GLM 額度——它是真的送一句 ping 到 GLM 拿回覆才判斷成功的。但這句話只有幾個 token，用 <code>glm-4.6</code> 大概花你 0.001 元台幣，可以忽略。GLM 新戶通常送幾千 tokens 或幾十塊人民幣的免費額度，Test 完你儲值頁的餘額幾乎不會動。真的擔心可以先加一個便宜模型（<code>glm-4-flashx</code>）Test，那個一次不到 0.0001 元。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch5_first_key.html">
+        <span class="label">← 上一章</span>
+        <span class="title">05 · 申請 GLM 金鑰</span>
+      </a>
+      <a class="next" href="ch7_first_chat.html">
+        <span class="label">下一章 →</span>
+        <span class="title">07 · 開第一個對話</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

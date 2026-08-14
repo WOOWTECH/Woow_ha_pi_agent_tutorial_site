@@ -1,0 +1,317 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 3 章 · 從側邊欄打開它 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="透過 HA Ingress 存取 Pi Agent：側邊欄按鈕的來源、admin 權限的意義、多裝置存取與遠端連線的注意事項。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch3_open_it.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 3 章 · 從側邊欄打開它 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="透過 HA Ingress 存取 Pi Agent：側邊欄按鈕的來源、admin 權限的意義、多裝置存取與遠端連線的注意事項。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch3_open_it.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 3 章 · 從側邊欄打開它 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="透過 HA Ingress 存取 Pi Agent：側邊欄按鈕的來源、admin 權限的意義、多裝置存取與遠端連線的注意事項。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html" class="active">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要懂那顆按鈕</a>
+      <a href="#concept">HA Ingress 是什麼</a>
+      <a href="#admin">admin 權限的意義</a>
+      <a href="#steps">從側邊欄打開的步驟</a>
+      <a href="#devices">多裝置怎麼連</a>
+      <a href="#new_tab">Open in new tab 的差別</a>
+      <a href="#advanced">家人也想玩怎麼辦</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 3 章</div>
+      <h1>從側邊欄打開它</h1>
+      <p class="lead">上一章你看到左邊冒出「Pi Agent」按鈕就知道裝好了。這章把那顆按鈕背後的三件事一次講完：為什麼它會自己出現、為什麼老婆帳號進 HA 卻看不到、為什麼手機打開 HA App 也能直接進去。看完你會知道整套 Pi Agent 其實是「借住」在 Home Assistant 裡，不用另外開任何埠。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼要懂那顆按鈕">
+      <h2 data-icon="why">為什麼要懂那顆按鈕</h2>
+      <p>大部分人裝完 Pi Agent 就直接按下去用了，但接下來三件事幾乎每個家庭都會遇到：</p>
+      <ul>
+        <li><strong>「老婆的手機打不開，是不是壞了？」</strong>——沒壞。是刻意做成「只有管理員（Administrator）看得到」，因為 Pi Agent 會拿你的 API 金鑰去外面跟 AI 溝通，不是給訪客亂玩的功能。</li>
+        <li><strong>「出門在外能不能連？」</strong>——能。因為 Pi Agent 沒有自己開一條網路進來，是「站在 Home Assistant 後面」，只要你原本 HA 能遠端連得回家（Nabu Casa、Cloudflare Tunnel、VPN 都算），Pi Agent 自動跟著通。</li>
+        <li><strong>「要不要開防火牆？路由器要不要改？」</strong>——一個字都不用改。這章講的「HA Ingress」機制就是為了讓你不用碰路由器。</li>
+      </ul>
+      <p>把這章看完，你以後跟家人解釋「為什麼你看不到、為什麼我出去也還連得回家」就有底了。</p>
+    </section>
+
+    <section id="concept" data-nav="HA Ingress 是什麼">
+      <h2 data-icon="concept">HA Ingress 是什麼？為什麼「零埠」這麼重要</h2>
+      <p><strong>大樓門房</strong>的比喻：想像 Home Assistant 是社區大樓的門房阿伯，任何住戶（也就是每一個 add-on）想被外人拜訪，都要「站在門房後面」，訪客先跟門房打招呼、門房確認過你是誰、才會把你帶進去找那個住戶。這就是 Home Assistant Ingress（入口代理）在做的事。</p>
+      <p>Pi Agent 也一樣。它裡面其實跑了一個網站（叫 pi-web），本來需要一個「網址＋埠號」才能開，例如 <code>http://家裡IP:30142</code>。但如果真的這樣做，你就得：</p>
+      <ol>
+        <li>路由器開一條 port forwarding 給 30142</li>
+        <li>擔心密碼會不會被暴力破解</li>
+        <li>出門在外還要記自己家的 IP</li>
+        <li>手機 App 沒辦法自動跟著走</li>
+      </ol>
+      <p>啟用 Ingress 之後，這四件事全部消失。你連 Home Assistant 就好，HA 幫你把畫面塞進側邊欄那個 iframe（內嵌框架）裡，登入、權限、遠端連線全部沿用 HA 那一套。</p>
+      <div class="callout"><strong>觀念：</strong>Pi Agent 的內部埠是 <code>30142</code>，但你在瀏覽器網址列永遠看不到這個數字，因為你根本不會直接連它。所有請求都繞到 <code>你的HA網址/api/hassio_ingress/…</code> 這條路徑，由 HA 幫你轉發進去。</div>
+
+      <table class="data-table">
+        <thead>
+          <tr><th>比較項目</th><th>Ingress 走法（Pi Agent 現況）</th><th>傳統開埠走法（大部分自架服務）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>要不要改路由器</td><td>不用</td><td>要開一條 port forwarding</td></tr>
+          <tr><td>要不要另外設密碼</td><td>不用，用 HA 帳號</td><td>要，且要自己防暴力破解</td></tr>
+          <tr><td>手機 App 能不能直接開</td><td>能，Companion App 內嵌</td><td>要另外裝瀏覽器、記 IP</td></tr>
+          <tr><td>出門在外能不能連</td><td>能，跟著 HA 的遠端方案走</td><td>要另外弄 VPN 或 DDNS</td></tr>
+          <tr><td>資安曝露面</td><td>只有 HA 這一個入口</td><td>多開一個埠，就多一個攻擊面</td></tr>
+          <tr><td>被誰看到</td><td>只有 HA 管理員（可設定）</td><td>只要知道網址的人都看得到</td></tr>
+        </tbody>
+      </table>
+      <div class="callout tip"><strong>提示：</strong>「Ingress」在英文原意是「入口／進場」，中文文件有時翻「入口代理」或「內嵌」，看到都是同一件事。</div>
+    </section>
+
+    <section id="admin" data-nav="admin 權限的意義">
+      <h2 data-icon="persons">admin 權限的意義（為什麼家人看不到）</h2>
+      <p>Home Assistant 使用者分兩種（在第 5 章「用戶管理」有更完整的說明）：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>角色</th><th>能做什麼</th><th>側欄長什麼樣</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>Administrator（管理員）</strong></td><td>設定齒輪全開、能裝／改／刪 add-on、能看所有 Pi Agent 的 Session</td><td>會看到「Pi Agent」按鈕</td></tr>
+          <tr><td><strong>User（一般用戶）</strong></td><td>只能操作既有的儀表板、開關燈、看歷史</td><td><strong>看不到</strong>「Pi Agent」按鈕</td></tr>
+        </tbody>
+      </table>
+      <p>這是 Pi Agent 的 <code>config.yaml</code> 裡面刻意寫了一行 <code>panel_admin: true</code>——「這個側邊面板，只給管理員看」。為什麼要這樣？</p>
+      <ul>
+        <li>Pi Agent 會用你的 <strong>API 金鑰</strong>去打外面的 AI（GLM、OpenAI、Claude…），這些金鑰是要付費的，訪客亂玩會直接燒錢。</li>
+        <li>Pi Agent 的 <strong>Session 對話</strong>會記錄你問過的家裡問題，可能夾雜設備 ID、屋內位置，屬於相對私密的資料。</li>
+        <li>Pi Agent 的 <strong>Skills</strong>能真的執行 shell 指令、動 HA 設定，訪客如果玩壞了自動化，你要花整晚回復。</li>
+      </ul>
+      <div class="callout warn"><strong>注意：</strong>如果你想讓另一位家人（例如另一半）也能用 Pi Agent，正確做法是「把他升成管理員」，不是「找一個 hack 讓一般用戶也能看到 add-on」。升管理員的方法在<a href="ch5_first_key.html">第 5 章</a>之後、或是原本的 HA 入住指南的「用戶管理」章節有教。</div>
+    </section>
+
+    <section id="steps" data-nav="從側邊欄打開的步驟">
+      <h2 data-icon="steps">從側邊欄打開 Pi Agent</h2>
+      <ol class="steps">
+        <li>
+          <h3>用管理員帳號登入 Home Assistant</h3>
+          <p>電腦瀏覽器打開你家的 HA 網址（本地大多是 <code>http://homeassistant.local:8123</code> 或 <code>http://家裡IP:8123</code>），輸入你設好的管理員帳密。如果你只有一個帳號，那就是它。</p>
+        </li>
+        <li>
+          <h3>看左邊側邊欄有沒有「Pi Agent」按鈕</h3>
+          <p>側邊欄由上到下大概長這樣：概觀、地圖、記錄、歷史、開發者工具⋯⋯再往下捲會看到 add-on 掛出來的自訂面板。<strong>Pi Agent</strong>的按鈕圖示是一個機器人（<code>mdi:robot</code>）。看到就代表 add-on 有正確啟動、Ingress 有掛好、你的帳號是管理員——三件事都對。</p>
+          <div class="callout tip"><strong>提示：</strong>找不到的話往下看本章的<a href="#troubleshoot">常見卡關</a>，八成是三件事其中一件沒對。</div>
+        </li>
+        <li>
+          <h3>按下去，等 5～10 秒</h3>
+          <p>右邊主區塊會出現 pi-web 的工作區（下一章會完整導覽）。第一次點通常會有 5～10 秒的載入時間，這是因為 HA Ingress 要先把請求轉到 add-on 容器裡的 nginx，nginx 再轉給 Next.js 網站首次啟動；之後再點就是秒開。</p>
+        </li>
+        <li>
+          <h3>認一下頂端右上的「Open in new tab」按鈕</h3>
+          <p>那顆按鈕是「把 Pi Agent 從 HA 的側邊欄拆出來、獨立開一個瀏覽器分頁」的入口。適合大螢幕、想同時把 HA 和 Pi Agent 並排看的情境。它跟側欄版是<strong>同一個 pi-web 實例</strong>，資料完全共通，只是外殼不一樣。</p>
+        </li>
+        <li>
+          <h3>手機／平板：用 Home Assistant Companion App 打開</h3>
+          <p>如果家裡手機已經裝了 HA 官方的 Companion App、登入的是管理員帳號，打開左上角的漢堡選單（三條線），側邊欄裡一樣會有「Pi Agent」。按下去就是完整的 pi-web 工作區，跟電腦上一樣的體驗，只是螢幕小一點——所以第一次建議還是電腦上先熟悉。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="devices" data-nav="多裝置怎麼連">
+      <h2 data-icon="companion">多裝置存取的三種情境</h2>
+      <p>Pi Agent「借用」HA 連線的最大好處就是——只要 HA 開得起來，Pi Agent 就開得起來。實務上你會遇到三種情境：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>情境</th><th>你做什麼</th><th>Pi Agent 表現</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>家裡電腦（本地區網）</strong></td>
+            <td>瀏覽器打 <code>http://homeassistant.local:8123</code> 或家裡 IP</td>
+            <td>秒進，載入最快，適合寫比較長的 prompt</td>
+          </tr>
+          <tr>
+            <td><strong>家裡手機／平板（本地區網）</strong></td>
+            <td>開 HA Companion App，或瀏覽器打同一組網址</td>
+            <td>一樣走 Ingress，一秒進；適合躺沙發、坐馬桶時問問題</td>
+          </tr>
+          <tr>
+            <td><strong>外面（遠端）</strong></td>
+            <td>用你原本 HA 的遠端方案：Nabu Casa 的 <code>xxx.ui.nabu.casa</code>、你自己架的 Cloudflare Tunnel、WireGuard／Tailscale VPN⋯⋯</td>
+            <td>能連 HA 就能開 Pi Agent；速度取決於你家上傳頻寬和 AI 那端反應</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout"><strong>觀念：</strong>你完全不用告訴 Pi Agent「我現在在外面」或「我在家」，它根本不知道。它只知道「HA 傳來一個請求，來源是管理員 alice」，就把畫面吐回去。網路路徑怎麼繞是 HA 的事。</div>
+      <div class="callout tip"><strong>提示：</strong>遠端連線如果覺得「介面本身很慢」，那不是 AI 的問題，是你 HA 的遠端方案本身慢（例如 Cloudflare Tunnel 的免費區域延遲高）。這時候先確認直接開 HA 首頁順不順，再判斷是不是 Pi Agent 特有的問題。</div>
+    </section>
+
+    <section id="new_tab" data-nav="Open in new tab 的差別">
+      <h2 data-icon="tabs">「Open in new tab」跟側欄內嵌的差別</h2>
+      <p>兩個看起來一樣，其實內裡不同。做個對照：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>比較點</th><th>側欄內嵌（預設）</th><th>Open in new tab（獨立分頁）</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>網址列長相</td><td>看起來是 HA 的網址</td><td>會帶一段長長的一次性 token</td></tr>
+          <tr><td>登入怎麼過</td><td>沿用 HA 的登入 session</td><td>token 就是「臨時通行證」</td></tr>
+          <tr><td>重整之後</td><td>照樣運作</td><td>token 過期 → 404，得回側欄重按</td></tr>
+          <tr><td>能不能複製網址給別人</td><td><strong>不建議</strong>（別人沒登入你的 HA 也進不去）</td><td><strong>絕對不行</strong>（token 綁你這台瀏覽器）</td></tr>
+          <tr><td>什麼時候用</td><td>日常主要模式</td><td>雙螢幕、想把 HA 和 Pi Agent 並排</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn"><strong>注意：</strong>「Open in new tab」網址列那段 token 就像是機場的登機證，只給你這班飛機、這個人用。<strong>不要</strong>截圖、不要貼給朋友、不要放公開文件裡。token 本身雖然會過期，但過期前拿到的人可以直接進來看你的 Session 對話。</div>
+    </section>
+
+    <section id="advanced" data-nav="家人也想玩怎麼辦">
+      <h2 data-icon="advanced">家人也想玩：把家人升成管理員</h2>
+      <p>另一半、小孩、爸媽如果也想用 Pi Agent，唯一乾淨的做法就是把他們的 HA 帳號設成管理員。步驟大致是「設定 → 人員 → 使用者 → 選那個人 → 打開『管理員』開關」。做完之後對方重登一次 HA 就會看到 Pi Agent 按鈕。</p>
+      <div class="callout warn"><strong>注意這幾件事：</strong>
+        <ul>
+          <li>管理員<strong>不只</strong>看得到 Pi Agent，會同時看到<strong>全部 add-on</strong>、設定齒輪、開發者工具、備份頁、系統重啟按鈕⋯⋯所有能弄壞系統的東西都在裡面。</li>
+          <li>如果對方只是想「有時候幫忙下個指令」，其實可以你自己開 Pi Agent、把螢幕鏡到他手機（或用 <code>Open in new tab</code> 產生分頁，當面給他看），不一定要真的升管理員。</li>
+          <li>小孩帳號<strong>不建議</strong>升管理員，寧可你當代理人。理由：改壞 HA 設定的復原成本比想像高。</li>
+        </ul>
+      </div>
+      <div class="callout tip"><strong>提示：</strong>之後 Pi Agent 有可能開放「按 Session 分權限」的功能，讓一般用戶也能被授權看特定對話。這功能還沒到，本教材更新時會補上。現階段就是「管理員全看、一般用戶不看」二選一。</div>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>側邊欄「沒有」Pi Agent 按鈕</h3>
+          <p>照這個順序檢查：
+            <br>① 你這個帳號是不是<strong>管理員</strong>？到「設定 → 人員 → 使用者」點自己名字，看「管理員」開關有沒有打開。老婆用的帳號通常是這裡卡住。
+            <br>② 到「設定 → Add-ons → Woow HA Pi Agent → Info」分頁，看下面「顯示在側欄（Show in sidebar）」有沒有開。安裝流程正常會自動開；但如果你以前手動關過就要重新打開。
+            <br>③ 按 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>（Mac 是 <kbd>Cmd</kbd>+<kbd>Shift</kbd>+<kbd>R</kbd>）強制重新整理 HA 前端。</p>
+        </li>
+        <li>
+          <h3>按下去右邊「一直空白」，轉圈圈半天</h3>
+          <p>先等 10～15 秒，因為 pi-web 的 nginx 首次啟動比較慢。等超過 30 秒都還是白的，按 <kbd>F12</kbd> 打開瀏覽器 <strong>Console</strong>，看有沒有紅字 <code>404</code> 或 <code>403 Untrusted API request</code>。<br>如果是 403，那是 add-on 剛升級但 nginx 還沒重載，回「Add-ons → Pi Agent」按一下「Restart」重來一次就會好。<br>如果是 404，八成是 add-on 沒完全啟動，看一下 Add-on 頁面的 <code>Log</code> 分頁有沒有錯誤。</p>
+        </li>
+        <li>
+          <h3>「Open in new tab」按下去顯示 404</h3>
+          <p>那段 URL 裡的 token 已經過期了。<strong>回側欄按一次 Pi Agent</strong>，讓它重新拿一組新的 token，再從頂端按「Open in new tab」開新的分頁。舊分頁可以直接關掉，重整也救不回來（因為 token 過期了）。</p>
+        </li>
+        <li>
+          <h3>Companion App 打不開，一片黑</h3>
+          <p>Home Assistant Companion App（iOS 或 Android）版本要夠新，太舊的版本不支援把 add-on Ingress 塞進 App 內嵌。建議：App Store 或 Play 商店更新到最新版；如果還是不行，先在同一支手機的瀏覽器（Safari／Chrome）打 HA 網址試試看，能開就代表是 App 版本問題，不能開就代表是網路或帳號問題。</p>
+        </li>
+        <li>
+          <h3>電腦本地能開、出門遠端卻連不進 HA（連 HA 本體都連不進）</h3>
+          <p>這不是 Pi Agent 的問題，是你 HA 的遠端連線本身壞了。修 HA 那邊：Nabu Casa 有沒有續訂、Cloudflare Tunnel 的 cloudflared 有沒有掛掉、VPN 有沒有斷。修好 HA 遠端，Pi Agent 自動跟著通。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>一定要 admin 帳號嗎？我不想把家人全部升管理員。</summary>
+        <div class="body">目前是的。Pi Agent 用 <code>panel_admin: true</code> 把側欄面板限定給管理員，這是 add-on 本身在 <code>config.yaml</code> 寫死的，不是 HA 的一般權限選項。想繞開的話得改 add-on 本身的設定並重裝，不建議；正確做法是升那個要用的家人成管理員，或者你自己代打。</div>
+      </details>
+      <details class="faq">
+        <summary>我在電腦和手機同時打開，會不會互相打架？</summary>
+        <div class="body">不會。兩端看到的是同一個 pi-web 實例、同一份 Session 檔案。你在電腦上開一個新 Session，手機重整之後也會看到；你在手機上輸入的訊息會即時同步回電腦（Session 是儲存在 HA 主機上的檔案，不是瀏覽器的暫存）。唯一要注意的是：<strong>同一個 Session 兩邊同時打字送出</strong>，可能會讓 AI 收到兩條連在一起的訊息，比較像是同事共用一個 chat window 的效果。</div>
+      </details>
+      <details class="faq">
+        <summary>用 iPad 開跟電腦有什麼差？</summary>
+        <div class="body">功能一模一樣，介面會依螢幕寬度自動調整。iPad 螢幕夠大的話幾乎跟電腦沒差；手機因為螢幕窄，某些側面板（例如 Sessions 列表）會收成漢堡選單。第一次用還是建議電腦上先熟一次介面，之後拿手機／iPad 就順了。</div>
+      </details>
+      <details class="faq">
+        <summary>從外面連回家跑 pi-web 會不會很慢？</summary>
+        <div class="body">兩層要分開：<strong>介面本身</strong>的載入延遲取決於「你外面到家裡的 HA」的網路品質，跟 Pi Agent 沒關係；<strong>AI 回應</strong>的延遲取決於「Pi Agent 到 AI 提供商」的網路，跟你在哪裡也沒關係。所以真正卡的是 AI 那邊。如果你發現按送出之後 AI 好一陣子才吐字，這不是遠端連線的問題，是模型本身在思考。</div>
+      </details>
+      <details class="faq">
+        <summary>我在外面用 Nabu Casa 連回家，Pi Agent 打的 API 是不是也會繞 Nabu Casa？</summary>
+        <div class="body">不會。Pi Agent 打 AI 是「從你家裡的 HA 主機直接出去」的請求，走的是你家裡的網路。你只是遠端遙控它，AI 的請求本身完全不經過 Nabu Casa，也不會佔用 Nabu Casa 的流量。這也是「本地跑 Pi Agent」比「用某些雲端 AI 助理」隱私性更好的原因之一。</div>
+      </details>
+      <details class="faq">
+        <summary>可以把 Pi Agent 的網址設成瀏覽器書籤嗎？</summary>
+        <div class="body">可以，但書籤裡不要存「Open in new tab」那個帶 token 的長網址（會過期）。應該存 HA 首頁的 URL（例如 <code>http://homeassistant.local:8123</code>），然後每次從側邊欄點進 Pi Agent。或者更直接一點，書籤網址寫 <code>http://homeassistant.local:8123/hassio/ingress/woow_ha_pi_agent</code>，這是 HA 內部給側欄面板的固定路徑，會永遠有效。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch2_install.html">
+        <span class="label">← 上一章</span>
+        <span class="title">02 · 裝好 Pi Agent</span>
+      </a>
+      <a class="next" href="ch4_ui_tour.html">
+        <span class="label">下一章 →</span>
+        <span class="title">04 · 工作區導覽</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

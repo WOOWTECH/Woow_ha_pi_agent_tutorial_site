@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 18 章 · 為什麼首次要下載 720MB、之後就秒開 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Pi Agent 首次啟動的 video-tools-init：venv、Playwright browser、Chromium 為什麼要 720MB、sentinel 檔如何避免重跑、reset_video_tools 開關的意義。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch18_video_tools.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 18 章 · 為什麼首次要下載 720MB、之後就秒開 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Pi Agent 首次啟動的 video-tools-init：venv、Playwright browser、Chromium 為什麼要 720MB、sentinel 檔如何避免重跑、reset_video_tools 開關的意義。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch18_video_tools.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 18 章 · 為什麼首次要下載 720MB、之後就秒開 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Pi Agent 首次啟動的 video-tools-init：venv、Playwright browser、Chromium 為什麼要 720MB、sentinel 檔如何避免重跑、reset_video_tools 開關的意義。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html" class="active">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">兩件事一起講清楚</a>
+      <a href="#concept">video-tools 是三工具的統稱</a>
+      <a href="#what">首次啟動發生什麼事</a>
+      <a href="#records">裝在哪三個位置</a>
+      <a href="#restore">不會被 snapshot 備份</a>
+      <a href="#steps">reset_video_tools 用法</a>
+      <a href="#tips">什麼時候該 reset</a>
+      <a href="#advanced">不用影片管線能省嗎</a>
+      <a href="#now">看下載進度</a>
+      <a href="#reinstall">重灌會不會再下</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 18 章</div>
+      <h1>為什麼首次要下載 720 MB、之後就秒開</h1>
+      <p class="lead">第 <a href="ch2_install.html">2 章</a>叫你按下啟動之後別緊張，等 3-8 分鐘不是壞了；第 <a href="ch17_video_pipeline.html">17 章</a>又講了影片管線需要一整套工具才能跑。這章就是要把「那個 720 MB 到底裝了什麼、放在哪、什麼時候會再裝一次」講清楚，順便教你 <code>reset_video_tools</code> 那個一次性開關該什麼時候翻、翻完會發生什麼。看完之後你在 Logs 分頁看到 <code>[video-tools]</code> 訊息時就不會再心跳加速。</p>
+    </div>
+
+    <section id="why" data-nav="兩件事一起講清楚">
+      <h2 data-icon="why">為什麼要一次講這個</h2>
+      <p>Pi Agent 有兩件事，讀者最常搞混：</p>
+      <ul>
+        <li><b>第 2 章講的「首次啟動要等 3-8 分鐘」</b>——你剛裝好按 Start，UI 卻半天沒動，log 一直冒紅字，第一個念頭都是「我是不是裝壞了」。</li>
+        <li><b>第 17 章講的「影片管線需要 720 MB 工具」</b>——AI 幫你錄畫面、配音、剪片、燒字幕，那一整套工具鏈很大。</li>
+      </ul>
+      <p>這兩件事其實是<b>同一件事</b>。首次啟動的 3-8 分鐘就是在下載那 720 MB。這章就把三件事一次串起來：</p>
+      <ol class="steps">
+        <li><h3>裝了什麼</h3><p>Chromium、Python venv、ffmpeg、字型、rclone——三大塊。</p></li>
+        <li><h3>放在哪</h3><p>全部在 <code>/data/pi-agent/</code> 的三個子目錄，你可以真的用 File editor 進去看。</p></li>
+        <li><h3>什麼時候會再裝一次</h3><p>正常情況：<b>永遠不會</b>。特殊情況：你翻 <code>reset_video_tools</code> 開關、或整個 add-on 被移除重裝，才會重下。</p></li>
+      </ol>
+      <p>看完你會知道兩件事：<b>什麼時候該讓它裝、什麼時候該叫它重來</b>。前者省你緊張，後者省你自己 exec 進容器手動刪檔案。</p>
+      <div class="callout"><strong>提醒：</strong>如果你目前根本沒打算用影片管線（第 <a href="ch17_video_pipeline.html">17 章</a>那些功能），你還是逃不掉這 720 MB——目前 add-on 沒有「純聊天模式」的選項。這章 <a href="#advanced">第 8 段</a>會解釋為什麼、以及有沒有辦法省。</div>
+    </section>
+
+    <section id="concept" data-nav="video-tools 是三工具的統稱">
+      <h2 data-icon="concept">video-tools 其實是三個工具的統稱</h2>
+      <p>Pi Agent 內部把「影片管線需要的東西」統稱為 <b>video-tools</b>，但它不是一個東西，是三塊。第 2 章你看到的 720 MB 是這三塊加起來的：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>塊</th><th>是什麼</th><th>大小</th><th>誰在用</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>Chromium（隱形瀏覽器）</b></td>
+            <td>Playwright 用來錄畫面用的無頭 Chromium。就是一整份完整的 Google Chrome，只是沒有視窗——AI 打開網頁、切分頁、截影格全靠它。</td>
+            <td>約 500-600 MB</td>
+            <td>Playwright、影片管線的「錄畫面」階段</td>
+          </tr>
+          <tr>
+            <td><b>Python venv + pip 套件</b></td>
+            <td>獨立的 Python 虛擬環境，裡面裝了 <code>edge-tts</code>（微軟 Edge 的文字轉語音，免費）、<code>playwright</code>（Python 版控制程式）、<code>pyyaml</code>（讀腳本檔）、<code>mutagen</code>（讀音檔長度）。</td>
+            <td>約 40-60 MB</td>
+            <td>影片管線的「配音」「排檔」階段</td>
+          </tr>
+          <tr>
+            <td><b>ffmpeg + libass + 字型 + rclone</b></td>
+            <td>這一堆是<b>包在容器映像裡的</b>，不是「首次下載」的部分。ffmpeg 剪接、libass 燒字幕、fonts-noto-cjk 是繁體中文字型、fonts-noto-color-emoji 是彩色 emoji 字型（用來做字幕跟開頭卡）、rclone 上傳雲端。</td>
+            <td>約 400-500 MB（裝在映像裡）</td>
+            <td>影片管線的「合成」「上字幕」「上傳」階段</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>所以嚴格講「首次下載到 <code>/data/pi-agent/</code>」的其實是<b>前兩塊</b>：Chromium 加 Python venv，總計約 600-700 MB，這個數字會因為 Playwright 版本、pip 依賴版本而在 600-720 MB 之間浮動——這就是為什麼你常聽到「大約 720 MB」這種模糊講法。第三塊 ffmpeg 那些是 add-on 映像檔的一部分，你「下載映像檔」那 300 MB 的階段就一起拉下來了。</p>
+      <div class="callout tip"><strong>心智模型：</strong>把 add-on 想成搬新家。<b>映像檔那 300 MB</b> = 房子本身（水電煤瓦斯裝好、家具就位）；<b>首次啟動下載那 720 MB</b> = 你入住當天叫貨車把行李（Chromium）跟收藏（Python 套件）載進來。房子只搬一次，行李也只搬一次，之後就不用再搬。</div>
+    </section>
+
+    <section id="what" data-nav="首次啟動發生什麼事">
+      <h2 data-icon="what">首次啟動那 3-8 分鐘發生什麼事</h2>
+      <p>你按了 Add-on 頁的 Start 之後，實際發生的事情有<b>兩條線同時跑</b>：</p>
+      <ol class="steps">
+        <li>
+          <h3>第一條線：pi-web 立刻起來（幾秒鐘）</h3>
+          <p>你在<a href="ch3_open_it.html">第 3 章</a>看到的側邊欄按鈕、能點進 UI、能開始跟 AI 聊天——這條線幾秒就好。pi-web 是 Node.js 程式，本身不需要 Chromium、也不需要 Python，跟影片管線是<b>完全兩碼子事</b>。所以你點進去可以馬上聊。</p>
+        </li>
+        <li>
+          <h3>第二條線：video-tools-init 在背景下載（3-8 分鐘）</h3>
+          <p>啟動腳本 <code>pi-web-start.sh</code> 看到 <b>sentinel 檔 <code>/data/pi-agent/.video-tools-installed</code> 不存在</b>，就會 fork 出一個背景進程叫 <code>video-tools-init.sh</code>。這個腳本按順序做四件事：</p>
+          <ul>
+            <li>建立 Python venv：<code>python3 -m venv /data/pi-agent/venv</code>，約 10 秒</li>
+            <li>用 pip 裝 playwright / edge-tts / pyyaml / mutagen，約 30 秒-2 分鐘（看網路）</li>
+            <li>叫 playwright 下載 Chromium 到 <code>/data/pi-agent/playwright-cache/</code>，約 2-6 分鐘（<b>最大隻</b>）</li>
+            <li>裝完 <code>touch</code> 一個空檔叫 <code>.video-tools-installed</code>，代表「這台我裝過了」</li>
+          </ul>
+        </li>
+        <li>
+          <h3>之後每次啟動：跳過</h3>
+          <p>下次你重啟 add-on、重開 HA、甚至重開機，<code>video-tools-init</code> 一啟動就檢查 sentinel 檔，看到「有欸」就 exit 0 什麼也不做。log 只會出現一行 <code>[video-tools] already installed (sentinel present) — skipping</code>，秒過。這就是為什麼<b>首次要幾分鐘、之後秒開</b>。</p>
+        </li>
+      </ol>
+      <div class="callout warn"><strong>注意：</strong>「pi-web 立刻起來、video-tools 在背景」這個設計，代表你<b>看 UI 完全看不出來後面還在下載</b>。這也是為什麼很多人以為「已經好了」就開始玩，玩到一半才發現「咦，這個影片管線的 skill 怎麼跑失敗」——因為 Chromium 還沒下完。要確定影片管線 ready，去 Logs 分頁看 <code>install complete — sentinel written</code> 這一行，看到才算完全 OK。</div>
+    </section>
+
+    <section id="records" data-nav="裝在哪三個位置">
+      <h2 data-icon="records">裝在哪：三個位置一次看完</h2>
+      <p>「下載」的東西全部落在 <code>/data/pi-agent/</code> 這個 HA host 上的目錄裡。你可以用 File editor add-on（或 SSH）進去看，會看到這三個位置：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>路徑</th><th>裡面是什麼</th><th>大小</th><th>能不能刪</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>/data/pi-agent/playwright-cache/</code></td>
+            <td>Playwright 下載的 Chromium 瀏覽器本體。子資料夾長得像 <code>chromium-XXXX/chrome-linux/</code>，裡面就是 chrome 執行檔 + 所有共享函式庫。之所以放這裡是因為 <code>PLAYWRIGHT_BROWSERS_PATH</code> 環境變數指到這。</td>
+            <td>約 500-600 MB</td>
+            <td>能刪，下次啟動會重下</td>
+          </tr>
+          <tr>
+            <td><code>/data/pi-agent/venv/</code></td>
+            <td>Python 虛擬環境。<code>venv/bin/python3</code> 是專屬的 Python 解譯器，<code>venv/lib/python3.X/site-packages/</code> 裝了 edge-tts、playwright、pyyaml、mutagen 加上它們自己的依賴。跟系統 Python 完全隔離。</td>
+            <td>約 40-60 MB</td>
+            <td>能刪，下次啟動會重建</td>
+          </tr>
+          <tr>
+            <td><code>/data/pi-agent/.video-tools-installed</code></td>
+            <td>Sentinel 檔（哨兵檔）。一個<b>零 byte 的空檔</b>，存在只有一個意義：「上面兩個都裝好了，別再裝」。啟動腳本靠它判斷要不要跑安裝流程。</td>
+            <td>0 byte</td>
+            <td>能刪，刪了下次啟動會重跑安裝</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>這裡的關鍵字是 <b>sentinel</b>（哨兵）——這是很多 Docker/Linux 服務常用的手法：不需要真的檢查裝了什麼、也不需要驗證版本，就是一個空檔案代表「這件事做過了」。輕、快、不會被誤判。你如果好奇這個檔的內容，<code>cat .video-tools-installed</code> 出來會是空的，因為它從頭到尾就是 <code>touch</code> 出來的。</p>
+      <div class="callout"><strong>觀念：</strong><code>/data/pi-agent/</code> 是 HA add-on 給 Pi Agent 的<b>永久儲存區</b>，跟你的 skills、models.json（金鑰）、sessions 都住在同一個父目錄，只是分子資料夾。這代表：你的對話跟金鑰不會因為升級 add-on 而消失，這 720 MB 的工具也不會。細部檔案地圖看<a href="ch20_backup.html">第 20 章</a>。</div>
+    </section>
+
+    <section id="restore" data-nav="不會被 snapshot 備份">
+      <h2 data-icon="restore">重要：這 720 MB 不會被 HA snapshot 備份</h2>
+      <p>這是本章<b>最容易踩雷</b>的一件事，講清楚：Pi Agent 有一份 <code>backup_exclude</code> 清單，明講「這幾個目錄不要放進 HA snapshot」。清單裡有這幾個：</p>
+      <ul>
+        <li><code>venv/</code> ← 就是這 720 MB 的 Python venv</li>
+        <li><code>playwright-cache/</code> ← 就是這 720 MB 的 Chromium</li>
+        <li><code>clips/</code>、<code>segments/</code> ← 影片管線產出的中間檔（很大、可重生）</li>
+      </ul>
+      <p>為什麼要故意排除？兩個原因：</p>
+      <ol class="steps">
+        <li>
+          <h3>原因一：不排除的話 snapshot 檔會膨脹到 1 GB+</h3>
+          <p>HA snapshot 預設就是把整個 add-on 的 data 目錄壓縮打包。如果不排除，你每一份 snapshot 都多帶 700 MB 的 Chromium+venv 進去，一份備份至少 1 GB 起跳。用 Google Drive 或 USB 隨身碟保存一年 12 份 snapshot，光 Pi Agent 就吃掉 12 GB，完全沒必要。</p>
+        </li>
+        <li>
+          <h3>原因二：還原後 s6-overlay 會自動再裝一次</h3>
+          <p>假設你今天整台 HA 掛了、拿 snapshot 還原到新硬體，Pi Agent 那份 snapshot 裡沒有 venv 也沒有 playwright-cache——但也<b>沒有 sentinel 檔</b>。所以還原完 Pi Agent 首次啟動時，看到 sentinel 不在，就會自動再跑一次那 3-8 分鐘的下載，等於「新機重新裝一份」，環境跟原本完全等價。<b>備份少 700 MB、還原多等 5 分鐘</b>，這筆帳很划算。</p>
+        </li>
+      </ol>
+      <p>那什麼<b>會</b>放進 snapshot？<b>你真正產生的東西</b>：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>會備份</th><th>不會備份</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>models.json</code>（金鑰、provider 設定）</td><td><code>venv/</code>（720 MB 中的 Python 部分）</td></tr>
+          <tr><td><code>sessions/</code>（你的對話歷史）</td><td><code>playwright-cache/</code>（720 MB 中的 Chromium）</td></tr>
+          <tr><td><code>skills/</code>（你裝的、你寫的 skill）</td><td><code>clips/</code>、<code>segments/</code>（影片中間檔）</td></tr>
+          <tr><td><code>home/pi-cwd-*/</code>（AI 的工作目錄）</td><td><code>.video-tools-installed</code>（sentinel）</td></tr>
+          <tr><td><code>rclone/rclone.conf</code>（Google Drive 授權）</td><td>—</td></tr>
+        </tbody>
+      </table>
+      <p>換句話說：<b>你花心血產生的都在、機器自己下載的都不在</b>。這個切分很乾淨。<a href="ch20_backup.html">第 20 章</a>會把備份還原的完整流程講一次。</p>
+    </section>
+
+    <section id="steps" data-nav="reset_video_tools 用法">
+      <h2 data-icon="steps">reset_video_tools 開關的用途與操作</h2>
+      <p>Pi Agent 的 Add-on Configuration 分頁裡有一個特殊開關叫 <code>reset_video_tools</code>。這個開關的意義只有一句話：<b>把 sentinel、venv、playwright-cache 全刪掉，下次啟動重新下載一次</b>。</p>
+      <p>操作步驟：</p>
+      <ol class="steps">
+        <li>
+          <h3>打開 Add-on 頁的 Configuration 分頁</h3>
+          <p>Home Assistant → Settings → Add-ons → Pi Agent → Configuration 分頁（跟你設 <code>log_level</code>、<code>timezone</code> 的同一頁）。</p>
+        </li>
+        <li>
+          <h3>把 reset_video_tools 從 false 改成 true</h3>
+          <p>它是一個 boolean 開關。UI 上是一個切換按鈕，改成 on（<code>true</code>）。</p>
+        </li>
+        <li>
+          <h3>按 SAVE 存檔</h3>
+          <p>存了之後 HA 會提示「要重啟 add-on 才生效」。這是預期的。</p>
+        </li>
+        <li>
+          <h3>回 Info 分頁按 RESTART</h3>
+          <p>重啟時 <code>pi-web-start.sh</code> 讀到 <code>RESET_VIDEO_TOOLS=true</code>，先跑 <code>rm -rf .video-tools-installed venv playwright-cache</code>，log 會冒一行 <code>[pi-web] RESET_VIDEO_TOOLS=true — clearing venv, playwright cache and sentinel</code>。清完就進入正常啟動流程，然後因為 sentinel 沒了，<code>video-tools-init</code> 又會跑一次 3-8 分鐘的下載。</p>
+        </li>
+        <li>
+          <h3>下載完成後回 Configuration 手動把開關關回 false</h3>
+          <p><b>這一步<em>目前</em>要你手動做</b>。開關沒有自動變回 false 的機制（腳本本身沒改 add-on config 的權限）。如果你留在 <code>true</code>，下次每次重啟都會重刪重下 720 MB，非常浪費——所以裝完務必回來把它關掉。log 也會提醒你這件事：<code>set it back to false once the reinstall completes, or every restart re-downloads ~720MB</code>。</p>
+        </li>
+      </ol>
+      <div class="callout danger"><strong>危險：</strong>reset 期間不要按停止／重啟，讓它跑完。720 MB 下載到一半被打斷，會留下半殘的 venv 或半下載的 Chromium 檔案，下次啟動有可能因為「檔案存在但不完整」而出各種怪錯。真的中斷了，唯一乾淨的作法就是——再 reset 一次。</div>
+    </section>
+
+    <section id="tips" data-nav="什麼時候該 reset">
+      <h2 data-icon="tips">什麼時候該用 reset_video_tools</h2>
+      <p>這個開關是<b>維修用的逃生口</b>，正常情況不要碰。整理什麼時候該用、什麼時候別碰：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>情境</th><th>該不該 reset</th><th>為什麼</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>影片管線的 skill 一直跑失敗，log 也看不出理由</td>
+            <td><b>可以 reset</b></td>
+            <td>可能是 venv 半殘、或某個 pip 套件安裝失敗留下爛檔。整套砍掉重灌是最快的排除法。</td>
+          </tr>
+          <tr>
+            <td>Chromium 太舊，某個網站的錄影抓不到內容（例如新版 CSS）</td>
+            <td><b>可以 reset</b></td>
+            <td>reset 完 Playwright 會下載當下 pip 版本對應的最新 Chromium。這是「間接升級瀏覽器」的辦法。</td>
+          </tr>
+          <tr>
+            <td>看到 log 有「WARNING: pip install failed」或「chromium download failed」</td>
+            <td><b>可以 reset</b>（但先確認網路 OK）</td>
+            <td>那次首裝失敗，sentinel 也沒建，但 venv 可能已經半建。reset 讓它徹底重來一次。</td>
+          </tr>
+          <tr>
+            <td>硬碟快滿了，想省 720 MB</td>
+            <td><b>先想清楚再 reset</b></td>
+            <td>reset 完你再啟動它又下載回來（除非你先把 <code>VIDEO_PIPELINE_ENABLED</code> 設 false，但這是進階選項）。真正省空間要做的事在 <a href="#advanced">第 8 段</a>。</td>
+          </tr>
+          <tr>
+            <td>影片管線平常好好的，你只是「想確認環境乾不乾淨」</td>
+            <td><b>不要 reset</b></td>
+            <td>沒事別碰。720 MB 重下載一次要 3-8 分鐘、要吃你家頻寬跟 Docker Hub 那邊的流量，沒好處。</td>
+          </tr>
+          <tr>
+            <td>剛升級 Pi Agent 版本（v0.13→v0.14 之類）</td>
+            <td><b>不要 reset</b></td>
+            <td>升級不影響 venv／playwright-cache（那些在你自己 volume 上），保留可以省一次下載。除非 CHANGELOG 明講「本版需要 reset video tools」，否則不用。</td>
+          </tr>
+          <tr>
+            <td>剛 restore 一份 HA snapshot 過來</td>
+            <td><b>不需要手動 reset</b></td>
+            <td>因為 snapshot 沒帶 venv/playwright-cache，sentinel 也不會在，首次啟動自動就會重下。你什麼都不用做，等它跑完就好。</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>總結一句話：<b>reset 是為「壞了」而存在，不是為「潔癖」而存在</b>。沒故障就別動。</p>
+    </section>
+
+    <section id="advanced" data-nav="不用影片管線能省嗎">
+      <h2 data-icon="advanced">不打算用影片管線，可以省下這 720 MB 嗎</h2>
+      <p>老實答：<b>目前不能簡單省下</b>。原因跟 Pi Agent 的設計有關：</p>
+      <ol class="steps">
+        <li>
+          <h3>video-tools-init 是啟動時自動跑的服務</h3>
+          <p>add-on 啟動腳本 <code>pi-web-start.sh</code> 預設會在背景 fork <code>video-tools-init.sh</code>。這個行為<b>沒有一個給普通使用者的開關</b>可以關（Configuration 分頁看不到相關選項）。</p>
+        </li>
+        <li>
+          <h3>底層是有環境變數可以關的，但不對外</h3>
+          <p>啟動腳本裡有段條件是 <code>if [ "${VIDEO_PIPELINE_ENABLED:-true}" = "true" ]</code>——意思是如果環境變數 <code>VIDEO_PIPELINE_ENABLED</code> 被設成 false，就不會跑 video-tools-init。但 add-on Configuration 分頁沒把這個變數暴露給你切，要改就得改 add-on 原始碼或用進階手法（<code>env_vars</code> 選項，看<a href="appendix_config_ref.html">附錄 A</a>）。</p>
+        </li>
+        <li>
+          <h3>就算關了 init，映像檔本身還是含 400-500 MB 的 ffmpeg / 字型 / rclone</h3>
+          <p>那一塊是烤進 Docker image 的（Containerfile 裡的 <code>VIDEO_TOOLS=1</code> ARG），你在 add-on 這一端<b>完全無法選擇不裝</b>。要真的省，得改 <code>VIDEO_TOOLS=0</code> 自己重 build，這已經是自製 fork 了。</p>
+        </li>
+        <li>
+          <h3>實務建議：就讓它裝一次</h3>
+          <p>720 MB 對現在的硬碟（HA 官方最低就要 32 GB）是 2% 左右的空間；下載也就一次的事。<b>「省事」跟「省 2% 空間」比，省事贏</b>。你就當作 add-on 出廠自帶影片能力，日後想用不用另外裝，不用也就佔那點空間。真的空間不夠的話該解決的是硬碟太小，不是砍 Pi Agent 的功能。</p>
+        </li>
+      </ol>
+      <div class="callout tip"><strong>省空間的正確方向：</strong>如果你真的要清空間，先看<a href="ch20_backup.html">第 20 章</a>的「什麼可以清」清單——通常最肥的是 <code>sessions/</code>（很多老對話）、<code>clips/</code>（老影片中間檔）、跟系統的 <code>/backup/</code>（舊 snapshot），這些砍下去每次都是 GB 級的成效。video-tools 那 720 MB 是最<b>不值得砍</b>的，因為砍完你如果哪天想用影片管線又要重下。</div>
+    </section>
+
+    <section id="now" data-nav="看下載進度">
+      <h2 data-icon="now">怎麼看下載進度、判斷卡住還是慢</h2>
+      <p>下載這 720 MB 期間，你不用瞎等，可以在 Logs 分頁看它跑到哪。Add-on Logs 分頁進去，找開頭是 <code>[video-tools]</code> 或 <code>[pi-web]</code> 的行。正常的進度大概像這樣：</p>
+      <pre class="code-block"><code>[pi-web] video pipeline enabled — bootstrapping in background
+[pi-web] starting pi-web on 127.0.0.1:30141
+[video-tools] first-run install starting (~720MB, several minutes; pi-web is already serving)
+[video-tools] creating venv at /data/pi-agent/venv
+[video-tools] installing python packages (playwright, edge-tts, pyyaml, mutagen)
+[video-tools] downloading Chromium into /data/pi-agent/playwright-cache (~600MB)
+[video-tools] install complete — sentinel written to /data/pi-agent/.video-tools-installed</code></pre>
+      <p>每一行的意義：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>看到這行</th><th>意義</th><th>大概還要等</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>bootstrapping in background</code></td><td>啟動腳本已 fork 出安裝進程，pi-web 也起來了</td><td>約 3-8 分鐘</td></tr>
+          <tr><td><code>creating venv</code></td><td>正在建 Python 虛擬環境</td><td>再 3-8 分鐘</td></tr>
+          <tr><td><code>installing python packages</code></td><td>pip 在裝 playwright、edge-tts 那些</td><td>再 2-6 分鐘</td></tr>
+          <tr><td><code>downloading Chromium</code></td><td>最大隻的來了，500-600 MB</td><td>再 2-5 分鐘</td></tr>
+          <tr><td><code>install complete — sentinel written</code></td><td><b>全部完成</b>，影片管線可用</td><td>0，可以開始用</td></tr>
+        </tbody>
+      </table>
+      <p>如果你看到 log 卡在某一行超過 10 分鐘、又沒新的錯誤訊息，通常是網路或某個下載源慢。判斷方法：</p>
+      <ul>
+        <li><b>去 HA 主 UI 的 Settings → System → Network 看</b>——有沒有網路。如果沒網路，重點是先修網路，不是等。</li>
+        <li><b>去 Settings → Add-ons → Pi Agent → Info 看 CPU / Memory</b>——如果 CPU 一直有動、記憶體在漲，代表它有在工作，只是慢。等就對了。</li>
+        <li><b>如果 log 出現「WARNING: chromium download failed」之類</b>——代表這次首裝失敗了。這種情況<b>不會</b>建立 sentinel，所以下次啟動 <code>video-tools-init</code> 會自動再跑一次，看看網路狀況會不會變好。不用手動 reset。</li>
+      </ul>
+      <div class="callout"><strong>觀念：</strong>video-tools-init 的設計原則是<b>「失敗不會擋 pi-web」</b>——就算 Chromium 下載炸了，你的聊天功能也完全能用。這是刻意的：你的 AI 大腦跟影片管線是獨立兩個東西，一個壞不會拖另一個。所以看到 warning 別慌，先確認你要用的功能能不能用。</div>
+    </section>
+
+    <section id="reinstall" data-nav="重灌會不會再下">
+      <h2 data-icon="compare">哪些情況下會（或不會）再下載一次</h2>
+      <p>整理你可能遇到的各種「動 Pi Agent」的情境，會不會觸發重新下載這 720 MB：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>你做的事</th><th>會重下嗎</th><th>為什麼</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>單純重啟 add-on（Info 分頁按 RESTART）</td>
+            <td><b>不會</b></td>
+            <td>sentinel 檔還在，<code>video-tools-init</code> 秒過。</td>
+          </tr>
+          <tr>
+            <td>重開整台 HA（Configuration → Restart Home Assistant）</td>
+            <td><b>不會</b></td>
+            <td>同上，sentinel 在 <code>/data/pi-agent/</code>，重開機不會動。</td>
+          </tr>
+          <tr>
+            <td>升級 Pi Agent 小版號（v0.13.1 → v0.13.2）</td>
+            <td><b>不會</b></td>
+            <td>只換映像檔，你的 volume（含 sentinel）都留著。</td>
+          </tr>
+          <tr>
+            <td>升級 Pi Agent 大版號（v0.13 → v0.14）</td>
+            <td><b>通常不會</b></td>
+            <td>除非該版本 CHANGELOG 明講需要 reset（會很罕見），否則跟小版號一樣。</td>
+          </tr>
+          <tr>
+            <td>UNINSTALL Pi Agent add-on 再重裝</td>
+            <td><b>會</b></td>
+            <td>移除 add-on 時 HA 會問你要不要保留 data，如果選不保留就整個 <code>/data/pi-agent/</code> 清光，sentinel 也沒了。</td>
+          </tr>
+          <tr>
+            <td>UNINSTALL 但選「保留 data」，之後重裝</td>
+            <td><b>不會</b></td>
+            <td>volume 還在，sentinel 也還在。</td>
+          </tr>
+          <tr>
+            <td>把 <code>reset_video_tools</code> 開關翻成 true 再重啟</td>
+            <td><b>會</b></td>
+            <td>啟動腳本主動刪 sentinel 跟 venv/cache。這就是這開關的存在意義。</td>
+          </tr>
+          <tr>
+            <td>HA 整台掛掉，restore 一份 snapshot 到新硬體</td>
+            <td><b>會</b></td>
+            <td>snapshot 沒帶 venv/playwright-cache/sentinel（見<a href="#restore">第 5 段</a>），還原後啟動就重下。你不用做任何事，自動的。</td>
+          </tr>
+          <tr>
+            <td>HA host 換 SSD、把整個 /data 目錄 rsync 過去</td>
+            <td><b>不會</b></td>
+            <td>只要 sentinel 跟 venv/cache 都在，就跟原本一樣。</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>看完你應該有底了：<b>你的日常操作（升級、重啟、重開 HA）都不會觸發重下</b>；只有「移除重裝」「還原災難用備份」「主動 reset」這三種情況才會。也就是說平均下來，多數人這一輩子只會看到那個 3-8 分鐘一次而已。</p>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>下載卡在 <code>downloading Chromium</code> 那行超過 30 分鐘沒動</h3>
+          <p>八成是網路問題。Playwright 下載 Chromium 走 Google 的 CDN，某些網路環境（校園網、公司內網、部分 ISP）會慢到爆。判斷：<b>去 HA Info 分頁看 CPU/網路有沒有動</b>，有動就是純慢，等；完全沒動可能是連線斷了。試試：（a）換時段（半夜通常快）；（b）如果 HA 走 VPN 或某些 proxy，暫時繞開；（c）真的完全過不去，開 <code>reset_video_tools</code> 重跑一次。</p>
+        </li>
+        <li>
+          <h3>看到 <code>WARNING: pip install failed</code> 但 log 又繼續往下跑</h3>
+          <p>這個 warning 意思是「pip 那步炸了但腳本繼續跑」——因為 <code>video-tools-init.sh</code> 每個失敗都 <code>exit 0</code>（不擋 pi-web）。結果就是：pi-web 能用、聊天能用，但影片管線的 skill 一跑一定失敗。判斷：<b>試著跑一個影片管線的 skill，看它報什麼錯</b>。多半是說「找不到 edge-tts」之類。解法：<code>reset_video_tools</code> 重來一次，通常第二次會成功（第一次可能剛好某個 mirror 掛了）。</p>
+        </li>
+        <li>
+          <h3>下載完了但 sentinel 沒建（<code>/data/pi-agent/.video-tools-installed</code> 不存在）</h3>
+          <p>如果每個 pip / playwright 步驟都成功，但 <code>touch</code> sentinel 失敗，通常是<b>權限問題</b>——data 目錄的擁有者被弄亂了。判斷：<code>ls -la /data/pi-agent/</code> 看擁有者。正常情況下該資料夾應該是 add-on user 可寫的。解法：<b>先看 log 有沒有 "Permission denied"</b>，有的話最乾淨的做法是 uninstall Pi Agent（選不保留 data）再重裝，讓 HA 重建 volume 的權限。這是核彈選項，但省時間。</p>
+        </li>
+        <li>
+          <h3>影片管線的 skill 跑失敗、log 沒錯誤但影片就是沒出來</h3>
+          <p>典型「venv 半殘」症狀：Python 模組看似都在但某個依賴壞了，執行時中途 silent crash。判斷：<b>先去 Logs 分頁翻一下 skill 執行時的完整輸出</b>，找 Python traceback。真的看不出來就直接 <code>reset_video_tools</code>——這是這個開關最主要的用途，一次重建 venv 通常就好。</p>
+        </li>
+        <li>
+          <h3>硬碟空間不夠、Pi Agent 拒絕下載</h3>
+          <p>Chromium + venv 加起來要 700 MB，加上下載暫存還要多一點，<b>建議自由空間至少 2 GB</b>。第 <a href="ch2_install.html">2 章</a>建議整個 HA host 留 3 GB。空間不夠時 pip 會報 <code>No space left on device</code>。解法：（a）先清 <code>/backup/</code> 底下舊 snapshot；（b）清 <code>/data/pi-agent/clips/</code> 跟 <code>segments/</code>（影片中間檔，看<a href="ch17_video_pipeline.html">第 17 章</a>）；（c）清 <code>/data/pi-agent/sessions/</code> 老對話。清完再 reset 一次重來。</p>
+        </li>
+        <li>
+          <h3>開了 <code>reset_video_tools</code> 忘記關回 false</h3>
+          <p>症狀：每次重啟 add-on 都等 3-8 分鐘。你會覺得「怎麼比首次還慢還這麼久」。判斷：<b>去 Configuration 分頁看 <code>reset_video_tools</code> 是不是還在 true</b>。是就翻回 false 存檔，下次重啟就秒過了。這個雷幾乎每個第一次用這個開關的人都會踩一次，別問我怎麼知道。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>這 720 MB 佔的是 HA 主硬碟嗎？還是別的地方？</summary>
+        <div class="body">佔<b>HA host 主硬碟</b>。具體位置在 add-on 掛給 Pi Agent 的 data 目錄，容器內看得到的路徑是 <code>/data/pi-agent/</code>。在 HAOS 上實體對應到 host 檔案系統的 <code>/usr/share/hassio/addons/data/&lt;pi-agent-slug&gt;/</code> 這種位置。所以你 HA 硬碟有多大就有多大空間可以放，但當然要留給 HA 本體、你的 recorder database、其他 add-on 用，別讓 Pi Agent 吃太滿。硬碟監控看 Settings → System → Storage。</div>
+      </details>
+      <details class="faq">
+        <summary>沒有網路的話能離線裝這 720 MB 嗎？</summary>
+        <div class="body"><b>沒辦法</b>。這 720 MB 是 pip 從 PyPI 下載 python 套件、加上 Playwright 從 Google CDN 下載 Chromium——兩個來源都必須連得到外網。內網部署或防火牆嚴格的環境要先想辦法讓 add-on 至少能走 HTTPS 出去；如果真的完全沒外網，那就只能：（a）另外一台有網路的 HA 先把 Pi Agent 跑起來裝好，把整個 <code>/data/pi-agent/venv/</code> 跟 <code>playwright-cache/</code> tar 起來搬過去，還原到內網那台的相同位置，加建 sentinel 檔即可；（b）自己 fork add-on 把工具打包進映像檔（大工程，不建議）。多數家庭用戶沒這問題，別想太多。</div>
+      </details>
+      <details class="faq">
+        <summary>以後 Playwright 出新版 Chromium，Pi Agent 會自動更新嗎？</summary>
+        <div class="body"><b>不會自動更新</b>。Chromium 版本綁在你當初裝的那個 <code>playwright</code> pip 套件版本上，之後每次啟動都用同一份。如果你要新版 Chromium，兩個做法：（a）等 Pi Agent 升級新版本，如果新版本用了新版 playwright pip 套件，reset 之後就會抓新 Chromium；（b）自己主動翻 <code>reset_video_tools</code>，這時 pip 會抓當下 PyPI 上最新的 playwright，Playwright 又會抓對應版本的 Chromium。想穩定就別亂 reset、想吃新版功能才 reset，看你需求。</div>
+      </details>
+      <details class="faq">
+        <summary>reset_video_tools 開關開了以後，我要按什麼「確認」它會做事？</summary>
+        <div class="body">兩步：<b>SAVE 存檔 + 回 Info 分頁按 RESTART</b>。光在 Configuration 分頁把開關撥到 true 是不會發生任何事的，因為 HA 只在 add-on 啟動時把設定注入到容器裡當環境變數。沒重啟就沒新的環境變數、腳本也讀不到。所以流程一律是：撥開關 → 按 SAVE → 回 Info → 按 RESTART → 觀察 Logs → <b>下載完務必再把開關撥回 false</b>。忘記撥回會導致每次重啟都重下。</div>
+      </details>
+      <details class="faq">
+        <summary>video-tools-init 跑到一半我把 HA 關機了，會壞掉嗎？</summary>
+        <div class="body"><b>大機率會留下半殘檔案</b>，但也不一定是災難。因為腳本是「pip 沒建 sentinel、chromium 也是最後才建 sentinel」，所以打斷之後 sentinel 檔本來就不會在——下次啟動 <code>video-tools-init</code> 又會自動跑。但 venv 可能已經半建、pip 可能裝到一半、Chromium 目錄可能只有部分檔案。第二次啟動時它會發現「venv 目錄在、python3 也在」，就會<b>跳過建 venv 這一步直接跑 pip install</b>，結果 pip 有時能修好、有時會因為爛檔卡住。乾淨的作法：關機重開後如果影片管線一直出怪錯，直接翻 <code>reset_video_tools</code> 重建一次最省事。</div>
+      </details>
+      <details class="faq">
+        <summary>不同機器（樹莓派、x86 NUC、arm64 mini PC）下載時間差很多嗎？</summary>
+        <div class="body">主要差在<b>網路頻寬</b>，其次才是 CPU。因為 720 MB 大部分是「下載」而非「編譯」——Chromium 是 Playwright 從 CDN 抓好的、pip 套件多數也有 wheel 不用編譯。所以家裡 500Mbps 光纖的話，樹莓派跟 NUC 的差距很小（可能 3-4 分鐘 vs 2-3 分鐘）；但如果網路慢（例如 30Mbps）就會兩台都要 15 分鐘起跳。CPU 差別大的地方是 pip 有少數套件要 build，樹莓派會慢一點但也就多 30 秒的事。整體來說：<b>網路頻寬決定體感、CPU 是次要因素</b>。</div>
+      </details>
+      <details class="faq">
+        <summary>我 uninstall Pi Agent 想省 720 MB，重裝之後對話跟 skill 還在嗎？</summary>
+        <div class="body">看你 uninstall 時<b>有沒有選「保留 data」</b>：（a）選保留：對話 <code>sessions/</code>、skill <code>skills/</code>、金鑰 <code>models.json</code>、rclone 授權<b>都在</b>，重裝後照樣用；video-tools 因為 volume 沒動，sentinel 也在，重裝不用再下載 720 MB，秒開。（b）選不保留：全部清光，重裝完就是全新的，一切要重來（重貼金鑰、重裝 skill、對話全失），影片管線也要重新下載那 720 MB。<b>uninstall 想省空間又不想失資料，一定要選保留</b>——但這種情況下也省不到 720 MB，因為 volume 留著。真要省得選不保留，但代價就是啥都沒了。詳細規則看<a href="ch20_backup.html">第 20 章</a>。</div>
+      </details>
+      <details class="faq">
+        <summary>我不用影片管線，能不能把 <code>/data/pi-agent/venv/</code> 跟 <code>playwright-cache/</code> 手動刪掉省空間？</summary>
+        <div class="body"><b>技術上可以但沒意義</b>。你手動刪完，下次 add-on 重啟時 <code>video-tools-init</code> 看到 sentinel 還在會跳過安裝，是的——你會省下 720 MB 空間。但只要你哪天不小心翻了 <code>reset_video_tools</code>、或 uninstall 重裝、或 restore snapshot，它又會裝回來。而且如果哪天你想試試影片管線，你也要手動去 reset 才能用。<b>更根本的問題是：<code>video-tools-init</code> 未來版本可能加檢查（例如驗證 Chromium 檔存在）</b>，那時你手動刪的技巧就失效了。要省就正經一點：翻 <code>VIDEO_PIPELINE_ENABLED=false</code>（看<a href="appendix_config_ref.html">附錄 A</a> <code>env_vars</code> 用法），或接受這 720 MB 存在。</div>
+      </details>
+      <details class="faq">
+        <summary>Pi Agent 升級到新版之後我要不要每次都 reset？</summary>
+        <div class="body"><b>不要</b>。預設不需要。venv 跟 playwright-cache 都在你的 volume 上，跟 add-on 映像檔升級無關，升上去照樣能用。唯一例外是新版本 CHANGELOG 明講「本版需 reset video tools」——通常會發生在 Playwright 大改版、edge-tts 換 API、或 Python 版本升級這種 breaking change。看 <a href="ch21_upgrade.html">第 21 章</a>的升級 checklist，會提醒你哪些版本需要注意。<b>「每次升級都 reset」是浪費頻寬跟時間，不要養成這個習慣</b>。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch17_video_pipeline.html">
+        <span class="label">← 上一章</span>
+        <span class="title">17 · 影片管線</span>
+      </a>
+      <a class="next" href="ch19_rclone.html">
+        <span class="label">下一章 →</span>
+        <span class="title">19 · 傳 Google Drive</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

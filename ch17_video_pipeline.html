@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 17 章 · 影片管線：從腳本到 YouTube 可上傳 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Pi Agent pitch_video 影片管線：TTS 配音、Playwright 錄畫面、ffmpeg 剪接、SRT 字幕、xfade 轉場，適合的內容類型與典型工作流。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch17_video_pipeline.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 17 章 · 影片管線：從腳本到 YouTube 可上傳 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Pi Agent pitch_video 影片管線：TTS 配音、Playwright 錄畫面、ffmpeg 剪接、SRT 字幕、xfade 轉場，適合的內容類型與典型工作流。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch17_video_pipeline.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 17 章 · 影片管線：從腳本到 YouTube 可上傳 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Pi Agent pitch_video 影片管線：TTS 配音、Playwright 錄畫面、ffmpeg 剪接、SRT 字幕、xfade 轉場，適合的內容類型與典型工作流。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html" class="active">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要用影片管線</a>
+      <a href="#concept">管線做了什麼</a>
+      <a href="#what">為什麼要 720MB</a>
+      <a href="#assign">典型用途</a>
+      <a href="#warning">不適合的場景</a>
+      <a href="#steps">跑第一支影片</a>
+      <a href="#records">成品跟中間檔</a>
+      <a href="#plan">三個前置作業</a>
+      <a href="#cost">成本估算</a>
+      <a href="#advanced">進階：客製化參數</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 17 章</div>
+      <h1>影片管線：從腳本到 YouTube 可上傳</h1>
+      <p class="lead">你有想拍的東西——家電開箱、家事教學、儀表板 demo——但一想到剪片就頭痛？Pi Agent 內建一條叫 <strong>pitch_video</strong> 的管線，把 AI 寫腳本、機器配音、瀏覽器錄畫面、剪接、燒字幕、上傳雲端全部串起來。你只出想法，成品直接是能上 YouTube 或丟 Line 群的 MP4。這章先講清楚整條管線在做什麼、什麼場合適合用、什麼場合會踢鐵板；第 18 章講首次啟動要下載的 720 MB 是什麼，第 19 章講怎麼設定 Google Drive 自動上傳。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼要用影片管線">
+      <h2 data-icon="why">為什麼要用這條影片管線</h2>
+      <p>先講一個很現實的痛點：<strong>你有想分享的東西，但影片沒人看你不會做</strong>。</p>
+      <p>家裡買了一台新的掃地機器人，你想拍個開箱給朋友或 Line 群分享——但你要剪片、要配音、要打字幕，光學 CapCut 就先勸退你三小時。想錄一段「HA 儀表板一鍵離家自動化」給老爸看，你要一邊操作、一邊講、一邊怕手抖，錄五次都不順。想給小孩錄一支「怎麼用平板控制客廳燈」的教學，字幕還要自己聽打——直接放棄。</p>
+      <p>Pi Agent 的 <strong>pitch_video 管線（video pipeline）</strong>就是為這個痛點設計的。你只要用白話跟 AI 講「我要什麼樣的影片、多長、給誰看」，管線背後會依序做這些事：</p>
+      <ul>
+        <li><strong>AI 幫你寫腳本</strong>——分成開場、主體、收尾，每一段幾秒都算好。</li>
+        <li><strong>免費 TTS 幫你配音</strong>——用微軟的 edge-tts 引擎，繁中男聲女聲都有，念得很自然。</li>
+        <li><strong>Playwright 幫你錄畫面</strong>——它會開一個看不見的瀏覽器，照腳本一步步操作、一步步截影格。</li>
+        <li><strong>ffmpeg 幫你剪接</strong>——把畫面、配音、字幕合起來，加轉場。</li>
+        <li><strong>rclone 幫你上傳</strong>——完成後直接推到你指定的 Google Drive 資料夾，手機開就能看。</li>
+      </ul>
+      <p>整條管線全部在你自己的 HA 主機上跑，不用另外開電腦、不用付訂閱、不用學新軟體。<strong>你的工作只有兩件事：想清楚要做什麼、看成品滿不滿意</strong>。剩下都是 AI 跟工具的事。</p>
+      <div class="callout"><strong>觀念：</strong>這條管線不是要取代專業 YouTuber——他們拍的是有溫度的真人影像。這條管線是幫你做「日常說明用」的影片：3 到 5 分鐘、有語音有字幕、能傳能收藏就好。像家庭主婦寫食譜、學長寫筆記，重點是「有」，不是「精緻到得獎」。</div>
+    </section>
+
+    <section id="concept" data-nav="管線做了什麼">
+      <h2 data-icon="concept">這條管線背後到底做了什麼（六個步驟）</h2>
+      <p>要用得順，先看清楚它在做什麼。把它想成一條工廠的生產線，六個工人接力做完你就拿到成品：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>步驟</th><th>做的事</th><th>用的工具（技術名）</th><th>大約要多久（3 分鐘影片）</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. 寫腳本</strong></td>
+            <td>AI 讀你的需求，分段寫出旁白、決定每段幾秒、需要展示哪個畫面</td>
+            <td>你在第 5、11 章接的那家 AI（推薦 reasoning 模型）</td>
+            <td>30 秒～1 分鐘（含你回覆確認）</td>
+          </tr>
+          <tr>
+            <td><strong>2. 產生配音</strong></td>
+            <td>把腳本每段丟給文字轉語音（Text-to-Speech, TTS），輸出 WAV/MP3 檔</td>
+            <td>edge-tts（微軟 Edge 瀏覽器的免費 TTS 引擎）</td>
+            <td>10-30 秒</td>
+          </tr>
+          <tr>
+            <td><strong>3. 錄畫面</strong></td>
+            <td>照腳本開一個「無頭」瀏覽器（headless browser），一步步操作並錄下畫面</td>
+            <td>Playwright + Chromium</td>
+            <td>1-3 分鐘（照著錄同長度的影片）</td>
+          </tr>
+          <tr>
+            <td><strong>4. 對齊字幕</strong></td>
+            <td>依配音時間軸產生 SRT 字幕檔（每一行對應到幾秒到幾秒）</td>
+            <td>edge-tts 的時間戳輸出</td>
+            <td>幾秒</td>
+          </tr>
+          <tr>
+            <td><strong>5. 剪接與燒字幕</strong></td>
+            <td>把畫面 + 配音 + 字幕合成一支 MP4，段落間加轉場（淡入淡出）</td>
+            <td>ffmpeg（含 libass 字幕引擎、xfade 轉場濾鏡）</td>
+            <td>30 秒～2 分鐘</td>
+          </tr>
+          <tr>
+            <td><strong>6. 上傳雲端</strong></td>
+            <td>把成品 MP4 傳到你指定的 Google Drive 資料夾，手機 App 就能直接看</td>
+            <td>rclone（雲端硬碟同步工具）</td>
+            <td>依你上行網速，通常 30 秒-3 分鐘</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>加起來一支 3 分鐘的影片，從你按下「開始」到 Google Drive 收到，<strong>大約 5 到 10 分鐘</strong>。你可以在旁邊喝咖啡、洗碗、追劇——管線在 HA 主機裡靜靜跑，不佔你的手機也不佔你的電腦。</p>
+      <div class="callout tip"><strong>省時提示：</strong>第一次用會覺得「等 10 分鐘幹嘛不自己剪」，但你自己剪 3 分鐘影片沒兩小時搞不定；等你跑第五、六支影片，你會發現「講一句話就走」這件事有多爽——你可以一個下午做出七、八支影片，每支給不同人看。</div>
+    </section>
+
+    <section id="what" data-nav="為什麼要 720MB">
+      <h2 data-icon="what">為什麼首次啟動要下載 720 MB</h2>
+      <p>你可能已經注意到，Pi Agent 剛裝完（<a href="ch2_install.html">第 2 章</a>）只有幾十 MB。但當你第一次觸發 pitch_video 管線，它會安靜下載大約 <strong>720 MB</strong> 的東西——這對用 100M 家用網路的人大概是 1-2 分鐘的事，對用 4G 熱點的可能就有感了。這些東西具體是什麼？</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>下載的東西</th><th>用來做什麼</th><th>大約大小</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Chromium 瀏覽器</strong></td>
+            <td>Playwright 拿來錄畫面用；它需要一個「跑起來但看不到視窗」的瀏覽器</td>
+            <td>約 200 MB</td>
+          </tr>
+          <tr>
+            <td><strong>Playwright 本體與相依函式庫</strong></td>
+            <td>控制 Chromium 的自動化工具（點按鈕、輸入文字、截圖）</td>
+            <td>約 100 MB</td>
+          </tr>
+          <tr>
+            <td><strong>edge-tts Python 套件與虛擬環境（venv）</strong></td>
+            <td>叫用微軟免費 TTS 產生配音</td>
+            <td>約 50 MB</td>
+          </tr>
+          <tr>
+            <td><strong>ffmpeg + libass + 濾鏡</strong></td>
+            <td>剪接、加轉場、燒字幕的核心工具</td>
+            <td>約 250 MB（含各種編碼器與字幕引擎）</td>
+          </tr>
+          <tr>
+            <td><strong>rclone 二進位檔</strong></td>
+            <td>推到 Google Drive、Dropbox、OneDrive 等雲端</td>
+            <td>約 50 MB</td>
+          </tr>
+          <tr>
+            <td><strong>繁中字型（Noto Sans CJK 之類）</strong></td>
+            <td>字幕燒錄時繁中不變亂碼、不變豆腐</td>
+            <td>約 70 MB</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>合計約 720 MB。<strong>這些不是 Pi Agent 平常會佔的空間</strong>——你如果從頭到尾都不做影片，這 720 MB 永遠不會下載，Pi Agent 本體依舊小小的。這叫「懶載入（lazy load）」——用到才裝。</p>
+      <div class="callout warn"><strong>注意：</strong>首次啟動的下載細節（觸發時機、進度提示、失敗怎麼辦、要不要重來）第 18 章專章講。這章你只要知道「有這回事、佔 720 MB、下一次就不用再下」就好。</div>
+    </section>
+
+    <section id="assign" data-nav="典型用途">
+      <h2 data-icon="assign">哪些場景很適合用這條管線</h2>
+      <p>把管線的能耐配到具體家庭情境上，你會發現用途比你想像多。整理成一張表：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>場景</th><th>典型長度</th><th>怎麼跟 AI 說</th><th>成品傳給誰</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>家電開箱</strong></td>
+            <td>60-120 秒</td>
+            <td>「幫我做一支 90 秒的影片介紹我家新買的掃地機器人，講重點功能、跟舊款比較」</td>
+            <td>Line 家庭群組、朋友、社群</td>
+          </tr>
+          <tr>
+            <td><strong>家事教學（給小孩／長輩）</strong></td>
+            <td>60-180 秒</td>
+            <td>「用小學生能懂的話，講怎麼分類回收，包括紙、塑膠、鐵鋁罐、廚餘」</td>
+            <td>家庭群、小孩的班親會、爺爺奶奶的 Line</td>
+          </tr>
+          <tr>
+            <td><strong>HA 自動化 demo</strong></td>
+            <td>60-180 秒</td>
+            <td>「錄我 HA 儀表板上『離家模式』按下去之後的效果，配旁白解釋做了什麼」</td>
+            <td>家人、HA 社群、部落格</td>
+          </tr>
+          <tr>
+            <td><strong>產品試用心得</strong></td>
+            <td>90-240 秒</td>
+            <td>「幫我把我試用某某 App 兩週的心得剪成影片，講三個優點兩個缺點」</td>
+            <td>YouTube、Facebook、Threads</td>
+          </tr>
+          <tr>
+            <td><strong>給小孩看的教學</strong></td>
+            <td>60-120 秒</td>
+            <td>「用 10 歲小孩能懂的話講什麼是『太陽能發電』，配可愛的旁白」</td>
+            <td>家庭裝置、學校作業</td>
+          </tr>
+          <tr>
+            <td><strong>Line 群組短分享</strong></td>
+            <td>30-60 秒</td>
+            <td>「30 秒告訴大家颱風天要準備什麼」</td>
+            <td>Line 群（Line 上要有字幕才有人看）</td>
+          </tr>
+          <tr>
+            <td><strong>食譜示範</strong></td>
+            <td>60-180 秒</td>
+            <td>「三分鐘教怎麼做涼拌小黃瓜，材料、步驟、注意事項」</td>
+            <td>家庭群、部落格</td>
+          </tr>
+          <tr>
+            <td><strong>行事曆／活動預告</strong></td>
+            <td>15-45 秒</td>
+            <td>「20 秒預告週末家庭日程，配輕鬆音樂感」</td>
+            <td>Line、行事曆分享</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>共同特徵：<strong>都是「以說明為主、真人露臉為輔」的短片</strong>。不需要你自己出鏡、不需要複雜運鏡、不需要昂貴設備——AI 的長處就是把「知識」變成「有語音+畫面+字幕」的形式，這比純文字好懂太多、比自己剪片省時太多。</p>
+      <div class="callout tip"><strong>心智模型：</strong>把它想成「AI 版的 PPT 加旁白」。PPT 本來就是把想法變成一頁一頁畫面加解說，這條管線就是「一次到位、附字幕、能傳」的 PPT。</div>
+    </section>
+
+    <section id="warning" data-nav="不適合的場景">
+      <h2 data-icon="warning">哪些場景這條管線不擅長（也直接講）</h2>
+      <p>沒有工具是萬能的。以下這幾種需求你別硬套 pitch_video，會做出來很尷尬的東西：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>不適合的場景</th><th>為什麼</th><th>替代做法</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>需要真人露臉演出</strong></td>
+            <td>Playwright 只會操作瀏覽器、只會截電腦畫面。它拍不到你本人，AI 也還沒到能生成逼真真人影像的程度（能生但很違和）</td>
+            <td>用手機拍完後傳給剪輯 App（CapCut）；或用管線做「配音+畫面」搭配你自己手機拍的片段</td>
+          </tr>
+          <tr>
+            <td><strong>要有無版權背景音樂</strong></td>
+            <td>管線本身不處理背景音樂，只放旁白。你自己去 YouTube Audio Library 找的音樂要另外加</td>
+            <td>成品出來後用 CapCut 或 iMovie 加背景音樂，或改 pitch_video skill 的 ffmpeg 參數塞一軌音樂</td>
+          </tr>
+          <tr>
+            <td><strong>超過 10 分鐘的長片</strong></td>
+            <td>Playwright 錄很久很吃 CPU、edge-tts 生 10 分鐘配音要幾分鐘、ffmpeg 合成大檔要更久——時間會拖到很久</td>
+            <td>拆成 5 分鐘以內的多集；長片建議用真的剪輯軟體做</td>
+          </tr>
+          <tr>
+            <td><strong>要複雜運鏡、特效、切換</strong></td>
+            <td>管線的畫面全部來自 Playwright 錄瀏覽器，沒有推拉搖移、沒有轉場特效（只有基本 xfade 淡入淡出）</td>
+            <td>需要電影感的短片，用 CapCut、Premiere、DaVinci Resolve</td>
+          </tr>
+          <tr>
+            <td><strong>需要即時直播</strong></td>
+            <td>這條是「批次產生」管線，不是直播。做一支要等 5-10 分鐘</td>
+            <td>直播用 OBS 或手機直播 App，跟這條管線無關</td>
+          </tr>
+          <tr>
+            <td><strong>版權敏感內容</strong></td>
+            <td>AI 寫的腳本可能引用你來源的資訊、配音是機器合成的；商業用途或散播需注意版權與 AI 揭露</td>
+            <td>商用一律先確認：資料來源合法、AI 生成內容有標示、TTS 商用授權（edge-tts 個人用免費，商用要看微軟條款）</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout warn"><strong>誠實原則：</strong>影片是 AI 產生的，別假裝是你辛苦剪的。<strong>YouTube 已經開始要求 AI 生成內容要標示</strong>（相關規則叫「合成／變造內容揭露」），Facebook、Threads、TikTok 都有類似規定。標一句「本影片由 AI 協助製作」不會扣分，反而顯得你誠實。假裝是真人剪的被抓到（現在有工具偵測 AI 語音）掉粉更慘。</div>
+    </section>
+
+    <section id="steps" data-nav="跑第一支影片">
+      <h2 data-icon="steps">動手：跑你第一支影片</h2>
+      <p>假設你三個前置作業（第 18 章的首次啟動下載、第 19 章的 rclone Google Drive、第 15 章的 pitch_video skill 安裝）都做完了，跑一支影片是這樣的：</p>
+      <ol class="steps">
+        <li>
+          <h3>開一個新 session、挑一家會思考的 AI</h3>
+          <p>回到 Pi Agent 主畫面，按左上角「新對話」開新 session（<a href="ch8_session.html">第 8 章</a>）。<strong>模型下拉挑 reasoning 模型</strong>——推薦 GLM-4.6、Anthropic Claude Sonnet、DeepSeek-R1 這幾家。<strong>不要用最便宜的打底模型</strong>，因為腳本品質決定影片品質，這裡值得多花一點。為什麼要用 reasoning 模型？<a href="ch12_reasoning.html">第 12 章</a>講過：它會先想再說，寫出來的腳本結構會清楚很多。</p>
+        </li>
+        <li>
+          <h3>用白話說清楚你要什麼影片</h3>
+          <p>直接對話框打就好，範例：「幫我做一支 90 秒的影片，介紹我家的智慧插座能省多少電費，用一般家庭 3 人的用電量估算，語氣輕鬆一點，給爸媽看的」。<strong>四個要素要講清楚</strong>：（1）長度、（2）主題、（3）語氣、（4）目標觀眾。你講得越具體，AI 產出的腳本就越接近你想要的。</p>
+        </li>
+        <li>
+          <h3>看 AI 給你的大綱，覺得不對就再改</h3>
+          <p>AI 不會直接開始做，會先給你一份大綱與腳本草稿——例如「開場 10 秒講痛點、主體 60 秒分三段講省電、收尾 20 秒 CTA」。<strong>這時你要認真看</strong>：段落順序對嗎？語氣像你嗎？有沒有講到你不想要的東西？直接回話「第二段改成 XX」「開場太長，縮到 5 秒」，AI 會改。<strong>這一步反覆幾次都很正常</strong>，比後面成品出來不對再重來省時間多了。</p>
+        </li>
+        <li>
+          <h3>確認後 AI 呼叫 pitch_video skill</h3>
+          <p>你回「好，就這個腳本」之後，AI 會呼叫 pitch_video skill（你在<a href="ch15_install_skill.html">第 15 章</a>裝的）。你會看到對話裡出現一張<strong>工具卡片</strong>（<a href="ch9_thinking_diff.html">第 9 章</a>介紹過），寫著它在做什麼：正在產生配音、正在錄畫面、正在剪接。這時候你可以離開視窗做別的事——它不會因為你不看就停。</p>
+        </li>
+        <li>
+          <h3>幾分鐘後成品出現</h3>
+          <p>如果你設好了 Google Drive 上傳（<a href="ch19_rclone.html">第 19 章</a>），你手機的 Google Drive App 會收到通知，成品 MP4 就在指定資料夾裡。如果你沒設 Google Drive，成品會存在 HA 主機的 <code>/data/pi-agent/projects/&lt;專案名&gt;/</code>——可以用檔案總管 add-on（Samba 或 File Editor）下載。</p>
+        </li>
+        <li>
+          <h3>不滿意就講「再一版」</h3>
+          <p>成品出來你發現「配音太快」「字幕位置怪」「這段可以更短」——就在同一個 session 直接講：「重做一版，配音慢一點、開場刪掉」。AI 會用同一份腳本改參數重跑；連腳本都不喜歡就講「腳本重寫一次，改成 XXX 風格」，整條管線會從頭跑一次。<strong>不用你自己去改設定檔</strong>，都在對話裡完成。</p>
+        </li>
+      </ol>
+      <div class="callout"><strong>觀念：</strong>整個流程叫「對話式剪片（chat-based video editing）」——你完全不用開剪輯軟體，全部靠跟 AI 講話。這是 pi-agent 生態最貼近未來工作方式的一段，值得多練幾次。</div>
+    </section>
+
+    <section id="records" data-nav="成品跟中間檔">
+      <h2 data-icon="records">成品跟中間檔案放在哪、可以拿來幹嘛</h2>
+      <p>管線跑完不只給你一支 MP4，還會留下一堆<strong>中間檔案</strong>——這些是你的資產，之後可以編輯、可以再剪、可以獨立用。全部放在 <code>/data/pi-agent/projects/&lt;專案名&gt;/</code> 底下，結構大致像這樣：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>檔案</th><th>是什麼</th><th>能拿來做什麼</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>final.mp4</code></td>
+            <td>成品：畫面+配音+字幕合體</td>
+            <td>直接上傳 YouTube、Line、Facebook；就是你要的東西</td>
+          </tr>
+          <tr>
+            <td><code>subtitles.srt</code></td>
+            <td>字幕檔（有時間軸的純文字）</td>
+            <td>另外上傳到 YouTube 當「多語字幕」；或用 Google 翻譯翻英文版變雙語</td>
+          </tr>
+          <tr>
+            <td><code>script.md</code></td>
+            <td>AI 幫你寫的原始腳本（Markdown 格式）</td>
+            <td>編輯它可以重跑一次；也可以直接拿去發部落格文</td>
+          </tr>
+          <tr>
+            <td><code>voice/*.wav</code></td>
+            <td>每一段的配音音軌（分段存）</td>
+            <td>單獨拿來做 Podcast、放進其他影片、或當手機鈴聲</td>
+          </tr>
+          <tr>
+            <td><code>clips/*.webm</code></td>
+            <td>Playwright 錄下的每段畫面（分段存）</td>
+            <td>重新配一段不同的旁白、或拿其中一段做 GIF</td>
+          </tr>
+          <tr>
+            <td><code>segments/*.mp4</code></td>
+            <td>合過配音+字幕的每段成品</td>
+            <td>抽出其中一段獨立分享（不用整支才有價值）</td>
+          </tr>
+          <tr>
+            <td><code>project.json</code></td>
+            <td>整個專案的設定、參數紀錄</td>
+            <td>之後用同一組參數做另一支類似風格的影片</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>檔案結構的意義：<strong>你不是被鎖在「成品或全部重來」兩個選項裡</strong>。腳本不喜歡，改 <code>script.md</code> 重跑；配音想換聲音，刪 <code>voice/</code> 重跑；只想抽一段用，去 <code>segments/</code> 拿。這叫「可組合（composable）」——每一步都留檔，你可以中間插手。</p>
+      <div class="callout warn"><strong>注意：</strong>備份（<a href="ch2_install.html">第 2 章</a>提過的 HA 備份機制）預設<strong>不會</strong>把 <code>clips/</code>、<code>segments/</code>、<code>voice/</code> 這些大檔備進去（管線輸出可能很大，塞爆備份就慘了）。備份會保留 <code>final.mp4</code>、<code>script.md</code>、<code>subtitles.srt</code>、<code>project.json</code> 這些關鍵小檔。想保留全部就自己另外抄一份到 NAS。</div>
+    </section>
+
+    <section id="plan" data-nav="三個前置作業">
+      <h2 data-icon="plan">要能跑通，三個前置作業一定要做完</h2>
+      <p>剛入門的人最常見的挫折：「我對 AI 講『幫我做影片』，它說沒辦法」——十之八九是這三個前置沒做完。列出來對照：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>前置</th><th>做這件事的章節</th><th>沒做的症狀</th><th>做完的檢查方式</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>裝好 pitch_video skill</strong></td>
+            <td><a href="ch14_skill_concept.html">第 14</a> 講概念、<a href="ch15_install_skill.html">第 15 章</a>教安裝</td>
+            <td>AI 說「我沒有能幫你做影片的工具」</td>
+            <td>Pi Agent 設定 → Skills 面板看到 pitch_video 亮綠燈</td>
+          </tr>
+          <tr>
+            <td><strong>完成首次啟動的 720 MB 下載</strong></td>
+            <td>第 18 章</td>
+            <td>AI 呼叫工具後卡在「正在準備環境」很久，或錯誤訊息提到 chromium/playwright/ffmpeg 找不到</td>
+            <td>手動觸發過一次 pitch_video、看到跑完成品；之後每次都很快</td>
+          </tr>
+          <tr>
+            <td><strong>設定 rclone Google Drive</strong>（可選，但強烈推薦）</td>
+            <td>第 19 章</td>
+            <td>成品做完但沒收到雲端通知，得用 File Editor 手動抓檔</td>
+            <td>成品出現在你手機 Google Drive App 指定資料夾</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>三個做完才算「整條管線通了」。如果你只想先試試不設 Google Drive 也行——成品會留在 <code>/data/pi-agent/projects/</code>，用檔案總管 add-on 抓也不會太麻煩，只是不能自動同步到手機。</p>
+      <div class="callout tip"><strong>建議順序：</strong>先做第 15 章（裝 skill）、再做第 18 章（首次下載，順便測試 skill 有沒有裝對），Google Drive（第 19 章）留到你確定「這條管線我會常用」再設也不遲——rclone 認證要開 Google Cloud Console，是三個裡最麻煩的。</div>
+    </section>
+
+    <section id="cost" data-nav="成本估算">
+      <h2 data-icon="cost">做一支影片會花多少錢</h2>
+      <p>好消息：整條管線幾乎沒有金錢成本，唯一花錢的地方就是叫 AI 寫腳本那次 API 呼叫。細算給你聽：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>成本項</th><th>用什麼</th><th>一支 90 秒影片大約要多少</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>AI 寫腳本</strong></td>
+            <td>你在<a href="ch5_first_key.html">第 5 章</a>接的 provider</td>
+            <td>用 GLM-4.6 或 DeepSeek-R1：NT$ 1-3；用 Claude Sonnet：NT$ 3-8</td>
+          </tr>
+          <tr>
+            <td><strong>TTS 配音</strong></td>
+            <td>edge-tts（微軟提供）</td>
+            <td>0 元（個人使用免費，微軟目前沒收費）</td>
+          </tr>
+          <tr>
+            <td><strong>Playwright 錄畫面</strong></td>
+            <td>你 HA 主機的 CPU</td>
+            <td>0 元（吃電，但不需要付 API 費用）</td>
+          </tr>
+          <tr>
+            <td><strong>ffmpeg 剪接</strong></td>
+            <td>你 HA 主機的 CPU（跟 ram）</td>
+            <td>0 元</td>
+          </tr>
+          <tr>
+            <td><strong>Google Drive 上傳</strong></td>
+            <td>rclone 免費、Google Drive 給你 15 GB 免費配額</td>
+            <td>0 元（除非你 15 GB 用完想升級到 Google One，那是月費 65 元起跳）</td>
+          </tr>
+          <tr>
+            <td><strong>電費</strong></td>
+            <td>HA 主機多跑一段 CPU 密集運算</td>
+            <td>幾乎不到 1 元（一支影片 CPU 只多跑幾分鐘）</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>加起來一支 90 秒影片<strong>約 2 到 8 塊台幣</strong>，主要是腳本那次 AI 呼叫。想再省？用便宜的 provider（GLM-Flash）寫腳本，一支不到 1 塊；但腳本會弱一點，取捨看你。</p>
+      <div class="callout"><strong>觀念：</strong>市面上有 AI 影片產生服務（Synthesia、HeyGen、Pictory）月費動輒 800-3000 塊台幣，才能做這條管線在做的事——而且畫面是他們選的模板，不能任意錄你自己的 HA 儀表板。<strong>你自己用 pitch_video 一個月做 30 支影片可能不到 100 塊</strong>，還沒外部服務被鎖定的問題。這是「自建管線」對「訂閱雲端」的典型優勢。</div>
+    </section>
+
+    <section id="advanced" data-nav="進階：客製化參數">
+      <h2 data-icon="advanced">進階：你可以調哪些參數</h2>
+      <p>預設值管線出來的成品已經能看了。真的想調可以動這些地方（但不建議剛入門就動，用個幾次熟了再調）：</p>
+      <ul>
+        <li><strong>解析度</strong>：預設 1080p（Full HD）。改 720p 檔案更小、上傳更快，適合 Line 分享；改 4K 檔案巨大，只有 YouTube 值得。</li>
+        <li><strong>幀率</strong>：預設 30 fps（每秒 30 影格）。改 60 fps 更順但檔案更大；改 24 fps 有「電影感」但畫面卡感明顯。</li>
+        <li><strong>配音聲音</strong>：edge-tts 繁中有 <code>zh-TW-HsiaoChenNeural</code>（女）、<code>zh-TW-YunJheNeural</code>（男）、<code>zh-TW-HsiaoYuNeural</code>（女，比較年輕）。想用中國腔換成 <code>zh-CN-*</code>。</li>
+        <li><strong>配音語速</strong>：edge-tts 支援 <code>rate="+20%"</code>（加快）或 <code>-20%</code>（放慢）。旁白偏解說性放慢一點會更好懂。</li>
+        <li><strong>字幕字型</strong>：預設用 Noto Sans CJK。想換成 Google 的思源黑體、蘋方或手寫體都行，把字型檔放進 skill 資料夾指定路徑。</li>
+        <li><strong>轉場長度</strong>：xfade 濾鏡預設 0.5 秒。想快剪改 0.2；想電影感改 1 秒。</li>
+        <li><strong>字幕位置</strong>：預設下方置中。可改上方、左下、大字置中等等（走 libass 的 ASS 樣式）。</li>
+      </ul>
+      <p>這些全部在 pitch_video skill 的 config 檔裡調（安裝在 <code>/data/pi-agent/skills/pitch_video/</code> 底下），用 File Editor add-on 打開改存檔就生效。<strong>強烈建議先跑三、五支影片熟悉再動</strong>——不然改到什麼會崩你不知道，一崩你也不知道回哪個版本。</p>
+      <div class="callout warn"><strong>注意：</strong>skill 內部細節（YAML 結構、ffmpeg 完整參數、Playwright 選擇器）不是這系列教學的範圍。你如果想深入客製，去看 pitch_video 的 <code>README.md</code> 與範例 config；那已經算「開發者領域」，跟這本書的定位不同。</div>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見卡關與處理方法</h2>
+      <ol class="steps">
+        <li>
+          <h3>一直卡在「AI 在寫腳本」很久，或腳本內容很淺</h3>
+          <p>八成是模型不夠深。你可能開了 GLM-Flash 或某個非 reasoning 的模型，它給你的東西就是一坨列點沒層次。<strong>解法：換 reasoning 模型</strong>——GLM-4.6、Claude Sonnet、DeepSeek-R1 都行（<a href="ch12_reasoning.html">第 12 章</a>詳講）。在 pi-agent 對話框左下角下拉切換一下，然後對 AI 講「用這個模型再寫一次腳本」。</p>
+        </li>
+        <li>
+          <h3>錄出來的畫面是黑色的、或整支影片沒有畫面</h3>
+          <p>Playwright 環境沒裝好。這是最常見的第 18 章卡關——首次啟動下載一半斷線、Chromium 沒解壓完、缺共用函式庫。<strong>解法：回<a href="ch18_video_tools.html">第 18 章</a>的「重新觸發下載」段落</strong>，把 <code>/data/pi-agent/tools/chromium/</code> 刪掉，讓管線下次執行時自動重新下載。第 18 章有完整重來的指令。</p>
+        </li>
+        <li>
+          <h3>成品有畫面有配音，但沒字幕、或字幕是問號</h3>
+          <p>兩種可能：（a）SRT 沒有被 ffmpeg 燒進去——回 pitch_video skill 的 config 看 <code>subtitles.enabled</code> 是不是 <code>true</code>；（b）字幕燒進去了但字型缺——這是 720 MB 下載沒抓到 Noto Sans CJK 或系統找不到，畫面就變豆腐/問號。<strong>解法：確認第 18 章的字型下載</strong>；或用 File Editor 打開 skill config，把 <code>subtitle_font</code> 改成系統一定有的字型（例如 <code>DejaVu Sans</code>，缺點是不支援繁中）。</p>
+        </li>
+        <li>
+          <h3>成品做完了，Google Drive 沒收到</h3>
+          <p>rclone 沒設好、或者你的 Google 帳號當月配額爆了。<strong>解法：先去 <a href="ch19_rclone.html">第 19 章</a>的「檢查 rclone 狀態」段落跑診斷</strong>。實務上最常見是（a）rclone token 過期（Google 有時 6 個月會過期一次，要重新授權）、（b）Google Drive 免費 15 GB 塞滿了（去 Google 一鍵清 Gmail 附件、去掉不要的 Google 相簿備份就有空間了）。</p>
+        </li>
+        <li>
+          <h3>整支影片跑一半當機、HA 變超慢</h3>
+          <p>你的 HA 主機 CPU 或記憶體吃緊。管線需要 <strong>2GB+ 記憶體、雙核心 CPU</strong>才跑得順；如果你是 Raspberry Pi 3 或超舊的 mini PC 可能會卡。<strong>解法</strong>：（a）看 HA 系統 → 硬體檢查記憶體使用量；（b）先關掉其他吃資源的 add-on（Frigate、Whisper 這種）；（c）真的太弱就換一台 Pi 5 或 x86 mini PC；（d）折衷做法——把影片解析度改成 720p、幀率改成 24fps，資源需求會少一半。</p>
+        </li>
+        <li>
+          <h3>配音聽起來一直卡卡的、有雜音</h3>
+          <p>edge-tts 送微軟伺服器的網路不穩。<strong>解法：確認 HA 主機能穩定連外</strong>（<code>ping speech.platform.bing.com</code> 看有沒有丟包）；換一支不同的聲音（<code>zh-TW-HsiaoChenNeural</code> 通常比較穩）；或等網路好再重跑。這不是管線的問題，是外部依賴的問題。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>可以用這條管線剪 1 小時的長片嗎？</summary>
+        <div class="body">技術上可以，實務上非常不建議。<strong>理由</strong>：（1）配音一小時 edge-tts 要跑十幾分鐘、（2）Playwright 錄一小時要真的錄一小時、（3）ffmpeg 合這麼長檔案要 30 分鐘以上、（4）錯了一個字整條要重跑一小時。<strong>建議上限 5 分鐘</strong>——超過就拆成多集（例如「陽台種菜第一集：選盆」、「第二集：土壤」），還比較好看、好分享、好重製。長片是給人力剪輯的、短片是給 AI 管線的，這個分野很自然。</div>
+      </details>
+      <details class="faq">
+        <summary>配音一定要用 AI 嗎？我想用自己的聲音</summary>
+        <div class="body">不用。管線的第 2 步（配音）產生的是 <code>voice/*.wav</code>，你可以<strong>用手機錄音 App 自己念一遍</strong>存成 mp3/wav，然後手動替換掉這個資料夾裡的檔案，再叫 AI「用現有的配音重跑第 4-6 步」（剪接、燒字幕、上傳）。這樣成品就是你自己的聲音+ AI 幫你錄的畫面+ AI 幫你打的字幕。<strong>反過來如果你只要腳本、自己剪片</strong>，跑到第 1 步拿到 <code>script.md</code> 就好，其他步驟叫 AI 別做。</div>
+      </details>
+      <details class="faq">
+        <summary>版權音樂怎麼辦？我想加背景音樂</summary>
+        <div class="body">管線<strong>不處理背景音樂</strong>——它只放旁白，沒有音樂軌。你有三個選擇：（a）成品出來後用手機 CapCut 或桌面 iMovie 加背景音樂（建議法）；（b）改 pitch_video skill 的 ffmpeg 參數塞一軌 <code>-i background.mp3</code>（進階，別剛入門就動）；（c）YouTube 影片直接用 YouTube Audio Library 的免費音樂（上傳後在 YouTube 編輯器加）。<strong>重要提醒</strong>：無版權音樂要真的無版權——「聽起來很像 XXX」不算，被 YouTube 判斷侵權會被消音或收益被拿走。免費庫例如 YouTube Audio Library、Free Music Archive、Pixabay Music。</div>
+      </details>
+      <details class="faq">
+        <summary>成品解析度可以調嗎？我想要 4K</summary>
+        <div class="body">可以，改 pitch_video skill 的 ffmpeg 參數即可（<code>scale=3840:2160</code>）。<strong>但先想清楚有沒有必要</strong>：（1）Playwright 錄畫面來源如果是 1080p 瀏覽器視窗，強拉到 4K 只是把畫素放大，並不會「變清楚」；（2）4K 檔案巨大——一支 3 分鐘影片可能 500MB-1GB，上傳、分享、Line 傳都痛苦；（3）多數人手機看 1080p 已經很好。<strong>比較實用</strong>：把來源瀏覽器視窗設成 1440p（<code>viewport: 2560x1440</code>），輸出仍是 1080p，這樣畫面元素比較大、字比較清楚——比追 4K 有意義。</div>
+      </details>
+      <details class="faq">
+        <summary>我可以只用管線做配音，不要影片嗎？（Podcast 用途）</summary>
+        <div class="body">可以，但 pitch_video 本來就是「影片」導向。想做 Podcast 建議<strong>直接叫 edge-tts</strong>——這個工具本身能單獨用（第 18 章會提到 <code>/data/pi-agent/tools/edge-tts/</code> 底下的 venv），你寫個 script 給它腳本檔就吐 MP3。或者你就跑 pitch_video 一次，拿產物 <code>voice/</code> 資料夾底下的音檔用就好，剪接階段的畫面成品當作副產物丟掉。<strong>未來版本可能會出 pitch_podcast 這種專門的 skill</strong>，等一下 pi-agent 官方 changelog。</div>
+      </details>
+      <details class="faq">
+        <summary>做出來的影片可以直接上 YouTube 賺錢嗎？</summary>
+        <div class="body">技術上可以上傳，能不能賺錢牽涉三件事：（1）<strong>AI 揭露</strong>——YouTube 從 2024 起要求 AI 生成的合成內容要在描述標示，不標可能被限流；（2）<strong>頻道要達 YouTube 開放收益的門檻</strong>（訂閱 1000+ 加上收看時數，跟 AI 沒關係）；（3）<strong>內容原創性</strong>——AI 生成的內容 YouTube 有時判定為「大量產製、低價值」（AI Slop），會不能開收益。<strong>結論</strong>：純 AI 產影片衝流量很難成功；把管線當「輔助工具」（AI 出草稿、你人工優化、加你自己觀點），比較有可能成事。</div>
+      </details>
+      <details class="faq">
+        <summary>做出來的成品在 Line 上朋友看得到嗎？</summary>
+        <div class="body">看得到。Line 支援 MP4，管線輸出就是 MP4。<strong>但注意兩件事</strong>：（1）Line 對影片有大小限制（一般約 200MB），管線輸出 1080p 一支 90 秒大概 20-40MB，遠遠夠用；（2）Line 訊息串上的影片<strong>預設是靜音播放</strong>，這也是為什麼字幕燒進畫面很重要——不是外掛字幕，是燒進畫面的那種——沒有燒的話滑過去沒人知道你在講什麼。管線預設就是燒字幕，這一步別關掉。</div>
+      </details>
+      <details class="faq">
+        <summary>我沒有 GPU，這條管線跑得動嗎？</summary>
+        <div class="body">跑得動，管線<strong>完全用 CPU 就能跑</strong>——Playwright 錄畫面、ffmpeg 剪接都不需要 GPU（不像那些「AI 生成影片」服務要 H100 顯卡）。<strong>需求是這樣</strong>：CPU 至少雙核（現代的 Pi 4/Pi 5、任何 x86 mini PC 都行）、記憶體 2GB 以上（Pi 4 4GB 版舒服、8GB 版更舒服）。<strong>跑不動的機型</strong>：Pi 3 或者太舊的 mini PC（賽揚 J1900 之類）可能會慢到不能用。跑的時候 CPU 會滿載幾分鐘——這是正常的，跑完就恢復。</div>
+      </details>
+      <details class="faq">
+        <summary>字幕支援中英雙語嗎？</summary>
+        <div class="body">預設是一種語言。<strong>雙語做法</strong>：跑完後拿 <code>subtitles.srt</code> 檔用 Google 翻譯（或叫你 pi-agent 裡的 AI 翻譯）成英文版，另存成 <code>subtitles.en.srt</code>，上傳到 YouTube 時附上就有雙語字幕可切換。<strong>燒進畫面的雙語</strong>（同時顯示中英）要改 pitch_video skill 的字幕產生邏輯，屬於進階客製；剛入門建議先靠 YouTube 平台的多語字幕功能就好。</div>
+      </details>
+      <details class="faq">
+        <summary>如果我改壞了 skill config，怎麼還原？</summary>
+        <div class="body">最保險：<strong>改前先備份 config 檔</strong>（用 File Editor 開檔 → 另存成 <code>config.yaml.bak</code>）。壞了直接把 <code>.bak</code> 改回去。<strong>如果連 .bak 也忘了</strong>：pitch_video skill 通常在它自己的 GitHub 或 Pi Agent 資源包裡有預設 <code>config.default.yaml</code>，可以照抄回去。實在都沒了就把整個 <code>/data/pi-agent/skills/pitch_video/</code> 刪掉，用<a href="ch15_install_skill.html">第 15 章</a>的方法重裝一次——resource 大約 1MB，重裝很快，只是你要重新設一些偏好。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch16_write_skill.html">
+        <span class="label">← 上一章</span>
+        <span class="title">16 · 自己寫 Skill</span>
+      </a>
+      <a class="next" href="ch18_video_tools.html">
+        <span class="label">下一章 →</span>
+        <span class="title">18 · 首次 720MB 下載</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

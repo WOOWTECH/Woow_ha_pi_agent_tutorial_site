@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 8 章 · Session 是什麼？跟聊天室有什麼不一樣 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Pi Agent 的 Session 概念：跟一般聊天室的差別、每個 Session 的檔案位置、fork 分支、匯出與清理實作。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch8_session.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 8 章 · Session 是什麼？跟聊天室有什麼不一樣 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Pi Agent 的 Session 概念：跟一般聊天室的差別、每個 Session 的檔案位置、fork 分支、匯出與清理實作。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch8_session.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 8 章 · Session 是什麼？跟聊天室有什麼不一樣 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Pi Agent 的 Session 概念：跟一般聊天室的差別、每個 Session 的檔案位置、fork 分支、匯出與清理實作。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html" class="active">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼會亂</a>
+      <a href="#concept">Session 是什麼</a>
+      <a href="#compare">跟 LINE 差在哪</a>
+      <a href="#records">檔案存在哪</a>
+      <a href="#plan">該分還是該合</a>
+      <a href="#steps">開 Session 加標籤</a>
+      <a href="#advanced">Fork 是什麼</a>
+      <a href="#export">匯出 Session</a>
+      <a href="#done">清理 Session</a>
+      <a href="#ai">會影響記憶嗎</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 8 章</div>
+      <h1>Session 是什麼？跟聊天室有什麼不一樣</h1>
+      <p class="lead">聊到第 5、第 6 次以後，左邊 Session 歷史開始長出來，你會發現「昨天問過的家電問題」跟「上禮拜寫的自動化」全部擠在一起。這章帶你把 Session 的觀念釐清、學會什麼時候該分、什麼時候該合、Fork 是拿來幹嘛的，還有匯出、備份、清理三招怎麼下。走完之後你會像整理資料夾一樣整理對話。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼會亂">
+      <h2 data-icon="why">為什麼 Session 一多就會亂</h2>
+      <p>剛裝好 Pi Agent 時，左邊 Session 歷史空空的很清爽。用一週之後你會看到大概這樣的狀況：</p>
+      <ul>
+        <li>「幫我看客廳燈為什麼不亮」跟「幫我寫日落開燈自動化」擠在同一個 Session，AI 講到後面自己都搞不清楚在講哪盞燈</li>
+        <li>想找上禮拜討論過的<em>吸塵器排程</em>，但列表全部只顯示第一句話當標題，滑半天找不到</li>
+        <li>同一個問題想試 GLM 跟 Claude 分別怎麼答，只好複製整段訊息重貼一次</li>
+        <li>對話已經滾到一百則，AI 回應開始變慢、費用也開始爆</li>
+      </ul>
+      <p>這些不是 AI 的問題，是<strong>你在同一個 Session 塞太多不同主題</strong>造成的。這一章要教你的正是「Session 該分還是該合、什麼時候該 fork 分岔、什麼時候該砍」的判斷。做對這件事，之後不管是查歷史、換模型比較、或是備份，都會順很多。</p>
+      <div class="callout"><strong>銜接：</strong>還沒開過第一次對話的話，先回<a href="ch7_first_chat.html">第 7 章</a>把第一個 Session 開起來，這一章的操作才有東西可以練。工作區三大區塊的位置忘了，就翻<a href="ch4_ui_tour.html">第 4 章</a>複習。</div>
+    </section>
+
+    <section id="concept" data-nav="Session 是什麼">
+      <h2 data-icon="concept">Session 到底是什麼</h2>
+      <p>Pi Agent 的 <strong>Session（對話 session）</strong>不只是「一串聊天訊息」。一個 Session 是這幾樣東西的組合包：</p>
+      <ul>
+        <li><strong>整場對話的每一則訊息</strong>（你打的字、AI 回的字、思考塊、工具卡、diff 全都包含）</li>
+        <li><strong>這個 Session 用的模型</strong>（GLM-4.6？Claude？換過幾次也全部記錄）</li>
+        <li><strong>這個 Session 開頭載入的 Skills（技能）</strong>（例如 ha-mcp、影片工具，哪些啟用了、參數是什麼）</li>
+        <li><strong>這個 Session 的工作目錄 cwd</strong>（AI 幫你讀檔寫檔的資料夾）</li>
+        <li><strong>System prompt</strong>（讀進去的規則、身份、口吻）</li>
+      </ul>
+      <p>換句話說，Session 是一個「連同上下文一起打包」的獨立世界。這也是為什麼你可以關掉瀏覽器，明天打開電腦點回同一個 Session，AI 還記得你們昨天聊到哪、還用哪個模型、還載著哪些技能——因為那不是「記憶」，是「這個世界的完整狀態」被保存下來了。</p>
+      <div class="callout tip"><strong>比喻：</strong>把 Session 想成一份 Word 檔——裡面有內容（訊息）、字型（模型）、頁面設定（Skills）。關掉 Word 下次打開，這些東西都會回來，不會變成新檔。</div>
+    </section>
+
+    <section id="compare" data-nav="跟 LINE 差在哪">
+      <h2 data-icon="compare">跟 LINE 聊天室有什麼不一樣</h2>
+      <p>很多人第一次用會直覺把 Session 當成「跟 AI 的 LINE 聊天室」。方向對，但有幾個關鍵差別不搞清楚，之後會踩坑：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>比項</th><th>LINE 聊天室</th><th>Pi Agent Session</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>誰參與</td><td>兩個以上的人共享，大家都看得到</td><td>你單獨對 AI 的一場對話，別人看不到</td></tr>
+          <tr><td>對方是誰</td><td>另一頭是固定那個人</td><td>另一頭是你選的模型，隨時可換</td></tr>
+          <tr><td>訊息存哪</td><td>LINE 伺服器（你手機只有快取）</td><td>你家的 HA，<code>/data/pi-agent/sessions/</code></td></tr>
+          <tr><td>對方會不會記</td><td>對方腦袋自己記</td><td>每次都把整場對話再送一次，AI 才「知道」你們之前講了什麼</td></tr>
+          <tr><td>可以幾個一起開</td><td>一個聊天室就是一個</td><td>可以同時開很多個，每個獨立狀態</td></tr>
+          <tr><td>可以複製一份嗎</td><td>不能，只能轉發訊息</td><td>可以 Fork，整個 Session 連狀態複製一份</td></tr>
+          <tr><td>會不會過期</td><td>不會，除非你退出</td><td>不會過期，你不刪它就一直在</td></tr>
+        </tbody>
+      </table>
+      <div class="callout warn"><strong>最重要那條：</strong>LINE 是對方腦袋自己記；Session 是<strong>每次送訊息都把整份歷史再丟一次給 AI</strong>——所以對話越長，送出去的 token 越多、越貴、也越慢。這是後面「什麼時候該收該砍」的根本原因。</div>
+    </section>
+
+    <section id="records" data-nav="檔案存在哪">
+      <h2 data-icon="records">Session 檔案實際存在哪裡</h2>
+      <p>Pi Agent 把每個 Session 存成一份 <strong><code>.jsonl</code></strong>（JSON Lines）檔案，一則訊息一行。位置在 add-on 內部：</p>
+      <pre class="code-block"><code>/data/pi-agent/sessions/&lt;工作目錄的編碼&gt;/&lt;時間戳&gt;_&lt;uuid&gt;.jsonl</code></pre>
+      <p>拆開來看每個部分：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>路徑段</th><th>意義</th><th>你會怎麼用到</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>/data/pi-agent/</code></td><td>Pi Agent add-on 的資料家目錄，跟 <code>/config/</code>（HA 本體）是分開的</td><td>被 HA snapshot 一起備份走</td></tr>
+          <tr><td><code>sessions/</code></td><td>裝所有對話的資料夾</td><td>整包搬走就是把對話都搬走</td></tr>
+          <tr><td><code>&lt;工作目錄的編碼&gt;/</code></td><td>Session 綁的 cwd 目錄名（把斜線編碼過的字串）</td><td>同一個工作目錄開的多場對話會在同一夾</td></tr>
+          <tr><td><code>&lt;時間戳&gt;_&lt;uuid&gt;.jsonl</code></td><td>單場對話的檔名，時間戳讓你按日期找</td><td>找不到 UI 上某則對話時，可以按日期到這裡對</td></tr>
+        </tbody>
+      </table>
+      <p>整個 <code>/data/pi-agent/</code> 都會跟著 <strong>HA snapshot（快照備份）</strong>一起被打包，換 HA 主機、重灌、或不小心手滑刪掉，只要 snapshot 還在，Session 都救得回來。這個備份策略後面第 <a href="ch20_backup.html">20 章</a>會完整拆開講。</p>
+      <div class="callout"><strong>觀念：</strong>Session 是「檔案」，不是「雲端記錄」。你的對話從頭到尾在你家的 HA 硬碟裡跑，除非你自己按送出叫 AI 去查外部 API，才會有網路流量。這是隱私上的一大加分。</div>
+    </section>
+
+    <section id="plan" data-nav="該分還是該合">
+      <h2 data-icon="plan">一次對話該分幾個 Session（判斷表）</h2>
+      <p>沒有「絕對正確」的答案，但下面這張對照表可以幫你在 90% 的情境下做對決定：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>情境</th><th>該怎麼做</th><th>原因</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>想連續問同一個主題（例如一路把客廳燈自動化寫完）</td><td><strong>同一個 Session</strong>，一路問下去</td><td>AI 需要前面的上下文，切開反而要重講一次</td></tr>
+          <tr><td>換題目（從「家電為什麼壞」跳到「怎麼寫自動化」）</td><td><strong>開新 Session</strong>（左上 <kbd>+ New session</kbd>）</td><td>舊主題留在原地方便回頭找，新主題不會被舊上下文污染</td></tr>
+          <tr><td>想試「同一個問題不同模型會怎麼答」</td><td><strong>Fork</strong>（Duplicate），一份切給 GLM、一份切給 Claude</td><td>兩邊起點完全一樣，比較才公平；不用把問題複製貼上兩次</td></tr>
+          <tr><td>對話已經一百多則，AI 開始忘前面、送訊息也變慢</td><td>叫 AI「幫我摘要目前重點」，把摘要當第一句<strong>開新 Session</strong> 繼續</td><td>把長歷史壓成一段短摘要，token 用量瞬間降回可管理的水位</td></tr>
+          <tr><td>要跟朋友分享一段解決過程</td><td>Export 出 Markdown，直接貼</td><td>不用截圖也不用把朋友拉進你家 HA</td></tr>
+          <tr><td>一場實驗性的嘗試，結果不好想全部丟掉</td><td>Delete，乾淨</td><td>Session 太多反而是干擾</td></tr>
+        </tbody>
+      </table>
+      <div class="callout tip"><strong>口訣：</strong>「換題目就換 Session、比模型就 Fork、太長就摘要重來、不要的就刪」。這四句記起來，Session 就不會亂。</div>
+    </section>
+
+    <section id="steps" data-nav="開 Session 加標籤">
+      <h2 data-icon="steps">動手：開新 Session、命名、加標籤</h2>
+      <p>照這個順序做一次，之後你會很自然地在每個新主題開頭就先把這一套跑完。</p>
+      <ol class="steps">
+        <li>
+          <h3>點左上角的 <kbd>+ New session</kbd></h3>
+          <p>按鈕在左邊 Session 歷史欄的最上方。點下去中間對話串會清空、composer 打字區也清空，等於你面前是一張新的白紙。左欄會多出一列<strong>暫時沒標題</strong>的 Session（因為你還沒打字）。</p>
+        </li>
+        <li>
+          <h3>打你的第一句話</h3>
+          <p>第一句很重要——它決定 AI 的方向，也決定這個 Session 的<strong>自動生成標題</strong>。建議直接把主題講清楚，例如「幫我看客廳三顆燈為什麼有一顆連不上」比「幫我看看燈」好很多。送出後 pi-web 會用第一句話（截前 30～40 字）當側欄的標題。</p>
+        </li>
+        <li>
+          <h3>覺得標題不好？用 Rename 改</h3>
+          <p>把游標移到左欄那一列，右邊會冒出 <strong>⋮</strong>（三點選單）。點開選 <strong>Rename</strong>，改成你未來搜尋時想得到的關鍵字。例如把「幫我看客廳三顆燈為什麼有一顆連不上」改成「客廳燈 3 號離線 debug」。</p>
+        </li>
+        <li>
+          <h3>加標籤方便之後篩選</h3>
+          <p>三點選單裡通常還有 <strong>Add tag / 標籤</strong>。常用的分法：<code>家電</code>、<code>自動化</code>、<code>問答</code>、<code>影片</code>、<code>備份/維護</code>。標籤打上去之後，左欄上方的搜尋框可以用 <code>tag:家電</code> 過濾出所有相關 Session。</p>
+        </li>
+        <li>
+          <h3>結束時再回頭看一眼</h3>
+          <p>問題解掉、對話收尾時，回頭看一次標題／標籤有沒有需要修。「當下開頭以為的主題」跟「最後真正解決的問題」常常不一樣（例如以為是燈壞了，最後發現是 Wi-Fi 訊號），這時就把標題改成真的方便未來 you 找到的字。</p>
+        </li>
+      </ol>
+      <div class="callout warn"><strong>注意：</strong>pi-web 上游有些版本標籤欄叫「Labels」不叫「Tags」。找不到就在三點選單裡整個掃一遍，通常都在 Rename 附近。</div>
+    </section>
+
+    <section id="advanced" data-nav="Fork 是什麼">
+      <h2 data-icon="advanced">Fork（Duplicate）是什麼、什麼時候用</h2>
+      <p>Fork 是 Pi Agent 一個很好用但常被忽略的功能。<strong>它會從你目前這個 Session 的當下位置分岔出一個副本</strong>——包括所有訊息、模型設定、Skills、System prompt 通通複製。之後你在副本上繼續講什麼，都不會影響原本那個 Session。</p>
+      <p>什麼時候會用到？</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>情境</th><th>怎麼 Fork</th><th>好處</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>AI 給了兩個方案 A/B，你想分別追問「A 的缺點」「B 的缺點」</td><td>三點選單 → Duplicate 兩次，一份追 A、一份追 B</td><td>兩條追問不會互相干擾，比較起來清楚</td></tr>
+          <tr><td>對話進行到一半想試「換另一家模型會怎麼答」</td><td>Duplicate 一份，在副本上把模型下拉換成別的</td><td>原本 Session 不動，副本是新一家模型接手</td></tr>
+          <tr><td>寫自動化寫到 80% 覺得可能踩雷，想保留備份</td><td>Duplicate 一份當「安全存檔」，在原本繼續改</td><td>踩雷了就跳去副本繼續，不用重來</td></tr>
+          <tr><td>想教別人看你怎麼一步一步問，但不想連自己後面的失敗嘗試也給對方</td><td>Duplicate 到某個乾淨點，Export 副本</td><td>對方看到的是清爽的教學版</td></tr>
+        </tbody>
+      </table>
+      <p>操作路徑：<strong>左欄該 Session → ⋮（三點選單）→ Duplicate</strong>。有些 pi-web 版本這個項目叫 <strong>Fork</strong>，名字不同但功能一樣。副本會出現在列表最上面，標題會加「(copy)」或「(fork)」字樣，你可以馬上 Rename。</p>
+      <div class="callout"><strong>觀念：</strong>Fork 完之後兩個 Session <strong>完全獨立</strong>。原本改了，副本不會跟著改；副本改了，原本也不會知道。就像影印一份紙本文件——之後在其中一份上塗鴉，另一份不受影響。</div>
+    </section>
+
+    <section id="export" data-nav="匯出 Session">
+      <h2 data-icon="records">匯出 Session（Export）</h2>
+      <p>Export 是把 Session 存成一個可以拿到 pi-web 以外看的檔案。用途很多：貼給朋友、貼進部落格、寄 email 問人、或單純想保留一份離線副本。</p>
+      <p>操作路徑：<strong>左欄該 Session → ⋮（三點選單）→ Export</strong>，會問你要哪一種格式。</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>格式</th><th>內容</th><th>適合場合</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>.jsonl</code>（原始格式）</td><td>每則訊息一行 JSON，含 role（user / assistant）、內容、思考塊、工具呼叫等所有欄位</td><td>要備份完整資料、之後想匯回、或給程式讀</td></tr>
+          <tr><td><code>.md</code>（Markdown）</td><td>只留人看的部分：「你講的話」＋「AI 回的話」，格式乾淨</td><td>貼部落格、寄 email、放進筆記軟體、給非技術朋友看</td></tr>
+        </tbody>
+      </table>
+      <p>Markdown 匯出出來大概長這樣：</p>
+      <pre class="code-block"><code># 客廳燈 3 號離線 debug
+Model: glm-4.6
+Exported: 2025-08-14
+
+## 使用者
+幫我看客廳三顆燈為什麼有一顆連不上
+
+## 助理
+你先跟我確認：這顆是本來就沒設好，還是原本正常後來才斷的？
+如果是後者，我會先請你看它在 HA 裡的狀態是 unavailable 還是 off。
+
+## 使用者
+原本正常，昨天開始才斷。狀態是 unavailable。
+
+## 助理
+好，那大概率是網路或韌體問題。步驟：
+1. 打開這顆燈實體的設備頁，看最後一次通訊時間
+2. 到 Wi-Fi 路由器管理頁確認它還在不在
+3. ...
+</code></pre>
+      <div class="callout tip"><strong>提示：</strong>要備份「以防萬一」的話用 <code>.jsonl</code>（含全部資料），要分享給人看用 <code>.md</code>（乾淨易讀）。兩種可以同時匯出，pi-web 不會擋。</div>
+    </section>
+
+    <section id="done" data-nav="清理 Session">
+      <h2 data-icon="done">清理 Session：三種方式怎麼選</h2>
+      <p>Session 累積到某個程度就該清。清的方式有三種，各有適用場合：</p>
+      <ol class="steps">
+        <li>
+          <h3>方式一：一個一個 Delete（最常用、最安全）</h3>
+          <p>三點選單 → <strong>Delete</strong>。pi-web 會跳確認框問你「確定嗎」，按確定就沒了。適合逐個檢視、確認「這個真的用不到」才砍。日常整理都用這招。</p>
+        </li>
+        <li>
+          <h3>方式二：多選批次刪</h3>
+          <p>在左欄按住 <kbd>Ctrl</kbd>（Mac 用 <kbd>Cmd</kbd>）點選多列，可以一次選中多個 Session；或用 <kbd>Shift</kbd>＋點擊選一整段區間。選好之後上面會出現批次動作按鈕，其中就有 <strong>Delete selected</strong>。適合「清掉一整批舊測試」的場合。</p>
+        </li>
+        <li>
+          <h3>方式三：直接刪 <code>/data/pi-agent/sessions/</code> 底下的檔（不建議）</h3>
+          <p>技術上你可以打開 HA 的 SSH add-on，用 <code>rm</code> 直接把 <code>.jsonl</code> 檔砍掉。<strong>但很不建議</strong>，因為 pi-web 有自己的索引與快取，直接砍檔可能讓 UI 顯示的列表跟實際磁碟對不上，甚至讓某個 Session 打開空白。真的要大掃除就走方式二的批次刪。</p>
+        </li>
+      </ol>
+      <div class="callout danger"><strong>危險：</strong>Delete 沒有垃圾桶——按確定就是真的刪掉。要「將來還可能想看」的 Session，先 Export <code>.jsonl</code> 存下來，再刪。</div>
+    </section>
+
+    <section id="ai" data-nav="會影響記憶嗎">
+      <h2 data-icon="ai">Session 會不會影響 AI 的「記憶力」</h2>
+      <p>先講結論：<strong>AI 沒有「記憶」，它每次都是重讀整場對話</strong>。這句話講清楚了，很多操作直覺就順了。</p>
+      <p>發生什麼事：</p>
+      <ol class="steps">
+        <li>
+          <h3>你送出一句訊息</h3>
+          <p>pi-web 把「整個 Session 從第一則到你最新這則」通通打包，一起送給 AI 模型的 API。</p>
+        </li>
+        <li>
+          <h3>AI 讀完整份歷史，才回你這一句</h3>
+          <p>它是把整場對話當作一份長長的文件讀進來、然後預測下一句該講什麼——不是它「記得」，是它「每次都被再看一次」。</p>
+        </li>
+        <li>
+          <h3>下一句你再送，一樣的事再發生一次</h3>
+          <p>包括你剛剛講的那句、AI 剛回的那句，全部再送一次，AI 再讀一次。</p>
+        </li>
+      </ol>
+      <p>這帶來三個直接的結果：</p>
+      <ul>
+        <li><strong>對話越長，每次送的 token 越多。</strong>越貴、越慢，這是物理性的，換多強的模型都躲不掉。</li>
+        <li><strong>「AI 忘了前面」其實是「歷史太長超過模型的 context 上限」。</strong>解法是收摘要、開新 Session，不是罵 AI。</li>
+        <li><strong>刪除 Session = AI 完全不記得你們講過。</strong>沒有雲端另存一份，沒有例外。</li>
+      </ul>
+      <div class="callout"><strong>觀念：</strong>Session 是「記憶」的載體。維護好 Session（該收就收、該分就分），等於維護 AI 的思路——你會發現同樣的 AI 突然變聰明了。</div>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>找不到某個舊 Session</h3>
+          <p>先在左欄上方搜尋框打關鍵字（會搜標題、訊息內文、標籤）。搜不到再對日期——你大概記得是哪天弄的，去 HA 的檔案管理員或 SSH 開 <code>/data/pi-agent/sessions/</code>，按時間戳排序找那個檔。真的找不到八成是不小心刪過，如果之前有 HA snapshot 就從快照裡撈；沒有就是真的沒了。</p>
+        </li>
+        <li>
+          <h3>Session 打開一片空白，什麼都沒有</h3>
+          <p>檔案可能損毀（斷電、寫入時被中斷都會發生）。到 <strong>Settings → Add-ons → Woow HA Pi Agent → Log</strong> 看記錄檔，找有沒有 <code>parse error</code> 或 <code>JSON</code> 相關的紅字，會指到具體是哪個檔壞了。壞掉的檔可以直接 Delete，其他 Session 不會受影響。</p>
+        </li>
+        <li>
+          <h3>Fork 之後 AI 回答跟原本不一樣</h3>
+          <p>正常的。原因兩個：一是模型本身有隨機性（同樣輸入不保證同樣輸出）；二是你 Fork 到現在之間模型可能升級了（例如 GLM 從 4.5 升 4.6）。想要「重現一模一樣答案」在 AI 這行本來就沒保證，Fork 是給你「同起點試不同追問」用的，不是「回到過去」用的。</p>
+        </li>
+        <li>
+          <h3>Session 太多想全部備份出來</h3>
+          <p>去 HA 的 <strong>Settings → Backups</strong> 建一個手動 snapshot，勾「Add-on: Woow HA Pi Agent」讓它把整個 <code>/data/pi-agent/</code> 打包進去。這一份 snapshot 裡就有全部 Session 加上所有 provider、Skills 設定。第 <a href="ch20_backup.html">20 章</a>會示範怎麼把 snapshot 下載到電腦或雲端。</p>
+        </li>
+        <li>
+          <h3>左欄 Session 列表捲很卡</h3>
+          <p>Session 檔案數量太多會拖慢列表渲染（幾百個以上開始有感）。整理策略：把「已經解決、之後幾乎不會回頭看」的 Session Export 成 <code>.jsonl</code> 存到別的地方，再從 pi-web 刪。這樣工作區保持乾淨，需要時還能回頭讀那份匯出檔。</p>
+        </li>
+        <li>
+          <h3>換模型後某個舊 Session 突然打不開</h3>
+          <p>如果你把某個 provider 整個從 Models 面板移除，用那個 provider 開的舊 Session 打開會沒有可用模型。解法：把 provider 加回去（<a href="ch6_paste_key.html">第 6 章</a>），或在該 Session 打開後手動把模型下拉切到另一個還活著的 provider（切完之後之後的訊息都用新模型跑）。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>Session 有數量上限嗎？</summary>
+        <div class="body">pi-web 本身沒設硬上限——它就是把 <code>/data/pi-agent/sessions/</code> 底下每一個 <code>.jsonl</code> 當一個 Session 列出來。實務上限是你 HA 的硬碟空間跟你的耐心。一個 Session 通常幾十 KB 到幾 MB，累積幾千個都不會炸；真的爆多的時候是列表捲動變卡（見 troubleshoot 第 5 條）。</div>
+      </details>
+      <details class="faq">
+        <summary>刪掉的 Session 能救回來嗎？</summary>
+        <div class="body">分兩種：<strong>有 HA snapshot（備份）</strong>就能——回到那份備份、還原 add-on 的資料，被刪掉的 Session 會回來（其他之後才產生的東西可能也會被還原到舊狀態，所以還原前記得再備一份現況）。<strong>沒 snapshot</strong>就沒了，pi-web 內建沒有垃圾桶或 undo。所以重要的 Session 動 Delete 前先 Export 一份保險。</div>
+      </details>
+      <details class="faq">
+        <summary>Session 檔案可以直接用文字編輯器改嗎？</summary>
+        <div class="body">技術上可以（就是 JSON Lines），但強烈不建議。手改容易格式跑掉（少一個逗號、多一個中括號），pi-web 打開會 parse error 變空白。真的要挖歷史就用 Export 到 <code>.md</code> 讀；要重跑一次某個對話就開新 Session 把重點貼進去當第一句。改原始檔屬於「開發者手動修 bug」的用途，不是日常操作。</div>
+      </details>
+      <details class="faq">
+        <summary>Fork 出來的兩個 Session 之後改一邊會影響另一邊嗎？</summary>
+        <div class="body">不會。Fork 的瞬間，pi-web 把原本 Session 的檔案<strong>整份複製一份</strong>成新檔，兩邊之後各走各的、彼此不知道對方存在。你可以放心在副本上做實驗，原本 Session 永遠是 Fork 那瞬間的樣子。要提醒的是：Fork 只複製「Session 檔本身」——如果原本這個 Session 綁的 provider 或 Skills 之後被你在 Models／Skills 面板改掉，兩個 Session 打開時看到的可用模型會一起變（因為模型清單是共用的），只是各自 Session 內已經送出過的訊息還是用當初那個模型跑的。</div>
+      </details>
+      <details class="faq">
+        <summary>可以把 Session 從一台 HA 搬到另一台嗎？</summary>
+        <div class="body">可以。三個方向：（1）最乾淨——來源 HA 建 snapshot，目的 HA 還原那個 add-on 的資料。（2）手動——用 SSH 把 <code>/data/pi-agent/sessions/</code> 整包 <code>tar</code> 起來，複製到目的 HA 的同個路徑（要確定 add-on 有先裝好、也停用，不然可能會被覆寫）。（3）一場一場——Export <code>.jsonl</code>，到新機用 Import 功能匯入（如果你的 pi-web 版本有 Import；沒有就走前兩招）。</div>
+      </details>
+      <details class="faq">
+        <summary>兩個人可以同時開同一個 Session 嗎？</summary>
+        <div class="body">技術上可以（兩個瀏覽器都連進 HA、都點進 Pi Agent），但<strong>強烈不建議</strong>。同一個 Session 檔會被兩邊同時讀寫，很容易發生訊息順序錯亂、或後寫的把前寫的蓋掉。要協作的話正規做法是：一個人操作，另一個人透過 Export 出來的 <code>.md</code> 看；或各自開自己的 Session，用「共同的一段話當第一句」讓兩邊起點一樣。</div>
+      </details>
+      <details class="faq">
+        <summary>切換模型（換 provider）跟開新 Session 差在哪？</summary>
+        <div class="body">切換模型只影響「之後」的訊息，原本的對話歷史還是會被送給新模型當上下文；開新 Session 是「連上下文都清空重來」。想「維持話題但換一家腦子接手」就切模型；想「這件事重頭來、跟之前無關」就開新 Session。深入的模型切換技巧在<a href="ch13_switch_model.html">第 13 章</a>會拆更細。</div>
+      </details>
+      <details class="faq">
+        <summary>Session 裡的思考塊、工具卡也會被存起來嗎？</summary>
+        <div class="body">會。<code>.jsonl</code> 檔存的是「這場對話發生的完整事件流」——你的訊息、AI 的訊息、AI 的思考塊、AI 呼叫工具的每一步、工具回什麼，全都在裡面（每種是不同 role 或不同 type 的一行）。所以你之後回頭看某個 Session 打開時，也會看到當時的思考塊跟工具卡，不會只剩對話。思考塊到底怎麼看、值不值得展開，<a href="ch9_thinking_diff.html">第 9 章</a>會專門講。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch7_first_chat.html">
+        <span class="label">← 上一章</span>
+        <span class="title">07 · 開第一個對話</span>
+      </a>
+      <a class="next" href="ch9_thinking_diff.html">
+        <span class="label">下一章 →</span>
+        <span class="title">09 · 思考塊與 diff</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

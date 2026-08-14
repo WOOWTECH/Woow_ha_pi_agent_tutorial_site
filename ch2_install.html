@@ -1,0 +1,435 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 2 章 · 裝好 Pi Agent · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Woow HA Pi Agent 安裝教學：把倉庫加進 Home Assistant Add-on 商店、按安裝、看懂首次啟動的 video-tools 下載進度。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch2_install.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 2 章 · 裝好 Pi Agent · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Woow HA Pi Agent 安裝教學：把倉庫加進 Home Assistant Add-on 商店、按安裝、看懂首次啟動的 video-tools 下載進度。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch2_install.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 2 章 · 裝好 Pi Agent · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Woow HA Pi Agent 安裝教學：把倉庫加進 Home Assistant Add-on 商店、按安裝、看懂首次啟動的 video-tools 下載進度。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html" class="active">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why-this-chapter">為什麼要一整章</a>
+      <a href="#what-is-repository">加倉庫是什麼</a>
+      <a href="#concept-what-you-get">裝完會拿到什麼</a>
+      <a href="#prerequisites">三個必備條件</a>
+      <a href="#install-steps">六步驟安裝</a>
+      <a href="#first-boot-truth">首次啟動的真相</a>
+      <a href="#check-logs">看記錄檔確認</a>
+      <a href="#what-next">這章之後做什麼</a>
+      <a href="#troubleshoot">疑難排解</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 2 章</div>
+      <h1>裝好 Pi Agent</h1>
+      <p class="lead">從「加倉庫」到側欄按鈕跳出來，其實只有六個動作。真正麻煩的是首次啟動那 3-8 分鐘的沉默——這章會告訴你螢幕看起來像當掉的時候，機器裡到底在做什麼。</p>
+    </div>
+
+    <section id="why-this-chapter" data-nav="為什麼要一整章">
+      <h2 data-icon="why">為什麼要專門開一章教「裝」</h2>
+      <p>裝一個 Home Assistant 官方 add-on，通常就是搜尋、按安裝、按啟動——三步結束。可是 Pi Agent 不太一樣，開這章是因為新手在下面三個地方常常踩坑，之後在 Discord 問一模一樣的問題：</p>
+      <ul>
+        <li><b>它不在官方商店裡。</b>Pi Agent 是 Woow 自家在 GitHub 上維護的第三方 add-on，你要先手動「加倉庫（Add repository）」告訴 HA 去哪裡撈——就像叫外送要先把餐廳加進 App，不會憑空冒出來。</li>
+        <li><b>首次啟動要 3-8 分鐘才好。</b>按了「啟動」以後，看起來像當機，其實它正在下載一整套約 720 MB 的影片管線工具（Playwright 瀏覽器、edge-tts、Python 虛擬環境）。很多人就是這時候手癢按了「停止」，結果卡在半殘狀態。</li>
+        <li><b>v0.13.0 之後 API 金鑰搬家了。</b>以前 AI 金鑰是在 add-on 的 Configuration 頁貼，現在改到 pi-web 網頁裡面的 Models 面板。舊教學截圖還在網路流傳，跟著做會找不到欄位。</li>
+      </ul>
+      <div class="callout tip">
+        <b>學長提醒：</b>如果你把這章順順地做完，之後開起 Pi Agent 只會看到一片空白工作區——這是<b>正常的</b>，因為金鑰還沒設。金鑰是第 <a href="ch5_first_key.html">5</a>、<a href="ch5_first_key.html">6</a> 章的事，這章先把「屋子蓋起來」。
+      </div>
+    </section>
+
+    <section id="what-is-repository" data-nav="加倉庫是什麼">
+      <h2 data-icon="concept">概念：Home Assistant 的「加倉庫」是什麼意思</h2>
+      <p>把 HA 想像成你家旁邊那條街：</p>
+      <ul>
+        <li><b>官方 Add-on Store（商店）</b>就是「便利商店」——只賣經過 HA 官方核准的東西，架上永遠是那幾家。</li>
+        <li><b>加倉庫（Add repository）</b>就是你自己去問一家「非官方架子」的商家，跟他要一張進貨清單，貼進 HA 說「以後這家的貨也算數」。</li>
+        <li>加完之後，Woow 家（還有你未來自己加的其他家）的 add-on 就會跟便利商店的商品混在同一個商店頁面裡，一起搜尋、一起安裝。</li>
+      </ul>
+      <p>技術上，這個「進貨清單」就是一個 GitHub 網址，HA Supervisor 會定期去那邊撈 <code>repository.yaml</code>、<code>config.yaml</code>、Docker 映像檔位址等資訊。你只要<b>做一次</b>，之後 Woow 家出新 add-on 或有更新，HA 都會自己同步。</p>
+      <div class="callout">
+        <b>好懂比喻：</b>「加倉庫」= 把一家新店家加進你的常吃名單；「安裝 add-on」= 從那家店家點一份特定的餐。兩件事，先後順序不能反。
+      </div>
+    </section>
+
+    <section id="concept-what-you-get" data-nav="裝完會拿到什麼">
+      <h2 data-icon="what">概念：這個 add-on 裝完你會拿到什麼</h2>
+      <p>Pi Agent 不是只有一個 UI，它其實是一整套打包在一起的東西，都塞進<b>同一個 add-on</b>——這是為什麼下載會比較久。它的內容物大概是：</p>
+      <ul>
+        <li><b>pi-web 工作區</b>：一個瀏覽器版的「AI 助理視窗」，跑在 Node.js 22 上面。這是你之後每天會看到的畫面。</li>
+        <li><b>pi coding-agent SDK</b>：真正跟 AI 對話、幫你寫程式碼、跑技能的引擎，跟 pi-web 綁在同一個行程裡。</li>
+        <li><b>nginx（反向代理，Reverse Proxy）</b>：夾在 HA 跟 pi-web 中間做網址翻譯，這樣 pi-web 才能跑在 HA 側欄裡而不會壞掉。</li>
+        <li><b>影片管線工具（video-tools）</b>：Playwright（無頭瀏覽器）+ edge-tts（微軟語音合成）+ ffmpeg + rclone，用來做第 <a href="ch18_video_tools.html">18</a> 章的自動剪片。<b>這一坨就是首次啟動要等 3-8 分鐘的元凶。</b></li>
+        <li><b>s6-overlay（服務監控）</b>：確保上面幾支程式該啟動的先啟動、掛掉會自動重跑。</li>
+      </ul>
+      <p>好處是「一鍵到位」，不用你另外裝 Node、Python、ffmpeg 各自打架；代價就是第一次下載比較大隻。之後就不用再下載了。</p>
+    </section>
+
+    <section id="prerequisites" data-nav="三個必備條件">
+      <h2 data-icon="tips">開工前：三個必備條件</h2>
+      <p>在按任何按鈕之前，先花兩分鐘確認下面三件事，可以省掉之後一堆繞路。</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>條件</th><th>為什麼要</th><th>怎麼確認</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><b>HA 是 OS 版或 Supervised 版</b></td>
+            <td>只有這兩種安裝方式帶 Supervisor，才有 add-on 商店可用。Container 版跟 Core 版沒有。</td>
+            <td>設定 → 系統 → 修復 → 系統資訊，看「Installation Type」</td>
+          </tr>
+          <tr>
+            <td><b>系統空間 ≥ 3 GB</b></td>
+            <td>映像檔本身約 300 MB，首次啟動再下載約 720 MB，加上暫存跟 log 抓 3 GB 才不會卡。</td>
+            <td>設定 → 系統 → 儲存空間</td>
+          </tr>
+          <tr>
+            <td><b>網路能對外連</b></td>
+            <td>要下載 GHCR 上的映像檔，還有第一次啟動時的 Playwright / edge-tts。</td>
+            <td>能用手機 4G 連你家 HA 就代表能出去；或者裝任何一個官方 add-on 試試</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout tip">
+        <b>怎麼查安裝方式：</b>設定 → 關於（或系統 → 修復 → 三點選單 → 系統資訊），最上面會寫 <code>Home Assistant OS</code>、<code>Supervised</code>、<code>Container</code>、<code>Core</code> 其中一個。前兩個可以往下走，後兩個這本書幫不了你。
+      </div>
+      <div class="callout tip">
+        <b>怎麼查空間：</b>設定 → 系統 → 儲存空間，看「使用中／可用」。如果總空間只有 8 GB 而且已經用掉 6 GB，先去清一下舊備份跟舊 add-on 再回來，不然裝到一半會卡死。
+      </div>
+      <div class="callout warn">
+        <b>怎麼確認能對外：</b>如果你家 HA 是走公司/學校網路，或者透過某個 proxy 上網，Docker Hub 跟 GitHub Container Registry（ghcr.io）常常會被擋。用其他裝置連 <code>https://ghcr.io</code> 應該要看到一個空白頁而不是 timeout。
+      </div>
+    </section>
+
+    <section id="install-steps" data-nav="六步驟安裝">
+      <h2 data-icon="steps">動手：從加倉庫到看到側欄按鈕</h2>
+      <p>照順序做，一步一步來。整個過程在網路正常的樹莓派上大概 4-6 分鐘（含下載），x86 小主機或 NUC 大概 1-2 分鐘。</p>
+      <ol class="steps">
+        <li>
+          <b>打開設定 → 應用程式（Apps）</b>
+          <p>HA 從 2026.2 版開始，把原本叫「Add-ons」的地方改名為「Apps（應用程式）」，位置一樣，就是名字換了。如果你的 HA 還沒更新，看到的還是「Add-ons」也沒關係，是同一個東西。</p>
+        </li>
+        <li>
+          <b>進入 Add-on Store（Apps Store）→ 按右上角三點選單 → 儲存庫（Repositories）</b>
+          <p>會跳出一個對話框「管理附加元件儲存庫」，裡面已經有 HA 官方的幾個預設倉庫。</p>
+        </li>
+        <li>
+          <b>把下面這串網址貼進去，按「加入（ADD）」</b>
+          <pre class="code-block">https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on</pre>
+          <p>貼完稍等 3-10 秒，HA 會去 GitHub 抓 <code>repository.yaml</code>。成功的話，倉庫清單會多一行「Woow HA Pi Agent Add-on」；失敗的話，按鈕會震一下、跳紅字，這時候先檢查網址有沒有多空白。</p>
+        </li>
+        <li>
+          <b>關掉對話框，回到 Add-on Store，往下捲</b>
+          <p>會看到一個新的品牌區塊「Woow HA Pi Agent Add-on」，裡面就一個 tile：<b>Woow HA Pi Agent</b>。點它。</p>
+        </li>
+        <li>
+          <b>按「安裝（INSTALL）」，等映像檔下載</b>
+          <p>下方會出現進度條。這個階段在下載的是「映像檔本體」，大約 300 MB。時間參考：</p>
+          <ul>
+            <li>樹莓派 4 / 5 + 100 Mbps 家用網路：<b>3-5 分鐘</b></li>
+            <li>x86 小主機（Intel N100 / NUC 等）+ 500 Mbps：<b>30 秒-1 分鐘</b></li>
+            <li>樹莓派 3 + 50 Mbps：<b>5-8 分鐘</b></li>
+          </ul>
+        </li>
+        <li>
+          <b>不要急著按「啟動」——先把三個開關打開</b>
+          <p>下載完會跳到 Info 分頁，你會看到三個開關（都在頁面右邊）：</p>
+          <ul>
+            <li><b>啟動時自動啟動（Start on boot）</b>：HA 重開機時要不要順便帶起 Pi Agent。<b>打開。</b></li>
+            <li><b>看門狗（Watchdog）</b>：如果 pi-web 當掉，Supervisor 會自動重啟它。<b>打開。</b></li>
+            <li><b>顯示在側欄（Show in sidebar）</b>：預設會自動打開（v0.8.0 之後），但如果沒亮，手動把它打開。</li>
+          </ul>
+          <div class="callout tip">為什麼要先開再啟動？因為「顯示在側欄」如果啟動之後才打開，有時候要按一下 HA 重新整理才會出現按鈕，多繞一步。</div>
+        </li>
+        <li>
+          <b>按「啟動（START）」</b>
+          <p>頁面上方會轉圈圈，大約 5-15 秒之後轉圈停止，狀態變成「已啟動」。這時候<b>側欄應該會在 30 秒內出現一個機器人圖示「Pi Agent」</b>（只有 admin 使用者看得到）。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="first-boot-truth" data-nav="首次啟動的真相">
+      <h2 data-icon="warning">首次啟動要等 3-8 分鐘的真相</h2>
+      <p>看到「已啟動」不代表「已經好」。這時候你如果馬上點側欄按鈕進去，很可能會看到白畫面、載入圈圈、或者「connection refused」的錯誤。<b>這是正常的。</b></p>
+      <p>因為 pi-web 已經開起來了沒錯，但同時間背景還有另一個 s6 服務叫 <code>video-tools-init</code>，它正在做這幾件事：</p>
+      <ol class="steps">
+        <li>建立 Python 虛擬環境（venv），約 20 秒</li>
+        <li><code>pip install</code> playwright、edge-tts、pyyaml、mutagen，約 30-90 秒</li>
+        <li>透過 Playwright 下載 Chromium 瀏覽器（<b>這是最大隻的，約 500 MB</b>），約 2-6 分鐘</li>
+        <li>寫入完成標記 <code>/data/pi-agent/.video-tools-installed</code></li>
+      </ol>
+      <p>整包加起來大概 720 MB，樹莓派 3-8 分鐘、x86 通常 1-2 分鐘就好。<b>之後就不用再下載了</b>——完成標記檔案存在，下次開機這個 init 服務會直接 exit 100 毫秒內結束。這是為第 <a href="ch18_video_tools.html">18 章的影片管線</a>做準備。</p>
+      <div class="callout tip">
+        <b>「我根本不打算做影片，可以跳過嗎？」</b>短答：不行，第一次還是會下載。長答：整個機制被綁在 <code>video-tools-init</code> 的 s6 oneshot 裡，你沒辦法選擇性關掉。但反過來想，反正只下載一次，之後就是背景一個檔案佔硬碟而已；哪天想玩影片管線隨時都可以。細節看 <a href="ch18_video_tools.html">ch18</a>。
+      </div>
+      <div class="callout tip">
+        <b>怎麼知道現在跑到哪？</b>看下一段——去看 Logs（記錄檔）。
+      </div>
+    </section>
+
+    <section id="check-logs" data-nav="看記錄檔確認">
+      <h2 data-icon="records">看記錄檔確認一切正常</h2>
+      <p>在 add-on 的 Info 分頁上方切到「<b>記錄檔（Logs）</b>」分頁，會看到黑底綠字（或黑底白字，看你的主題）的一堆訊息。找下面這幾個關鍵字，就能判斷跑到哪：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>你看到的訊息</th><th>意思</th><th>該不該擔心</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>Starting video-tools-init</code></td>
+            <td>影片工具剛開始下載，正常</td>
+            <td>不用</td>
+          </tr>
+          <tr>
+            <td><code>Downloading Chromium ...</code></td>
+            <td>正在抓 500 MB 的瀏覽器</td>
+            <td>耐心等，網路慢就慢</td>
+          </tr>
+          <tr>
+            <td><code>video-tools-init done</code></td>
+            <td>影片工具全部裝好了</td>
+            <td>不用，好消息</td>
+          </tr>
+          <tr>
+            <td><code>Home page ready</code> 或類似 <code>ready on http://0.0.0.0:30141</code></td>
+            <td>pi-web 網頁準備好接客</td>
+            <td>不用，可以進去玩了</td>
+          </tr>
+          <tr>
+            <td><code>Downloading Chromium ...</code> 十分鐘沒進度</td>
+            <td>網路撈不到 Playwright CDN</td>
+            <td>要處理，看下面的疑難排解</td>
+          </tr>
+          <tr>
+            <td>紅字 <code>ERROR</code> / <code>FATAL</code></td>
+            <td>認真出事了</td>
+            <td>要處理，把整段 log 存下來對照疑難排解</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <b>小技巧：</b>記錄檔頁面右上有個「更新」按鈕，log 是快照式的不會即時滾。想看即時的，每 20 秒手動按一次；或者右上有個「複製到剪貼簿」，貼到你熟的編輯器慢慢看。
+      </div>
+    </section>
+
+    <section id="what-next" data-nav="這章之後做什麼">
+      <h2 data-icon="plan">這章做完之後，下一步做什麼</h2>
+      <p>假設一切順利，你現在的狀態是：</p>
+      <ul>
+        <li>HA 側欄出現「Pi Agent」按鈕（機器人圖示）</li>
+        <li>Add-on 頁面顯示綠色的「已啟動」</li>
+        <li>記錄檔裡看得到 <code>video-tools-init done</code></li>
+      </ul>
+      <p>那接下來的建議路徑：</p>
+      <ol class="steps">
+        <li><b>第 <a href="ch3_open_it.html">3</a> 章：第一次打開 Pi Agent</b>——教你點進去看到什麼、怎麼認畫面上各區塊。</li>
+        <li><b>第 <a href="ch5_first_key.html">5</a> 章：拿到第一支 AI 金鑰</b>——教你去哪申請一組 GLM 或 OpenRouter 的 key（有免費額度）。</li>
+        <li><b>第 <a href="ch5_first_key.html">6</a> 章：把金鑰貼進 Pi Agent</b>——教你在 Models 面板加 provider、貼 key、按 Test 驗證。</li>
+      </ol>
+      <div class="callout warn">
+        <b>金鑰還沒設就打開，會看到什麼？</b>你會看到 pi-web 的主畫面，但每次送訊息都會收到 <code>401 unauthorized</code> 或者「請先在 Models 面板加入 provider」。這<b>不是</b>裝壞了，是預期行為——v0.13.0 之後 add-on 本身不再預設任何 provider，你必須自己加。細節看 <a href="ch5_first_key.html">ch5</a>。
+      </div>
+    </section>
+
+    <section id="troubleshoot" data-nav="疑難排解">
+      <h2 data-icon="troubleshoot">疑難排解：新手最常撞的 6 個坑</h2>
+
+      <details class="faq">
+        <summary>症狀：貼倉庫 URL 之後按「加入」，按鈕震一下、跳紅字「無法連接儲存庫」</summary>
+        <p><b>可能原因跟解法（依機率排序）：</b></p>
+        <ol class="steps">
+          <li>URL 前後有多空白或多字元。回去對照這個乾淨版本：<code>https://github.com/WOOWTECH/Woow_ha_pi_agent_add_on</code>——注意結尾沒有斜線 <code>/</code>、沒有 <code>.git</code>。</li>
+          <li>你的 HA 是 Container 版或 Core 版——這兩種沒有 Supervisor，也就沒有 add-on 商店。這本書幫不了，需要換成 OS 或 Supervised 版本。</li>
+          <li>網路連不到 GitHub。用手機開個網頁貼上 URL 看能不能開；如果連手機也開不了 GitHub，那就是你家網路的問題。</li>
+          <li>公司/學校/某些國家的防火牆擋掉 GitHub API。這種情況要透過 HA 的 http/https_proxy 環境變數繞出去，比較複雜，先跟你們網管講。</li>
+        </ol>
+      </details>
+
+      <details class="faq">
+        <summary>症狀：倉庫加成功了，但商店裡搜尋「pi agent」或往下捲都找不到 Woow HA Pi Agent</summary>
+        <p><b>解法（依機率排序）：</b></p>
+        <ol class="steps">
+          <li>按一下三點選單 → <b>重新載入（Reload）</b>強制 Supervisor 重新抓一次倉庫索引。</li>
+          <li>清一下瀏覽器快取（Ctrl+Shift+R 或無痕視窗開一次 HA），有時候是舊快取讓商店頁沒更新。</li>
+          <li>去 Repositories 對話框確認你剛剛貼的倉庫還在清單裡，沒有被自己刪掉。</li>
+          <li>捲到最下面看看是不是被歸到「Woow HA Pi Agent Add-on」品牌區塊底下——第三方倉庫不會混在官方那一區，是獨立一個小標題。</li>
+        </ol>
+      </details>
+
+      <details class="faq">
+        <summary>症狀：按下「安裝」之後，進度條一直卡在某個百分比，或跳「pull failed」</summary>
+        <p><b>幾乎都是 Docker Hub / GHCR 網路慢或短暫抽風：</b></p>
+        <ol class="steps">
+          <li>先看記錄檔（Info → Logs 上方會有安裝 log），如果訊息是 <code>connection timed out</code> 或 <code>i/o timeout</code>，就是網路的問題。</li>
+          <li>等 5 分鐘再按一次「安裝」，通常這時候 CDN 已經恢復。</li>
+          <li>如果你在中國大陸/伊朗這類 ghcr.io 被牆的地方，需要走 proxy 或 mirror，這超出本書範圍。</li>
+          <li>硬碟真的不夠——回去看設定 → 系統 → 儲存空間，可用要 &gt; 3 GB。不夠就先刪備份跟舊 add-on。</li>
+        </ol>
+      </details>
+
+      <details class="faq">
+        <summary>症狀：裝完按啟動了，但是側欄一直沒有 Pi Agent 按鈕</summary>
+        <p><b>三個檢查點：</b></p>
+        <ol class="steps">
+          <li>回到 Info 分頁，確認「<b>顯示在側欄（Show in sidebar）</b>」開關是打開的。v0.8.0 之後這是自動打開，但慢的機器偶爾會漏。</li>
+          <li>按一下瀏覽器的重新整理（Ctrl+R），HA 側欄不會即時更新，要重新整理才會拿到新的側欄項目。</li>
+          <li>檢查你登入的 HA 帳號是不是<b>管理員</b>——Pi Agent 側欄設定為 <code>panel_admin: true</code>，非 admin 帳號看不到，這是設計上的權限保護。</li>
+        </ol>
+      </details>
+
+      <details class="faq">
+        <summary>症狀：記錄檔一直卡在 <code>Downloading Chromium ...</code> 超過 15 分鐘</summary>
+        <p>Playwright 的 Chromium 是從 <code>playwright.download.prss.microsoft.com</code> 抓的，這個 CDN 在某些地區真的很慢。</p>
+        <ol class="steps">
+          <li>先給它<b>再等 10 分鐘</b>——樹莓派 3 + 慢網路真的可以跑到 20 分鐘。</li>
+          <li>還是不動的話，把 add-on 停掉，再啟動，通常會重試。</li>
+          <li>如果一直失敗，pi-web 本身還是能用（video-tools-init 的失敗是非致命的），你可以先跳過影片章節。之後想重試，看 <a href="ch18_video_tools.html">ch18</a> 的 <code>reset_video_tools</code> 開關。</li>
+        </ol>
+      </details>
+
+      <details class="faq">
+        <summary>症狀：升級 add-on 之後，本來裝好的 skills 或工作目錄不見了</summary>
+        <p>v0.10.0 之後這個問題已經修好——所有工作目錄都放在 <code>/data/pi-agent/home/</code> 這個持久儲存區。</p>
+        <ol class="steps">
+          <li>如果你是從 v0.9.1 或更早版本升上來，之前的 <code>pi-cwd-*</code> 工作目錄是在容器根目錄，升級時會被砍掉。要重建。</li>
+          <li>如果你現在的版本 ≥ v0.10.0 還是遇到這問題，去看 add-on 記錄檔有沒有 <code>chown</code> 或 <code>permission denied</code>，並到 Woow 倉庫開 issue。</li>
+        </ol>
+      </details>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+
+      <details class="faq">
+        <summary>一定要用 WOOWTECH 這個 fork 嗎？不能自己包 pi-web？</summary>
+        <p>技術上可以，但強烈不建議。Woow 這個 add-on 塞進去的<b>不是</b>單純 pi-web，還包了 nginx 前端做 HA Ingress 的 URL 重寫（大概 40+ 條規則）、s6-overlay 服務監控、影片管線工具、還有側欄自動註冊等等。上游 pi-web 沒有這些東西，自己包等於要重造這一輪基礎建設，而且每次 pi-web 出新版還要重新驗證那 40 條規則會不會爆。除非你想當 add-on 維護者，不然用 Woow 這個就是最省事的路。</p>
+      </details>
+
+      <details class="faq">
+        <summary>HAOS 硬碟不夠怎麼辦？我只有 8 GB 的 SD 卡。</summary>
+        <p>先誠實說：8 GB 跑 HAOS + Pi Agent + 影片管線<b>非常勉強</b>。建議路線：</p>
+        <ul>
+          <li>短期救急：先清舊備份（設定 → 系統 → 備份），一份至少 500 MB。刪暫時用不到的 add-on。</li>
+          <li>長期：升級到 32 GB 或 64 GB 的高速 SD 卡（A2 級以上），或直接用 USB SSD。HAOS 的 <code>ha os import</code> 或者用官方 Raspberry Pi Imager 重灌都可以。</li>
+          <li>影片管線如果真的用不到，還是會下載一次（沒辦法選擇性關）。裝完之後你可以看 <a href="ch18_video_tools.html">ch18</a> 學怎麼用 <code>reset_video_tools</code> 定期清舊快取。</li>
+        </ul>
+      </details>
+
+      <details class="faq">
+        <summary>之前裝過舊版本（v0.12 以前），現在升到 v0.13.x 要不要重灌？</summary>
+        <p>不用重灌，直接升就好。但要記得<b>手動搬金鑰</b>：v0.13.0 是個 breaking change，把 7 個 API 金鑰欄位（GLM、MiniMax、OpenAI、OpenRouter、Anthropic、DeepSeek、Groq）從 add-on 的 Configuration 頁移到 pi-web 網頁裡面的 Models 面板。升級之後你的舊金鑰會被 HA 丟掉（因為 schema 沒有那些欄位了），每次對話會回 401。到 pi-web 的 Models 面板重新貼一次就好，工作階段（sessions）跟已安裝的 skills 都會保留。詳細金鑰貼法看 <a href="ch5_first_key.html">ch5</a>。</p>
+      </details>
+
+      <details class="faq">
+        <summary>可以在多台 HA 上同時裝 Pi Agent 嗎？金鑰要怎麼共用？</summary>
+        <p>可以裝在多台，每台都是獨立的 add-on 實例，各自的 <code>/data/pi-agent/</code> 目錄跟 <code>models.json</code>。金鑰目前<b>沒有官方的雲端同步機制</b>，你要在每台的 Models 面板各自貼一次。實務上大部分人只有一台 HA，這問題不太會遇到；如果你真的有多台（例如公司一台、家裡一台），可以：</p>
+        <ul>
+          <li>做一次 HA snapshot backup，然後 restore 到另一台——<code>/data/pi-agent/</code> 會整個帶過去，包含金鑰。細節看 <a href="ch20_backup.html">ch20</a>。</li>
+          <li>或者用一個 provider（例如 OpenRouter）的一支 key 給多台用，不同 HA 都貼同一支。用量會合併計費。</li>
+        </ul>
+      </details>
+
+      <details class="faq">
+        <summary>安裝之後我可以改 add-on 的 Configuration 嗎？改什麼會影響什麼？</summary>
+        <p>v0.13.0 之後 Configuration 只剩<b>四個容器層面</b>的設定，都是安全的：</p>
+        <ul>
+          <li><code>log_level</code>：<code>info</code> 是預設，除錯的時候切 <code>debug</code>。</li>
+          <li><code>timezone</code>：IANA 名字例如 <code>Asia/Taipei</code>，會影響 log 時間戳跟未來影片字幕的時間軸。</li>
+          <li><code>reset_video_tools</code>：一次性開關，打開之後重啟 add-on 會重下 720 MB 影片工具，然後自動關回 false。影片管線壞掉時的救命開關。</li>
+          <li><code>env_vars</code>：進階逃生口，可以塞任意環境變數給 pi-web。一般人不會用到，除非要設 proxy 或改 provider base URL。</li>
+        </ul>
+        <p>完整欄位對照看 <a href="appendix_config_ref.html">附錄 A · Configuration 完整對照</a>。</p>
+      </details>
+
+      <details class="faq">
+        <summary>裝完之後 add-on 會自動更新嗎？我需要每個月手動檢查嗎？</summary>
+        <p>HA Supervisor 每隔一段時間會自動去你加的所有倉庫檢查有沒有新版，發現有就會在 add-on 頁面出現「Update to X.Y.Z」按鈕。<b>不會</b>自動裝——按了才會裝。這是刻意的，因為升級偶爾會有 breaking change（例如 v0.13.0），Woow 團隊會在 CHANGELOG 寫清楚要不要做什麼手動動作。升級流程跟注意事項統一看 <a href="ch21_upgrade.html">ch21</a>。</p>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch1_intro.html">
+        <span class="label">← 上一章</span>
+        <span class="title">01 · 什麼是 Pi Agent</span>
+      </a>
+      <a class="next" href="ch3_open_it.html">
+        <span class="label">下一章 →</span>
+        <span class="title">03 · 從側邊欄打開</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

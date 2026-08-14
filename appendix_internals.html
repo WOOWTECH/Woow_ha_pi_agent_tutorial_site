@@ -1,0 +1,659 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>附錄 C · 底層架構好奇者向 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Pi Agent 內部架構深入：s6-overlay 開機順序、nginx 反向代理與 sub_filter shim、/data/pi-agent 目錄地圖、Watchdog 探針、Skill 發現流程。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/appendix_internals.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="附錄 C · 底層架構好奇者向 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Pi Agent 內部架構深入：s6-overlay 開機順序、nginx 反向代理與 sub_filter shim、/data/pi-agent 目錄地圖、Watchdog 探針、Skill 發現流程。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/appendix_internals.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="附錄 C · 底層架構好奇者向 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Pi Agent 內部架構深入：s6-overlay 開機順序、nginx 反向代理與 sub_filter shim、/data/pi-agent 目錄地圖、Watchdog 探針、Skill 發現流程。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要看架構</a>
+      <a href="#concept">整體架構鳥瞰</a>
+      <a href="#steps">s6-overlay 開機順序</a>
+      <a href="#network">nginx 的角色</a>
+      <a href="#records">/data/pi-agent 目錄地圖</a>
+      <a href="#test">Watchdog 探針</a>
+      <a href="#ai">Skill 發現流程</a>
+      <a href="#app">pi-web 技術棧</a>
+      <a href="#theme">v0.13.0 API key 搬家</a>
+      <a href="#advanced">debug 進階技巧</a>
+      <a href="#troubleshoot">架構層 troubleshoot</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html" class="active">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">附錄 C</div>
+      <h1>底層架構好奇者向</h1>
+      <p class="lead">平常用 Pi Agent 你不需要看這篇——這裡講的是「掀開引擎蓋看裡面在跑什麼」。當 <a href="ch22_troubleshoot.html">第 22 章</a>的 Logs 出現看不懂的錯、當你想自己 debug 而不是等下一版、當你想知道為什麼一個對話介面要跑那麼多背景服務——這篇一次講清楚。技術詞第一次會標「中文（English）」，但不會要你寫程式。看完你會知道：s6-overlay 是什麼、nginx 為什麼要擋在前面、<code>/data/pi-agent/</code> 底下每個資料夾裝什麼、Watchdog 探針怎麼探、Skill 是怎麼被「發現」的。像看家裡的水電配置圖——不用你動手，但知道總開關在哪就是安心。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼要看架構">
+      <h2 data-icon="why">為什麼要看這篇（不看也行）</h2>
+      <p>先講清楚：<strong>99% 時候你不需要這篇</strong>。你按著<a href="ch2_install.html">第 2 章</a>裝好、<a href="ch3_open_it.html">第 3 章</a>從側邊欄打開、用得順順的——不用知道背後跑了什麼。就像你開冷氣不用知道壓縮機的原理。</p>
+      <p>但有那 1% 的時候會派上用場：</p>
+      <ul>
+        <li><strong>Logs 出現看不懂的錯</strong>——你在 add-on 頁面切到 Log 分頁看到「nginx: [emerg] host not found in upstream」、「s6-rc: fatal: unable to start service pi-web」、「video-tools-init exited with code 1」，這些訊息你查 Google 也查不到 Pi Agent 專屬解法。看完這附錄你會知道每個服務是幹嘛的、失敗代表什麼。</li>
+        <li><strong>想自己 debug 不想等下一版</strong>——某個功能怪怪的，你想 SSH 進 add-on 容器看看到底哪出問題。你得先知道有哪些目錄、哪些 process、log 存哪。</li>
+        <li><strong>想改進或客製</strong>——你想 fork Pi Agent、想幫上游貢獻、想寫一個 companion add-on。這時你必須理解整條 pipeline。</li>
+        <li><strong>純粹好奇</strong>——你是那種買了新設備會拆開看的人，那繼續往下讀就對了。</li>
+      </ul>
+      <div class="callout"><strong>誠實提醒：</strong>這附錄的內容<strong>會隨版本改變</strong>。作者寫的時候 Pi Agent 是 v0.13 系列；如果你看的時候版本已經跳很遠（例如 v1.x），檔案路徑跟服務名稱可能不同。以 <code>/etc/services.d/</code> 底下實際的資料夾為準，附錄只是給你一個「大約長這樣」的地圖。</div>
+    </section>
+
+    <section id="concept" data-nav="整體架構鳥瞰">
+      <h2 data-icon="concept">整體架構：大樓管理員比喻</h2>
+      <p>用一個具體比喻先把層次講清楚，之後每一節再展開。把整套系統想像成一棟大樓：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>比喻</th><th>對應的東西</th><th>做什麼</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>大樓本身</strong></td>
+            <td>Home Assistant（HA）作業系統</td>
+            <td>提供地基、水電、網路——住戶（add-on）才有得住</td>
+          </tr>
+          <tr>
+            <td><strong>門房（Supervisor）</strong></td>
+            <td>HA Supervisor</td>
+            <td>負責裝新住戶、啟動住戶、每分鐘去看住戶還好嗎、住戶掛了幫他重開</td>
+          </tr>
+          <tr>
+            <td><strong>接待櫃檯（Ingress）</strong></td>
+            <td>HA Ingress 系統</td>
+            <td>外面的訪客（你的瀏覽器）想找住戶都得經過櫃檯登記，櫃檯負責認證與轉介</td>
+          </tr>
+          <tr>
+            <td><strong>某戶租戶（我們家）</strong></td>
+            <td>Woow HA Pi Agent add-on 這個容器</td>
+            <td>就是這篇要拆解的主角</td>
+          </tr>
+          <tr>
+            <td><strong>戶內的家人</strong></td>
+            <td>容器內的多個 process</td>
+            <td>nginx、pi-web、video-tools-init 各自負責家裡的一部分工作</td>
+          </tr>
+          <tr>
+            <td><strong>戶內的家管系統</strong></td>
+            <td>s6-overlay（process supervisor）</td>
+            <td>負責喚醒家人、按順序上班、家人偷懶就叫醒他</td>
+          </tr>
+          <tr>
+            <td><strong>戶內的儲藏室</strong></td>
+            <td><code>/data/pi-agent/</code> 目錄</td>
+            <td>存所有值錢的東西——對話、金鑰、Skill、影片專案</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>兩個關鍵設計你要抓住：</p>
+      <ol class="steps">
+        <li>
+          <h3>Ingress 是唯一入口</h3>
+          <p>你的瀏覽器不能直接連 Pi Agent 的內部服務。所有請求都得經過 HA 的接待櫃檯（Ingress），櫃檯先確認你是登入過的 HA admin，再放行到 Pi Agent 內部。這是為什麼<a href="ch3_open_it.html">第 3 章</a>強調「側邊欄按鈕自動出現」——那個按鈕背後就是走 Ingress。</p>
+        </li>
+        <li>
+          <h3>戶內是多層次的</h3>
+          <p>Pi Agent 這個 add-on 容器內部<strong>不是只跑一個 process</strong>，而是一整組——nginx 站在門口收轉發、pi-web 是主應用、video-tools-init 是首次啟動才會跑的一次性 worker，加上 s6-overlay 這個「家管系統」在背後協調。</p>
+        </li>
+      </ol>
+      <div class="callout"><strong>觀念：</strong>HA add-on 本質上就是一個 Docker container。Pi Agent 這個 container 內部同時跑多個 process 不太符合「一個 container 一個 process」的教科書慣例——但這是 HA add-on 的常見做法，s6-overlay 就是為了在單一容器內優雅管理多 process 而存在的工具。</div>
+    </section>
+
+    <section id="steps" data-nav="s6-overlay 開機順序">
+      <h2 data-icon="steps">s6-overlay 開機順序：家人幾點上班</h2>
+      <p>當 HA Supervisor 按下 Pi Agent 的「啟動」，容器內部發生的事其實有明確順序。<strong>s6-overlay（有時寫 s6）</strong>是這棟家管系統的核心——它是一套「行程監督工具（process supervisor）」，負責把家人一個個依序叫起來。</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>順序</th><th>服務名稱</th><th>類型</th><th>做的事</th><th>典型耗時</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td>
+            <td><code>s6-rc-init</code></td>
+            <td>系統啟動</td>
+            <td>s6 自己的「家管系統」先開機，把之後要用的內部訊號通道準備好</td>
+            <td>&lt; 1 秒</td>
+          </tr>
+          <tr>
+            <td>2</td>
+            <td><code>video-tools-init</code></td>
+            <td>一次性任務（oneshot）</td>
+            <td>檢查儲藏室有沒有 <code>.video-tools-installed</code> sentinel 檔——有就跳過；沒有就下載 Playwright、Chromium、edge-tts 那 720 MB，裝到 <code>/data/pi-agent/venv/</code> 與 <code>/data/pi-agent/playwright-cache/</code>；裝完在儲藏室放一張 sentinel 說「裝好了下次別再裝」</td>
+            <td>首次 3-8 分鐘，之後 &lt; 1 秒</td>
+          </tr>
+          <tr>
+            <td>3</td>
+            <td><code>nginx</code></td>
+            <td>長駐服務（long-running）</td>
+            <td>啟動 nginx（反向代理，reverse proxy）監聽容器內部 30142 埠——所有 HA Ingress 轉進來的請求都會先撞到它</td>
+            <td>&lt; 1 秒</td>
+          </tr>
+          <tr>
+            <td>4</td>
+            <td><code>pi-web</code></td>
+            <td>長駐服務</td>
+            <td>啟動 Node.js Next.js 主應用（就是你在瀏覽器看到的介面）；監聽容器內部 30141 埠；nginx 會把請求轉給它</td>
+            <td>3-15 秒</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>依序啟動很重要——如果 nginx 先起來但 pi-web 還沒好，nginx 收到請求會回 502 給你。所以 s6-overlay 的設定告訴它：<strong>先看 video-tools-init 有沒有跑完，再啟動 nginx 跟 pi-web；pi-web 要有「準備好接收請求」的訊號 nginx 才會真正把 traffic 轉過去</strong>。</p>
+      <p>另外，Supervisor 從外面也會定期打 <strong>Watchdog</strong> 探針（下一節詳說）——如果 pi-web 卡住、hang 住、或應答變得很慢，Supervisor 會下令重啟整個容器。s6-overlay 這時會按同樣順序再走一次 1→2→3→4，只不過第 2 步會直接跳過（因為 sentinel 已經有了）。</p>
+      <div class="callout tip"><strong>對照日常經驗：</strong>你可能會問「為什麼要這麼麻煩，不能一個服務搞定嗎？」——因為每個 process 有各自的職責：video-tools-init 是<strong>只跑一次</strong>的（不是常駐）、nginx 是<strong>擋在前面</strong>的（跟後端不同崗位）、pi-web 是<strong>本體</strong>。混在一起寫會變成一個超大程式很難維護。s6-overlay 就是幫你把這些「不同壽命的角色」分開管理。</div>
+    </section>
+
+    <section id="network" data-nav="nginx 的角色">
+      <h2 data-icon="network">nginx 的角色：HA Ingress 的翻譯官</h2>
+      <p>你可能會覺得「Pi Agent 是個網頁應用，為什麼中間要多一層 nginx？多此一舉」。實際上 nginx 是<strong>整個容器裡最微妙、最關鍵的一個服務</strong>——它是翻譯官，把 HA Ingress 講的話翻譯給 pi-web 聽。</p>
+      <p>先看問題：HA 給每個 add-on 分配的 URL 長這樣——</p>
+      <pre class="code-block">https://homeassistant.local:8123/hassio/ingress/woow_ha_pi_agent/</pre>
+      <p>而 pi-web 這個應用內部只認得「根路徑」（<code>/</code>），它不知道自己被藏在 <code>/hassio/ingress/woow_ha_pi_agent/</code> 底下。如果不處理，pi-web 產生的 HTML 裡的連結會寫成 <code>/settings</code> 之類的相對路徑，瀏覽器一點就跳到 <code>https://homeassistant.local:8123/settings</code>——404，因為那不在 HA 的路由裡。</p>
+      <p>nginx 就是負責幫忙「路徑翻譯」的中間人：</p>
+      <ol class="steps">
+        <li>
+          <h3>收 HA Ingress 進來的請求</h3>
+          <p>HA 把請求塞給 Pi Agent 容器的 30142 埠（<code>ingress_port: 30142</code>），nginx 監聽那個埠，所以第一手一定收到。</p>
+        </li>
+        <li>
+          <h3>從請求頭部把 Ingress path 取出來</h3>
+          <p>HA 會在請求裡塞一個叫 <code>X-Ingress-Path</code> 的 HTTP header，內容像 <code>/api/hassio_ingress/A1b2C3d4e5F6g7H8</code>（16-128 字元的隨機字串，每次 HA 重啟會換）。</p>
+        </li>
+        <li>
+          <h3>轉給 pi-web、拿到回覆</h3>
+          <p>nginx 把請求轉發到 <code>http://127.0.0.1:30141</code>（pi-web 內部埠），pi-web 產出 HTML 回覆。</p>
+        </li>
+        <li>
+          <h3>用 sub_filter 改寫 HTML</h3>
+          <p>nginx 用一個叫 <code>sub_filter</code> 的濾鏡（filter），把 HTML 裡的相對路徑（像 <code>href=&quot;/settings&quot;</code>）改成完整的 Ingress 路徑（<code>href=&quot;/api/hassio_ingress/A1b2.../settings&quot;</code>）。這樣瀏覽器點連結就對得到。</p>
+        </li>
+        <li>
+          <h3>白名單防禦：只放行合法的 header</h3>
+          <p>為了避免有人偽造 <code>X-Ingress-Path</code> 亂射，nginx 會用 regex（正則表達式）驗證 header 內容，只讓 <code>^/api/hassio_ingress/[A-Za-z0-9_-]&#123;16,128&#125;$</code> 這個格式的過。不符合就當成沒有這個 header——避免注入。</p>
+        </li>
+      </ol>
+      <p>這一層看起來很囉唆，實際上是<strong>把「pi-web 完全不需要知道 HA Ingress」這件事變成真的</strong>。pi-web 只管好好當一個 Next.js 應用；nginx 負責把它塞進 HA 的路由架構。這種設計叫 <em>Ingress shim</em>——就像插頭的轉接器，兩邊規格不同時中間放一片。</p>
+      <div class="callout"><strong>對比 podman/k3s 版：</strong>如果你看過 <a href="https://github.com/WOOWTECH/Woow_podman_pi_agent_package">Woow_podman_pi_agent_package</a> 的 nginx.conf，那邊 nginx 也存在，但工作不太一樣——podman 版沒有 HA Ingress，nginx 是為了改 <code>Host</code> 跟 <code>Origin</code> 頭部（因為 pi-web 的 <code>isApiRequestAllowed()</code> 只認 loopback）。HA 版的 nginx 主要工作是 Ingress path 改寫；podman 版是 header 改寫。看到「都是 nginx」但角色略有差異，就是這個道理。</div>
+    </section>
+
+    <section id="records" data-nav="/data/pi-agent 目錄地圖">
+      <h2 data-icon="records"><code>/data/pi-agent/</code> 目錄地圖</h2>
+      <p><a href="ch20_backup.html">第 20 章</a>已經給過一個簡表，這裡給的是完整版——你 SSH 進 add-on container 進到儲藏室之後，眼前會看到這些：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>路徑</th><th>裝什麼</th><th>備份會不會抓</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>sessions/&lt;encoded-cwd&gt;/&lt;timestamp&gt;_&lt;uuid&gt;.jsonl</code></td>
+            <td>每個對話 session 一個 JSONL 檔（每一行一個訊息）；<code>&lt;encoded-cwd&gt;</code> 是把工作目錄的路徑 URL-encode 之後當作資料夾名——同一個工作目錄下的對話會分到同一個資料夾</td>
+            <td>會（是<strong>對話存檔</strong>）</td>
+          </tr>
+          <tr>
+            <td><code>models.json</code></td>
+            <td>你在 Models 面板加的 provider、model 名稱、API key——<strong>金鑰是明文存的沒有加密</strong>，靠檔案權限 <code>chmod 600</code> 只讓 owner 讀寫；<a href="ch6_paste_key.html">第 6 章</a>提過</td>
+            <td>會（換 HA 主機這個一定要走）</td>
+          </tr>
+          <tr>
+            <td><code>auth.json</code></td>
+            <td>各家 OAuth provider 的 refresh token（例如 Google Drive 的授權）；同樣 <code>chmod 600</code></td>
+            <td>會</td>
+          </tr>
+          <tr>
+            <td><code>home/pi-cwd-&lt;uuid&gt;/</code></td>
+            <td>pi coding agent 的工作目錄。容器內的 <code>$HOME</code> 環境變數被 pin 到這裡，所以 <code>pi install ...</code> 之類的 CLI 指令產物會寫在這裡不會丟</td>
+            <td>會</td>
+          </tr>
+          <tr>
+            <td><code>skills/&lt;skill-name&gt;/</code></td>
+            <td>安裝的 Skill——本質上就是從 GitHub <code>git clone</code> 下來的資料夾；<a href="ch14_skill_concept.html">第 14 章</a>講過概念</td>
+            <td>會（Skill 內容通常不大）</td>
+          </tr>
+          <tr>
+            <td><code>rclone/rclone.conf</code></td>
+            <td>rclone 的雲端授權設定（包含 Google Drive access token）；<a href="ch19_rclone.html">第 19 章</a>設過</td>
+            <td>會</td>
+          </tr>
+          <tr>
+            <td><code>projects/&lt;project&gt;/</code></td>
+            <td>影片管線的工作區。子目錄有 <code>script/</code>、<code>clips/</code>、<code>segments/</code>、<code>voice/</code>、<code>output/</code>——<a href="ch17_video_pipeline.html">第 17 章</a>那張中間檔表就是這裡</td>
+            <td>部分——<code>final.mp4</code>、<code>script.md</code>、<code>subtitles.srt</code> 會；<code>clips/</code>、<code>voice/</code> 這些大檔通常被 exclude 避免塞爆 snapshot</td>
+          </tr>
+          <tr>
+            <td><code>venv/</code></td>
+            <td>Python 虛擬環境（virtual environment）——edge-tts 跟其他 pip 套件裝在這裡</td>
+            <td>不會（HA snapshot exclude，因為可以重下載）</td>
+          </tr>
+          <tr>
+            <td><code>playwright-cache/</code></td>
+            <td>Playwright 下載的 Chromium 二進位檔（大約 200 MB）</td>
+            <td>不會（同上，可以重下載）</td>
+          </tr>
+          <tr>
+            <td><code>.video-tools-installed</code></td>
+            <td>一個空的 sentinel 檔——存在就代表「video-tools-init 跑過了、下次不用再跑」；<a href="ch18_video_tools.html">第 18 章</a>講的重跑機制就是把這個檔刪掉</td>
+            <td>會（很小，但抓不抓其實影響不大）</td>
+          </tr>
+          <tr>
+            <td><code>settings.json</code></td>
+            <td>UI 偏好設定（主題、預設模型等）</td>
+            <td>會</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>兩個要記住的原則：</p>
+      <ul>
+        <li><strong>值錢的（不能重生的）都在 <code>/data/pi-agent/</code></strong>——sessions、models.json、skills、rclone conf。這也是 HA snapshot 抓的核心。</li>
+        <li><strong>大而可重生的（venv、playwright-cache）刻意被 exclude</strong>——如果 snapshot 抓 venv，一個 backup 檔就 500MB 起跳，實務上很痛苦。所以政策是「刪掉這些，還原後首次啟動 video-tools-init 會自動重下載」。</li>
+      </ul>
+      <div class="callout warn"><strong>注意：</strong>如果你想在 HA 主機的 host 端（不是 container 內）看 <code>/data/pi-agent/</code>，實際位置在 <code>/mnt/data/supervisor/addon_configs/&lt;addon-slug&gt;/</code>（或某些 HA 版本是 <code>/usr/share/hassio/addon_configs/&lt;addon-slug&gt;/</code>）——SSH 進 HA host 之後才看得到。這一段是進階 debug 手法，一般用戶不用碰。</div>
+    </section>
+
+    <section id="test" data-nav="Watchdog 探針">
+      <h2 data-icon="test">Watchdog 探針：Supervisor 怎麼確認你還活著</h2>
+      <p>Pi Agent 是長時間跑的服務，可能因為 memory leak、無窮迴圈、外部 API 死等而卡住。<strong>Watchdog</strong>（守望）是 HA Supervisor 用來偵測這種「還在跑但實際上死掉」情況的機制。</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>項目</th><th>內容</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>探針端點（endpoint）</strong></td>
+            <td><code>http://[HOST]:[PORT:30142]/api/home</code>——Supervisor 用容器內部 IP 打 30142，經 nginx 轉給 pi-web 的 <code>/api/home</code> API</td>
+          </tr>
+          <tr>
+            <td><strong>頻率</strong></td>
+            <td>由 HA Supervisor 決定，通常 60 秒一次（在 <code>config.yaml</code> 裡設 <code>watchdog: true</code> 就啟用）</td>
+          </tr>
+          <tr>
+            <td><strong>成功條件</strong></td>
+            <td>HTTP 200 回應（不管 body 內容）；逾時或非 200 就算失敗</td>
+          </tr>
+          <tr>
+            <td><strong>失敗動作</strong></td>
+            <td>Supervisor 呼叫 <code>docker restart addon_local_woow_ha_pi_agent</code>——整個容器重啟；s6-overlay 從第 1 步重走一次</td>
+          </tr>
+          <tr>
+            <td><strong>對 session 的影響</strong></td>
+            <td>不會遺失。對話檔案是 <em>append-only</em> 的 JSONL——每收到一句話就寫一行 flush 到磁碟，就算 restart 也只會少「還沒寫完那句」。下次開啟 session 從最後一行接續</td>
+          </tr>
+          <tr>
+            <td><strong>對影片管線的副作用</strong></td>
+            <td>如果 Watchdog 在 pitch_video 跑到一半觸發 restart，那條 pipeline 產生的 <code>clips/</code> 可能有半寫入的 webm 檔——那支影片八成毀了，重跑一次。這是<a href="ch22_troubleshoot.html">第 22 章</a>「影片突然壞掉」的常見成因</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>Watchdog 是雙面刃：能自動撿回卡住的服務很棒，但如果你的 add-on 本身沒問題只是<strong>回應比較慢</strong>（例如你叫它處理大量對話歷史），有機會被誤判成「hang」被強制 restart。這時候要嘛加大 timeout（改 <code>config.yaml</code>）、要嘛暫時把 Watchdog 關掉（HA 頁面上有開關）。</p>
+      <div class="callout tip"><strong>debug 小技巧：</strong>你在 add-on Log 分頁看到「Watchdog missed heartbeat, restarting」之類的訊息代表 Supervisor 主動重啟；如果看到「s6-rc-init started」但沒有 crash 訊息，八成就是 Watchdog restart。這種情況通常代表 pi-web 卡住了——要不要調查取決於這是偶發還是週期性重複。</div>
+    </section>
+
+    <section id="ai" data-nav="Skill 發現流程">
+      <h2 data-icon="ai">Skill 發現流程：AI 怎麼知道有哪些工具</h2>
+      <p><a href="ch14_skill_concept.html">第 14 章</a>講過 Skill 的心智模型（給 AI 讀的工作手冊），這裡講「AI 怎麼發現」——這是很多人納悶的地方：「我 <code>pi install</code> 裝了新 skill，為什麼要重開 session 才生效？」</p>
+      <p>整段流程是這樣的，發生在<strong>每次你按「新對話」的瞬間</strong>：</p>
+      <ol class="steps">
+        <li>
+          <h3>Session 建立</h3>
+          <p>你按新對話，pi-web 建一個新的 session 檔案（<code>sessions/.../*.jsonl</code>）。</p>
+        </li>
+        <li>
+          <h3>掃描 skills 資料夾</h3>
+          <p>pi-web 開始掃 <code>/data/pi-agent/skills/*/SKILL.md</code>——把每個子資料夾底下的 <code>SKILL.md</code> 檔案讀進來。</p>
+        </li>
+        <li>
+          <h3>解析 YAML frontmatter</h3>
+          <p>每個 <code>SKILL.md</code> 檔案開頭有一段 YAML frontmatter，長這樣：</p>
+          <pre class="code-block">---
+name: fridge_inventory
+description: 幫使用者盤點冰箱食材、找出快過期的東西
+---
+
+# 冰箱盤點手藝
+
+...細節內容...</pre>
+          <p>pi-web 只讀 <code>name</code> 跟 <code>description</code>——<strong>整份 SKILL.md 的內文不會直接塞給 AI</strong>，只給摘要。</p>
+        </li>
+        <li>
+          <h3>組成 <code>&lt;available_skills&gt;</code> 塊</h3>
+          <p>所有 skill 的 name + description 合成一個列表，包在 XML 標籤裡。看起來像：</p>
+          <pre class="code-block">&lt;available_skills&gt;
+&lt;skill name="fridge_inventory"&gt;
+幫使用者盤點冰箱食材、找出快過期的東西
+&lt;/skill&gt;
+&lt;skill name="pitch_video"&gt;
+從腳本到 YouTube 可上傳的影片管線
+&lt;/skill&gt;
+&lt;/available_skills&gt;</pre>
+        </li>
+        <li>
+          <h3>貼到 system prompt 開頭</h3>
+          <p>這個 <code>&lt;available_skills&gt;</code> 塊被貼在 AI 的 system prompt 開頭——AI 開啟對話的第一件事就是看到「這台機器可以呼叫的手藝有這些」。</p>
+        </li>
+        <li>
+          <h3>AI 判斷什麼時候用哪個</h3>
+          <p>之後你講什麼 AI 都會依這份清單判斷「這個問題有沒有適合的 skill 可以叫」。要叫的時候 AI 才會去讀完整的 SKILL.md 內容（透過工具呼叫），拿到細節做事。</p>
+        </li>
+      </ol>
+      <p>這就是為什麼<strong>裝新 skill 必須重開 session</strong>——已經開的 session 的 system prompt 是舊的、沒把新 skill 塞進去。也是為什麼<strong>SKILL.md 的 <code>description</code> 那一行超重要</strong>——寫得不好 AI 就不會挑到你這個 skill；寫得好會經常派上用場。</p>
+      <div class="callout"><strong>觀念：</strong>這種「摘要塞給 AI、細節等要用時再讀」的設計叫 <em>progressive disclosure</em>（漸進揭露）——不是一次把所有文件塞給 AI（會爆 token 也讓 AI 分心），而是先給選單、選了才點餐。</div>
+    </section>
+
+    <section id="app" data-nav="pi-web 技術棧">
+      <h2 data-icon="app">pi-web 的技術棧：主應用到底用什麼寫的</h2>
+      <p>你在瀏覽器看到的整個介面，包括打字區、對話列表、模型下拉、Skills 面板——通通都是 pi-web 這個 Node.js 應用做出來的。它的組成：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>元件</th><th>用途</th><th>備註</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Node.js 22</strong></td>
+            <td>JavaScript 執行環境（runtime）</td>
+            <td>Pi Agent 的 Docker 映像檔基於 Node 22 LTS 版</td>
+          </tr>
+          <tr>
+            <td><strong>Next.js 16</strong></td>
+            <td>網頁框架——同時處理前端 React 與後端 API routes</td>
+            <td>App Router 架構；用 <code>pages/</code> 跟 <code>app/</code> 混合</td>
+          </tr>
+          <tr>
+            <td><strong>React 19</strong></td>
+            <td>前端 UI 元件框架</td>
+            <td>Server Components 有用；stream 對話用 Suspense</td>
+          </tr>
+          <tr>
+            <td><strong>pino</strong></td>
+            <td>結構化 JSON logger</td>
+            <td>Log 分頁看到的是它產出的——每行是一個 JSON 物件，方便解析</td>
+          </tr>
+          <tr>
+            <td><strong>@earendil-works/pi-coding-agent</strong></td>
+            <td>coding agent 的 SDK——AI 邏輯、tool call、skill 管理都由它處理</td>
+            <td>pi-web <strong>in-process</strong> 呼叫它（同個 Node 進程），不是另開 daemon</td>
+          </tr>
+          <tr>
+            <td><strong>內部埠 30141</strong></td>
+            <td>pi-web 監聽的 port</td>
+            <td>只在容器內開，外部經 nginx（30142）進來</td>
+          </tr>
+          <tr>
+            <td><strong>對外埠 30142（Ingress）</strong></td>
+            <td>nginx 監聽的 port，HA Ingress 打進來的地方</td>
+            <td>對應 <code>config.yaml</code> 裡的 <code>ingress_port: 30142</code></td>
+          </tr>
+        </tbody>
+      </table>
+      <p>幾個技術點值得注意：</p>
+      <ul>
+        <li><strong>pi-coding-agent SDK 是 in-process 的</strong>——這代表 pi-web 崩了 agent 也跟著崩、agent 執行的 tool call（比如寫檔案）是用 pi-web 的權限做的。沒有 daemon 隔離就是為了少一層 IPC。</li>
+        <li><strong>沒有資料庫</strong>——對話存 JSONL 檔案、設定存 JSON 檔案，一切都是檔案系統。這是刻意的簡化設計（也讓備份很好處理）。</li>
+        <li><strong>chat 走 SSE（Server-Sent Events）</strong>——AI 回覆邊產生邊 stream 給你看那種效果，是用 SSE 傳的。這也是為什麼 <a href="#network">nginx 那節</a>的 <code>proxy_buffering</code> 一定要關掉——不然回覆會被 nginx 緩到 AI 生完才一次吐出來。</li>
+      </ul>
+      <div class="callout tip"><strong>對想貢獻上游的：</strong>pi-web 開源在 <a href="https://github.com/agegr/pi-web">github.com/agegr/pi-web</a>，pi coding agent SDK 在 <a href="https://github.com/earendil-works/pi">github.com/earendil-works/pi</a>；Woow HA Pi Agent 這個 add-on 只是把它們打包成 HA add-on 的殼——加 nginx shim、加 s6-overlay 設定、加 video-tools-init 腳本。想改 UI 或 agent 邏輯要去 upstream 兩個 repo 提 PR。</div>
+    </section>
+
+    <section id="theme" data-nav="v0.13.0 API key 搬家">
+      <h2 data-icon="theme">v0.13.0 為什麼把 API key 從 add-on config 搬到 pi-web UI</h2>
+      <p>這是 v0.13.0 版本最大的架構改動，你如果從舊版升上來會發現 add-on Configuration 分頁上原本的 API key 欄位不見了（<a href="ch21_upgrade.html">第 21 章</a>講過這個升級踩雷）。這節從架構角度講「為什麼要搬」。</p>
+      <p><strong>舊架構（v0.12 之前）</strong>：</p>
+      <ol class="steps">
+        <li>
+          <h3>你在 add-on Configuration 分頁填欄位</h3>
+          <p>畫面上有 <code>anthropic_api_key</code>、<code>openai_api_key</code>、<code>glm_api_key</code> 一堆欄位。</p>
+        </li>
+        <li>
+          <h3>Supervisor 寫到 <code>/data/options.json</code></h3>
+          <p>你按存檔，Supervisor 把整個表單序列化成 JSON 寫進容器內的 <code>/data/options.json</code>。</p>
+        </li>
+        <li>
+          <h3>啟動時當環境變數塞給 pi-web</h3>
+          <p>s6-overlay 開機腳本讀 <code>/data/options.json</code>，把每個欄位變成 <code>ANTHROPIC_API_KEY=...</code> 之類的 env var，然後才 exec pi-web。</p>
+        </li>
+        <li>
+          <h3>pi-web 從環境變數讀</h3>
+          <p>pi-web 啟動時 <code>process.env.ANTHROPIC_API_KEY</code> 拿金鑰。</p>
+        </li>
+      </ol>
+      <p><strong>舊架構的缺點</strong>：</p>
+      <ul>
+        <li>加新家 provider 就要改 <code>config.yaml</code> 的 schema、發新版才行——動態不了</li>
+        <li>同一家想接兩把 key（工作一把、家用一把）？做不到，一個欄位一個值</li>
+        <li>沒有 Test 按鈕——你貼錯的 key，要等實際發第一封請求才知道 401 錯了</li>
+        <li>動態切換慢——改欄位要 restart add-on 才吃到新值</li>
+      </ul>
+      <p><strong>新架構（v0.13 之後）</strong>：</p>
+      <ol class="steps">
+        <li>
+          <h3>你打開 pi-web 的 Models 面板</h3>
+          <p>在瀏覽器介面裡，不是 add-on 那邊。</p>
+        </li>
+        <li>
+          <h3>按 Add Provider、填表、按 Test</h3>
+          <p><a href="ch6_paste_key.html">第 6 章</a>教過的流程。Test 按下去 pi-web 會實際發一封 API 請求驗證，綠燈才存。</p>
+        </li>
+        <li>
+          <h3>pi-web 存到 <code>/data/pi-agent/models.json</code></h3>
+          <p>結構化的 JSON，可以裝很多 provider、每 provider 很多 key、每 key 很多 model。</p>
+        </li>
+        <li>
+          <h3>不需要 restart 就生效</h3>
+          <p>下個 session 就吃到新設定，因為 pi-web 每次開 session 都會 re-read <code>models.json</code>。</p>
+        </li>
+      </ol>
+      <p><strong>新架構的好處</strong>：</p>
+      <ul>
+        <li>多家、多 key、多 model 都能動態管理</li>
+        <li>Test 按鈕可以事先驗證</li>
+        <li>不用重啟 add-on</li>
+        <li>UI 上可以做「按這家的 provider 只想用其中某幾個 model」這種細節控制</li>
+      </ul>
+      <p><strong>遷移路徑</strong>：升到 v0.13 之後第一次開 add-on，pi-web 會自動讀舊的環境變數幫你 seed 一次到 <code>models.json</code>（讓你不用手動搬）。之後 add-on config 的舊欄位就不再有用，Documentation 頁面會標「deprecated」。</p>
+      <div class="callout warn"><strong>陷阱：</strong>如果你升級後看不到你的舊 provider 出現在 Models 面板，代表 seed 沒跑成功。手動辦法是自己在 Models 面板 Add Provider 重加一次——舊 key 還在（Supervisor 沒清），你貼進去就好。實在找不到舊 key 可以到 add-on Documentation 頁的舊 Configuration 段落複製回來。</div>
+    </section>
+
+    <section id="advanced" data-nav="debug 進階技巧">
+      <h2 data-icon="advanced">debug 進階技巧：進到容器裡面看</h2>
+      <p>普通的 debug 靠 add-on Log 分頁看訊息就行。進階 debug 得<strong>進到容器內部</strong>——這裡整理幾招最常用的：</p>
+      <ol class="steps">
+        <li>
+          <h3>開 debug log level</h3>
+          <p>在 add-on Configuration 分頁把 <code>log_level</code> 從 <code>info</code> 改成 <code>debug</code>（<a href="#" onclick="alert('見附錄 A · 設定參數速查')">附錄 A</a> 有詳細等級對照）。改完存檔會自動重啟，重啟後 Log 分頁會有非常詳細的訊息（有時多到眼花，看完記得改回 <code>info</code>）。</p>
+        </li>
+        <li>
+          <h3>SSH 進 HA host 再 exec 進容器</h3>
+          <p>裝 <em>SSH &amp; Web Terminal</em> add-on，或用 HA 的 <em>Advanced SSH</em>。連進去之後跑：</p>
+          <pre class="code-block">docker exec -it addon_local_woow_ha_pi_agent bash</pre>
+          <p>就進到 Pi Agent 容器內部了。可以 <code>ls /data/pi-agent</code>、<code>cat /etc/nginx/nginx.conf</code>、<code>ps aux</code> 看有哪些 process 在跑。<strong>注意這是 read-only 心態</strong>——別亂改容器內的檔案（重啟會消失，除非改在 <code>/data</code> 底下）。</p>
+        </li>
+        <li>
+          <h3>看 nginx access log 抓 Ingress path</h3>
+          <p>容器內：</p>
+          <pre class="code-block">tail -f /var/log/nginx/access.log</pre>
+          <p>可以看每個請求進來的 URL、狀態碼、response time。想確認「HA 有沒有真的把 <code>X-Ingress-Path</code> header 送進來」，看這裡最快。</p>
+        </li>
+        <li>
+          <h3>手動測 edge-tts 是不是能連微軟</h3>
+          <p>容器內：</p>
+          <pre class="code-block">/data/pi-agent/venv/bin/python -m edge_tts --list-voices | head</pre>
+          <p>能列出聲音就代表網路通、venv 沒壞。列不出來就是「video-tools 半殘」——沿著 <a href="ch18_video_tools.html">第 18 章</a>的重跑機制修復。</p>
+        </li>
+        <li>
+          <h3>手動測 rclone 到 Google Drive</h3>
+          <p>容器內：</p>
+          <pre class="code-block">rclone --config /data/pi-agent/rclone/rclone.conf ls gdrive: | head</pre>
+          <p>能看到 Google Drive 內容代表授權還沒過期。看到 <code>token expired</code> 之類就是要重新跑 <code>rclone config reconnect</code>（<a href="ch19_rclone.html">第 19 章</a>結尾提過）。</p>
+        </li>
+      </ol>
+      <div class="callout warn"><strong>提醒：</strong>SSH 進 HA host 那條路要小心——你有整台 HA 的 shell，動錯東西可以搞掛整個系統。<strong>如果只是為了看 Pi Agent</strong>，優先用 <code>docker exec</code> 進到那個容器裡動作，別在 HA host 的檔案系統亂寫。看完就 <code>exit</code>。</div>
+    </section>
+
+    <section id="troubleshoot" data-nav="架構層 troubleshoot">
+      <h2 data-icon="troubleshoot">架構層 troubleshoot 清單</h2>
+      <p>這一節不重複<a href="ch22_troubleshoot.html">第 22 章</a>的表面症狀，只列「懂架構才能修」的那些：</p>
+      <ol class="steps">
+        <li>
+          <h3>想在 HA host 上直接動 <code>/data/pi-agent/</code> 的檔</h3>
+          <p><strong>症狀</strong>：你想在 HA host 用 File Editor 或 SSH 直接 <code>vi</code> 一份 <code>models.json</code>，但找不到那個路徑。<br>
+          <strong>原因</strong>：HA add-on 的 <code>/data</code> 在 host 端不是 <code>/data</code>，而是 <code>/mnt/data/supervisor/addon_configs/&lt;addon-slug&gt;/</code>（HA OS）或 <code>/usr/share/hassio/addon_configs/&lt;addon-slug&gt;/</code>（Supervised）。slug 是 add-on 的內部名稱，Pi Agent 通常是 <code>local_woow_ha_pi_agent</code> 或 <code>xxxxxxxx_woow_ha_pi_agent</code>（前綴依 repo 而定）。<br>
+          <strong>解法</strong>：SSH 進 HA host → <code>ls /mnt/data/supervisor/addon_configs/</code> 找出實際 slug → 進去操作。改完存檔<strong>不用重啟 add-on</strong>，pi-web 下次 read 就吃到（但影響大的檔改完最好重啟保險）。</p>
+        </li>
+        <li>
+          <h3>Ingress 掛：nginx 一直回 403</h3>
+          <p><strong>症狀</strong>：側邊欄按 Pi Agent 按鈕，畫面出現一片空白或 nginx 的 403 錯誤頁。<br>
+          <strong>原因</strong>：nginx 的白名單 regex 沒讓 <code>X-Ingress-Path</code> header 過。可能是 HA 版本更新後 header 格式微改（多了字元、少了 <code>_</code>），或 HA 那邊沒送這個 header 進來。<br>
+          <strong>解法</strong>：容器內 <code>tail -f /var/log/nginx/access.log</code> 看實際請求的 header；如果格式明顯不同（例如 slug 突然有大寫或全形），去 GitHub <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_package/issues">Woow_ha_pi_agent_package</a> 開 issue 貼給作者。臨時解法：重啟 HA 本體讓 Ingress 重發新的 slug。</p>
+        </li>
+        <li>
+          <h3>pi-web hang：Watchdog 一直 restart</h3>
+          <p><strong>症狀</strong>：Log 分頁每幾分鐘就跳 <code>s6-rc-init started</code>，代表容器不斷被 Supervisor 重啟。<br>
+          <strong>原因</strong>：pi-web 的 <code>/api/home</code> 端點沒在 60 秒內回 200——可能是 CPU 被吃光、記憶體不夠、Node event loop 卡在某個同步操作。<br>
+          <strong>解法</strong>：（a）先看 HA 主機 CPU/RAM 是不是滿載——Pi 3、太舊的 mini PC 很容易掛；（b）暫時關掉 Watchdog（HA add-on 頁面上有開關）看 pi-web 到底能不能自己撐；（c）開 <code>log_level: debug</code> 抓死前那幾秒在幹嘛；（d）真的搞不定就到 GitHub 開 issue 附上 log。</p>
+        </li>
+        <li>
+          <h3>video-tools 半殘：sentinel 有了但 venv 是空的</h3>
+          <p><strong>症狀</strong>：影片管線一叫就爆錯，說找不到 edge-tts 或 Playwright。<br>
+          <strong>原因</strong>：video-tools-init 第一次跑到一半掉線但已經寫了 sentinel 就退出，之後每次都以為裝好了直接跳過。<br>
+          <strong>解法</strong>：add-on Configuration 分頁把 <code>reset_video_tools: true</code> 打勾存檔——這個開關會刪掉 sentinel 讓下次啟動重新跑一次 init。跑完記得回來把開關關掉（不然每次啟動都重下 720MB）。<a href="ch18_video_tools.html">第 18 章</a>那邊有更多這個開關的細節。</p>
+        </li>
+        <li>
+          <h3>Skill 裝了但 AI 看不見</h3>
+          <p><strong>症狀</strong>：<code>pi install</code> 說裝成功了，但你在對話裡 AI 就是不會叫。<br>
+          <strong>原因</strong>：<a href="#ai">Skill 發現流程</a>只在新 session 開始時跑一次——你的舊 session system prompt 沒有這個 skill。<br>
+          <strong>解法</strong>：按「新對話」開新 session。還是看不到就 <code>ls /data/pi-agent/skills/</code> 確認資料夾真的存在、<code>cat SKILL.md</code> 確認 frontmatter 的 <code>name</code> 跟 <code>description</code> 都在。frontmatter 格式錯誤（YAML 縮排錯之類）會讓整個 skill 被跳過。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>我可以自己 fork Pi Agent add-on 改嗎？授權允許嗎？</summary>
+        <div class="body">可以。Pi Agent add-on 是 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_package">MIT 或 Apache 之類的開源授權</a>（以 repo 的 LICENSE 為準），你可以 fork、改、發自己的 repo 讓別人裝。<strong>但要注意兩件事</strong>：（1）上游的 pi-web 跟 pi-coding-agent 是不同 repo（<code>agegr/pi-web</code> 跟 <code>earendil-works/pi</code>）的授權，如果你打算改它們也要看那邊的 LICENSE；（2）你 fork 後改的部分建議另外命名（例如 <code>Woow_ha_pi_agent_myfork</code>）不要蓋原始 slug，不然升級時 HA 會混淆。</div>
+      </details>
+      <details class="faq">
+        <summary>Home Assistant Container 版（不是 Supervised／HA OS）能不能跑 Pi Agent？</summary>
+        <div class="body">不能。Pi Agent 是 HA add-on，<strong>只有 HA OS 跟 HA Supervised 這兩種安裝方式有 Supervisor</strong>——沒有 Supervisor 就沒有 add-on 系統。HA Container（純 Docker 跑 <code>homeassistant/home-assistant</code>）只有 core，不能裝 add-on。<strong>如果你用 HA Container 想要 Pi Agent</strong>，建議直接跑 <a href="https://github.com/WOOWTECH/Woow_podman_pi_agent_package">Woow_podman_pi_agent_package</a>——那是給 podman/docker 用的等效部署，不需要 HA add-on 系統。</div>
+      </details>
+      <details class="faq">
+        <summary>有 K3s 或 Podman 版本嗎？我想跑在 Kubernetes 上</summary>
+        <div class="body">有。三個平行版本：
+        <ul>
+          <li><a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_package">Woow_ha_pi_agent_package</a>——HA add-on 版（就是這本教學的主角）</li>
+          <li><a href="https://github.com/WOOWTECH/Woow_k3s_pi_agent_package">Woow_k3s_pi_agent_package</a>——K3s（輕量 Kubernetes）部署</li>
+          <li><a href="https://github.com/WOOWTECH/Woow_podman_pi_agent_package">Woow_podman_pi_agent_package</a>——podman/docker 部署</li>
+        </ul>
+        三個版本共用同一個 pi-web + pi-coding-agent 上游，包法不同：HA 版加 Ingress shim，K3s 版加 Helm chart + Deployment，Podman 版加 Quadlet systemd units。功能大同小異，選你環境合適的。</div>
+      </details>
+      <details class="faq">
+        <summary>我想幫 pi-web 或 agent 上游貢獻，要去哪個 repo？</summary>
+        <div class="body">分清楚要改的層——
+        <ul>
+          <li><strong>UI 元件、對話介面、Models 面板、Skills 面板</strong>：改 <a href="https://github.com/agegr/pi-web">github.com/agegr/pi-web</a>（Next.js 應用本體）。</li>
+          <li><strong>AI 邏輯、tool call、skill 呼叫、streaming 行為</strong>：改 <a href="https://github.com/earendil-works/pi">github.com/earendil-works/pi</a>（pi coding agent SDK）。</li>
+          <li><strong>HA add-on 打包（Dockerfile、nginx.conf、s6-overlay 服務、config.yaml）</strong>：改 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_package">github.com/WOOWTECH/Woow_ha_pi_agent_package</a>。</li>
+        </ul>
+        改上游要照他們的 PR 流程；改 add-on 直接在 WOOWTECH repo 開 issue/PR 就好。改之前建議先開 issue 聊過再動手，免得白工。</div>
+      </details>
+      <details class="faq">
+        <summary>為什麼要 <code>panel_admin: true</code>？我想給家人一般 HA 帳號也能用</summary>
+        <div class="body">Pi Agent 的 <code>config.yaml</code> 裡設 <code>panel_admin: true</code>——這代表側邊欄按鈕<strong>只有 admin 權限的 HA 帳號才看得到</strong>。這是刻意的：Pi Agent 內部有 API 金鑰、有存對話紀錄、有能執行任意工具的 AI，一般家人帳號拿到會有安全與帳單風險。<strong>如果你真的要開給非 admin 帳號</strong>：改 <code>config.yaml</code> 把 <code>panel_admin</code> 設成 <code>false</code>——但你要承擔多人共用金鑰、對話混雜、家人不小心叫 AI 亂花錢的後果。折衷做法是為家人開單獨的 admin 帳號（在 HA 使用者管理裡），你比較能追蹤誰做了什麼。</div>
+      </details>
+      <details class="faq">
+        <summary>Pi Agent 會不會把我家的對話送到雲端？</summary>
+        <div class="body"><strong>對話本身存本地</strong>——所有 <code>sessions/*.jsonl</code> 都在你 HA 硬碟上，沒有任何 telemetry 把它上傳到 WOOWTECH。<strong>但 AI 回覆需要打 provider API</strong>——你選了 OpenAI/Anthropic/GLM/DeepSeek 之類，你送出的訊息就是走那家的 API（那家的隱私政策決定他們怎麼用）。真正 100% 本地：接一家本地的 LLM（例如自己跑 Ollama 或 llama.cpp）當 provider，這樣完全不出家。這是 BYOK 架構的好處——你選誰去打交道自己決定。</div>
+      </details>
+      <details class="faq">
+        <summary>能不能同時跑兩個 Pi Agent add-on（一個工作用一個家用）？</summary>
+        <div class="body">技術上做得到，實務上麻煩。HA 允許同一個 add-on 從不同 repo 各裝一份——如果你的兩份是不同來源（例如 WOOWTECH 官方 + 你自己 fork 版），可以並存。但兩者的 side panel 按鈕會撞名、slug 要獨立、儲存要分開資料夾。<strong>比較實際的做法</strong>：一個 Pi Agent + 用<a href="ch8_session.html">第 8 章</a>的 Session 分主題（工作對話開一個 session、家用開另一個），不用真的裝兩份。真的要完全隔離就開兩台 HA 主機。</div>
+      </details>
+      <details class="faq">
+        <summary>版本升級（例如從 v0.12 到 v0.14）會不會刪掉我的資料？</summary>
+        <div class="body">不會。HA add-on 升級流程只換 Docker 映像檔（程式碼），<strong>不動 <code>/data</code> 底下的東西</strong>——你的 sessions、models.json、skills 通通還在。<a href="ch21_upgrade.html">第 21 章</a>講過的 v0.13 API key 搬家是<strong>結構變了</strong>但資料沒丟，pi-web 首次啟動會自動 seed 到新位置。真正會丟的只有<strong>你自己主動刪</strong>（例如 uninstall add-on 再重裝）、或 <code>reset_video_tools</code> 那類明確標「reset」的開關。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="appendix_provider_keys.html">
+        <span class="label">← 附錄 B</span>
+        <span class="title">附錄 B · 金鑰申請速查</span>
+      </a>
+      <a class="next" href="index.html">
+        <span class="label">回目錄 →</span>
+        <span class="title">全套完成！</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

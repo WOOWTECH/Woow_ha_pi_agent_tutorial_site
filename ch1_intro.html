@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 1 章 · 這個 AI 工作站是什麼 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Woow HA Pi Agent 是什麼、能幫家裡做什麼：把它想成裝在 Home Assistant 側邊欄的 AI 工作站，順便回顧 5 分鐘 HA 基礎。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch1_intro.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 1 章 · 這個 AI 工作站是什麼 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Woow HA Pi Agent 是什麼、能幫家裡做什麼：把它想成裝在 Home Assistant 側邊欄的 AI 工作站，順便回顧 5 分鐘 HA 基礎。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch1_intro.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 1 章 · 這個 AI 工作站是什麼 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Woow HA Pi Agent 是什麼、能幫家裡做什麼：把它想成裝在 Home Assistant 側邊欄的 AI 工作站，順便回顧 5 分鐘 HA 基礎。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html" class="active">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要學這個</a>
+      <a href="#concept">Pi Agent 是什麼</a>
+      <a href="#what">它幫你做的四件事</a>
+      <a href="#compare">跟手機 ChatGPT 差在哪</a>
+      <a href="#hardware">硬體門檻</a>
+      <a href="#steps">5 分鐘 HA 回顧</a>
+      <a href="#plan">這本書怎麼讀</a>
+      <a href="#security">資料放哪裡</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 1 章</div>
+      <h1>這個 AI 工作站是什麼</h1>
+      <p class="lead">家裡的 Home Assistant 已經會開燈、關窗簾、按時提醒了，接下來這一章告訴你：多裝一個「AI 工作站」到 HA 裡面，是要拿來做什麼、跟手機上的 ChatGPT 差在哪、以及裝之前要先看你家的 HA 是不是那款可以裝的。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼要學這個">
+      <h2 data-icon="why">為什麼要學這個</h2>
+      <p>你會翻開這本書，代表家裡的 Home Assistant（下稱 HA）已經裝好、電燈能點、窗簾會動、手機也收得到通知。到這一步，其實 80% 智慧家庭該有的都齊了。那為什麼還要多學一個東西？</p>
+      <p>因為接下來的門檻，不是「多買一個裝置」，而是「多一個會思考的幫手」。</p>
+      <ul>
+        <li>你想寫一個「爸爸下班進家門，如果客廳沒人、外面在下雨，就把陽台燈開起來讓他看得到門口」——過去要學 YAML、學 template、學 trigger，一整晚都在 Google。</li>
+        <li>你想問「客廳要換冷氣，孩子睡覺會怕吵，2 坪半的房間應該選幾噸？」——過去你去論壇貼文，等三天。</li>
+        <li>你想做一支「開箱這台 Zigbee 開關」的短片放家族群組，讓阿嬤看得懂——過去你光是剪片就先卡兩天。</li>
+      </ul>
+      <p>Woow HA Pi Agent（本書簡稱「Pi Agent」）就是把一個「會寫、會查、會剪、會跟你討論」的 AI 工作站，直接裝進你家的 HA 主機裡。它不是雲端服務，是<strong>你家的一台工作站</strong>；資料就存在 HA 硬碟上，你能隨時 snapshot 一起備份走。</p>
+      <div class="callout"><strong>觀念：</strong>把 AI 想成家裡新請的一個「工讀生」——他不吃飯、不睡覺、住在 HA 主機裡；你派他寫自動化、查資料、剪影片，做完就交回來給你。他不會把你家的事情拿到外面講。</div>
+    </section>
+
+    <section id="concept" data-nav="Pi Agent 是什麼">
+      <h2 data-icon="concept">Pi Agent 到底是什麼</h2>
+      <p>把家裡想成一間小客廳。你原本有電視、有 Switch、有擴大機——這些都是「看得到的家電」。<strong>Pi Agent 是一台看不見的工作台</strong>，也在客廳，只是沒有實體。它會思考、會查 Google、會寫程式、會幫你出主意，幫忙做那些「你想做但不會做」的家事。</p>
+      <p>技術上白話講：Pi Agent 是一個 <strong>Home Assistant 附加元件（Add-on，2026.2 起 HA 官方改叫 Apps）</strong>。你在 HA 後台按一下「安裝」，它就會在你家 HA 主機上跑起來，然後在 HA 左邊側邊欄多出一個「Pi Agent」的圖示。點進去，你就跟這個 AI 工作站對話。</p>
+      <div class="callout tip"><strong>提示：</strong>它是「附加元件（Apps）」不是「整合（Integration）」——這兩個常被搞混。整合是接「一台裝置」進 HA（例如接一顆燈泡）；附加元件是「多跑一個程式」在 HA 主機上（例如多跑一個 AI）。第 2 章會實際帶你裝，不用擔心。</div>
+      <p>它裡面藏了什麼？講三個名字你會安心一點：</p>
+      <ul>
+        <li><strong>pi-web</strong>：就是那個你會看到的網頁介面。它是這個 AI 工作站的「桌面」。</li>
+        <li><strong>pi coding agent</strong>：一個會讀、會寫、會執行檔案的 AI 引擎，藏在 pi-web 後面。你打字，它處理。</li>
+        <li><strong>影片管線（pitch_video）</strong>：ffmpeg、Playwright、edge-tts、rclone 一整套剪片＋上傳工具，第一次啟動時它會自動下載約 720MB 檔案安裝好，之後你叫它剪片就能直接動手。</li>
+      </ul>
+      <p>你完全不用記這三個名字，記「多一個工作站」就好。</p>
+    </section>
+
+    <section id="what" data-nav="它幫你做的四件事">
+      <h2 data-icon="what">它會幫你做的四件事</h2>
+      <p>下面四件是它的主戰場，每一件都用家庭情境舉例，你就有畫面：</p>
+
+      <p><strong>1. 幫你寫 HA 自動化（不用學 YAML）</strong></p>
+      <p>你打字：「爸爸手機連上家裡 WiFi，且時間是晚上 6 點後，就把玄關燈開白光 30 秒。」它會自己去讀你 HA 有哪些裝置、想清楚要用哪個 trigger、寫出對的 YAML、幫你存進 HA。你只要確認「這樣對嗎？」按確定。整個過程不會叫你打一行程式。</p>
+
+      <p><strong>2. 跟你討論家裡的事（買什麼、換什麼）</strong></p>
+      <p>你問：「客廳要換冷氣，8 坪，2 大 1 小，孩子晚上會怕吵，預算 4 萬內，該選幾噸？」它會把幾家品牌的 EER、噪音值、變頻邏輯講給你聽，最後給你 2-3 個型號建議。它不是隨口回，因為它可以真的上網查現在的價格。</p>
+
+      <p><strong>3. 幫你做影片（開箱、家事教學、給爸媽看）</strong></p>
+      <p>你打字：「幫我做一支 1 分半的短片：開箱這台 Aqara 動作感應器，講三個賣點，配台灣女生的聲音，字幕繁體。」它會自己寫劇本、產旁白、抓畫面、剪好、燒字幕，最後給你一個 mp4 檔（甚至可以直接 rclone 上到你的 Google Drive）。第 17 章會整章教這個。</p>
+
+      <p><strong>4. 教它一項「新手藝」給它學（Skills）</strong></p>
+      <p>Skills 就是「AI 的一份 SOP」。舉例：你可以教它「每次講到冷氣，都要先問幾坪、幾個人、預算」——把這份 SOP 存下來，之後它每次遇到冷氣話題就照這個流程走。Skills 可以自己寫，也可以從 GitHub 上別人分享的直接裝。第 14 章會整章講。</p>
+
+      <div class="callout tip"><strong>提示：</strong>不用四件都會，先從第一件（寫自動化）練手就很有用。第 6 章開始就會帶你聊第一個自動化。</div>
+    </section>
+
+    <section id="compare" data-nav="跟手機 ChatGPT 差在哪">
+      <h2 data-icon="compare">和手機上的 ChatGPT 差在哪</h2>
+      <p>很多人第一個問題是：「我手機都有 ChatGPT 了，幹嘛還多裝這個？」下面這張表講清楚：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>比較項目</th>
+            <th>手機 ChatGPT App</th>
+            <th>Pi Agent（家裡）</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>對話內容存哪裡</td>
+            <td>OpenAI 雲端伺服器</td>
+            <td>你家 HA 主機的 <code>/data/pi-agent/</code>，snapshot 一起備份</td>
+          </tr>
+          <tr>
+            <td>能不能碰你家裝置</td>
+            <td>不行（它看不到你家的燈、感應器）</td>
+            <td>可以（它就住在 HA 裡面，直接讀寫）</td>
+          </tr>
+          <tr>
+            <td>要不要每個月付月費</td>
+            <td>Plus 一個月 20 美金</td>
+            <td>不用月費；用你自己申請的 API 金鑰按量付費（GLM/DeepSeek 一個月常用者不到 100 元台幣）</td>
+          </tr>
+          <tr>
+            <td>能不能自己教它新東西</td>
+            <td>只能給它 Custom Instructions，功能有限</td>
+            <td>Skills 系統——你寫一份 SOP、或裝別人寫好的，它就學會</td>
+          </tr>
+          <tr>
+            <td>能不能挑不同 AI 模型</td>
+            <td>只能用 OpenAI 系列</td>
+            <td>GLM、Claude、GPT、DeepSeek、Groq、MiniMax、OpenRouter 都可以在同一個 UI 裡切換</td>
+          </tr>
+          <tr>
+            <td>網路斷了</td>
+            <td>完全不能用</td>
+            <td>UI 還在，只是問 AI 那一步要網路（AI 引擎在雲端）；HA 本身不受影響</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout"><strong>觀念：</strong>「BYOK」是 Bring Your Own Key——你自己去 GLM、Anthropic、OpenAI 那邊申請金鑰，貼進 Pi Agent 就能用。金鑰是你的，錢也是算你的，AI 廠商看不到你家裡的事，只看到你送過去的那段對話。第 5 章教申請第一支金鑰。</div>
+    </section>
+
+    <section id="hardware" data-nav="硬體門檻">
+      <h2 data-icon="hardware">能不能一開始就跑得動</h2>
+      <p>Pi Agent 是 HA 的附加元件，所以先看你家 HA 是哪一款。HA 有四種安裝方式，只有兩種能裝附加元件：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>你家 HA 是哪款</th>
+            <th>能裝 Pi Agent？</th>
+            <th>怎麼確認</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Home Assistant OS（HAOS，官方最推薦）</td>
+            <td>可以</td>
+            <td>設定 → 系統 → 關於，會看到「Home Assistant OS」</td>
+          </tr>
+          <tr>
+            <td>Home Assistant Supervised（Debian 上裝的完整版）</td>
+            <td>可以</td>
+            <td>同上，會看到「Supervised」</td>
+          </tr>
+          <tr>
+            <td>Home Assistant Container（Docker 只跑 core）</td>
+            <td>不行</td>
+            <td>設定裡沒有「附加元件（Apps）」這個選項</td>
+          </tr>
+          <tr>
+            <td>Home Assistant Core（Python 直裝）</td>
+            <td>不行</td>
+            <td>同上</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout warn"><strong>注意：</strong>Container / Core 使用者沒有 add-on 商店（也就是沒有「Apps」這個頁面），這本書不適用。如果你是這款，可以直接用 pi-web 的原生安裝方式（`npx pi-web`），但這本書不會教。</div>
+      <p>硬體最低門檻：</p>
+      <ul>
+        <li><strong>架構</strong>：amd64 或 aarch64（arm64）。x86 迷你電腦、Raspberry Pi 4/5、大部分 arm64 SBC 都可以。</li>
+        <li><strong>記憶體</strong>：2 GB 起跳（跑得動但慢），推薦 4 GB 以上。</li>
+        <li><strong>硬碟</strong>：至少留 5 GB 空間給 <code>/data/pi-agent/</code>（含影片管線那 720MB）。真的要剪影片建議留 20 GB。</li>
+        <li><strong>網路</strong>：AI 呼叫需要對外，HA 主機要能上網。</li>
+      </ul>
+      <div class="callout tip"><strong>提示：</strong>如果你的 HA 是跑在 Raspberry Pi 4/2GB 上，能裝、能聊天，但剪影片會很慢；建議先玩自動化跟聊天這兩塊。</div>
+    </section>
+
+    <section id="steps" data-nav="5 分鐘 HA 回顧">
+      <h2 data-icon="steps">5 分鐘 HA 回顧</h2>
+      <p>這本書假設你 HA 已經裝好、登得進去。下面五件事你會做，這一章就過了。做不到請先回<a href="https://woowtech.github.io/Woow_ha_tutorial_site/" rel="noopener">《HA 入住指南》</a>把基礎打好再回來。</p>
+      <ol class="steps">
+        <li>
+          <h3>能登入 HA</h3>
+          <p>在瀏覽器打 <code>http://homeassistant.local:8123</code> 或你家 HA 的 IP，看到藍白登入卡片，輸入帳號密碼進得去。<strong>你必須是 Administrator（管理員）</strong>——附加元件（Apps）只有管理員看得到。如果你不是管理員，去找家裡的擁有者（Owner）幫你升級權限，或直接請他裝。</p>
+        </li>
+        <li>
+          <h3>找得到左下角「設定」齒輪</h3>
+          <p>登入後左邊側邊欄最下面，有個齒輪圖示 <code>設定</code>。這是你之後要進「附加元件」「系統」「人員」的入口。</p>
+        </li>
+        <li>
+          <h3>設定裡看得到「附加元件（Apps）」</h3>
+          <p>點齒輪 → 進「設定」頁 → 找到「附加元件」（HA 2026.2 以後可能顯示成「Apps」，兩個是同一個東西）。看得到這一項，代表你的 HA 是 HAOS 或 Supervised，這本書適用。看不到就是 Container/Core，這本書不適用。</p>
+        </li>
+        <li>
+          <h3>認得左邊側邊欄</h3>
+          <p>左邊那條垂直的圖示列——「首頁（Home，2026.2 前叫 Overview）」「地圖」「能源」「歷史」…—Pi Agent 裝好後會在這裡多一顆圖示，跟這些並排。</p>
+        </li>
+        <li>
+          <h3>找得到系統首頁</h3>
+          <p>設定 → 系統，看得到「一般」「更新」「硬體」「備份」等分頁。備份很重要——第 22 章會教怎麼把 Pi Agent 的對話一起備份走。</p>
+        </li>
+      </ol>
+      <div class="callout warn"><strong>注意：</strong>上面五件事有任何一件做不到，先<strong>不要往下裝</strong>。回去看 HA 入住指南把 HA 打穩，Pi Agent 之後隨時能裝，不急。</div>
+    </section>
+
+    <section id="plan" data-nav="這本書怎麼讀">
+      <h2 data-icon="plan">這本書怎麼讀</h2>
+      <p>全書 22 章，分 6 大部分。每一部分是一個階段目標：</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>部分</th>
+            <th>章節</th>
+            <th>學完你會什麼</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>起步認識</td>
+            <td>ch1-ch4</td>
+            <td>裝好 Pi Agent、認得介面、跑第一句話</td>
+          </tr>
+          <tr>
+            <td>先跟它聊</td>
+            <td>ch5-ch7</td>
+            <td>申請第一支金鑰、用 GLM 對話、寫第一個自動化</td>
+          </tr>
+          <tr>
+            <td>多個 AI</td>
+            <td>ch8-ch10</td>
+            <td>同時掛好幾家 AI（Claude、OpenAI、DeepSeek）、按任務切換</td>
+          </tr>
+          <tr>
+            <td>Skills</td>
+            <td>ch11-ch16</td>
+            <td>教它一項新手藝、裝別人寫好的、自己寫一份</td>
+          </tr>
+          <tr>
+            <td>影片</td>
+            <td>ch17-ch19</td>
+            <td>做出人生第一支 AI 剪的短片、發到 Drive</td>
+          </tr>
+          <tr>
+            <td>家常維護</td>
+            <td>ch20-ch22</td>
+            <td>備份、更新、家人怎麼一起用</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>兩種讀法：</strong></p>
+      <ul>
+        <li><strong>趕時間 / 想快點玩到</strong>：照順序讀 ch1→ch2→ch5→ch6→ch7，大概一個晚上就有最小可用版本，能對話、能寫自動化。</li>
+        <li><strong>愛研究 / 想榨乾它</strong>：全書照順序讀完，Skills 跟影片兩塊是「別人玩不到的東西」，值得花時間。</li>
+      </ul>
+      <div class="callout tip"><strong>下一步：</strong>準備好就翻到 <a href="ch2_install.html">第 2 章：裝好 Pi Agent</a>，10 分鐘搞定安裝。</div>
+    </section>
+
+    <section id="security" data-nav="資料放哪裡">
+      <h2 data-icon="security">資料放哪裡（一句話說完）</h2>
+      <p>這是最多人問的問題，一次講清楚：</p>
+      <ul>
+        <li><strong>對話紀錄</strong>：存在你家 HA 主機的 <code>/data/pi-agent/</code>，這裡也是 HA snapshot 會備份的位置。你把 HA 搬家，對話跟你走。</li>
+        <li><strong>API 金鑰（Provider Key）</strong>：從 v0.13.0 開始，金鑰只存在 pi-web 的 Models 面板（也就是存在 <code>/data/pi-agent/models.json</code>），HA 附加元件的設定頁不再放金鑰。這代表 snapshot 也會把金鑰一起備份走，你不用重新申請。</li>
+        <li><strong>Skills</strong>：你裝的每個 Skill 都在 <code>/data/pi-agent/skills/</code>，同上，跟著 snapshot 走。</li>
+        <li><strong>影片工程檔</strong>：預設放 <code>/data/pi-agent/home/pi-cwd-*/</code>，snapshot 會排除中間檔（clips/、segments/）以免備份爆掉，但成品 mp4 會保留。</li>
+      </ul>
+      <div class="callout"><strong>觀念：</strong>唯一會「離開你家」的資料，是你送去問 AI 的那一段對話。金鑰在你手上，模型你自己選，AI 廠商不會看到你家其他事情。想更保守可以挑 GLM（中國）或本地 LLM（未來章節會補）。</div>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>我根本沒裝 HA，怎麼辦？</h3>
+          <p>先去<a href="https://woowtech.github.io/Woow_ha_tutorial_site/" rel="noopener">《HA 新居入住指南》</a>把 HA 從零裝好、登得進去、能點亮一顆燈。那本書大概 3 個晚上讀完，回頭再看這本會很順。這本書真的假設你 HA 已經會用。</p>
+        </li>
+        <li>
+          <h3>我的 HA 找不到「附加元件（Apps）」</h3>
+          <p>去「設定 → 系統 → 關於」看你的 HA 是哪款。看到「Home Assistant OS」或「Supervised」——正常，附加元件在「設定」頁裡（2026.2 前叫「附加元件」、之後叫「Apps」，可能被放進「設備與服務」附近）。看到「Container」或「Core」——這本書不適用，抱歉，你要嘛換裝 HAOS，要嘛去用 pi-web 的原生 npm 安裝方式（不在本書範圍）。</p>
+        </li>
+        <li>
+          <h3>家人不喜歡「AI 在家裡」的想法</h3>
+          <p>常見疑慮兩個：「它會不會偷聽？」「它會不會亂動我家東西？」白話回答：（1）Pi Agent 沒有麥克風、沒有攝影機，你不打字它不做事；（2）它動 HA 之前會先問你確認，你按確定它才動。可以先用 read-only 的方式讓它跑一週（只讓它讀狀態、不讓它改東西），家人看它多有用，接受度就會上來。第 22 章有一篇「家人怎麼一起用」的實戰。</p>
+        </li>
+        <li>
+          <h3>我很擔心資料外洩</h3>
+          <p>三個定心丸：（a）金鑰是你自己去 AI 廠商申請的，錢也是算你的，你能隨時到廠商後台看今天送出去哪些請求；（b）對話都存本地 <code>/data/pi-agent/</code>，沒有第三方雲備份；（c）HA snapshot 會把金鑰＋對話＋Skills 一起打包，主機壞了直接還原。想再更嚴，可以只掛「中國區 GLM」或「歐盟區 OpenRouter」，避開特定司法管轄。</p>
+        </li>
+        <li>
+          <h3>Raspberry Pi 4 / 2GB 跑得動嗎？</h3>
+          <p>能跑聊天、能寫自動化，但影片管線會很慘（Playwright + Chromium 光跑起來就吃掉大半 RAM）。建議 Pi 4 就先玩前 16 章，第 17 章開始的影片主題等你換到 x86 迷你電腦或 Pi 5 / 8GB 再做。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>這跟 Nabu Casa 差在哪？我付月費有比較好嗎？</summary>
+        <div class="body">Nabu Casa 是 HA 官方的「遠端連線＋語音助理」訂閱服務，月費約 6.5 美金，解決的是「怎麼在外面連家裡的 HA」跟「HA 內建語音助理雲端運算」這兩件事。Pi Agent 完全是另一個東西——它是「AI 工作站」，不管你有沒有付 Nabu Casa 都能裝。兩者不衝突：Nabu Casa 幫你連得到家、Pi Agent 幫你在家裡多一個 AI 幫手。</div>
+      </details>
+      <details class="faq">
+        <summary>一定要 HAOS 嗎？我用 Docker 跑 HA Container 有辦法嗎？</summary>
+        <div class="body">這本書是為 HAOS / Supervised 寫的（因為它們才有 add-on 商店＝Apps）。如果你堅持 Container，pi-web 本體是可以獨立跑 <code>npx pi-web</code>，但你要自己弄反向代理、自己弄 systemd、自己處理 HA 的登入串接——這本書不會教。最推薦的路是把 HA 遷移成 HAOS 或 Supervised，之後所有 add-on 生態都能用（Node-RED、Frigate、Mosquitto…都是同一個道理）。</div>
+      </details>
+      <details class="faq">
+        <summary>小孩可以用嗎？會不會學壞？</summary>
+        <div class="body">Pi Agent 的預設模型（GLM、Claude、GPT）都有內容過濾，一般家庭場景不會出事。真的要更保險，可以：（a）第 22 章會教怎麼開「兒童帳號」限制它只能問特定主題；（b）你可以裝一份「家庭作業輔助」的 Skill，把它固定在「解釋概念、不直接寫答案」的行為模式。用法自由，你是家長，你設規則。</div>
+      </details>
+      <details class="faq">
+        <summary>網路斷了還能用嗎？</summary>
+        <div class="body">分兩塊看：（a）<strong>Home Assistant 本身完全不受影響</strong>——燈、開關、自動化全在你家跑，斷網照常運作，這也是選 HA 的理由。（b）<strong>Pi Agent 的 UI 還在</strong>，你能打開它、看歷史對話、看 Skills，但問 AI 那一步會失敗（因為 AI 引擎在雲端）。有些人會問「能不能裝本地 LLM 完全離線？」——技術上可以掛 Ollama 或 llama.cpp，但小主機跑不動大模型，本書後續會補一章討論這個取捨。</div>
+      </details>
+      <details class="faq">
+        <summary>Pi Agent 這個名字裡的「Pi」是什麼意思？跟 Raspberry Pi 有關嗎？</summary>
+        <div class="body">沒關係。Pi Agent 底下是一套叫 <a href="https://github.com/earendil-works/pi" rel="noopener">pi coding agent</a> 的開源 AI 引擎，這個「pi」是這套引擎的名字，不是硬體。所以你在 x86 迷你電腦、NUC、Synology 上跑 HAOS 也能裝，跟樹莓派無關。（當然，你剛好在 Raspberry Pi 上跑 HA，那也可以裝——只是名字純屬巧合。）</div>
+      </details>
+      <details class="faq">
+        <summary>它會定期收費嗎？我怕不小心花很多錢。</summary>
+        <div class="body">Pi Agent 這個附加元件本身完全免費（MIT 開源）。花錢的部分只有「AI 呼叫費」，也就是你打字問它、它回答你，這一來一回會消耗你 API 金鑰的餘額。GLM、DeepSeek 這類中國模型一個月正常使用約 30-100 元台幣；OpenAI GPT-4o 高強度使用一個月可能 300-1000 元；Claude Opus 最貴、但也最會寫程式。第 5 章教你怎麼設「用量上限」，避免一個晚上跑掉 3000 元的意外。</div>
+      </details>
+      <details class="faq">
+        <summary>裝了會不會拖慢我 HA？</summary>
+        <div class="body">閒置的時候幾乎不吃 CPU（Node.js + nginx，一起大概 100MB RAM）。你在跟它對話或它在剪片的時候會吃 CPU 比較兇——如果你 HA 主機同時在跑 Frigate（AI 影像辨識）之類重負載服務，記得留意監控。設定 → 系統 → 硬體 頁面能看即時使用率，Pi Agent 會列成一個獨立 container。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev disabled" href="index.html">
+        <span class="label">← 上一章</span>
+        <span class="title">回目錄</span>
+      </a>
+      <a class="next" href="ch2_install.html">
+        <span class="label">下一章 →</span>
+        <span class="title">02 · 裝好 Pi Agent</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 11 章 · 六種主流 provider 各適合什麼場合 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Pi Agent 支援的六大 provider 對照速查：GLM、OpenAI、Anthropic、DeepSeek、Groq、OpenRouter 各自的強項、費率、typical use case。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch11_provider_map.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 11 章 · 六種主流 provider 各適合什麼場合 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Pi Agent 支援的六大 provider 對照速查：GLM、OpenAI、Anthropic、DeepSeek、Groq、OpenRouter 各自的強項、費率、typical use case。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch11_provider_map.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 11 章 · 六種主流 provider 各適合什麼場合 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Pi Agent 支援的六大 provider 對照速查：GLM、OpenAI、Anthropic、DeepSeek、Groq、OpenRouter 各自的強項、費率、typical use case。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html" class="active">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要挑一家</a>
+      <a href="#concept">怎麼看 provider</a>
+      <a href="#glm">GLM 智譜清言</a>
+      <a href="#openai">OpenAI 標竿</a>
+      <a href="#anthropic">Anthropic Claude</a>
+      <a href="#deepseek">DeepSeek 性價比</a>
+      <a href="#groq">Groq 反應最快</a>
+      <a href="#openrouter">OpenRouter 一把通吃</a>
+      <a href="#minimax">MiniMax 極長 context</a>
+      <a href="#steps">加第二家的步驟</a>
+      <a href="#compare">快速選擇速查</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 11 章</div>
+      <h1>六種主流 provider 各適合什麼場合</h1>
+      <p class="lead">上一章講完「為什麼要接不只一家 AI」，你可能已經心癢想再加第二家、第三家。這一章把 Pi Agent 支援的六大主流 provider 一家一家攤開來講：GLM、OpenAI、Anthropic、DeepSeek、Groq、OpenRouter，外加中國極長 context 的 MiniMax。讀完你會知道下一支金鑰該申請哪家、月費預算多花在哪家最划算，並且對每家在 Pi Agent 該填什麼參數心裡有底。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼要挑一家">
+      <h2 data-icon="why">為什麼要花時間認識六家 AI</h2>
+      <p><a href="ch10_why_multi.html">第 10 章</a>已經說服你「多接幾家」是聰明的做法：貴的做貴的活、便宜的做便宜的活、有敏感題目換家問，但接下來馬上遇到現實的問題——<strong>市面上這麼多家，我下一支金鑰要挑誰？</strong>朋友推薦「Claude 最會寫程式」、YouTube 又說「Groq 快得離譜」、社群還在瘋「MiniMax 一次可以讀一整本書」，聽起來每一家都很讚，你到底要選哪一家？</p>
+      <p>這一章就是要幫你把這六家一次講清楚。看完你會有兩個直接的收穫：</p>
+      <ul>
+        <li><strong>清楚每一家的個性</strong>——每家 AI 都有明顯的偏科（就像高中生：有人數學好、有人英文強、有人體育天賦、有人音樂天分），選對家等於作業事半功倍。</li>
+        <li><strong>知道 Pi Agent 該怎麼填</strong>——每家都有自己的 API 進入點（baseUrl）和溝通方式（api mode），填錯 Pi Agent 就連不上。這章每家都給你完整的填法範本，直接照抄就能用。</li>
+      </ul>
+      <p>還沒申請過任何金鑰的人建議先看<a href="ch5_first_key.html">第 5 章</a>把第一支 GLM 弄到手，貼進 Pi Agent（<a href="ch6_paste_key.html">第 6 章</a>），玩過一輪之後再回來讀這章決定下一家要加誰，會比較有感。</p>
+      <div class="callout tip"><strong>提示：</strong>沒有一家 AI 是「全能第一名」，只有「這個場景最合適的」。這章的表格記重點就好，你真正要學的是「怎麼判斷這個任務該問誰」的思路。</div>
+    </section>
+
+    <section id="concept" data-nav="怎麼看 provider">
+      <h2 data-icon="concept">看 provider 資料的六個角度</h2>
+      <p>下面每一家 provider 都會用同樣六個欄位講一遍，記住這六個角度以後看到新的 AI 廠商你也能自己判斷：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>欄位</th><th>看的是什麼</th><th>白話解釋</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>定位</strong></td><td>這家公司在市場上的位置</td><td>「業界標竿」、「性價比王」、「反應最快」……這種一句話標籤，讓你先有感。</td></tr>
+          <tr><td><strong>代表模型</strong></td><td>這家目前最有名的模型名</td><td>你貼進 Pi Agent 的 Models 欄位就是這串，例如 <code>glm-4.6</code>、<code>gpt-4o</code>。</td></tr>
+          <tr><td><strong>強項</strong></td><td>這家真的比別人強在哪</td><td>可能是中文自然、可能是價格便宜、可能是速度飛快。</td></tr>
+          <tr><td><strong>弱項</strong></td><td>不擅長的地方或會踩的坑</td><td>可能是要翻牆、可能是敏感題會迴避、可能是常常 rate limit。</td></tr>
+          <tr><td><strong>推薦場景</strong></td><td>用這家 AI 最划算的活</td><td>「寫 HA 自動化」、「日常閒聊」、「讀超長文件」……。</td></tr>
+          <tr><td><strong>Pi Agent 該怎麼填</strong></td><td>三個關鍵欄位</td><td>api mode（溝通方式）、baseUrl（API 進入點）、thinkingFormat（思考塊格式，可能是空的）。</td></tr>
+        </tbody>
+      </table>
+      <p>其中 Pi Agent 這三個欄位最容易讓新手卡關，先解釋一次以後不再重複：</p>
+      <ul>
+        <li><strong>api mode</strong>：Pi Agent 用哪種協議跟 AI 講話。多數家都用 <code>openai-completions</code>（因為 OpenAI 的協議變成業界事實標準），只有 Anthropic 例外，要選 <code>anthropic</code>。</li>
+        <li><strong>baseUrl</strong>：API 的門牌號碼。同樣是 openai-completions 協議，你要告訴 Pi Agent「這次要打去哪一家的門」，不然它會預設打去 OpenAI 官方。</li>
+        <li><strong>thinkingFormat</strong>：模型「想事情的時候把過程秀出來」的格式。有些家（GLM、DeepSeek、Anthropic）會把思考鏈跟正式回答分開送，Pi Agent 需要知道格式才能正確渲染成灰色的思考塊。填錯不會壞，但思考塊會混在答案裡看起來很亂。</li>
+      </ul>
+      <div class="callout"><strong>怎麼選：</strong>如果你完全不知道從哪家入手，走這個決策樹——「要不要翻牆？」不行 → GLM／DeepSeek／MiniMax。「預算緊嗎？」緊 → DeepSeek／GLM-4-Flash／Groq 免費額度。「寫程式為主嗎？」是 → Anthropic Claude／GLM-4.6。「要看圖嗎？」是 → OpenAI GPT-4o。「想懶得選？」→ OpenRouter 一支金鑰通吃。</div>
+    </section>
+
+    <section id="glm" data-nav="GLM 智譜清言">
+      <h2 data-icon="ai">GLM（智譜清言）——中文最順、送額度不用翻牆</h2>
+      <table class="data-table">
+        <thead><tr><th>角度</th><th>內容</th></tr></thead>
+        <tbody>
+          <tr><td>定位</td><td>中國最大的 AI 廠商之一，跟阿里通義、DeepSeek 三足鼎立。清華大學系統孵化，總部北京。</td></tr>
+          <tr><td>代表模型</td><td><code>glm-4.6</code>（旗艦，約 200K context）、<code>glm-4-flash</code>（輕量，超便宜甚至有免費配額）、<code>glm-4-air</code>（中階平衡款）。</td></tr>
+          <tr><td>強項</td><td>中文回應自然到嚇人（沒翻譯腔）、價格是 OpenAI 的 1/5~1/10、新戶送額度、台灣家用光世代直連沒問題、GLM-4-Flash 幾乎免費適合日常閒聊。</td></tr>
+          <tr><td>弱項</td><td>政治敏感題目會迴避（六四、台灣主權定位、香港運動）、國際新知識的跟進速度稍慢、實名認證需要中國身分證（台灣人只能用免費配額或找中國親友儲值）。</td></tr>
+          <tr><td>推薦場景</td><td>日常對話、家事顧問（「客廳幾坪要幾噸冷氣」）、HA YAML 生成、中文寫作、entry-level 入門首選。</td></tr>
+          <tr><td>申請入口</td><td><code>https://open.bigmodel.cn/</code>（注意 open. 開頭，不是 chatglm.cn）。手機 <strong>+886</strong> 註冊即可，看<a href="ch5_first_key.html">第 5 章</a>詳細流程。</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Pi Agent 該怎麼填</strong>：</p>
+      <pre class="code-block"><code>Provider name: GLM
+API mode:       openai-completions
+Base URL:       https://open.bigmodel.cn/api/paas/v4
+API key:        （貼你在 GLM 後台複製的那串 abc123.XYZ）
+Thinking format: zai
+Models:         glm-4.6
+                glm-4-flash
+                glm-4-air</code></pre>
+      <div class="callout tip"><strong>提示：</strong>thinkingFormat 填 <code>zai</code>（Zhipu AI 的縮寫）是 Pi Agent 內建的專屬解析器，能正確把 GLM 的思考鏈顯示成灰色塊。留空也不會壞，只是思考文字會混在正常答案裡看起來雜。</div>
+    </section>
+
+    <section id="openai" data-nav="OpenAI 標竿">
+      <h2 data-icon="ai">OpenAI（GPT-4o / GPT-4o-mini）——業界標竿、多模態最強</h2>
+      <table class="data-table">
+        <thead><tr><th>角度</th><th>內容</th></tr></thead>
+        <tbody>
+          <tr><td>定位</td><td>整個 AI 產業的定調者。你聽到的「ChatGPT」就是他家的產品，開發的 API 協議變成事實標準（別家幾乎都相容）。舊金山公司。</td></tr>
+          <tr><td>代表模型</td><td><code>gpt-4o</code>（旗艦多模態）、<code>gpt-4o-mini</code>（便宜快版）、<code>o1</code> / <code>o1-mini</code>（reasoning 系列，會深度思考）。</td></tr>
+          <tr><td>強項</td><td>能讀圖（把家電照片、螢幕截圖、家中平面圖丟給它問問題）、生態最完整（社群、教程、範例最多）、多模態任務（圖 + 文 + 語音）最成熟、模型品質頂尖。</td></tr>
+          <tr><td>弱項</td><td>台灣要翻牆或走中轉（沒官方支付通路，信用卡帳單地址擋台灣）、價格偏高、中文回應偶有翻譯腔（不如 GLM 自然）、rate limit 對新帳號很嚴。</td></tr>
+          <tr><td>推薦場景</td><td>家電照片辨識（「這個插座燒了嗎」）、看 HA 儀表板截圖問問題、需要多模態的任務、想要「最主流跟大家一樣」的選擇。</td></tr>
+          <tr><td>申請入口</td><td><code>https://platform.openai.com/</code>。註冊要有能在美國收信的地址、能收美國號碼的手機（有 SIM 就好），或者找代購儲值卡。</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Pi Agent 該怎麼填</strong>：</p>
+      <pre class="code-block"><code>Provider name: OpenAI
+API mode:       openai-completions
+Base URL:       https://api.openai.com/v1
+API key:        sk-...（OpenAI 的金鑰以 sk- 開頭）
+Thinking format: （留空，官方模型不走 thinking block）
+Models:         gpt-4o
+                gpt-4o-mini
+                o1-mini</code></pre>
+      <div class="callout warn"><strong>注意：</strong>OpenAI 是「按實際用量扣款」，不是月費制。你不用先付月租，但要先儲值一筆 pre-paid credit（例如 5 美金起）才能開始用。用完會斷連，不會自動扣爆。</div>
+    </section>
+
+    <section id="anthropic" data-nav="Anthropic Claude">
+      <h2 data-icon="ai">Anthropic（Claude 4.6 / 4.7）——深度思考首選、寫程式最穩</h2>
+      <table class="data-table">
+        <thead><tr><th>角度</th><th>內容</th></tr></thead>
+        <tbody>
+          <tr><td>定位</td><td>OpenAI 前員工出來創的公司，主打「安全的 AI」。旗下 Claude 系列在寫程式、長文閱讀、深度推理三塊被公認是天花板。舊金山公司。</td></tr>
+          <tr><td>代表模型</td><td><code>claude-sonnet-4.6</code>（旗艦中階）、<code>claude-opus-4.7</code>（旗艦大模）、<code>claude-haiku</code>（便宜快版）。這章寫作當下 4.7 是最新。</td></tr>
+          <tr><td>強項</td><td>思考塊（thinking block）最詳細、可以清楚看到它怎麼推理、寫程式最穩（複雜自動化、code review、長 script）、cache_control 機制省很多錢（重複問類似問題自動走快取）、對長文件理解力好。</td></tr>
+          <tr><td>弱項</td><td>價格是所有家裡偏貴的（Opus 尤其貴）、繁體中文比 GLM 稍生硬（能用但有翻譯感）、台灣要走 VPN 或中轉、免費層很陽春（月 5 美金起才有正式配額）。</td></tr>
+          <tr><td>推薦場景</td><td>重要決策討論（「我家該選 Matter 還是 Zigbee」）、寫複雜的 HA 自動化（多 trigger + 多 condition 的那種）、幫你 review 別人寫的 YAML、跑 code 生成任務。</td></tr>
+          <tr><td>申請入口</td><td><code>https://console.anthropic.com/</code>。同樣要美國門檻，但比 OpenAI 好過一點點。</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Pi Agent 該怎麼填</strong>：</p>
+      <pre class="code-block"><code>Provider name: Anthropic
+API mode:       anthropic          ← 注意！不是 openai-completions
+Base URL:       https://api.anthropic.com
+API key:        sk-ant-...（Anthropic 的金鑰以 sk-ant- 開頭）
+Thinking format: （留空，走 native thinking blocks 自動處理）
+Models:         claude-sonnet-4.6
+                claude-opus-4.7
+                claude-haiku-4.5</code></pre>
+      <div class="callout warn"><strong>注意：</strong>Anthropic 是<strong>唯一一家</strong>不用 <code>openai-completions</code> 的主流 provider，因為它的 API 協議自己一套（有 native 的 thinking blocks 和 cache_control）。api mode 填錯（例如選成 openai-completions）Pi Agent 會直接連不上或思考塊全部亂碼。</div>
+      <div class="callout tip"><strong>提示：</strong>cache_control 是 Anthropic 的省錢神器：你如果每次都問類似結構的問題（例如「這個 YAML 有什麼問題」），Pi Agent 走 anthropic 模式時會自動幫你走快取，重複的部分只算 1/10 的價錢。走 OpenRouter 中轉就沒有這功能。</div>
+    </section>
+
+    <section id="deepseek" data-nav="DeepSeek 性價比">
+      <h2 data-icon="ai">DeepSeek（V3 / R1）——中國的性價比王</h2>
+      <table class="data-table">
+        <thead><tr><th>角度</th><th>內容</th></tr></thead>
+        <tbody>
+          <tr><td>定位</td><td>杭州量化基金幻方孵化的 AI 公司，2025 年初以 R1 開放推理模型震撼業界。中英雙強、極致 cost-performance。</td></tr>
+          <tr><td>代表模型</td><td><code>deepseek-chat</code>（V3 系列通用款）、<code>deepseek-reasoner</code>（R1 系列會思考的款）。</td></tr>
+          <tr><td>強項</td><td>R1 是難得的公開權重 reasoning 模型（能像 o1 那樣深度思考）、便宜到誇張（V3 常常是 GLM 的 1/2 甚至 1/5）、中英雙強不偏科、開源社群有大量 fine-tuned 衍生模型。</td></tr>
+          <tr><td>弱項</td><td>peak 時段（歐美白天、亞洲晚上）容易 rate limit 拒絕、伺服器有時候會慢、生態沒 OpenAI 那麼多教學文、reasoning 模型的思考鏈很長（會多花 token）。</td></tr>
+          <tr><td>推薦場景</td><td>需要 reasoning 但預算緊、大量爬蟲整理與資料清洗、程式除錯（R1 debug 能力強）、寫得長長的 essay 或報告。</td></tr>
+          <tr><td>申請入口</td><td><code>https://platform.deepseek.com/</code>。手機或 email 註冊即可，台灣直連沒問題。</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Pi Agent 該怎麼填</strong>：</p>
+      <pre class="code-block"><code>Provider name: DeepSeek
+API mode:       openai-completions
+Base URL:       https://api.deepseek.com/v1
+API key:        （DeepSeek 後台複製的那串）
+Thinking format: deepseek           ← reasoner 才需要，chat 可留空
+Models:         deepseek-chat
+                deepseek-reasoner</code></pre>
+      <div class="callout tip"><strong>提示：</strong>用 R1（deepseek-reasoner）做決策討論的品質接近 Claude Sonnet 但便宜 5-10 倍，是預算派的救命解方。缺點是它「想很久」——一個問題可能思考 30 秒才開始答，急性子不習慣。</div>
+    </section>
+
+    <section id="groq" data-nav="Groq 反應最快">
+      <h2 data-icon="ai">Groq（LPU 加速）——反應最快的一家</h2>
+      <table class="data-table">
+        <thead><tr><th>角度</th><th>內容</th></tr></thead>
+        <tbody>
+          <tr><td>定位</td><td>美國新創，自研 LPU（Language Processing Unit）晶片，把 Llama、Kimi、Mixtral 等開源模型跑到「秒回」等級。他們不做自家模型，是「跑別人模型跑最快」的專家。</td></tr>
+          <tr><td>代表模型</td><td><code>llama-3.3-70b-versatile</code>（Meta 開源旗艦）、<code>llama-3.1-8b-instant</code>（更小更快）、<code>mixtral-8x7b-32768</code>、<code>moonshotai/kimi-k2</code>。這清單會隨他們選什麼開源模型變動。</td></tr>
+          <tr><td>強項</td><td>速度是所有家最快的（實測 500 tokens/秒 vs GLM 一般 30 tokens/秒）——你按下 Enter 幾乎是話還沒說完答案就寫好了、免費額度慷慨（新戶送很多）、可以直接玩開源大模型（想試 Llama 又不想自己架 Ollama 的最省路徑）、台灣直連沒問題。</td></tr>
+          <tr><td>弱項</td><td>模型上限就是他們選的那幾個（不做自家模型，換代就跟著換）、context window 一般（大多在 8K-128K）、免費層有每分鐘請求上限。</td></tr>
+          <tr><td>推薦場景</td><td>需要「秒回」的即時對話、大量草稿（bulk drafting，例如一次生 30 則自動化說明）、跑開源大模型體驗、初學者玩不用錢的入門選擇。</td></tr>
+          <tr><td>申請入口</td><td><code>https://console.groq.com/</code>。Google 帳號登入 30 秒完事，直接進 API key 頁面複製，比其他家都輕鬆。</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Pi Agent 該怎麼填</strong>：</p>
+      <pre class="code-block"><code>Provider name: Groq
+API mode:       openai-completions
+Base URL:       https://api.groq.com/openai/v1
+API key:        gsk_...（Groq 的金鑰以 gsk_ 開頭）
+Thinking format: （留空）
+Models:         llama-3.3-70b-versatile
+                llama-3.1-8b-instant
+                moonshotai/kimi-k2</code></pre>
+      <div class="callout tip"><strong>提示：</strong>Groq 的速度真的會讓你重新想像「跟 AI 講話」的節奏——像跟人 chat 而不是等機器。缺點是模型清單隨他們心情變動，你今天存的模型名，半年後可能被下架。要用要偶爾回官網對一下清單。</div>
+    </section>
+
+    <section id="openrouter" data-nav="OpenRouter 一把通吃">
+      <h2 data-icon="ai">OpenRouter（聚合器）——一把金鑰跑上百個模型</h2>
+      <table class="data-table">
+        <thead><tr><th>角度</th><th>內容</th></tr></thead>
+        <tbody>
+          <tr><td>定位</td><td>不是 AI 廠商，是「AI 中盤商」。他們幫你聚合上百個模型（OpenAI、Anthropic、Google、Meta、Mistral、xAI、Perplexity、DeepSeek、GLM、Cohere 全都在），你用一支金鑰、一個 baseUrl 就能通吃全部。</td></tr>
+          <tr><td>代表模型</td><td>模型名格式一律是 <code>provider/model</code>，例如 <code>anthropic/claude-sonnet-4.6</code>、<code>openai/gpt-4o</code>、<code>meta-llama/llama-3.3-70b</code>、<code>google/gemini-2.0-flash</code>。</td></tr>
+          <tr><td>強項</td><td>一支金鑰用上百個模型（省下每家申請的功夫）、跨家統一介面（換模型不用改設定）、便宜的自動 fallback（某家滿載自動切別家）、可以用信用卡買 OpenAI／Anthropic 金鑰的替代路徑（跳過原廠的地區限制）、台灣直連沒問題。</td></tr>
+          <tr><td>弱項</td><td>不是原廠所以價格會加 5-10% margin、Anthropic 的 native thinking blocks 走 OpenRouter 會被中繼「攤平」成純文字（因為走 openai-compatible 協議）、cache_control 也失效、有時候某模型的最新更新要等他們 sync 幾天。</td></tr>
+          <tr><td>推薦場景</td><td>想試很多模型但不想每家都申請、地區限制的替代路徑（買 OpenAI 額度但不想搞美國卡）、備援與 fallback、月費預算單一化管理。</td></tr>
+          <tr><td>申請入口</td><td><code>https://openrouter.ai/</code>。Google 或 GitHub 登入，充值支援 Stripe 信用卡（台灣卡通常過得了）與加密貨幣。</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Pi Agent 該怎麼填</strong>：</p>
+      <pre class="code-block"><code>Provider name: OpenRouter
+API mode:       openai-completions
+Base URL:       https://openrouter.ai/api/v1
+API key:        sk-or-v1-...（OpenRouter 金鑰以 sk-or-v1- 開頭）
+Thinking format: （留空）
+Models:         anthropic/claude-sonnet-4.6
+                openai/gpt-4o
+                deepseek/deepseek-r1
+                meta-llama/llama-3.3-70b-instruct
+                google/gemini-2.0-flash</code></pre>
+      <div class="callout warn"><strong>注意：</strong>如果你重度依賴 Anthropic 的思考塊或 cache_control（例如常常長對話 review 大段 YAML），<strong>不要走 OpenRouter 的 anthropic/*</strong>——那條路會把 thinking blocks 攤平、cache 失效，體驗跟直連差很多。改申請 Anthropic 直連的金鑰，把兩家都掛在 Models 裡各自用途各自跑。</div>
+    </section>
+
+    <section id="minimax" data-nav="MiniMax 極長 context">
+      <h2 data-icon="ai">MiniMax（M2 / abab7）——中國極長 context 之王</h2>
+      <table class="data-table">
+        <thead><tr><th>角度</th><th>內容</th></tr></thead>
+        <tbody>
+          <tr><td>定位</td><td>上海的 AI 新創，旗下有海螺 AI（消費者聊天）與 abab / M 系列（開發者 API）。強項是<strong>極長 context</strong>，一次能吞下一整本書或一整份 log 都不腸胃不適。</td></tr>
+          <tr><td>代表模型</td><td><code>MiniMax-M2</code>（旗艦，支援 200K-1M tokens context）、<code>abab7-chat-preview</code>（便宜通用款）、<code>abab6.5s-chat</code>（更輕量）。</td></tr>
+          <tr><td>強項</td><td>context window 大到誇張（最長可達 1M tokens——約等於 3-4 本厚小說）、abab7 便宜、中英日語都行、台灣直連沒問題、多模態（部分模型能吃圖）。</td></tr>
+          <tr><td>弱項</td><td>品牌認知較低（沒 GLM／DeepSeek 那麼紅）、社群小教學文少、模型迭代速度沒中國第一梯隊快、極長 context 開下去單次費用會滾雪球。</td></tr>
+          <tr><td>推薦場景</td><td>讀超長文件（整份 HA log 找問題、整本 e-book 摘要、整份 codebase 分析）、大量歷史對話回顧、需要「把所有材料一次餵給它」的任務。</td></tr>
+          <tr><td>申請入口</td><td><code>https://platform.minimaxi.com/</code>（注意末尾是 <strong>minimaxi</strong> 不是 minimax）。手機 +886 註冊。</td></tr>
+        </tbody>
+      </table>
+      <p><strong>Pi Agent 該怎麼填</strong>：</p>
+      <pre class="code-block"><code>Provider name: MiniMax
+API mode:       openai-completions
+Base URL:       https://api.minimaxi.com/v1
+API key:        （MiniMax 開放平台複製的那串）
+Thinking format: deepseek           ← M2 系列走 reasoning 時建議填
+Models:         MiniMax-M2
+                abab7-chat-preview</code></pre>
+      <div class="callout tip"><strong>提示：</strong>MiniMax 的 1M context 是「用得起」跟「用得起還便宜」兩回事。同樣塞 500K tokens 進去問一個問題，單次可能要台幣好幾十元。適合偶爾用來啃硬骨頭，不適合當日常聊天的預設模型。日常還是掛 GLM-4-Flash 或 DeepSeek-chat 划算。</div>
+    </section>
+
+    <section id="steps" data-nav="加第二家的步驟">
+      <h2 data-icon="steps">在 Pi Agent 加第二家 provider 的完整步驟</h2>
+      <p>假設你已經按<a href="ch5_first_key.html">第 5 章</a>設好 GLM，這一節示範怎麼再加一家（例子用 DeepSeek，其他家換 baseUrl 就好）：</p>
+      <ol class="steps">
+        <li>
+          <h3>先去該家官網申請金鑰</h3>
+          <p>參考上面每家的「申請入口」欄位。DeepSeek 的話開 <code>https://platform.deepseek.com/</code>，手機或 email 註冊，登入之後左邊選單找「API Keys」，按「Create new API key」，取名字（例如 <code>pi-agent-家裡</code>），複製那串金鑰馬上貼到密碼管理器。</p>
+        </li>
+        <li>
+          <h3>回 Pi Agent 的 Models 面板</h3>
+          <p>左邊 tab 切到 <strong>Models</strong>。你會看到原本已經加的 GLM 排在列表裡。上方或右上通常有一個「<strong>+ Add Provider</strong>」或加號按鈕，按下去會展開一張新表單。</p>
+        </li>
+        <li>
+          <h3>照這章的 provider 表填四個欄位</h3>
+          <p>Provider name 隨便取一個好認的名字（例如 <code>DeepSeek</code>）。API mode 選 <code>openai-completions</code>。Base URL 填 <code>https://api.deepseek.com/v1</code>。API key 貼你剛剛複製的那串。Thinking format 填 <code>deepseek</code>（或留空）。</p>
+        </li>
+        <li>
+          <h3>加要用的 Models</h3>
+          <p>下面有一個 Models 區塊，按 <strong>+ Add Model</strong>，填 <code>deepseek-chat</code>，再按一次加 <code>deepseek-reasoner</code>。這些名字就是 API 呼叫時傳的 model ID，寫錯 Pi Agent 會回 404。</p>
+        </li>
+        <li>
+          <h3>按 Test，看到綠色勾勾才 Save</h3>
+          <p>右下有 <strong>Test</strong> 按鈕，按下去 Pi Agent 會發一個小小的 ping 過去。3-5 秒之內看到綠勾＝連得上，看到紅叉＝設錯了（先檢查金鑰、其次檢查 baseUrl 有沒有打錯）。綠勾之後按 <strong>Save</strong> 存起來。</p>
+        </li>
+        <li>
+          <h3>回聊天頁換模型驗證</h3>
+          <p>回主聊天畫面，左下角的模型下拉現在會多一組「DeepSeek → deepseek-chat / deepseek-reasoner」。點一下 deepseek-chat，打「你好，你是誰？」送出，看到 DeepSeek 自我介紹的回覆就成功了。</p>
+        </li>
+      </ol>
+      <div class="callout"><strong>觀念：</strong>加第三家、第四家的流程一模一樣，就是「申請金鑰 → 加 provider → 填三欄 → Test → Save」。第一次會覺得欄位好多，加過兩家之後三分鐘搞定一家。</div>
+    </section>
+
+    <section id="compare" data-nav="快速選擇速查">
+      <h2 data-icon="compare">情境速查：這種活該叫哪家 AI 出動</h2>
+      <p>把這章前面每家的推薦場景整合成一張決策表，需要挑模型時看這張：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>你想做什麼</th><th>首選 provider</th><th>備選</th><th>為什麼</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>家用日常閒聊（問時事、聊天氣、家事）</td>
+            <td>GLM-4-Flash</td>
+            <td>Groq Llama-3.1-8b</td>
+            <td>兩家都便宜到幾乎免費，反應快，日常夠用。</td>
+          </tr>
+          <tr>
+            <td>寫 HA 自動化 YAML（多 trigger、多 condition）</td>
+            <td>GLM-4.6</td>
+            <td>Anthropic Sonnet</td>
+            <td>GLM 中文順且熟悉 HA、Sonnet 邏輯最穩不亂寫。</td>
+          </tr>
+          <tr>
+            <td>照片問答（家電型號、螢幕截圖、平面圖）</td>
+            <td>OpenAI GPT-4o</td>
+            <td>GLM-4V（部分版本）</td>
+            <td>多模態品質 GPT-4o 是天花板。</td>
+          </tr>
+          <tr>
+            <td>讀整份 HA log 找出錯點</td>
+            <td>MiniMax M2</td>
+            <td>DeepSeek-reasoner</td>
+            <td>context 大＋能推理，把整份 log 貼進去也吞得下。</td>
+          </tr>
+          <tr>
+            <td>寫複雜 script 或 Python 小工具</td>
+            <td>Anthropic Opus</td>
+            <td>DeepSeek-reasoner</td>
+            <td>Opus 寫程式最穩、R1 是便宜的替代方案。</td>
+          </tr>
+          <tr>
+            <td>需要秒回的即時對話</td>
+            <td>Groq Llama-3.3-70b</td>
+            <td>GLM-4-Flash</td>
+            <td>Groq 是速度冠軍。</td>
+          </tr>
+          <tr>
+            <td>敏感題目被 GLM 拒答換問</td>
+            <td>Anthropic 或 OpenAI</td>
+            <td>OpenRouter 的西方模型</td>
+            <td>西方模型審查範圍不同。</td>
+          </tr>
+          <tr>
+            <td>免費玩看看 AI 是什麼</td>
+            <td>Groq</td>
+            <td>GLM 新戶額度</td>
+            <td>Groq 送額度慷慨、模型也是最新開源大模型。</td>
+          </tr>
+          <tr>
+            <td>一把金鑰跑很多家（懶得申請多支）</td>
+            <td>OpenRouter</td>
+            <td>—</td>
+            <td>OpenRouter 就是為此設計的。</td>
+          </tr>
+          <tr>
+            <td>影片剪輯字幕、旁白生成（<a href="ch17_video_pipeline.html">第 17 章</a>）</td>
+            <td>GLM-4.6</td>
+            <td>DeepSeek-chat</td>
+            <td>中文口語自然、便宜、批量產出划算。</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout tip"><strong>提示：</strong>典型「日常配置」是 2-3 家：一家便宜快（GLM-4-Flash 或 Groq）當日常主力、一家貴但強（Sonnet 或 GLM-4.6）當疑難雜症救援、一家聚合器（OpenRouter）當備援。三家月費加起來一個月台幣 200-500 就很夠用了。</div>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>我不知道要選哪個當第一家（或下一家）</h3>
+          <p>沒有標準答案，但有標準推薦：<strong>第一家永遠是 GLM</strong>（申請 5 分鐘、送額度、中文順）。第二家看你用第一家不順的地方——嫌 GLM 政治題迴避 → 加 OpenAI 或 Anthropic；嫌貴 → 加 DeepSeek；嫌慢 → 加 Groq；懶得申請多支 → 加 OpenRouter 通吃。不用一開始就想好完整組合，用著用著自然知道還缺誰。</p>
+        </li>
+        <li>
+          <h3>用 OpenRouter 為什麼 Anthropic 的思考塊不見了</h3>
+          <p>因為 OpenRouter 是走 openai-completions 中繼協議把所有家統一介面，這個協議沒有 Anthropic 的 native thinking block 格式。OpenRouter 幫你把思考鏈「攤平」成純文字塞回答裡，結果就是你看到答案很長但沒有灰色的思考塊。要保留完整思考塊必須<strong>走 Anthropic 直連</strong>（api mode 選 <code>anthropic</code>）——這也是<a href="#anthropic">上面 Anthropic 那節</a>強調要單獨掛的原因。日常兩條路併存：中繼走 OpenRouter 圖便宜、深度討論走 Anthropic 直連保完整體驗。</p>
+        </li>
+        <li>
+          <h3>台灣信用卡刷 GLM / OpenAI 過不了怎麼辦</h3>
+          <p>GLM 需要中國實名＋支付寶／微信，台灣卡直接不收。變通方法：（a）找中國親友幫忙儲值（人情借用）、（b）淘寶找代購儲值卡（用台幣買點卡碼，充進帳戶）、（c）改走 OpenRouter，用台灣信用卡買到 GLM 的模型（貴一點點但通路能過）。OpenAI 卡台灣地址帳單也麻煩，同樣走 OpenRouter 買 openai/gpt-4o 是最省事的替代路徑。</p>
+        </li>
+        <li>
+          <h3>Groq 免費額度用完會發生什麼</h3>
+          <p>會被回 rate limit（429）錯誤，直到<strong>當天配額重置</strong>——Groq 的免費額度是每天算，不是每月算，過了午夜就自動補回。要更多可以升級 Groq Pro（月費模式）或改走別家跑同樣的開源模型。日常玩家一天送的量夠用，你除非做批量任務才會踩到。</p>
+        </li>
+        <li>
+          <h3>Pi Agent 按 Test 綠燈，但實際講話一直 timeout</h3>
+          <p>Test 只是驗證能連上，實際 chat 可能因為：（a）該家伺服器 peak 時段擁塞（DeepSeek 常發生），換個模型或等 10 分鐘再試；（b）你選了很大的 context model（例如 MiniMax M2 全開 1M），推理時間本來就長，把 Pi Agent 的 timeout 拉到 120 秒以上；（c）VPN 中間斷線（如果你走 VPN 連 OpenAI／Anthropic）。log 在 pi-web 的 Session 頁面看，錯誤訊息通常會寫是哪一種。</p>
+        </li>
+        <li>
+          <h3>模型名寫錯 Pi Agent 回 404 或 model not found</h3>
+          <p>每家的模型名有嚴格拼寫，大小寫、破折號、版本號都要對。查證方法：（a）到該家的官方 <em>docs → Models</em> 頁面複製最新名字，例如 DeepSeek 的 model list 頁；（b）如果走 OpenRouter，去 <code>https://openrouter.ai/models</code> 搜關鍵字複製；（c）Groq 的模型清單常改版，去 <code>https://console.groq.com/docs/models</code> 對一下。貼進 Pi Agent 的時候不要手打，用複製貼上避免全形符號誤傳。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>Perplexity、xAI Grok、Google Gemini 有支援嗎？</summary>
+        <div class="body">Pi Agent 本身沒有為它們做 native 支援，但只要它們提供 <strong>OpenAI-compatible</strong> API（現在幾乎所有主流家都提供），你就能在 Models 面板自訂一個新 provider：api mode 選 <code>openai-completions</code>、baseUrl 填該家的 API 端點、貼金鑰、加 model 名字，一樣能用。例如 Grok 走 <code>https://api.x.ai/v1</code>、Gemini 走 <code>https://generativelanguage.googleapis.com/v1beta/openai/</code>（Google 提供 OpenAI 相容層）。或者直接透過 OpenRouter 拿這些，省去一支支申請的功夫。</div>
+      </details>
+      <details class="faq">
+        <summary>同一家的不同模型可以共用一個 provider 嗎？</summary>
+        <div class="body">可以，也應該這樣做。Pi Agent 的 Models 面板每一家 provider 底下的 Models 是一個列表，你要多少個就加多少個。例如 GLM 一家底下同時列 <code>glm-4.6</code>、<code>glm-4-flash</code>、<code>glm-4-air</code>，聊天頁下拉會全部顯示，不用為每個模型另外加一個 provider。這個設計省下重複貼 baseUrl 和 API key 的功夫。</div>
+      </details>
+      <details class="faq">
+        <summary>哪家最有隱私？我不想我家用電記錄被 AI 廠商知道</summary>
+        <div class="body">六家 provider 走 API 都會把你送的字經過他們伺服器（這是雲端 AI 的本質），差別在「留存政策」不同。Anthropic 與 OpenAI 對付費 API 用戶預設<strong>不會拿你的對話訓練模型</strong>（Anthropic 30 天後刪除，OpenAI 30 天後刪除），付更貴的 enterprise 合約可以再選 zero-retention（完全不存）。中國家（GLM、DeepSeek、MiniMax）的政策比較模糊，官方文件寫「合規用途留存」但沒 zero-retention 選項。最偏執的隱私派會選：（a）走 Groq 或 OpenRouter 跑開源模型（廠商換一層）、（b）自己在家架 Ollama 跑本地模型（完全不出網）——後者是「私人 AI」的終極解，但要有一台 GPU 主機。</div>
+      </details>
+      <details class="faq">
+        <summary>換 provider 之後我原本的對話會斷嗎？</summary>
+        <div class="body">不會，但新舊 session 走不同 provider。Pi Agent 的每個對話 session 開頭選的 provider＋model 會被<strong>凍結</strong>，之後你就算換了預設 provider，回到這個舊 session 它還是用當初選的那個模型繼續。所以想試新 provider 直接開新 session 就好，不用擔心弄亂舊對話。這個行為在<a href="ch4_ui_tour.html">第 4 章</a>介面導覽有講過。</div>
+      </details>
+      <details class="faq">
+        <summary>Anthropic 的 cache_control 是什麼？走 OpenRouter 為什麼失效？</summary>
+        <div class="body">cache_control 是 Anthropic 專屬機制：你如果重複問類似結構的問題（例如每次都貼一份長 5000 字的 system prompt 加不同問題），Anthropic 會偵測到系統提示重複、把它放進快取，第二次以後只算 1/10 的價錢。<a href="ch12_reasoning.html">第 12 章</a>會展開講怎麼設計 prompt 讓快取吃到。這個功能只有走 api mode <code>anthropic</code>（直連）才啟動，走 <code>openai-completions</code>（即使是 OpenRouter 的 anthropic/*）都會失效，因為 OpenAI 協議沒有這個欄位可傳。日常重度使用 Claude 的話，額外花時間申請 Anthropic 直連金鑰、跳過 OpenRouter 中繼，長期會省很多錢。</div>
+      </details>
+      <details class="faq">
+        <summary>我看到有些教學提到 Zai / Zhipu 的 thinkingFormat，跟這章寫的一樣嗎？</summary>
+        <div class="body">一樣。<code>zai</code> 是「<strong>Zhipu AI</strong>」的縮寫，也是 Pi Agent 內建 thinking-format parser 的 ID。GLM 系列的 reasoning 模型（GLM-Z1 或 GLM-4.6 開 reasoning 時）會用他們特有的 <code>&lt;think&gt;...&lt;/think&gt;</code> 包法送思考鏈，Pi Agent 只有走 <code>thinkingFormat: zai</code> 才知道要把這段渲染成灰色塊。不填也不會壞，只是灰色塊變成一團純文字混在正常回答裡看起來很亂。詳細思考塊的機制在<a href="ch12_reasoning.html">下一章</a>會全講。</div>
+      </details>
+      <details class="faq">
+        <summary>不是提到的六家還想試更多，有清單可以參考嗎？</summary>
+        <div class="body">看<a href="appendix_provider_keys.html">附錄 B：各 provider 金鑰申請流程</a>——那裡把 Pi Agent 支援與可自訂的 provider 全部列出（含 Cohere、Mistral、Fireworks、Together AI、Perplexity、xAI、Together、Cerebras 等），每一家的 baseUrl 與典型模型名都給你了。這章講的是「六家有代表性的、大家日常會用到的」，附錄那份是「盡量全的參考」。</div>
+      </details>
+      <details class="faq">
+        <summary>下一步該讀哪一章？</summary>
+        <div class="body">已經理解各家個性、也知道 Pi Agent 該怎麼填的話，翻到<a href="ch12_reasoning.html">第 12 章：思考塊、cache_control 與省 token 的技巧</a>——那章會展開講「同一個問題怎麼問，才能讓 AI 認真想並且省你錢」，是把六家 provider 用出價值的關鍵一章。已經接了 2-3 家但還沒實際比較過差異的話，也可以回<a href="ch10_why_multi.html">第 10 章</a>複習「多 provider 的策略邏輯」。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch10_why_multi.html">
+        <span class="label">← 上一章</span>
+        <span class="title">10 · 為什麼多接幾家</span>
+      </a>
+      <a class="next" href="ch12_reasoning.html">
+        <span class="label">下一章 →</span>
+        <span class="title">12 · Reasoning 模型</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

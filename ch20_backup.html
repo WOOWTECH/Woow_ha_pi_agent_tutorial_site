@@ -1,0 +1,368 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 20 章 · 對話與金鑰的備份：跟 HA snapshot 一起走 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Pi Agent 資料備份與還原：/data/pi-agent/ 目錄結構、HA snapshot 涵蓋範圍、venv 與 playwright-cache 為什麼被排除、還原後的復原步驟。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch20_backup.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 20 章 · 對話與金鑰的備份：跟 HA snapshot 一起走 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Pi Agent 資料備份與還原：/data/pi-agent/ 目錄結構、HA snapshot 涵蓋範圍、venv 與 playwright-cache 為什麼被排除、還原後的復原步驟。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch20_backup.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 20 章 · 對話與金鑰的備份：跟 HA snapshot 一起走 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Pi Agent 資料備份與還原：/data/pi-agent/ 目錄結構、HA snapshot 涵蓋範圍、venv 與 playwright-cache 為什麼被排除、還原後的復原步驟。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html" class="active">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要學備份</a>
+      <a href="#concept">Pi Agent 目錄地圖</a>
+      <a href="#what">為什麼排除 4 項</a>
+      <a href="#steps">做一次完整備份</a>
+      <a href="#test">測試還原</a>
+      <a href="#warning">不建議的備份方式</a>
+      <a href="#security">金鑰多存一份</a>
+      <a href="#tips">升級前先備</a>
+      <a href="#restore">搬家到新主機</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 20 章</div>
+      <h1>對話與金鑰的備份：跟 HA snapshot 一起走</h1>
+      <p class="lead">Home Assistant 的 snapshot（快照）是你家電腦最基本的家常備份——每個月做一次，出事有回頭路。Pi Agent 貼在 HA 裡的東西幾乎全部會跟著 snapshot 走：對話、金鑰、Skill、rclone token 都會被打包；但有 4 個資料夾故意被排除，理由後面一次講清楚。這章讓你知道界線在哪、還原之後要補做什麼、以及金鑰要不要再多存一份到密碼管理器。看完你就敢按升級、敢搬家、敢在 HA 上實驗。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼要學備份">
+      <h2 data-icon="why">為什麼一個月要做一次 snapshot</h2>
+      <p>你的 HA 主機在做的事情越來越多——照明自動化、門鎖、能源監控，現在還加上 Pi Agent 這個 AI 工作站。這代表<strong>它壞掉時你失去的東西比以前多得多</strong>：不只是燈不會自己開，還會失去所有 AI 對話紀錄、你辛苦一家家申請貼上去的金鑰、你裝過的每一個 Skill、rclone 上傳 Google Drive 的授權。這些東西加起來是好幾週的心血。</p>
+      <ul>
+        <li>SD 卡壞掉：Raspberry Pi 上跑 HA 的人多半遇過。突然開不了機，卡插到讀卡機也讀不出來。</li>
+        <li>升級失敗：某次 HA 大改版或 Pi Agent add-on 更新後開不起來，想 rollback 卻沒退路（<a href="ch21_upgrade.html">第 21 章</a>會講升級踩雷）。</li>
+        <li>手滑刪東西：在 File editor 或 SSH 裡打錯指令，把設定砍掉。</li>
+        <li>搬家到新主機：從 Pi 4 換到 Pi 5、從 Pi 換到 NUC、從家裡搬到公司。</li>
+      </ul>
+      <p>HA 內建的 <strong>Backup（備份）</strong>就是為這些場景設計的。你按一下就把整台 HA 的狀態（設定、資料庫、每個 add-on 的 <code>/data/</code> 目錄）打包成一個 <code>.tar</code> 檔，可以下載、可以自動傳雲端、可以還原到另一台 HA。</p>
+      <p>Pi Agent 貼在 HA 裡當 add-on 就是為了搭上這班順風車。你不用另外設一套備份機制、不用學新的雲端服務、不用另裝 cron。<strong>只要你有做 HA snapshot 的習慣，Pi Agent 的資料就自動有備份。</strong>這章就是把「哪些會走、哪些不會走、怎麼驗證」講清楚。</p>
+      <div class="callout"><strong>觀念：</strong>Home Assistant 的官方名詞現在叫 <strong>Backup</strong>（介面上是「備份」按鈕），社群仍常口語稱為 snapshot（快照）——都是同一件事，本章兩個詞交替用。</div>
+    </section>
+
+    <section id="concept" data-nav="Pi Agent 目錄地圖">
+      <h2 data-icon="concept">Pi Agent 的 /data/pi-agent/ 目錄地圖</h2>
+      <p>你不需要真的 SSH 進去看這個資料夾，但要知道它長什麼樣，備份的討論才有座標。整棵樹如下，右邊那欄「snapshot 收不收」是這章的重點：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>路徑</th><th>裝什麼</th><th>HA snapshot 收嗎</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>sessions/*.jsonl</code></td><td>你跟 AI 講過的所有對話（每個 session 一個檔，見 <a href="ch8_session.html">第 8 章</a>）</td><td><strong>會</strong></td></tr>
+          <tr><td><code>models.json</code></td><td>所有 provider 設定與 API 金鑰（見 <a href="ch6_paste_key.html">第 6 章</a>）</td><td><strong>會</strong></td></tr>
+          <tr><td><code>skills/</code></td><td>你裝過或自己寫的 Skill（見 <a href="ch14_skill_concept.html">第 14 章</a>）</td><td><strong>會</strong></td></tr>
+          <tr><td><code>auth.json</code></td><td>OAuth 登入 token（例如 <em>GLM login</em> 那種免打 key 的授權）</td><td><strong>會</strong></td></tr>
+          <tr><td><code>home/pi-cwd-*/</code></td><td>pi coding agent 幫你開的工作目錄（含成品、腳本、Skill 草稿）</td><td><strong>會</strong></td></tr>
+          <tr><td><code>rclone/rclone.conf</code></td><td>Google Drive 授權 token（見 <a href="ch19_rclone.html">第 19 章</a>）</td><td><strong>會</strong></td></tr>
+          <tr><td><code>venv/</code></td><td>Python 環境（video-tools 用的一堆套件）</td><td><strong>不會</strong>（還原後自動重下）</td></tr>
+          <tr><td><code>playwright-cache/</code></td><td>Playwright 用的 Chromium 瀏覽器</td><td><strong>不會</strong>（還原後自動重下）</td></tr>
+          <tr><td><code>projects/*/clips/</code></td><td>影片管線抓下來的畫面片段（原始素材）</td><td><strong>不會</strong>（可再產）</td></tr>
+          <tr><td><code>projects/*/segments/</code></td><td>ffmpeg 剪接的中繼檔</td><td><strong>不會</strong>（可再產）</td></tr>
+        </tbody>
+      </table>
+      <p>簡單記憶法：<strong>「你的成果會走，工具鏈跟半成品不會走」</strong>。對話、金鑰、Skill、rclone 授權、成品 mp4 都是你的成果；venv、Chromium、影片中繼檔是可以重下重跑的工具與素材。</p>
+      <div class="callout tip"><strong>提示：</strong>如果你在<a href="ch5_first_key.html">第 5 章</a>用 GLM login 那類 OAuth 授權而不是貼靜態 API key，就要特別在意 <code>auth.json</code>——那份 token 一旦掉了要重跑一次 login 流程，比一般 key 麻煩。還好它是被 snapshot 收的。</p>
+    </section>
+
+    <section id="what" data-nav="為什麼排除 4 項">
+      <h2 data-icon="what">為什麼故意排除那 4 個資料夾</h2>
+      <p>看到 <code>venv/</code>、<code>playwright-cache/</code>、<code>clips/</code>、<code>segments/</code> 沒被備份，你可能第一反應是「不是全備才安全嗎，為什麼要排除？」原因有三個，值得記住：</p>
+      <ol class="steps">
+        <li>
+          <h3>會讓 snapshot 檔膨脹到嚇死人</h3>
+          <p><code>venv/</code> 加上 <code>playwright-cache/</code> 兩個資料夾合起來大概 <strong>720 MB</strong>——這就是<a href="ch2_install.html">第 2 章</a>你首次安裝時等 3-8 分鐘、<a href="ch18_video_tools.html">第 18 章</a>會展開的那一坨。如果它們也進 snapshot，你每一份備份都會多背將近 1 GB。做十次備份就 10 GB，上傳 Nabu Casa 或 Google Drive 都痛苦，硬碟很快滿。</p>
+        </li>
+        <li>
+          <h3>影片管線的 clips / segments 是可重跑的中繼檔</h3>
+          <p><code>projects/&lt;某支影片&gt;/clips/</code> 裡是 Playwright 錄下來的每一段畫面，<code>segments/</code> 是 ffmpeg 剪出來的過渡片段。這些都是可以照著腳本再產一次的東西——只要 <code>projects/&lt;某支影片&gt;/</code> 底下的腳本、旁白稿、成品 <code>final.mp4</code> 有備份，你就有能力重新生一次中間檔。備份中繼檔沒有意義，只會讓 snapshot 肥大。</p>
+        </li>
+        <li>
+          <h3>還原後 s6-overlay 會自動幫你重下</h3>
+          <p>Pi Agent 開機時有一個叫 <code>video-tools-init</code> 的 s6 服務（<a href="ch18_video_tools.html">第 18 章</a>展開講過），它會檢查 <code>venv/</code> 與 <code>playwright-cache/</code> 在不在，不在就自動重下。所以你 snapshot 就算沒收這兩個資料夾，restore 完 Pi Agent 一開機，前面 3-8 分鐘會偷偷把它們重新裝一次。你只要耐心等，什麼都不用做。</p>
+        </li>
+      </ol>
+      <p>所以整個設計哲學是：<strong>snapshot 只包「無法從別處重建的東西」</strong>。對話、金鑰、Skill、rclone token、成品 mp4——這些丟了就真的丟了；venv、Chromium、影片中間檔——這些永遠可以重下重跑。備份策略設計成這樣，你才能在合理檔案大小內存到很多份歷史快照。</p>
+      <div class="callout"><strong>觀念：</strong>這叫「有效備份」——只備份不可再生的資料，可再生的東西信任來源系統會重造。企業級的備份規劃也是這套原則，Pi Agent 只是把它預設幫你設好。</p>
+    </section>
+
+    <section id="steps" data-nav="做一次完整備份">
+      <h2 data-icon="steps">動手：做一次完整備份</h2>
+      <p>步驟很簡單，第一次做的話跟著點就好。之後你會把它變成每個月一次的家常動作。</p>
+      <ol class="steps">
+        <li>
+          <h3>打開 HA 的備份頁</h3>
+          <p>在 Home Assistant 側邊欄按 <strong>設定 → 系統 → 備份</strong>。第一次打開你會看到一個空清單（或前一次 HA 自動做的 backup）。舊版本的路徑是 <em>設定 → 系統 → Server Controls</em>，那條路徑在新版已經沒了，就是這裡。</p>
+        </li>
+        <li>
+          <h3>按右下角「建立備份」，選「完整備份」</h3>
+          <p>畫面會問你要「完整備份」還是「部分備份」。第一次建議選 <strong>完整備份</strong>——它會把 HA 核心設定＋所有 add-on 資料一起包，含 Pi Agent 的 <code>/data/pi-agent/</code>。部分備份是你熟練之後想只備某幾個 add-on 才用（下面 troubleshoot 有講）。</p>
+        </li>
+        <li>
+          <h3>幫這次備份取個能一眼看懂的名字</h3>
+          <p>預設名字通常是「Core &lt;版本&gt;」加時間戳，字很長但沒鑑別度。改一個像 <code>2026-08-14-full</code>、<code>升級前備份</code>、<code>裝完 GLM 金鑰</code> 這種你未來會看得懂的名字。取個好名字之後找備份會快很多。</p>
+        </li>
+        <li>
+          <h3>要不要加密自己決定</h3>
+          <p>畫面上有一個密碼欄可以加密備份檔。原則：<strong>要上傳到雲端就開加密</strong>（Nabu Casa、Google Drive、iCloud 都算），<strong>只存在自己家 NAS 或本機硬碟</strong>可以不用開。密碼要記在密碼管理器裡，忘了就真的救不回來。</p>
+        </li>
+        <li>
+          <h3>按下去等幾分鐘</h3>
+          <p>備份時間跟你的 HA 資料量與 add-on 數量有關，家用規模的話大概 1-10 分鐘。做完後那份備份會出現在清單裡，顯示大小（正常會有幾百 MB 到幾 GB，不誇張）。你可以按右邊三個點選<strong>下載 .tar</strong>存到本機，或選<strong>上傳到 Nabu Casa</strong>自動放雲端。有裝 Google Drive Backup 這類第三方 add-on 的話也會出現對應的上傳選項。</p>
+        </li>
+      </ol>
+      <div class="callout tip"><strong>提示：</strong>Nabu Casa 訂閱戶可以在備份頁直接開啟「自動排程」與「自動上雲」，設好之後每週或每天自動做，完全不用手動按。沒 Nabu Casa 的話，可以裝 <em>Google Drive Backup</em> 或 <em>Samba Backup</em> 這類社群 add-on 排排程。</p>
+    </section>
+
+    <section id="test" data-nav="測試還原">
+      <h2 data-icon="test">重要：測試還原一次才算數</h2>
+      <p>備份做完不代表你有備份。真正的驗證是「拿它去 restore 看能不能起來」——沒測過的備份等於沒有備份，這是老話但沒錯。做法：</p>
+      <ol class="steps">
+        <li>
+          <h3>準備一台「不是你原本 HA」的 HA</h3>
+          <p>可以是家裡另一台舊 Pi、公司閒置的 NUC、桌機上跑一個 <em>Home Assistant OS</em> 的 VirtualBox 虛擬機，或雲端一個小 VPS 裝 HA supervised。<strong>不要直接在原機還原</strong>——原機還原會把你現有資料蓋掉，還原失敗就雙輸。</p>
+        </li>
+        <li>
+          <h3>裝好 HA、上傳 backup、按還原</h3>
+          <p>在測試機的<strong>設定 → 系統 → 備份</strong>頁按右上「上傳備份」把你剛剛下載的 <code>.tar</code> 傳上去，然後按右邊三個點<strong>「還原」</strong>。有加密就填密碼。HA 會提示要重開機，讓它自己重來。</p>
+        </li>
+        <li>
+          <h3>等 Pi Agent 自動起來、video-tools 重下</h3>
+          <p>還原後 Pi Agent 會出現在側邊欄。前面 3-8 分鐘它在背景重下 720 MB 的 venv 與 Chromium（第 18 章講過的 <code>video-tools-init</code>）。這時候你點進去 pi-web 可以用，但影片管線還沒好，不用急。</p>
+        </li>
+        <li>
+          <h3>打開 pi-web，逐項檢查</h3>
+          <p>這是驗證的關鍵——要真的看到才算數：
+          <ul>
+            <li>左邊 Session 列表：你之前的對話應該全部都在</li>
+            <li>Models 面板：所有 provider 都在，按 <strong>Test</strong> 應該綠燈</li>
+            <li>Skills 面板：你裝過的 Skill 都在清單裡</li>
+            <li>試著開一個新對話，隨便問一個問題，AI 有回應</li>
+          </ul>
+          都通過才代表這份 snapshot 真的救得回你。有一項掛掉就要回頭查（見 troubleshoot）。</p>
+        </li>
+      </ol>
+      <div class="callout warn"><strong>注意：</strong>測試完的那台測試機記得清掉——不要讓它繼續連原本的網路，兩台一樣 HA URL / 一樣 device_id 會在網路上互相踩腳（例如整合的 webhook、Nabu Casa 的 remote 連線）。測完直接關機、格式化，或至少把 HA 從網路斷開。</p>
+    </section>
+
+    <section id="warning" data-nav="不建議的備份方式">
+      <h2 data-icon="warning">不建議：手動 rsync <code>/data/pi-agent/</code> 到別台</h2>
+      <p>你可能會想：「反正我知道 <code>/data/pi-agent/</code> 就是全部東西了，那我直接 SSH 進 HA、<code>rsync</code> 這個資料夾到別台不就好？何必用 HA 內建 backup？」技術上可以，實務上有三個坑：</p>
+      <ul>
+        <li><strong>版本不對就會出事</strong>：<code>models.json</code>、<code>sessions/*.jsonl</code> 的欄位格式有可能在 Pi Agent 版本升級時微調。你把舊版格式的檔案塞進新版 add-on 可能會讓 pi-web 讀取失敗；反過來也可能。HA 官方 backup 會把 add-on 版本一起記錄，還原時是「同版對同版」，這個對齊你自己 rsync 沒辦法保證。</li>
+        <li><strong>會漏掉 add-on 中繼狀態</strong>：add-on 除了 <code>/data/</code> 還有它的 <em>options.json</em>（設定分頁的內容）、config 分頁的環境變數、log_level 之類。HA backup 一起包，rsync 你要自己想辦法收齊，很容易漏。</li>
+        <li><strong>還原時 Pi Agent 不會知道要重下 video-tools</strong>：sentinel 檔案 <code>/data/pi-agent/.video-tools-installed</code> 你也一起 rsync 過去了，s6-overlay 看到這個檔就跳過重下——但實際上新機是沒 venv 的空機。結果 pi-web 開得起來，影片管線一用就崩。</li>
+      </ul>
+      <p>結論：<strong>正解永遠是 HA snapshot</strong>。它就是為這種場景設計的，你別自作聰明繞過去。</p>
+      <div class="callout warn"><strong>注意：</strong>唯一可以直接手動搬 <code>/data/pi-agent/</code> 檔案的場景是「只搬單一 Skill 給朋友」——你把 <code>skills/&lt;某個 skill&gt;/</code> 打包成 zip 傳給朋友，讓他解壓到自己的 <code>/data/pi-agent/skills/</code>。這種粒度沒問題，因為 Skill 只是 Markdown 文字，沒有版本綁定。</p>
+    </section>
+
+    <section id="security" data-nav="金鑰多存一份">
+      <h2 data-icon="security">進階：金鑰是否要另外存進密碼管理器</h2>
+      <p>Pi Agent 的金鑰放在 <code>/data/pi-agent/models.json</code>，HA snapshot 一定會帶走。理論上你有 snapshot 就等於有金鑰備份。但實務上還是建議你把 <strong>每支 API 金鑰另外貼一份到密碼管理器</strong>（1Password、Bitwarden、iCloud Keychain 都行），理由兩個：</p>
+      <ul>
+        <li><strong>多一份保險</strong>：萬一你的 HA snapshot 檔沒有做（一個月忘記做那次剛好機器掛）、或雲端上傳失敗自己沒發現、或 backup 本身壞掉解不開——你至少還有密碼管理器裡的一份。金鑰跟 snapshot 綁在一起有風險共存的問題。</li>
+        <li><strong>snapshot 檔外流時金鑰不會跟著外流</strong>：snapshot 是 <code>.tar</code> 檔，沒加密的話用任何 archive 工具就能解開，裡面 <code>data/pi-agent/models.json</code> 是明文 JSON 一看就有金鑰。如果你把 snapshot 隨手放桌面、上傳到不受信任的雲端、或分享給朋友幫忙看問題——金鑰就外流了。<strong>密碼管理器裡的那份不會被連動</strong>，你至少可以主動去 provider 後台把外流的舊 key 廢掉，換一個新的貼回 Pi Agent 就好，不會整個帳號被 hack。</li>
+      </ul>
+      <p>操作也不麻煩：申請每支金鑰的時候（<a href="ch5_first_key.html">第 5 章</a>那類流程），拿到 key 的當下順手貼一份到密碼管理器一筆「新項目」，欄位寫 <em>Pi Agent GLM key / 申請日期 / 對應 provider 網址</em>。以後每次去 Models 面板貼進 Pi Agent 也貼進密碼管理器，兩處保持一致。</p>
+      <div class="callout danger"><strong>危險：</strong>絕對不要把金鑰貼進 <a href="ch14_skill_concept.html">Skill</a> 的 <code>SKILL.md</code> 裡當「快取一份自己看」——SKILL.md 的內容會被送給雲端 AI provider（<a href="ch14_skill_concept.html">第 14 章</a>解釋過），等於你自己把 key 送出去給雲端第三方。金鑰只放 <code>models.json</code> 與密碼管理器兩個地方，其他地方一律不放。</p>
+    </section>
+
+    <section id="tips" data-nav="升級前先備">
+      <h2 data-icon="tips">升級 Pi Agent 前強烈建議先備</h2>
+      <p>每次 Pi Agent add-on 有更新提示，動手升級之前<strong>強烈建議做一次 snapshot</strong>。這不是慣例級的建議，是硬性建議，尤其對於重大版本（例如 v0.13.0 這種有 breaking change 的）。</p>
+      <p>原因：<strong>Pi Agent 的 add-on 頁面沒有「downgrade」按鈕</strong>。HA 的 add-on 商店只提供最新版下載，你升上去發現行為變了、不喜歡、想退回去——沒得退，除非你有 snapshot 可以還原到升級前的狀態。</p>
+      <p>已知的高風險升級點（未來會擴充，請以<a href="ch21_upgrade.html">第 21 章</a>當時的紀錄為準）：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>版本跳點</th><th>變動</th><th>沒備份會怎樣</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>~ v0.13.0</td><td>API 金鑰從 add-on config 搬到 pi-web 的 Models 面板</td><td>升上去可能會發現金鑰欄不見了，得從 Models 面板重貼；有 snapshot 可以退回舊版看金鑰、抄下來、再升</td></tr>
+          <tr><td>~ v0.10.0</td><td>pi coding agent 的工作目錄從容器根搬到 <code>/data/pi-agent/home/</code></td><td>舊的 <code>pi-cwd-*</code> 目錄升級時被砍，沒備份就丟</td></tr>
+          <tr><td>影片管線重整</td><td>video-tools 的 venv 結構偶爾會重排</td><td>影片管線暫時失效，通常自動修但保險起見備一下</td></tr>
+        </tbody>
+      </table>
+      <p>SOP 建議：<strong>設定 → 系統 → 備份 → 建立備份（完整）→ 命名「升級前 &lt;日期&gt;」→ 等 backup 完成 → 回 add-on 頁面按更新</strong>。多花 5 分鐘，換一條退路。</p>
+      <div class="callout tip"><strong>提示：</strong>如果你是 Nabu Casa 訂閱戶又打開了「自動排程」，往前推一天通常就有一份 snapshot。可以直接看備份清單有沒有近期的那份，有就直接升；沒有就手動補一次再升。</p>
+    </section>
+
+    <section id="restore" data-nav="搬家到新主機">
+      <h2 data-icon="restore">搬家到新 HA 主機的完整流程</h2>
+      <p>你把 HA 主機換掉（從 Pi 換到 NUC、從舊 Pi 升到 Pi 5、家裡搬到公司）也一樣用 snapshot 走。整個流程幾乎跟「測試還原」一樣，但這次是玩真的：</p>
+      <ol class="steps">
+        <li>
+          <h3>舊機做一次乾淨的 snapshot</h3>
+          <p>臨走前的最後一次備份要特別小心。做完之後<strong>不要再對舊機做任何操作</strong>——不要開新對話、不要換設定，因為那些改動不會在你剛做的 snapshot 裡。要嘛開加密、要嘛下載到 USB 隨身碟、要嘛上傳到 Nabu Casa。三管齊下最保險。</p>
+        </li>
+        <li>
+          <h3>新機裝好 HA（不安裝任何 add-on）</h3>
+          <p>先把 Home Assistant OS 或 supervised 裝到新硬體上、能開機、能連到你的 Wi-Fi 就可以了。此時<strong>不要急著裝 Pi Agent</strong>——因為等一下 restore 會把 Pi Agent 連同資料一起裝回來，你先手動裝反而多此一舉。</p>
+        </li>
+        <li>
+          <h3>在新機 restore 舊 snapshot</h3>
+          <p>設定 → 系統 → 備份 → 上傳備份 → 選還原。加密就填密碼。HA 會提示要重開機，restore 完 Pi Agent 會自己出現在側邊欄。</p>
+        </li>
+        <li>
+          <h3>等 3-8 分鐘讓 video-tools 重下</h3>
+          <p>新機的 <code>venv/</code> 跟 <code>playwright-cache/</code> 是空的（snapshot 沒帶）。s6-overlay 開機時會自動去下，這段時間 pi-web 可以打開、可以聊天、可以看歷史 session，但影片管線還不能用。等日誌顯示 <code>video-tools-init done</code> 就好了。</p>
+        </li>
+        <li>
+          <h3>打開 pi-web 測一次對話確認 provider 還通</h3>
+          <p>開一個新 session，切到你常用的 provider（例如 GLM），隨便問一個問題。有回應就代表金鑰、網路、everything 都對得起來。如果 provider 那邊回 401 / 403，可能是網路 IP 變了觸發風控，或那家 provider 有 IP 白名單設定要更新——這種是 provider 帳號問題不是 Pi Agent 問題。</p>
+        </li>
+      </ol>
+      <div class="callout"><strong>觀念：</strong>你會發現整個搬家過程<strong>你完全沒重貼過任何金鑰</strong>——因為 <code>models.json</code> 跟著 snapshot 走了。這是<a href="ch5_first_key.html">第 5 章</a>結尾一直預告的優點。同樣道理適用於 Skill、rclone token、對話歷史。</p>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>snapshot 檔動輒 1 GB 以上，正常嗎</h3>
+          <p>正常。完整備份含所有 add-on 的 <code>/data/</code>——除了 Pi Agent 之外你可能還有 InfluxDB、Node-RED、MQTT broker、File editor 各自的資料。如果你只在乎 Pi Agent 那份：選「部分備份」，只勾 Home Assistant Core 跟 pi_agent 這個 add-on 的資料。這樣 snapshot 大概會小到幾百 MB 甚至幾十 MB，看你對話歷史多寡。<strong>但注意：部分備份不含其他 add-on，還原時只還原你勾的那些。</strong></p>
+        </li>
+        <li>
+          <h3>還原之後 Pi Agent 空空的，對話跟金鑰都不見</h3>
+          <p>八成是做 backup 時沒勾到 add-on data。回頭做 backup 頁重看：<strong>建立備份 → 完整備份</strong>會自動全勾；<strong>部分備份</strong>要手動勾「附加元件（Add-ons）」下的 <em>Woow HA Pi Agent</em>，還要另外確認「附加元件資料」也打勾。有些人只勾了 add-on 本體沒勾 add-on data，還原後 Pi Agent 是裝著的但 <code>/data/</code> 是空的。</p>
+        </li>
+        <li>
+          <h3>金鑰還原完好像還在，但按 Test 綠燈變紅</h3>
+          <p>先分兩種可能：（a）<strong>金鑰本身還有效</strong>——很可能對應的 API 服務改了 endpoint（例如 GLM 改網址、Anthropic 改路徑），這時候要去 Models 面板編輯那個 provider，把 baseUrl 更新到最新，再按 Test。第<a href="ch11_provider_map.html">11 章</a>的六家 provider 對照有講各家 baseUrl 現況。（b）<strong>金鑰過期或被廢</strong>——時間隔太久那家 provider 主動撤銷了那把 key，或你自己在後台重生過。這時候要重申請一支 key 貼回來，snapshot 救不了這個。</p>
+        </li>
+        <li>
+          <h3>影片管線壞、按產影片沒反應</h3>
+          <p>還原後 3-8 分鐘內 <code>video-tools-init</code> 還沒跑完，這時候試影片管線一定失敗。做法：（a）等——去 HA 的 add-on 記錄檔看有沒有 <code>video-tools-init done</code>，出現才算好；（b）如果十幾分鐘還沒好，或看到錯誤日誌，去 add-on 設定分頁把 <code>reset_video_tools</code> 開起來、重啟 add-on、等它重下一次（<a href="ch18_video_tools.html">第 18 章</a>詳講）。</p>
+        </li>
+        <li>
+          <h3>還原後 Skills 面板是空的但 <code>/data/pi-agent/skills/</code> 有檔</h3>
+          <p>這是「檔案還原了但 pi-web 沒重掃」的少見狀況。做法：按新對話（不是重整頁面），pi-web 開新 session 時會強制掃一次 skills 目錄，Skill 就會出現。如果還是不行，重啟 Pi Agent add-on（HA 的 add-on 頁面按重啟）。</p>
+        </li>
+        <li>
+          <h3>rclone 上傳 Google Drive 還原後不動</h3>
+          <p><code>rclone.conf</code> 的 OAuth token 有時效，太久沒用會過期，還原一份很舊的 snapshot 就會遇到。<a href="ch19_rclone.html">第 19 章</a>教過的 <code>rclone config reconnect</code> 跑一遍就好，會 refresh token 不用整個重新設。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>snapshot 存在哪最安全？</summary>
+        <div class="body">三選一或組合：（1）<strong>Nabu Casa</strong>訂閱戶最方便，備份頁直接勾自動上雲，備完自動傳。（2）<strong>自己排 rclone 上 Google Drive</strong>——裝 <em>Google Drive Backup</em> 這類社群 add-on，或用 <a href="ch19_rclone.html">第 19 章</a>教過的 rclone 手動排 cron。（3）<strong>本機 NAS / USB 隨身碟</strong>：只在區網內存，最快最私但缺異地備援。實務上建議 <em>本機一份 + 雲端一份</em> 雙重保險，兩個都掛掉的機率很低。</div>
+      </details>
+      <details class="faq">
+        <summary>多久做一次 snapshot 才夠？</summary>
+        <div class="body">習慣性：<strong>一週一次</strong>就非常夠用了。Nabu Casa 排每天太密沒必要（除非你天天大改設定），一週一次能容忍 7 天內的資料遺失、成本又低。<strong>重大改動之前另外手動加一次</strong>：升級 Pi Agent、換 HA 版本、大改自動化、裝新的關鍵 add-on——都在改之前先按一下建立備份，5 分鐘的事換一條退路。</div>
+      </details>
+      <details class="faq">
+        <summary>加密要開嗎？密碼忘了怎麼辦？</summary>
+        <div class="body"><strong>要外傳雲端就開加密</strong>（Nabu Casa、Google Drive、任何非你家設備）；<strong>只存本地看你自己</strong>——本機 NAS、家裡的 USB 硬碟可以不加密（快、方便復原）。密碼一定要記在密碼管理器（1Password / Bitwarden），忘了就<strong>真的救不回來</strong>，沒有官方後門也沒有工具能爆破。有些人偷懶用固定的家用密碼那就要接受「所有 snapshot 用同一支密碼」的風險。</div>
+      </details>
+      <details class="faq">
+        <summary>舊 snapshot 能反查以前的對話內容嗎？</summary>
+        <div class="body">可以。snapshot 就是一個 <code>.tar</code>（有加密就先解密），解壓之後找 <code>data/pi-agent/sessions/</code> 底下的 <code>.jsonl</code> 檔——每一行是一則 JSON 格式的訊息，直接用文字編輯器就看得到內容。適合的場景：「我上個月問過 AI 冰箱補貨清單，但現在的 Pi Agent 已經清過歷史」、「我想撈舊對話的某句 prompt 拿來重用」。做法上不用還原整個 HA，就是把 tar 解到桌面挑檔案。<strong>提醒：解出來的檔就在你桌面，看完自己刪，別留著給別人不小心看到。</strong></div>
+      </details>
+      <details class="faq">
+        <summary>snapshot 可以只還原 Pi Agent，不動其他 HA 設定嗎？</summary>
+        <div class="body">可以。還原介面會讓你選要還原哪些部分——只勾 <em>Woow HA Pi Agent</em>（含 add-on data），HA 核心與其他 add-on 都不動。適合的場景：「Pi Agent 剛剛壞掉但 HA 本身正常，我只想把 Pi Agent 退回昨天的狀態」。要注意這時候還原的是 Pi Agent 的資料，不是 Pi Agent 的版本——如果新版跟舊資料格式不合會出事，這時候可能要退整個。</div>
+      </details>
+      <details class="faq">
+        <summary>rclone 的 Google Drive token 真的會被 snapshot 帶走嗎？會不會有隱私問題？</summary>
+        <div class="body">會被帶走——<code>rclone.conf</code> 就放在 <code>/data/pi-agent/rclone/</code>，snapshot 一定收。裡面是 OAuth refresh token，等於「一把可以無限次進你 Google Drive 特定資料夾」的鑰匙。所以：<strong>含 rclone.conf 的 snapshot 一定要加密</strong>，特別是要上傳雲端的那份。如果你 snapshot 沒加密外流了，等於 Google Drive 那個資料夾就被別人拿到了——去 Google 帳號設定裡「應用程式與網站」把 rclone 授權撤銷，再重跑一次 <a href="ch19_rclone.html">第 19 章</a>的授權流程換新 token 就好。</div>
+      </details>
+      <details class="faq">
+        <summary>如果我只想備份 Pi Agent 而不備份整個 HA，可以嗎？</summary>
+        <div class="body">可以，用「部分備份」勾 <em>Woow HA Pi Agent</em> add-on 與其資料就好。但這種備份只在<strong>你要還原到同一台 HA</strong>時有意義——換新機你還是需要 HA 核心的設定（樓層、實體、自動化、帳號）才能有一個能開機的 HA 讓 Pi Agent 附著上去。所以搬家場景建議完整備份，日常「怕改壞單獨 Pi Agent 想退回」的場景可以用部分備份省空間。</div>
+      </details>
+      <details class="faq">
+        <summary>備份會鎖住 Pi Agent，備份期間 AI 不能用嗎？</summary>
+        <div class="body">HA 備份期間 add-on 會被暫停（讓資料落盤保持一致），這幾分鐘 Pi Agent 是不能用的——按 pi-web 會 504、對話送不出去。做完會自動恢復。所以排備份時間選家人比較不會用 AI 的時段（例如凌晨），或手動做的時候心裡有數，別剛好在等 AI 回答時按建立備份。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch19_rclone.html">
+        <span class="label">← 上一章</span>
+        <span class="title">19 · 傳 Google Drive</span>
+      </a>
+      <a class="next" href="ch21_upgrade.html">
+        <span class="label">下一章 →</span>
+        <span class="title">21 · 升級注意事項</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

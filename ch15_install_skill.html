@@ -1,0 +1,410 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 15 章 · 從 GitHub 裝別人做好的 Skill · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="Pi Agent 從 GitHub 安裝 Skill：Skills 面板的 Search、Add from URL 與 owner/repo shorthand、常見 auth 失敗的排錯。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch15_install_skill.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 15 章 · 從 GitHub 裝別人做好的 Skill · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="Pi Agent 從 GitHub 安裝 Skill：Skills 面板的 Search、Add from URL 與 owner/repo shorthand、常見 auth 失敗的排錯。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch15_install_skill.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 15 章 · 從 GitHub 裝別人做好的 Skill · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="Pi Agent 從 GitHub 安裝 Skill：Skills 面板的 Search、Add from URL 與 owner/repo shorthand、常見 auth 失敗的排錯。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html" class="active">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼從別人的裝起</a>
+      <a href="#concept">Skill 從哪裡來</a>
+      <a href="#docker">Pi Agent 怎麼下載</a>
+      <a href="#steps">動手裝一個</a>
+      <a href="#url">owner/repo 縮寫</a>
+      <a href="#compare">來源差別對照</a>
+      <a href="#done">裝完該做的三件事</a>
+      <a href="#assign">移除 skill</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 15 章</div>
+      <h1>從 GitHub 裝別人做好的 Skill</h1>
+      <p class="lead">上一章講完 Skill 是什麼，這一章直接動手。教你打開 Skills 面板、貼上一個 GitHub 網址、按下裝、看它出現在系統提示裡。做完你的 AI 就多了那項新本事，全程不用寫程式、也不用 SSH 進 HA 主機——按幾下滑鼠就搞定。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼從別人的裝起">
+      <h2 data-icon="why">為什麼第一件事是「裝別人做好的」</h2>
+      <p><a href="ch14_skill_concept.html">第 14 章</a>把 Skill 講成「教 AI 一項專門手藝」，也提到「網路上很多人已經幫你把手藝寫好，塞進 GitHub 上等你去撿」。那一章講的是概念，這一章告訴你怎麼撿。</p>
+      <p>從別人的 skill 裝起有三個好處：</p>
+      <ul>
+        <li><strong>不用會寫程式</strong>——skill 就是一個資料夾＋一份 <code>SKILL.md</code> 說明書，寫的人已經打包好，你只需要「貼網址、按裝」兩步。</li>
+        <li><strong>先體驗才知道值不值</strong>——與其花一小時看範例學怎麼寫，不如花三分鐘裝一個現成的，用它一個下午確認 Skill 這套機制是不是你要的，再決定要不要投入時間自己寫（<a href="ch16_write_skill.html">第 16 章</a>會教）。</li>
+        <li><strong>看好作品當教材</strong>——你裝進來的 skill，其實就是一份「別人怎麼寫 SKILL.md」的活範例。之後要自己寫的時候，去 <code>/data/pi-agent/skills/</code> 底下打開 <code>SKILL.md</code> 抄結構抄語氣，比看空白模板快十倍。</li>
+      </ul>
+      <p>還有一個容易被忽略的動機：<strong>Skill 是 Pi Agent 生態系的核心，而不是可有可無的花邊</strong>。同一顆 AI 大腦（例如 GLM-4.6），有沒有裝對 skill，做同一件事的結果會差很多。裝了 <em>home-assistant-best-practices</em> 之後，AI 幫你寫自動化會直接跟你講「這裡用 helper 比 template sensor 好」；沒裝的話，AI 會用它自己（可能過時的）習慣硬寫。這不是誰比較聰明的問題，是「有沒有把家裡的規則告訴它」的問題。</p>
+      <div class="callout"><strong>觀念：</strong>裝 skill 之於 AI，等於裝 HACS integration 之於 HA。原廠有東西可以用，但生態系裡總有更貼近你需求的社群作品——會挑會裝的人，可以直接跳過原廠的粗糙預設，用到大家幫你磨過的成品。</div>
+    </section>
+
+    <section id="concept" data-nav="Skill 從哪裡來">
+      <h2 data-icon="concept">Skill 的三種來源</h2>
+      <p>Pi Agent 的 Skills 面板可以吃三種來源，寫在同一個輸入框裡：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>來源</th><th>寫法範例</th><th>它會怎麼處理</th><th>這章教嗎</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>GitHub 完整 URL</td>
+            <td><code>https://github.com/mattpocock/skills</code></td>
+            <td>直接 <code>git clone</code></td>
+            <td>會，主力示範</td>
+          </tr>
+          <tr>
+            <td>owner/repo 縮寫</td>
+            <td><code>mattpocock/skills</code></td>
+            <td>自動補成 <code>https://github.com/mattpocock/skills</code>，再 clone</td>
+            <td>會，第二節示範</td>
+          </tr>
+          <tr>
+            <td>本地資料夾路徑</td>
+            <td><code>/data/pi-agent/skills/my-first-skill</code></td>
+            <td>直接讀那個資料夾（不 clone）</td>
+            <td>不會，留到<a href="ch16_write_skill.html">第 16 章</a>自己寫的時候</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>三種背後其實只有一個運作邏輯：把某個資料夾放到 <code>/data/pi-agent/skills/</code> 底下，然後 pi-web 每次開新 session 就去掃這個資料夾、把裡面每個子資料夾當一個 skill。差別只在「這個資料夾怎麼來的」——遠端拉下來的、還是你自己丟進去的。</p>
+      <div class="callout tip"><strong>提示：</strong>第三種（本地路徑）是留給「你自己在電腦上寫了半個小時的 skill、想先塞進去試試」的情境。它跳過 git 這一層，改動不用 push 也能生效。這章示範前兩種，因為對「還沒開始寫 skill」的人來說，是最實用的入手方式。</div>
+    </section>
+
+    <section id="docker" data-nav="Pi Agent 怎麼下載">
+      <h2 data-icon="docker">Pi Agent 是怎麼下載這些 skill 的</h2>
+      <p>知道背後在跑什麼，會讓你比較安心，也在出事的時候比較好排查。Pi Agent 拉遠端 skill 的方式很傳統：<strong>就是 <code>git clone</code></strong>。</p>
+      <p>從 v0.12.0 版開始，Pi Agent 的 add-on 基底映像有預裝 <code>git</code> 跟 <code>openssh-client</code> 兩個套件（這件事寫在 Containerfile 的 apt-get install 那行），所以你按下「Add Skill」的當下，容器裡真的在跑一句類似這樣的指令：</p>
+      <pre class="code-block"><code>cd /data/pi-agent/skills/
+git clone https://github.com/mattpocock/skills.git mattpocock-skills</code></pre>
+      <p>然後 pi-web 就會在下一次開 session 的時候，讀到 <code>/data/pi-agent/skills/mattpocock-skills/</code> 這個資料夾，把它註冊成一個可用的 skill 集合。你在 UI 上其實是在做「git clone 的圖形化版本」，這點知道之後很多疑問就自然消解了：</p>
+      <ul>
+        <li><strong>為什麼要 GitHub URL？</strong>因為 <code>git clone</code> 吃 URL。</li>
+        <li><strong>為什麼私人 repo 不會通？</strong>因為 <code>git clone</code> 遇到私人 repo 要問你帳號密碼，UI 沒地方讓你填。</li>
+        <li><strong>為什麼裝了不會自動更新？</strong>因為 clone 完就完了，除非你手動再 <code>git pull</code>（UI 沒這個按鈕，只能移除重裝）。</li>
+        <li><strong>為什麼 clone 一半可以中斷？</strong>因為那就是一個網路操作，你把頁面關掉、網路斷線，跟你在終端機 <kbd>Ctrl</kbd>+<kbd>C</kbd> 中斷 git clone 一樣。</li>
+      </ul>
+      <div class="callout"><strong>觀念：</strong>Pi Agent 把 <code>/data/pi-agent/skills/</code> 這個資料夾當作 skill 的家（詳細目錄結構見<a href="ch20_backup.html">第 20 章</a>）。這個資料夾在 HA snapshot 備份的時候會一起被打包，主機還原後你的 skill 收藏也會回來，不用重裝一次。</div>
+    </section>
+
+    <section id="steps" data-nav="動手裝一個">
+      <h2 data-icon="steps">動手裝一個真實 skill</h2>
+      <p>我們用一個常見的公開 repo 當示範：<code>mattpocock/skills</code>（Matt Pocock 是 TypeScript 圈的知名教學者，這個 repo 是他公開的 skill 集合）。它跟家庭情境沒直接關，但它是個「絕對裝得起來」的 baseline，用來讓你熟悉流程剛剛好。</p>
+      <ol class="steps">
+        <li>
+          <h3>打開 Pi Agent 工作區</h3>
+          <p>從 Home Assistant 側邊欄點「Pi Agent」進到主介面（<a href="ch3_open_it.html">第 3 章</a>教過的路徑）。你會看到左邊是 Session 列表、中間是對話區、右上有一排小圖示——那排小圖示就是<strong>面板切換列</strong>。</p>
+        </li>
+        <li>
+          <h3>點右上「工具箱」圖示打開 Skills 面板</h3>
+          <p>右上工具列由左至右通常是：<strong>Models</strong>（模型）、<strong>Skills</strong>（技能，圖示是一個工具箱或積木）、<strong>System prompt</strong>（唯讀）、<strong>Settings</strong>（設定）。滑鼠移上去 tooltip 會顯示名字，找到「Skills」點下去。畫面右側會滑出一個側欄，最上面通常是「Add Skill」或「＋」按鈕，下面是已裝的 skill 清單（第一次進去這裡是空的）。</p>
+        </li>
+        <li>
+          <h3>按「Add Skill」叫出輸入框</h3>
+          <p>按下「Add Skill」或「＋」按鈕，會跳出一個對話框，裡面有一個輸入框，上方通常寫「GitHub URL / owner/repo / local path」——這就是<strong>吃三種來源的那個框</strong>。有些版本會分成三個 tab（Remote／Shorthand／Local），有些直接一個框讓你貼什麼都可以，看你 pi-web 的版本而定。</p>
+        </li>
+        <li>
+          <h3>貼上完整 GitHub URL</h3>
+          <p>把這行複製貼上：<code>https://github.com/mattpocock/skills</code>。<strong>末尾不要加 <code>.git</code> 也沒關係</strong>——pi-web 會自動補上。也不用先在瀏覽器打開這個網址檢查——反正一按裝它就會告訴你 repo 存不存在。</p>
+        </li>
+        <li>
+          <h3>按確認開始 clone</h3>
+          <p>按「Install」／「Add」／「確認」按鈕（依語言與版本不同）。這時候你會看到一個進度條或轉圈圈符號，狀態文字類似「Cloning...」或「Downloading...」。這一步實際跑的就是我們上一節講的 <code>git clone</code>，時間大約 5-30 秒（看 repo 大小和你網路）。<strong>不要按取消也不要重新整理頁面</strong>，讓它跑完。</p>
+        </li>
+        <li>
+          <h3>看到 skill 出現在列表就成了</h3>
+          <p>完成後對話框關閉，Skills 面板的清單裡多了一個新項目，名字通常就是 repo 名（<code>mattpocock-skills</code> 或 <code>skills</code>）。每個項目旁邊會有一個小小的「三點」選單，可以點進去看細節或移除。裝好了。</p>
+        </li>
+        <li>
+          <h3>開新 session 驗證 skill 有進到 system prompt</h3>
+          <p>按左上「New Session」開一個新對話——<strong>要開新的，不是留在舊的</strong>，因為 system prompt 是 session 開場時就決定好、之後不重讀。然後點右上「System prompt」面板（唯讀的那個），往下捲，你應該能看到一段類似這樣的區塊：<code>&lt;available_skills&gt;...mattpocock-skills...&lt;/available_skills&gt;</code>。看到自己剛才裝的 skill 名字有出現，就代表 pi-web 認得它了、AI 也在這個 session 裡「知道」它可以用這項技能。</p>
+        </li>
+      </ol>
+      <div class="callout tip"><strong>提示：</strong>如果第 7 步的 System prompt 面板裡沒有你剛裝的 skill 名字，不用急著懷疑失敗——先按一下瀏覽器 <kbd>F5</kbd> 重新整理再開一個更新的 session。有些 pi-web 版本的前端狀態要重整才刷新（見「troubleshoot」那節）。</div>
+    </section>
+
+    <section id="url" data-nav="owner/repo 縮寫">
+      <h2 data-icon="url">owner/repo 縮寫：懶得貼完整網址</h2>
+      <p>剛剛第 4 步你貼了 <code>https://github.com/mattpocock/skills</code>——但其實你可以只貼<strong> <code>mattpocock/skills</code></strong>，Pi Agent 會自動幫你補上前面的 <code>https://github.com/</code>。這種寫法叫做 <strong>owner/repo shorthand</strong>（作者／repo 名 縮寫）。</p>
+      <p>兩種寫法會產生完全一樣的結果：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>你貼什麼</th><th>Pi Agent 實際會 clone 什麼</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>https://github.com/mattpocock/skills</code></td><td><code>https://github.com/mattpocock/skills.git</code></td></tr>
+          <tr><td><code>https://github.com/mattpocock/skills.git</code></td><td><code>https://github.com/mattpocock/skills.git</code></td></tr>
+          <tr><td><code>mattpocock/skills</code></td><td><code>https://github.com/mattpocock/skills.git</code></td></tr>
+        </tbody>
+      </table>
+      <p>使用時機很直觀：<strong>如果 skill 在 GitHub 上、且是 public repo，就用縮寫；其他情況一律貼完整 URL。</strong></p>
+      <p>不吃縮寫的情境：</p>
+      <ul>
+        <li>Skill 放在 <strong>GitLab</strong>、<strong>Bitbucket</strong>、<strong>Codeberg</strong> 這類非 GitHub 平台——縮寫預設是 GitHub，不會自動判斷。</li>
+        <li>Skill 放在 <strong>私人 Gitea</strong>／<strong>自架 Git server</strong>——同理。</li>
+        <li>你想要指定 <strong>特定 branch 或 tag</strong>——縮寫只能拉預設分支（通常是 <code>main</code>），要拉別的 branch 需要用完整 URL 加後綴（不同版本 pi-web 語法不一，實務上如果要非 main 分支，一律建議先自己 fork 一份到自己的 GitHub 再裝 main）。</li>
+      </ul>
+      <div class="callout"><strong>觀念：</strong>縮寫語法不是 Pi Agent 發明的，這是 GitHub 生態圈的慣例——<code>gh repo clone owner/repo</code>、<code>npx owner/repo</code>、<code>uvx --from git+github:owner/repo</code> 都吃這種寫法。之所以 GitHub 有這種特權，是因為它是公開開源 repo 事實上的主場，工具都預設先猜 GitHub。</div>
+    </section>
+
+    <section id="compare" data-nav="來源差別對照">
+      <h2 data-icon="compare">不同來源的差別與踩雷點</h2>
+      <p>裝 skill 看似只是「貼網址、按裝」，但每種來源背後的 auth 機制差很多。這節把各種情境攤開來，讓你選對路。</p>
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>來源類型</th>
+            <th>會不會通？</th>
+            <th>為什麼</th>
+            <th>解法</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>公開 GitHub repo（HTTPS）</td>
+            <td>會，一貼就通</td>
+            <td>公開 repo 的 <code>git clone https://...</code> 完全不需要 auth</td>
+            <td>直接用，這是 90% 的情境</td>
+          </tr>
+          <tr>
+            <td>公開 GitHub repo（owner/repo 縮寫）</td>
+            <td>會，等同上面</td>
+            <td>Pi Agent 自動補成 HTTPS URL</td>
+            <td>能用縮寫就用縮寫，貼起來省事</td>
+          </tr>
+          <tr>
+            <td>私人 GitHub repo（HTTPS）</td>
+            <td>不會通</td>
+            <td>Pi Agent 沒有 UI 讓你填 GitHub 帳號密碼或 PAT（Personal Access Token）</td>
+            <td>把 repo <strong>fork 成 public</strong>（如果你有權限）；或在 HA host 上手動 <code>git config --global credential.helper store</code> 先跑一次 clone 快取密碼再用縮寫</td>
+          </tr>
+          <tr>
+            <td>私人 GitHub repo（SSH URL：<code>git@github.com:owner/repo</code>）</td>
+            <td>技術上支援（v0.12.0+ 有 openssh-client），但要自己設定 key</td>
+            <td>SSH 認證要你在 HA host 產一支 SSH key、把 public key 貼到 GitHub Settings → SSH Keys、還要在容器裡 known_hosts 加上 <code>github.com</code></td>
+            <td>不推薦——這是為進階使用者留的門，一般家用建議走 fork 成 public 的路線</td>
+          </tr>
+          <tr>
+            <td>GitLab／Bitbucket／自架 Git server 的公開 repo</td>
+            <td>會通，用完整 HTTPS URL</td>
+            <td>只要 URL 是完整的 <code>https://...</code> 就當一般 git clone 處理</td>
+            <td>貼完整 URL，不能用縮寫</td>
+          </tr>
+          <tr>
+            <td>本地資料夾</td>
+            <td>會，但要你自己塞進去</td>
+            <td>Pi Agent 只掃 <code>/data/pi-agent/skills/</code>，不會自己找檔案</td>
+            <td>SSH 進 HA host 用 <code>scp</code>、<code>rsync</code>、或直接掛 Samba share 丟資料夾進去，<a href="ch16_write_skill.html">第 16 章</a>會教</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="callout warn"><strong>注意：</strong>「有 v0.12.0 就有 openssh-client」不代表 SSH 一定能通——你還要處理 SSH key 產生、GitHub 綁定、known_hosts 授信。這條路一步就 30 分鐘、坑非常多，除非你本來就是走 SSH 管 git 的人，否則<strong>強烈建議走「fork 成 public」的路線</strong>：如果 skill 是別人的、fork 到自己帳號設 public；如果是自己寫的、放到你自己的 public repo。這樣一輩子都是 90% 情境，直接按裝就通。</div>
+    </section>
+
+    <section id="done" data-nav="裝完該做的三件事">
+      <h2 data-icon="done">裝完 skill 該做的三件事</h2>
+      <p>Skills 面板上多了一列不代表「這就結束了」。認真用一個 skill，還有三件事要做：</p>
+      <ol class="steps">
+        <li>
+          <h3>開新 session 測試 skill 有反應</h3>
+          <p>剛剛第 7 步在 System prompt 看到 skill 名字，只代表 pi-web 「認得」它，還沒證明 AI 真的會用。開一個新 session，用測試句<strong>直接點名這個 skill</strong>：例如「請你用 <em>skill 名字</em> 幫我做 XX」。AI 如果有回應、有動用工具，就代表 skill 通了。如果 AI 說「我沒看到這個 skill」或直接無視，回頭排查（見「troubleshoot」）。</p>
+        </li>
+        <li>
+          <h3>讀 skill repo 的 README 搞懂它能做什麼</h3>
+          <p>裝完最容易忽略的事就是<strong>不讀說明書</strong>。每個 skill repo 的根目錄一定有 <code>README.md</code>——寫的人會在裡面告訴你：這個 skill 叫什麼、哪些觸發情境會被叫出來、需要哪些工具、有沒有 environment variable 要設。花 5 分鐘讀完，比你在對話裡瞎試半小時有效多了。回到 GitHub repo 的頁面直接看，或 SSH 進 HA host 到 <code>/data/pi-agent/skills/&lt;repo-name&gt;/README.md</code> 打開讀。</p>
+        </li>
+        <li>
+          <h3>沒幫上忙就移除，別留在那裡佔 tokens</h3>
+          <p>Skill 只要出現在 <code>&lt;available_skills&gt;</code> 塊裡，就會占用 system prompt 的 tokens——這是每一次對話都要吃的固定成本。用一個星期發現這個 skill 你根本用不到，或者它跟你其他 skill 職能重複，就<strong>大方地移除</strong>。留著只是花你 API 的錢還讓 system prompt 變雜亂，讓 AI 挑錯 skill 的機率變高。移除方法看下一節。</p>
+        </li>
+      </ol>
+      <div class="callout tip"><strong>提示：</strong>剛開始玩的時候容易犯的錯是「看到有人推薦的 skill 就全裝」，結果 System prompt 塞了 20 個 skill，AI 每次要挑哪個都想很久。實務建議是<strong>先只裝 1-2 個真的會用到的</strong>，用熟了再慢慢加，遇到不順再淘汰。</div>
+    </section>
+
+    <section id="assign" data-nav="移除 skill">
+      <h2 data-icon="assign">移除 skill 的兩種方式</h2>
+      <p>移除 skill 有兩條路，各有各的場合：</p>
+      <h3>方式 A：從 Skills 面板 UI 刪</h3>
+      <p>打開 Skills 面板（右上工具列的工具箱圖示），找到那個 skill 的列，右邊有一個「三點選單」（⋮）或「垃圾桶」圖示。點下去會跳確認對話框，按確定就會把 <code>/data/pi-agent/skills/&lt;name&gt;/</code> 整個資料夾刪掉。</p>
+      <p>這是 <strong>99% 的情境該用的方式</strong>——按兩下就好，不會刪錯。適合：不想要某個 skill 了、換一個更好的替代、清理實驗留下來的雜項。</p>
+      <h3>方式 B：SSH 進 HA host 用指令刪</h3>
+      <p>UI 掛掉了、或某個 skill 資料夾整個壞掉導致 pi-web 讀不到列表、或你要一次刪很多個——這時候走 terminal：</p>
+      <pre class="code-block"><code># SSH 進 HA host（Advanced SSH &amp; Web Terminal add-on）
+# 進去 Pi Agent 的 skill 資料夾
+cd /data/pi-agent/skills/
+
+# 看有哪些
+ls
+
+# 刪掉不要的（可以搭配萬用字元一次多個）
+rm -rf mattpocock-skills
+
+# 或用萬用字元刪一整批（例如所有實驗性的）
+rm -rf test-*</code></pre>
+      <div class="callout warn"><strong>注意：</strong><code>rm -rf</code> 沒有救回鍵。打指令之前先 <code>ls</code> 一下看你人在哪個資料夾。刪錯了要靠 HA snapshot 還原（<a href="ch20_backup.html">第 20 章</a>）。</div>
+      <p>刪完之後回到 pi-web 開一個新 session，System prompt 面板裡就不會再有那個 skill——因為 pi-web 每次開 session 都是重掃資料夾。<strong>舊的 session 不會受影響</strong>，它們是在開場時就把 skill 內容嵌進 system prompt 的，之後刪不刪外部檔案跟舊 session 的 context 已經無關。</p>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>貼了 URL 按確認完全沒反應</h3>
+          <p>三個常見原因：（1）URL 打錯字——最容易的是打成 <code>github.com/xxx</code> 沒有前面的 <code>https://</code>，或 owner 拼錯。開一個新分頁把整段 URL 貼進去看得不得到那個 repo。（2）repo 是 private 或已刪除——公開檢查方式是無痕視窗開那個 URL，看得到就是 public。（3）你剛裝了但沒等 clone 完就跑去看列表——重整頁面，通常已經在了。</p>
+        </li>
+        <li>
+          <h3>裝到一半跳 fatal 401 或 Authentication failed</h3>
+          <p>這就是<strong>私人 repo</strong>的招牌錯誤——Pi Agent 沒有 auth 設定，遇到需要密碼的 repo 就是死路。解法：把 repo <strong>fork 成 public</strong>（在 GitHub 網頁上 Fork 那顆按鈕、然後到 fork 的 Settings 把 Visibility 改成 Public），然後改裝你 fork 過來的 public 版本。這是為什麼上面「來源對照表」那格特別強調——因為這是新手最常撞的坑，遇到就當「重複別人的 repo 一次」處理，不要糾結 auth 怎麼設。</p>
+        </li>
+        <li>
+          <h3>Clone 明明完成了但 Skills 面板不出現</h3>
+          <p>先按 <kbd>F5</kbd> 重整 pi-web 頁面，通常這一步就解決——有些版本前端 state 沒即時同步。還是不出現的話按 <kbd>F12</kbd> 打開瀏覽器 devtools，切到 <strong>Console</strong> 分頁看有沒有紅字錯誤（大多是 pi-web 前端 bug）。再看看 <strong>Network</strong> 分頁，找 <code>/api/skills</code> 那個請求——如果它回 4xx 或 5xx，就是後端問題（重啟 Pi Agent add-on 通常會好）。</p>
+        </li>
+        <li>
+          <h3>Skill 裝完了但 AI 好像完全忽略它</h3>
+          <p>先確認 skill 有進到 System prompt（右上面板往下捲找 <code>&lt;available_skills&gt;</code>）。有的話問題就在<strong>觸發強度</strong>——這個 skill 的 <code>SKILL.md</code> 裡的 description 寫得太模糊，AI 判斷不出你在做的事情該不該叫它。臨時解法：對話裡直接點名「請用 <em>skill 名字</em> 幫我」。長遠解法：讀那個 skill 的 README 看有沒有「Trigger phrases」建議、或者<a href="ch16_write_skill.html">第 16 章</a>教你怎麼寫更清楚的 description。</p>
+        </li>
+        <li>
+          <h3>Clone 卡在 50%、進度條不動</h3>
+          <p>網路問題居多。可能是 HA 主機連 GitHub 慢（家裡光世代連 GitHub 偶爾抽風）、或 repo 太大（少數 skill repo 有含大型 asset，數十 MB 起跳）。解法：等 3-5 分鐘看看會不會自己完成。真的太久就取消，改用 SSH 進 HA host 手動下：<code>cd /data/pi-agent/skills/ &amp;&amp; git clone https://github.com/xxx/yyy.git</code>——terminal 會顯示每一步的狀態，卡在哪裡看得比 UI 進度條清楚。</p>
+        </li>
+        <li>
+          <h3>裝進來的 skill 名字重複、跟原有的撞名</h3>
+          <p>Pi Agent 的 skill 是以資料夾名（也就是 repo 名）為 key 的，如果兩個 repo 都叫 <code>skills</code>（滿常見的），第二個裝進來會蓋掉第一個。解法：SSH 進 HA host，把資料夾手動改名：<code>cd /data/pi-agent/skills/ &amp;&amp; mv skills mattpocock-skills</code>，然後 pi-web 開新 session 就會用改過的名字。以後再裝 skill 前先掃一下你的資料夾，避免撞名。</p>
+        </li>
+        <li>
+          <h3>裝完想更新到最新版</h3>
+          <p>UI 沒有「更新」按鈕，因為 Pi Agent 不會自動追蹤 upstream。要更新只有一條路：<strong>移除、重裝</strong>。從 Skills 面板刪、再貼一次 URL 裝進來——這樣拿到的就是當下的最新版。也可以走 SSH 手動 <code>cd /data/pi-agent/skills/&lt;name&gt; &amp;&amp; git pull</code>，但這只有你自己記得的時候會做，實務上沒人這樣管。乾脆定期（一個月一次）盤點你留下的 skill，重新裝一遍就好。</p>
+        </li>
+        <li>
+          <h3>Skill 資料夾長超級大、占很多硬碟</h3>
+          <p>正常 skill 一個資料夾幾百 KB 到幾 MB，如果某個裝完發現 <code>du -sh /data/pi-agent/skills/&lt;name&gt;</code> 是幾百 MB 甚至 GB，通常是 repo 裡包了大型 asset（範例影片、pre-trained model）。看 README 有沒有說明用途——用不到就直接移除，用得到但不想占硬碟就<strong>用「本地路徑」方式改裝一份精簡版</strong>（把 <code>SKILL.md</code> 和必要的資料夾自己剪一份放進去）。詳見<a href="ch16_write_skill.html">第 16 章</a>。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>要怎麼找到好用的 skill？有清單可以逛嗎？</summary>
+        <div class="body">目前沒有「Pi Agent 官方 skill 商店」——Skill 是散在各人 GitHub 上的。找法：（1）<strong><code>skills.sh</code></strong> 是社群整理的精選站，可以逛主題分類。（2）GitHub 上直接搜 <code>topic:claude-skill</code> 或 <code>topic:pi-agent-skill</code>。（3）在 Reddit 的 <em>r/ClaudeAI</em>、<em>r/homeassistant</em>、Twitter/X 找 <code>#skills</code> 話題。<strong>優先挑跟 HA、smart home、家庭情境相關的</strong>——通用型的 skill（例如 general coding、markdown 格式化）對家用場景幫助有限。</div>
+      </details>
+      <details class="faq">
+        <summary>裝了 skill 對話品質會變好嗎？</summary>
+        <div class="body"><strong>只有在特定情境會變好，日常閒聊沒差。</strong>Skill 的價值是「在對的時機幫 AI 補上該知道的規則或工具」，例如你在寫 HA 自動化的時候有 <em>home-assistant-best-practices</em> 就幫很大；但你在問「今天要下雨嗎」這種天氣查詢，一堆 skill 掛在那反而讓 AI 選擇困難。所以裝 skill 是「解決特定痛點」的工具，不是「開了讓 AI 全面變聰明」的魔法。買菜刀不會讓你自動變會做菜，你要真的用它切東西才有意義。</div>
+      </details>
+      <details class="faq">
+        <summary>Skill 會不會自動更新？作者改了我這邊也會跟著改嗎？</summary>
+        <div class="body"><strong>不會自動更新。</strong>你按裝的那一刻，Pi Agent 只是 <code>git clone</code> 了當下的版本到本地，之後作者在 GitHub 改了什麼、發了新 tag，你這邊都不知道。要拿最新版只能<strong>移除、重裝</strong>（見 troubleshoot 第 7 條）。這個機制是刻意的——避免「你半夜作者 push 了一個 breaking change，你早上起來自動化就爛掉」的情況。你想追新版是主動行為，不是被動接受。</div>
+      </details>
+      <details class="faq">
+        <summary>一次可以裝幾個 skill？有沒有上限？</summary>
+        <div class="body">技術上<strong>沒有硬性上限</strong>——資料夾要多少個都行，硬碟裝得下就好。實務上超過 5-10 個就會開始出問題：System prompt 變超長吃 tokens、AI 挑 skill 挑不定、彼此規則衝突。老手的建議是<strong>控制在 3-7 個</strong>，且每個都有明確不重疊的職能。與其裝 10 個「不知道什麼時候會用到」的 skill，不如裝 3 個「幾乎每天用」的 skill。</div>
+      </details>
+      <details class="faq">
+        <summary>裝了不同 skill 會不會互相衝突或搶著回應？</summary>
+        <div class="body">會，這是<strong>裝多之後的典型副作用</strong>。舉例：你同時裝了 A skill「教 AI 寫自動化要用 helper」跟 B skill「教 AI 寫自動化直接用 template sensor」，AI 每次收到相關問題會兩邊都想採用，最後不是給你混合物、就是選一邊放棄另一邊。判斷方式：讀你裝的每個 <code>SKILL.md</code> 的 description，看有沒有兩個描述涵蓋一樣的觸發情境。有的話留一個就好。這也是為什麼建議「先只裝 1-2 個用熟再加」。</div>
+      </details>
+      <details class="faq">
+        <summary>裝進來的 skill 在哪個實體檔案裡？我想手動偷改一下</summary>
+        <div class="body">位置在 <code>/data/pi-agent/skills/&lt;repo-name&gt;/</code>，這是 HA add-on 容器內的路徑。從 HA host 用 Advanced SSH &amp; Web Terminal add-on 進去，然後 <code>cd</code> 過去就可以看到。每個 skill 一定有 <code>SKILL.md</code>（主要說明書），可能有 <code>references/</code>（額外參考）、<code>scripts/</code>（腳本）等資料夾。<strong>手動改是允許的</strong>——但下次移除重裝就會被覆蓋，所以偷改屬於「臨時實驗」用法，長期想改就 fork 成自己的 repo 再改再裝。</div>
+      </details>
+      <details class="faq">
+        <summary>把 API 費用花在 skill 上值不值？</summary>
+        <div class="body">Skill 本身<strong>不會多收你錢</strong>——它只是幾份 markdown 檔案，被塞進 system prompt 而已。多花的錢在「系統提示變長」——每一輪對話的 input tokens 都多算了幾百到幾千個 tokens（看 skill 大小）。以 GLM-4.6 這種便宜模型算，一個 skill 每對話多花不到 0.001 美金。你如果一天對話 100 輪，一個月頂多多 3 美金。省的話：只留真的用到的 skill、避免超長 skill（超過 5000 字的通常寫太細）、日常小事切非 reasoning 模型（<a href="ch12_reasoning.html">第 12 章</a>）。</div>
+      </details>
+      <details class="faq">
+        <summary>可以把 skill 的資料夾複製到另一台 Pi Agent 用嗎？</summary>
+        <div class="body">可以，這也是<strong>離線遷移的正規做法</strong>。從 A 主機把 <code>/data/pi-agent/skills/&lt;name&gt;</code> 整個 tar 打包，傳到 B 主機同路徑解開，B 主機的 pi-web 開新 session 就會認到。不用透過 GitHub、不需要網路。這在你搬家換 HA 主機、或者從測試機搬到正式機的時候超好用。備份的話直接用 HA snapshot 更省事——<a href="ch20_backup.html">第 20 章</a>會講到 <code>/data/pi-agent/</code> 整個目錄會被 snapshot 涵蓋。</div>
+      </details>
+      <details class="faq">
+        <summary>還是遇到怪問題怎麼辦？</summary>
+        <div class="body">先翻<a href="ch22_troubleshoot.html">第 22 章</a>卡關手冊，它把常見症狀跟解法做了完整索引，包含 Skill 裝不起來的專節。還是找不到就把「你貼的 URL」「錯誤截圖」「pi-web 版本」貼到 GitHub issue 或 Discord 社群。<strong>不要只講「裝不起來」——附上你點了什麼、看到什麼、System prompt 有沒有東西</strong>，別人才有可能幫得上忙。這也是為什麼建議前面的 troubleshoot 你都要親自跑過一輪。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch14_skill_concept.html">
+        <span class="label">← 上一章</span>
+        <span class="title">14 · Skill 概念</span>
+      </a>
+      <a class="next" href="ch16_write_skill.html">
+        <span class="label">下一章 →</span>
+        <span class="title">16 · 自己寫 Skill</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

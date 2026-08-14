@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 16 章 · 自己動手做第一個 Skill · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="動手寫 Pi Agent Skill：SKILL.md 的 frontmatter 格式、資料夾結構、以家庭場景為例的完整範例、上架到 GitHub 讓別人也能用。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch16_write_skill.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 16 章 · 自己動手做第一個 Skill · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="動手寫 Pi Agent Skill：SKILL.md 的 frontmatter 格式、資料夾結構、以家庭場景為例的完整範例、上架到 GitHub 讓別人也能用。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch16_write_skill.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 16 章 · 自己動手做第一個 Skill · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="動手寫 Pi Agent Skill：SKILL.md 的 frontmatter 格式、資料夾結構、以家庭場景為例的完整範例、上架到 GitHub 讓別人也能用。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html" class="active">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼要自己寫</a>
+      <a href="#concept">Skill 就是 Markdown</a>
+      <a href="#what">SKILL.md 的三個元素</a>
+      <a href="#records">完整最小範例</a>
+      <a href="#steps">裝到 Pi Agent</a>
+      <a href="#test">測試有沒有生效</a>
+      <a href="#tips">寫好 skill 三原則</a>
+      <a href="#assign">常見家用 skill 靈感</a>
+      <a href="#url">分享出去</a>
+      <a href="#troubleshoot">常見卡關</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 16 章</div>
+      <h1>自己動手做第一個 Skill</h1>
+      <p class="lead"><a href="ch14_skill_concept.html">第 14 章</a>講了 Skill 是什麼，<a href="ch15_install_skill.html">第 15 章</a>教你裝別人做好的。這一章帶你自己寫一個——用「拍冰箱照片，AI 幫你盤點食材、建議晚餐」當範例，從空白資料夾一步步做到能在 Pi Agent 裡跑起來。<strong>完全不用寫程式</strong>，寫的是一份給 AI 看的中文工作手冊。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼要自己寫">
+      <h2 data-icon="why">為什麼要自己寫 skill</h2>
+      <p>裝別人的 skill 很爽——上網搜、貼 URL、按裝，AI 就多一項本事。可是別人做的 skill 通常是「通用型」的，例如「幫使用者管檔案」「幫使用者做網頁」，跟你家的實際需求還有一段距離。</p>
+      <p>自己寫的好處是：<strong>你家獨有的重複勞動可以外包給 AI</strong>。舉幾個真實例子：</p>
+      <ul>
+        <li>每禮拜都要開冰箱一格一格看有什麼、快過期沒——寫成 skill 之後拍一張照片就搞定。</li>
+        <li>老是想不到晚餐煮什麼——寫個 skill 讓 AI 依冰箱現有材料＋家人口味推薦。</li>
+        <li>買菜清單老是漏掉東西——寫個 skill 讓 AI 根據週菜單自動生清單。</li>
+        <li>家裡冷氣、洗碗機、烘乾機各有一本電子說明書——寫個 skill 把 PDF 塞進去，之後問「烘乾機顯示 E5 是什麼」就秒答。</li>
+      </ul>
+      <p>更重要的是：<strong>寫 skill 不是寫程式</strong>。你只是把「碰到 X 情境時，希望 AI 這樣做」用普通中文寫下來，AI 讀得懂。這一章結束時你會有一個能跑的冰箱盤點 skill，之後想寫別的照這個模板改就好。</p>
+      <div class="callout"><strong>觀念：</strong>Skill 的本質是<strong>「工作手冊」</strong>——像便利商店給新來的工讀生看的那本 SOP。你把流程一二三寫清楚、把注意事項標紅、把常見狀況列出來，工讀生（AI）就能按表操課。你不需要教它中文怎麼寫、不需要教它辨識冰箱裡有什麼——那些是 AI 本來就會的能力。你只教它「要做這件事的時候，該用哪個 SOP」。</div>
+    </section>
+
+    <section id="concept" data-nav="Skill 就是 Markdown">
+      <h2 data-icon="concept">Skill 就是一份 Markdown 文件</h2>
+      <p>Pi Agent 的一個 skill，實體上就是<strong>一個資料夾＋裡面一個叫 <code>SKILL.md</code> 的檔</strong>。沒了。就這麼簡單。</p>
+      <p>資料夾結構長這樣：</p>
+      <pre class="code-block"><code>fridge-check/
+└── SKILL.md          ← 唯一必要檔案
+</code></pre>
+      <p>選配的話還可以在資料夾裡塞：範例照片、範例輸出、額外的參考文件（例如 PDF 說明書）——但這些都不是必要的。<strong>只有 <code>SKILL.md</code> 是強制的</strong>。</p>
+      <p><code>SKILL.md</code> 用 Markdown 寫。Markdown 是一種「純文字帶排版」的寫法，你在 GitHub、Notion、Obsidian 看到的那種，用 <code>#</code> 表示標題、用 <code>-</code> 表示條列。不會沒關係，其實整份文件就算全部平鋪直敘地寫，AI 也讀得懂。</p>
+      <div class="callout tip"><strong>提示：</strong>如果你想到「skill 就是幫 AI 寫一份中文的職前訓練文件」，那你已經抓到重點了。不用學程式語法、不用背 API，就是<strong>寫給 AI 讀的中文</strong>。</div>
+      <p>Pi Agent 在啟動時會掃描 <code>/data/pi-agent/skills/</code> 這個資料夾，把每一個子資料夾當作一個 skill 讀進來。你只要把 <code>fridge-check/</code> 這個資料夾放到那裡，它就會在 Skills 面板出現。</p>
+    </section>
+
+    <section id="what" data-nav="SKILL.md 的三個元素">
+      <h2 data-icon="what">SKILL.md 的三個必要元素</h2>
+      <p>一份能用的 <code>SKILL.md</code> 由三塊組成，缺一不可：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>元素</th><th>是什麼</th><th>作用</th><th>必要？</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>YAML frontmatter</td><td>檔案最上方兩排 <code>---</code> 之間的鍵值對，含 <code>name</code> 和 <code>description</code></td><td>告訴 pi-web「這個 skill 叫什麼、什麼時候要用它」</td><td><strong>是</strong></td></tr>
+          <tr><td>本文說明</td><td>frontmatter 下方的 Markdown 內容，通常有幾個 <code>##</code> 小節</td><td>告訴 AI「該用這個 skill 時，具體要怎麼做、要問使用者什麼、輸出長怎樣」</td><td><strong>是</strong></td></tr>
+          <tr><td>附加檔案</td><td>放在同個資料夾內的其他檔案（範例圖、範本文件、PDF 手冊）</td><td>AI 執行時可以參考——例如「照 <code>example_output.md</code> 這個格式輸出」</td><td>否，加分</td></tr>
+        </tbody>
+      </table>
+      <h3>YAML frontmatter 的樣子</h3>
+      <p>YAML 是一種「鍵值對」的寫法，跟 HA 自動化的 YAML 一模一樣。<code>SKILL.md</code> 的 frontmatter 至少要有這兩個欄位：</p>
+      <pre class="code-block"><code>---
+name: fridge-check
+description: 使用者傳冰箱照片時，幫他列出食材、找出臨期的、建議晚餐菜色
+---</code></pre>
+      <ul>
+        <li><code>name</code>：skill 的識別字。<strong>用英文小寫＋連字號</strong>（例如 <code>fridge-check</code>、<code>dinner-suggest</code>），跟資料夾名稱一致最好。中文可以嗎？技術上可以，但為了避免作業系統路徑編碼問題，還是英文吧。</li>
+        <li><code>description</code>：<strong>最重要的一欄</strong>——這是 AI 用來判斷「這一輪對話要不要啟用這個 skill」的依據。寫得越具體、越提到「使用者說什麼／做什麼」時該用，AI 就越會準確叫出來。這欄的重要性等下第 7 節會再講一次。</li>
+      </ul>
+      <div class="callout warn"><strong>注意：</strong>frontmatter 的兩排 <code>---</code> 一定要在檔案<strong>最上方</strong>（前面不能有空白行、不能有 BOM）。上下各三個減號、獨佔一行。少一個減號、或者中間夾雜多餘空白行，pi-web 就會判定 frontmatter 無效，這個 skill 就整個不會被載入。</div>
+      <h3>本文說明的樣子</h3>
+      <p>frontmatter 下方就是自由 Markdown。慣例上會分幾個小節，用 <code>##</code> 開頭：</p>
+      <ul>
+        <li><strong>什麼時候要用這個</strong>——具體情境。使用者說了什麼、做了什麼動作、貼了什麼東西時，該啟用。</li>
+        <li><strong>步驟</strong>——AI 要按什麼順序做事。第一步、第二步、第三步。</li>
+        <li><strong>注意</strong>——禁止的事情、容易踩到的坑、額外要考量的家庭情境。</li>
+      </ul>
+      <p>不強制要這幾個小節、也不強制順序。重點是「AI 讀完知道要做什麼、怎麼做、不能做什麼」。下一節直接看完整範例會更清楚。</p>
+    </section>
+
+    <section id="records" data-nav="完整最小範例">
+      <h2 data-icon="records">一個能跑的最小範例——冰箱盤點 skill</h2>
+      <p>直接看完整檔案。把下面這段複製到一個叫 <code>SKILL.md</code> 的檔案裡就能用：</p>
+      <pre class="code-block"><code>---
+name: fridge-check
+description: 使用者傳冰箱照片時，幫他列出食材、找出臨期的、建議晚餐菜色。也在使用者問「今天煮什麼」「冰箱還有什麼」「幫我看看冰箱」時觸發。
+---
+
+# Fridge Check Skill
+
+一個幫忙盤點冰箱、判斷食材新鮮度、推薦晚餐菜色的家用小幫手。
+
+## 什麼時候要用這個
+
+當使用者：
+- 把冰箱／冷凍庫的照片貼到對話裡
+- 說「幫我看看冰箱」「今天煮什麼」「冰箱還有什麼可以用」
+- 提到食材、pantry、剩菜、快過期的東西
+
+## 步驟
+
+1. **先描述你看到的食材**——用「位置＋品項＋大概數量」的格式，例如「上層左邊有一盒鮮乳、右邊兩顆蛋、中層有半顆高麗菜」。看不清楚的物品直接說「有一個看不清楚的白色包裝」，不要猜。
+2. **判斷哪些看起來快過期**——顏色變黃、菜葉發蔫、包裝鼓起、有明顯汁液滲出、生鮮明顯褪色。這些通通標出來，並註明「建議 1-2 天內用掉」。
+3. **推薦 1-2 道晚餐菜色**——只用還新鮮的食材。優先消耗快過期的。菜色考量到台灣家庭口味（家常菜為主，避免需要買一堆額外食材的異國料理）。
+4. **列出「今晚可以做，明天要用掉」的清單**——把第 2 步標出的臨期食材整理成一句一句的提醒。
+
+## 注意
+
+- **不要杜撰你看不到的食材**。照片裡看不到的東西就不要提。
+- **不要診斷食物中毒風險或給醫療建議**。發現明顯壞掉的東西只需說「這個看起來壞了，建議丟掉」即可，不要延伸講細菌、腸胃炎等。
+- **考量台灣家庭實際情境**——菜色建議以電鍋、平底鍋、瓦斯爐能做的為主，不要推薦烤箱、氣炸鍋要 30 分鐘以上的。
+- **保守估計數量**——「大約 3 顆」比「精確 3 顆」安全，因為照片可能有遮擋。
+
+## 輸出格式範例
+
+```
+【冰箱盤點】
+- 上層：鮮乳 1 盒、雞蛋約 4 顆、剩菜 1 碗
+- 中層：高麗菜半顆、紅蘿蔔 2 條、豆腐 1 盒
+- 下層蔬果：菠菜 1 把（葉子有點發黃，建議今晚用掉）
+
+【今晚建議菜色】
+1. 菠菜炒蛋——用掉發黃的菠菜和 2 顆蛋
+2. 麻婆豆腐——用掉整盒豆腐
+
+【明天要用掉】
+- 剩下的鮮乳（保存期看標籤）
+- 剩菜（今晚沒吃就明天中午）
+```
+</code></pre>
+      <p>就這樣。整份文件講白話中文，只有 frontmatter 那三行有點格式感。這就是一個完整、能跑的 skill。</p>
+      <div class="callout tip"><strong>提示：</strong>可以把「輸出格式範例」那段當作模板——之後想寫別的 skill，把 name／description／情境／步驟／注意／輸出格式這幾塊照樣填一次就好。這是最容易上手的 skill 骨架。</div>
+    </section>
+
+    <section id="steps" data-nav="裝到 Pi Agent">
+      <h2 data-icon="steps">把這個 skill 裝到 Pi Agent</h2>
+      <p>寫好 <code>SKILL.md</code> 之後，要放到 Pi Agent 讀得到的地方它才會生效。有兩條路：本地路徑法（快，適合測試）跟 GitHub 法（正式，適合分享）。</p>
+      <ol class="steps">
+        <li>
+          <h3>在自己電腦上開一個資料夾</h3>
+          <p>先在你熟悉的地方——例如桌面——開一個叫 <code>fridge-check/</code> 的空資料夾。名字要跟你 <code>SKILL.md</code> 裡 frontmatter 的 <code>name</code> 欄位一致，比較不會搞混。</p>
+        </li>
+        <li>
+          <h3>把 SKILL.md 放進去</h3>
+          <p>把上一節那份完整範例貼到一個檔案裡，命名為 <code>SKILL.md</code>（<strong>完全大寫的 SKILL、副檔名 .md</strong>——大小寫錯的話 pi-web 掃不到）。放到剛剛的 <code>fridge-check/</code> 資料夾裡。現在你的資料夾長這樣：</p>
+          <pre class="code-block"><code>桌面/
+└── fridge-check/
+    └── SKILL.md</code></pre>
+        </li>
+        <li>
+          <h3>方案 A：本地路徑法（最快，2 分鐘）</h3>
+          <p>用 <code>scp</code> 或 SFTP 客戶端（例如 FileZilla、Cyberduck）連到你的 HA host，把整個 <code>fridge-check/</code> 資料夾丟到 <code>/data/pi-agent/skills/</code> 底下。用 <code>scp</code> 的話指令長這樣（把 <code>homeassistant.local</code> 換成你 HA 的位址）：</p>
+          <pre class="code-block"><code>scp -r ~/Desktop/fridge-check root@homeassistant.local:/data/pi-agent/skills/</code></pre>
+          <p>丟完進去 Pi Agent 的 Skills 面板按重整（refresh），就會看到 <code>fridge-check</code> 出現在清單裡。完成。</p>
+        </li>
+        <li>
+          <h3>方案 B：GitHub 法（正式，可分享給朋友）</h3>
+          <p>把 <code>fridge-check/</code> 資料夾當一個 git repo 推到 GitHub：</p>
+          <pre class="code-block"><code>cd ~/Desktop/fridge-check
+git init
+git add SKILL.md
+git commit -m "Initial fridge check skill"
+# 到 GitHub 網站建一個叫 fridge-check 的 public repo
+git remote add origin https://github.com/你的帳號/fridge-check.git
+git branch -M main
+git push -u origin main</code></pre>
+          <p>推完之後回到 Pi Agent 的 Skills 面板，按「Add from URL」（<a href="ch15_install_skill.html">第 15 章</a>教過的欄位），貼上 <code>https://github.com/你的帳號/fridge-check</code>，按裝。Pi Agent 會 clone 進來、掃到 <code>SKILL.md</code>、把它列出來。</p>
+        </li>
+        <li>
+          <h3>確認 skill 已載入</h3>
+          <p>Skills 面板應該會出現 <code>fridge-check</code> 這一列，右邊有開關可以停用／啟用。預設是啟用的。開一個新 session，打開 System prompt 面板往下找 <code>&lt;available_skills&gt;</code> 區塊，裡面應該會看到 <code>fridge-check</code> 跟你寫的 description 出現。有出現就代表 pi-web 已經把它塞進 system prompt 給 AI 看了。</p>
+        </li>
+      </ol>
+      <div class="callout"><strong>觀念：</strong>本地路徑法跟 GitHub 法本質上都是「把資料夾放到 <code>/data/pi-agent/skills/</code> 下」。差別只在於：GitHub 法多了一層版控、可以分享；本地法快，但只有你自己有。<strong>開發過程用本地法快速迭代，成熟後推上 GitHub</strong>是常見流程。</div>
+    </section>
+
+    <section id="test" data-nav="測試有沒有生效">
+      <h2 data-icon="test">測試 skill 有沒有真的生效</h2>
+      <p>裝好只是第一步——你要確認 AI 真的有依照 <code>SKILL.md</code> 的步驟回應。測試方式：</p>
+      <ol class="steps">
+        <li>
+          <h3>開一個全新的 session</h3>
+          <p>Skill 是在 session 開始時載入 system prompt 的，所以<strong>要開新的</strong>——舊 session 不會自動吃到新 skill。點右上「New session」或側邊欄的「+」。</p>
+        </li>
+        <li>
+          <h3>選一個 reasoning 模型</h3>
+          <p>模型下拉切到 GLM-4.6、Claude Sonnet 4、DeepSeek-R1 這類會思考的模型。<strong>非 reasoning 模型（GLM-4-Flash、Claude Haiku）常常會忽略 skill 指示</strong>，因為它們沒有「先讀 system prompt 再組織回答」的推理階段。這是很多人寫 skill 沒生效的第一個原因。</p>
+        </li>
+        <li>
+          <h3>貼一張冰箱照片＋一句話</h3>
+          <p>手機拍一張你家冰箱、傳到電腦、拖進 pi-web 的對話框。旁邊打一句「幫我看看冰箱」按送出。</p>
+        </li>
+        <li>
+          <h3>看回應長怎樣</h3>
+          <p>AI 應該會按你 <code>SKILL.md</code> 寫的步驟：先描述看到什麼、標出快過期的、推薦晚餐、列明天要用掉的。如果回應格式跟你範例輸出的格式很像，代表 skill 生效了。</p>
+        </li>
+        <li>
+          <h3>如果沒生效——三個檢查點</h3>
+          <p>回應完全沒照 skill 走？照下面順序檢查：</p>
+          <ul>
+            <li><strong>System prompt 面板</strong>：打開看 <code>&lt;available_skills&gt;</code> 裡有沒有 <code>fridge-check</code>。<strong>沒有的話</strong>——skill 沒被 pi-web 收到，回<a href="ch15_install_skill.html">第 15 章</a>的常見卡關檢查資料夾位置跟 frontmatter 語法。</li>
+            <li><strong>description 具體度</strong>：AI 判斷「這一輪要不要用這個 skill」靠的就是 description。你寫「幫使用者做家事」太籠統，AI 不會 match 到「幫我看看冰箱」。改成「使用者傳冰箱照片、提到食材、pantry、冰箱、fridge 時觸發」這種具體 trigger，命中率會高很多。</li>
+            <li><strong>模型能力</strong>：換 GLM-4.6 或 Claude Sonnet 4 試試。非 reasoning 模型忽略 skill 是通例，不是 bug。</li>
+          </ul>
+        </li>
+      </ol>
+    </section>
+
+    <section id="tips" data-nav="寫好 skill 三原則">
+      <h2 data-icon="tips">寫好一個 skill 的三個原則</h2>
+      <p>試錯過幾個 skill 之後你會發現，AI 有沒有乖乖照 skill 走，很大程度取決於你怎麼寫。三個從實戰累積出來的原則：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>原則</th><th>錯的寫法</th><th>對的寫法</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>description 要具體</strong>（含 trigger 條件）</td>
+            <td><code>description: 幫使用者做家事</code></td>
+            <td><code>description: 使用者傳冰箱照片、提到食材／pantry／剩菜／「今天煮什麼」時觸發</code></td>
+          </tr>
+          <tr>
+            <td><strong>步驟要明確編號</strong>（AI 會照順序做）</td>
+            <td>「就幫使用者看看冰箱有什麼，然後給點建議」</td>
+            <td>「1. 先描述看到什麼 2. 標出快過期的 3. 推薦晚餐 4. 列明天要用掉的」</td>
+          </tr>
+          <tr>
+            <td><strong>加「不要」</strong>（明確禁止的事）</td>
+            <td>（沒寫任何禁止事項）</td>
+            <td>「不要杜撰你看不到的食材」「不要診斷食物中毒」「不要推薦要 30 分鐘以上的異國料理」</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>為什麼「不要」這麼重要？因為 AI 有一種<strong>「熱心過頭」的傾向</strong>——你沒明講不能做的事，它就會自己延伸。你只想要它盤點冰箱，它可能會順便講「這樣飲食搭配缺乏蛋白質」「小心大腸桿菌」——變成一份營養健康報告，而不是你要的晚餐建議。加一句「不要診斷、不要延伸」就攔下來了。</p>
+      <div class="callout tip"><strong>提示：</strong>寫完 skill 之後，用「反向思考」檢查一次——想像最糟的回應會長什麼樣？（例如「AI 亂猜看不清楚的食材」「AI 開始講食物中毒」）。把這些惡夢寫進「不要」清單就對了。</div>
+    </section>
+
+    <section id="assign" data-nav="常見家用 skill 靈感">
+      <h2 data-icon="assign">常見家用 skill 靈感</h2>
+      <p>寫完冰箱盤點之後，同樣的模板可以複製出一整組家用 skill。這裡列七個平常最有價值的方向：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>Skill 名</th><th>什麼時候觸發</th><th>AI 該做什麼</th><th>典型附加檔</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>冰箱盤點<br><code>fridge-check</code></td>
+            <td>傳冰箱照片、問「今天煮什麼」</td>
+            <td>盤點、標臨期、建議菜色</td>
+            <td>（無）</td>
+          </tr>
+          <tr>
+            <td>家事輪值<br><code>chore-rotation</code></td>
+            <td>問「這禮拜誰倒垃圾」「輪到誰洗碗」</td>
+            <td>依家人名單＋週期輪出當班的人</td>
+            <td><code>family.md</code>（家人清單）</td>
+          </tr>
+          <tr>
+            <td>晚餐建議<br><code>dinner-suggest</code></td>
+            <td>問「今晚吃什麼」「不知道要煮什麼」</td>
+            <td>依偏好、時間預算、剩菜給 3 種方案</td>
+            <td><code>preferences.md</code>（家人不吃的東西）</td>
+          </tr>
+          <tr>
+            <td>買菜清單<br><code>grocery-list</code></td>
+            <td>提到「要去買菜」「週菜單」時</td>
+            <td>依 dinner-suggest 產生的菜單反推材料</td>
+            <td><code>staples.md</code>（家裡常備品）</td>
+          </tr>
+          <tr>
+            <td>家電手冊 QA<br><code>appliance-manual</code></td>
+            <td>問家電錯誤碼、操作方式</td>
+            <td>查資料夾內的 PDF 說明書回答</td>
+            <td><code>washer.pdf</code>、<code>ac.pdf</code>、<code>dryer.pdf</code></td>
+          </tr>
+          <tr>
+            <td>HA 自動化模板<br><code>ha-automation</code></td>
+            <td>提到「幫我寫一個自動化」</td>
+            <td>依 HA 自動化的觸發／條件／動作三段式產 YAML（不會寫看<a href="https://woowtech.github.io/Woow_ha_tutorial_site/ch8_first_automation.html" rel="noopener">HA 入住指南第 8 章</a>）</td>
+            <td><code>entity_map.md</code>（家裡實體對照）</td>
+          </tr>
+          <tr>
+            <td>影片管線腳本<br><code>video-script</code></td>
+            <td>提到「幫我寫個影片腳本」「YouTube shorts」</td>
+            <td>產出 30/60 秒腳本＋分鏡＋字幕</td>
+            <td><code>voice.md</code>（品牌調性）</td>
+          </tr>
+        </tbody>
+      </table>
+      <p>看得出來共通模式了嗎：<strong>skill = 你想外包的重複勞動＋你希望 AI 遵守的規則＋你手上可以給它參考的資料</strong>。把這三塊寫進 <code>SKILL.md</code>（第三塊放附加檔），你就多一個專屬助理。</p>
+      <div class="callout"><strong>觀念：</strong>家電手冊 QA 那個特別值得做——每家人多多少少都有幾份 PDF 說明書散在抽屜或 Email 裡，做成 skill 之後家人問「烘乾機顯示 E5 是什麼」就是秒答。老人小孩也用得到。附加檔法在<a href="ch14_skill_concept.html">第 14 章</a>的「skill 進階用法」提過。</div>
+    </section>
+
+    <section id="url" data-nav="分享出去">
+      <h2 data-icon="url">分享出去，讓別人也能用</h2>
+      <p>你寫的 skill 如果別人也用得到，push 到自己 GitHub 的 public repo 就可以分享。</p>
+      <ol class="steps">
+        <li>
+          <h3>確認 repo 是 public</h3>
+          <p>到 GitHub 網站 → 你的 repo → Settings → 拉到最底下 Danger Zone → 確認是 Public。Private 的 repo Pi Agent 抓不到（除非設 token）。</p>
+        </li>
+        <li>
+          <h3>朋友只需要 owner/repo shorthand</h3>
+          <p>告訴朋友「去 Skills 面板 Add from URL 輸入 <code>你的帳號/fridge-check</code> 就行」。這是 <a href="ch15_install_skill.html">第 15 章</a>教過的縮寫——不用貼完整 <code>https://github.com/...</code>。</p>
+        </li>
+        <li>
+          <h3>寫個 README.md 更好</h3>
+          <p>在 repo 根目錄放一個 <code>README.md</code> 說明 skill 幹嘛用的、怎麼用、示範對話截圖。這對朋友篩選有沒有用到很有幫助。<code>SKILL.md</code> 是給 AI 讀的、<code>README.md</code> 是給人讀的，兩份不衝突。</p>
+        </li>
+        <li>
+          <h3>加到公開索引（進階）</h3>
+          <p>有些社群維護 skill 索引檔（例如 <code>skills.sh</code> 這類清單），發 PR 把你的 skill 加進去，其他人搜尋就找得到。這是可選的，不做完全沒影響——就是曝光度差別。</p>
+        </li>
+      </ol>
+      <div class="callout tip"><strong>提示：</strong>剛開始寫 skill 不用想著「這個要不要分享」。<strong>先寫給自己家用</strong>，用個一兩個月覺得穩了、確實幫到自己了，再考慮 push public。太早分享容易還沒 debug 完就散出去，反而幫倒忙。</div>
+    </section>
+
+    <section id="troubleshoot" data-nav="常見卡關">
+      <h2 data-icon="troubleshoot">常見卡關</h2>
+      <ol class="steps">
+        <li>
+          <h3>AI 完全沒理 skill、回應跟沒裝一樣</h3>
+          <p>兩個檢查點：<strong>（1）description 太抽象</strong>——改成具體 trigger（「使用者傳冰箱照片時觸發」而不是「幫使用者做家事」）；<strong>（2）模型太輕</strong>——非 reasoning 模型（GLM-4-Flash、GPT-4o-mini、Haiku）常常會忽略 system prompt 裡的 skill 描述，換成 GLM-4.6、Claude Sonnet 4、DeepSeek-R1 這類 reasoning 模型會明顯改善。這在<a href="ch12_reasoning.html">第 12 章</a>講過原理。</p>
+        </li>
+        <li>
+          <h3>Skill 不出現在 System prompt 面板</h3>
+          <p>代表 pi-web 根本沒把 <code>SKILL.md</code> 讀進來。九成問題出在 frontmatter：<strong>（1）</strong> 上下兩排 <code>---</code> 是不是各三個減號、獨佔一行、前後沒空白行；<strong>（2）</strong> <code>name:</code> 跟 <code>description:</code> 有沒有正確拼寫（冒號後面要有空格）；<strong>（3）</strong> 檔名是不是嚴格 <code>SKILL.md</code>（全大寫 SKILL、小寫 .md）。用文字編輯器（VS Code、Notepad++）打開 <code>SKILL.md</code>，右下角看編碼是不是 UTF-8 without BOM。</p>
+        </li>
+        <li>
+          <h3>Skill 讓 AI 的回答變得很怪、很硬</h3>
+          <p>本文寫得太命令句（「必須做這個」「絕對不能做那個」）會讓 AI 回應變得像機器人念稿。把「必須」改成「建議」、「絕對不能」改成「盡量避免」、「一定要」改成「通常」——留一點彈性讓 AI 用自己的判斷。但關鍵禁令（例如「不要杜撰」「不要給醫療建議」）還是要硬。</p>
+        </li>
+        <li>
+          <h3>我不會 git push，怎麼把 skill 傳到 HA host</h3>
+          <p>兩條路避開 git：<strong>（1）本地路徑法</strong>——用 FileZilla 這種 GUI SFTP 客戶端拖進 <code>/data/pi-agent/skills/</code>，完全不用 git；<strong>（2）叫 Pi Agent 幫你 push</strong>——貼你的 <code>SKILL.md</code> 到對話裡，跟 AI 說「幫我把這個 skill push 到 GitHub 的 fridge-check repo」，AI 會用 <code>bash</code> 工具跑 git 指令。放心你會看到<a href="ch9_thinking_diff.html">第 9 章</a>講過的工具卡片，push 之前可以確認。</p>
+        </li>
+        <li>
+          <h3>Skill 有時候作用、有時候不作用</h3>
+          <p>這通常代表 description 的 trigger 條件不夠廣。例如你只寫「使用者傳冰箱照片時觸發」，那使用者只講「今天煮什麼」（沒傳照片）時就不會 match。把幾種可能的觸發語句都列進 description：<code>description: 使用者傳冰箱照片、問「今天煮什麼」「冰箱還有什麼」「幫我看看冰箱」，或提到食材、fridge、pantry、剩菜時觸發</code>。列越全越穩。</p>
+        </li>
+        <li>
+          <h3>改了 SKILL.md 之後 AI 好像還是照舊版走</h3>
+          <p>Skills 是在 session 開始時載入的。<strong>要開一個新 session</strong>才會吃到新版的 <code>SKILL.md</code>。舊 session 裡的 system prompt 已經定型不會更新。改完 skill 記得開新 session 測。</p>
+        </li>
+      </ol>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>Skill 一定要用英文寫嗎？</summary>
+        <div class="body">不用。<strong>本文用中文完全沒問題</strong>——AI 讀繁體、簡體、日文、韓文都通。你上面看到的範例本文段落全部是中文。唯二建議用英文的是：（1）<code>name</code> 欄位跟資料夾名（避免路徑編碼問題）；（2）如果 <code>description</code> 想同時對中英使用者觸發，可以中英混寫（「使用者傳冰箱照片、fridge photo、pantry 時觸發」）。除此之外全中文寫作沒問題。</div>
+      </details>
+      <details class="faq">
+        <summary>YAML 是什麼？我看不懂</summary>
+        <div class="body">YAML 是一種<strong>「用縮排表示層次的鍵值對寫法」</strong>。跟 HA 自動化 YAML 一模一樣——如果你寫過 <code>alias: 日落開燈</code>、<code>trigger: sun</code> 這種，就是同一個東西。SKILL.md 用到的部分超級簡單，就是 <code>name:</code> 和 <code>description:</code> 這兩行冒號分隔的鍵值對，冒號後要有空格。不用學進階語法。</div>
+      </details>
+      <details class="faq">
+        <summary>Skill 可以呼叫工具嗎？例如叫 AI 讀 HA 的資料</summary>
+        <div class="body">可以，但要看模型跟裝了哪些工具。你可以在 <code>SKILL.md</code> 裡指示「請用 <code>read_file</code> 讀 <code>/config/automations.yaml</code>」「請呼叫 <code>ha_get_state</code> 拿實體目前狀態」，AI 就會叫那個工具（前提是那個工具本來就有裝，通常是別的 skill 附帶進來的）。工具呼叫的細節在<a href="ch9_thinking_diff.html">第 9 章</a>的「工具卡片」段講過。想讓 skill 能操作 HA 的話，先裝 <code>home-assistant-best-practices</code> 這個 skill 提供 HA 工具，你自己的 skill 就能引用它們。</div>
+      </details>
+      <details class="faq">
+        <summary>Skill 寫錯會不會弄壞 Pi Agent？</summary>
+        <div class="body">不會。<strong>最多就是這個 skill 不生效</strong>——pi-web 掃到有問題的 <code>SKILL.md</code>（例如 frontmatter 壞了）會跳過它、繼續載入別的 skill，主程式不會 crash、別的 skill 也不受影響。所以你可以放心亂寫、亂測試——寫壞了頂多 Skills 面板少了一列，重寫再試就好。這也是為什麼建議<strong>先本地測試玩到穩、再 push GitHub</strong>。</div>
+      </details>
+      <details class="faq">
+        <summary>Skill 的內容會被 AI 記住嗎？換 session 還在嗎？</summary>
+        <div class="body">Skill 本身是「安裝在 pi-web」而不是「記在 AI 記憶裡」——所以只要 skill 還安裝著，每一個新 session 都會自動載入它、AI 每次都能用。你在 session 裡跟 AI 講的臨時規則（「這次用素食版」）則<strong>只存活到 session 結束</strong>，換 session 就沒了。想讓規則長期生效就寫進 <code>SKILL.md</code>；一次性的例外就直接對話講。</div>
+      </details>
+      <details class="faq">
+        <summary>一個 skill 可以做很多件事嗎？還是每件事一個？</summary>
+        <div class="body">技術上一個 skill 可以塞很多事，但<strong>強烈建議一個 skill 一件事</strong>。原因：（1）description 描述單一觸發條件比較準；（2）AI 判斷「該不該用」比較不會搞混；（3）改壞了影響範圍小。像上面「冰箱盤點／晚餐建議／買菜清單」看似相關，我還是拆成三個 skill——雖然它們會互相引用，但各自的觸發跟輸出格式不同。維護起來清楚很多。</div>
+      </details>
+      <details class="faq">
+        <summary>Skill 會不會偷偷讀我電腦上的檔案？</summary>
+        <div class="body">Skill 本身只是文字——它不會主動做事，只是告訴 AI「如果要做這件事，請這樣做」。真正做事的是 AI＋工具。所以問題等同於「AI 會不會偷偷讀我檔案」——答案是<strong>只有你允許的工具＋你貼給它的檔案，AI 才碰得到</strong>。<a href="ch9_thinking_diff.html">第 9 章</a>教過的工具卡片會攤在對話裡，AI 讀了什麼你看得到。裝別人的 skill 前掃一下 <code>SKILL.md</code> 有沒有可疑的「讀 /home 底下所有檔」這種指示，通常就夠安全。</div>
+      </details>
+      <details class="faq">
+        <summary>可以把 skill 版本化嗎？改壞了想 rollback</summary>
+        <div class="body">如果用 GitHub 法就自動版控了——每次改 <code>SKILL.md</code> 都 commit，想回退用 <code>git log</code> 找舊 commit、<code>git checkout</code> 回去、重新推。本地路徑法沒版控，改壞就得從記憶重寫，所以<strong>值得的 skill 值得放 git</strong>。另外做 HA snapshot 時（<a href="ch20_backup.html">第 20 章</a>），<code>/data/pi-agent/skills/</code> 整個資料夾會被備份，這也算另一層保險。</div>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch15_install_skill.html">
+        <span class="label">← 上一章</span>
+        <span class="title">15 · 從 GitHub 裝 Skill</span>
+      </a>
+      <a class="next" href="ch17_video_pipeline.html">
+        <span class="label">下一章 →</span>
+        <span class="title">17 · 影片管線</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>

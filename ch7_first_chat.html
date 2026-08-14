@@ -1,0 +1,494 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>第 7 章 · 開第一個對話 · Woow HA Pi Agent 入住指南</title>
+  <meta name="description" content="在 Pi Agent 開第一個 Session：怎麼下第一個問題、AI 回應的結構、追問的技巧與判斷答案好壞的方法。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch7_first_chat.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 7 章 · 開第一個對話 · Woow HA Pi Agent 入住指南" />
+  <meta property="og:description" content="在 Pi Agent 開第一個 Session：怎麼下第一個問題、AI 回應的結構、追問的技巧與判斷答案好壞的方法。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/ch7_first_chat.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 7 章 · 開第一個對話 · Woow HA Pi Agent 入住指南" />
+  <meta name="twitter:description" content="在 Pi Agent 開第一個 Session：怎麼下第一個問題、AI 回應的結構、追問的技巧與判斷答案好壞的方法。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a class="brand" href="index.html">Pi Agent 入住指南</a>
+    <div class="brand-sub">把家裡的 AI 工作站用起來</div>
+    <h2>章節</h2>
+    <ol>
+      <li class="part-label">起步認識</li>
+      <li><a href="ch1_intro.html">什麼是 Pi Agent</a></li>
+      <li><a href="ch2_install.html">裝好 Pi Agent</a></li>
+      <li><a href="ch3_open_it.html">從側邊欄打開</a></li>
+      <li><a href="ch4_ui_tour.html">工作區導覽</a></li>
+      <li class="part-label">先跟它聊起來</li>
+      <li><a href="ch5_first_key.html">申請 GLM 金鑰</a></li>
+      <li><a href="ch6_paste_key.html">貼金鑰到 Models</a></li>
+      <li><a href="ch7_first_chat.html" class="active">開第一個對話</a></li>
+      <li><a href="ch8_session.html">Session 是什麼</a></li>
+      <li><a href="ch9_thinking_diff.html">思考塊與 diff</a></li>
+      <li class="part-label">多個 AI 一起用</li>
+      <li><a href="ch10_why_multi.html">為什麼多接幾家</a></li>
+      <li><a href="ch11_provider_map.html">六家 provider 對照</a></li>
+      <li><a href="ch12_reasoning.html">Reasoning 模型</a></li>
+      <li><a href="ch13_switch_model.html">切換 AI</a></li>
+      <li class="part-label">Skills 讓 AI 學新本事</li>
+      <li><a href="ch14_skill_concept.html">Skill 是什麼</a></li>
+      <li><a href="ch15_install_skill.html">從 GitHub 裝 Skill</a></li>
+      <li><a href="ch16_write_skill.html">自己寫 Skill</a></li>
+      <li class="part-label">讓 AI 幫你做影片</li>
+      <li><a href="ch17_video_pipeline.html">影片管線</a></li>
+      <li><a href="ch18_video_tools.html">首次 720MB 下載</a></li>
+      <li><a href="ch19_rclone.html">傳 Google Drive</a></li>
+      <li class="part-label">家常維護</li>
+      <li><a href="ch20_backup.html">對話與金鑰備份</a></li>
+      <li><a href="ch21_upgrade.html">升級注意事項</a></li>
+      <li><a href="ch22_troubleshoot.html">卡關手冊</a></li>
+    </ol>
+    <div class="toc-in-chapter">
+      <h2>本章</h2>
+      <a href="#why">為什麼這章重要</a>
+      <a href="#concept">對話是怎麼運作的</a>
+      <a href="#steps">動手開第一個對話</a>
+      <a href="#topics">三個範例家庭問題</a>
+      <a href="#tips">問答的三個技巧</a>
+      <a href="#test">判斷答案好壞</a>
+      <a href="#warning">AI 說錯話怎麼辦</a>
+      <a href="#done">對話會留下來嗎</a>
+      <a href="#troubleshoot">疑難排解</a>
+      <a href="#faq">常見問題</a>
+    </div>
+    <div class="toc-in-chapter">
+      <h2>附錄</h2>
+      <a href="appendix_config_ref.html">A · 設定參數速查</a>
+      <a href="appendix_provider_keys.html">B · 金鑰申請速查</a>
+      <a href="appendix_internals.html">C · 底層架構</a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <div class="chapter-header">
+      <div class="kicker">第 7 章</div>
+      <h1>開第一個對話</h1>
+      <p class="lead">前面六章都在準備工具、認畫面、貼金鑰——這一章，你終於要真的<b>用</b>它了。我們會問三個真實的家庭問題，教你怎麼判斷 AI 給的答案好不好、什麼時候要追問、什麼時候要懷疑。做完這章你會發現：這東西不是「多一個聊天窗」，是家裡多一個 24 小時待命的顧問。</p>
+    </div>
+
+    <section id="why" data-nav="為什麼這章重要">
+      <h2 data-icon="why">為什麼要專門開一章教「聊天」</h2>
+      <p>照理說，前面 ch2 裝好 add-on、ch4 看過 UI、ch5-6 貼好金鑰——你打開 pi-web、選個模型、打字送出，就結束了，還需要一整章嗎？</p>
+      <p>需要，因為<b>「會打字」跟「會問到答案」是兩件事</b>。我在教家裡阿姨用 AI 的時候，看她問「怎麼辦」就送出，然後盯著 AI 回一大坨東西不知道要看哪，最後結論是「這個沒用啊」——問題不是 AI 沒用，是問法沒對到。這章要幫你避開這個坑。</p>
+      <ul>
+        <li><b>你會問到三個典型的家庭問題。</b>不是「幫我寫 Python」這種工程師題，是買冷氣、判斷 Wi-Fi 慢、家事分配這種真的每天在煩的事。這些是「AI 當顧問」的入門題，不需要你懂 HA 也能玩。</li>
+        <li><b>你會學到「怎麼追問」。</b>AI 第一次的答案通常只是起點，會不會追問決定你拿到的是廢話還是真正能用的建議。追問其實就三招，這章會全部教。</li>
+        <li><b>你會學到「怎麼判斷答案好不好」。</b>AI 會很認真地講錯——這個叫幻覺（hallucination）。這章給你四個判準跟三個對策，讓你不會被漂亮的中文騙走。</li>
+      </ul>
+      <div class="callout tip">
+        <b>學長提醒：</b>這章的所有範例都可以直接在你家的 Pi Agent 裡跑，不會花到多少 token。GLM-4.6 的免費額度撐幾百輪對話沒問題。<b>邊看邊試</b>比只讀效果好十倍。
+      </div>
+    </section>
+
+    <section id="concept" data-nav="對話是怎麼運作的">
+      <h2 data-icon="concept">概念：對話就是「你講一句它接一句」，但它記得整場</h2>
+      <p>先建立一個心裡的圖，之後很多行為你就會秒懂。</p>
+      <p>Pi Agent 每一個「新對話」（New session）其實是一條<b>捲軸</b>——你的每一則訊息、AI 的每一則回應，都依序寫在同一條捲軸上。你按下送出的時候，系統做的事情是：<b>把整條捲軸從頭到尾抄一份，丟給 AI 讀，然後 AI 在末端接一段話寫回來</b>。</p>
+      <p>這代表兩個很重要的行為：</p>
+      <ul>
+        <li><b>AI 不是「只看你這一句」。</b>它看的是「這場對話從第一句到現在的所有內容」。所以你可以先鋪背景（例如「我家客廳 5 坪、預算兩萬」），再問問題（「該選哪台冷氣」），AI 會把背景考慮進去。</li>
+        <li><b>它不會記得<u>上一場對話</u>。</b>你今天問完關掉，明天開一個新對話從零開始，AI 對「你」完全一無所知——它記得的只有「這條捲軸裡有的內容」。想延續？回到左邊列表點舊的那條對話繼續寫，不要開新的（這是 ch8 要教的技巧）。</li>
+      </ul>
+      <p>還有一件事順便講清楚：AI 回應的時候，你會先看到一塊<b>灰底、字比較小、寫著像是在自言自語</b>的東西——那個叫「思考（reasoning）」，是 AI 在打草稿。之後灰塊會收起來，正式的回答才會用正常字體寫出來。思考塊的細節我們留到 ch9 跟 ch12 講，這章先知道「灰塊 = 草稿、之後才是正答」就夠。</p>
+      <div class="callout">
+        <b>好懂比喻：</b>把對話想像成兩個人在同一張紙上輪流寫信——你寫一段、對方看完整張紙寫一段、你再看完整張紙寫一段。所以「越後面對方越懂你」，也所以「換一張紙 = 從頭開始」。
+      </div>
+      <div class="callout tip">
+        <b>token 是什麼？</b>你可能會聽到「這場對話用掉多少 token」。token 大約可以想成「AI 眼中的一個字」——一次英文單字或半個中文字。整條捲軸越長、每次送出就越貴，這是 ch12 的話題，這章不用煩。
+      </div>
+    </section>
+
+    <section id="steps" data-nav="動手開第一個對話">
+      <h2 data-icon="steps">動手：從新對話按鈕到收到第一個回答</h2>
+      <p>照著做，7 步結束。假設你已經完成 <a href="ch6_paste_key.html">ch6 貼金鑰</a>、pi-web 打開來右下角模型列表有東西可選。</p>
+      <ol class="steps">
+        <li>
+          <b>左上角按「New session（新對話）」</b>
+          <p>會在左邊列表最上面多出一條，預設名字是「Untitled」或當下時間。點它，中間的對話區會清空，你可以開始了。<b>不要</b>在舊對話上直接問新題目，捲軸會越長越貴、AI 也會被前面的內容干擾。</p>
+        </li>
+        <li>
+          <b>Composer（輸入框）底下的模型下拉，選 GLM-4.6</b>
+          <p>Composer 是螢幕最下方那個大輸入框，正下方一排小按鈕，其中一個是「模型」下拉。點開，選你 ch6 貼好的那組 GLM 供應商底下的 <code>glm-4.6</code>（或叫 <code>glm-4-plus</code>、看你申請到的方案）。第一次玩選 GLM 是因為它<b>中文好、免費額度大方</b>。之後 ch13 會教怎麼切換到 Claude、Gemini、DeepSeek 等其他家。</p>
+        </li>
+        <li>
+          <b>在打字區輸入第一個問題，一字不改照抄下面這段</b>
+          <pre class="code-block">我家客廳燈是米家的，晚上 10 點後想讓它慢慢變暗到剩 20%，Home Assistant 要怎麼設？</pre>
+          <p>為什麼要照抄？因為這個問題示範了「怎麼給背景」——「米家」、「晚上 10 點後」、「剩 20%」是三個具體條件，AI 靠這些才能給你精確的答案，而不是那種「你可以透過自動化實現這個功能」的廢話。</p>
+        </li>
+        <li>
+          <b>按 Enter 送出（或右下角的送出按鈕）</b>
+          <p>訊息會跳到中間對話區的上方，AI 的回應會從下方開始長出來——先出現一塊<b>灰底</b>的思考塊，過幾秒（GLM-4.6 通常 5-15 秒），下面會開始一字一字打出正式回答。</p>
+          <div class="callout tip">如果 Enter 是換行、Shift+Enter 才送出，那是模型面板 Composer 的設定。兩種設定都合理，你習慣哪種就用哪種。找不到設定看 ch4 UI 巡禮。</div>
+        </li>
+        <li>
+          <b>讀 AI 回應，先看正式回答（下半段），思考塊看不看都可以</b>
+          <p>典型會是這樣結構：</p>
+          <ul>
+            <li>先幫你判斷這是「自動化（automation）」的任務</li>
+            <li>列出你需要的三個東西：觸發（trigger）= 每天 22:00、動作（action）= 調暗到 20%、可能還會問你要不要「漸變（transition）」</li>
+            <li>給你一段 YAML 範例，或用 UI 的「新增自動化」流程步驟</li>
+            <li>結尾通常會問你要不要它幫你直接生一份自動化</li>
+          </ul>
+        </li>
+        <li>
+          <b>追問：貼下面這句進 Composer 送出</b>
+          <pre class="code-block">這個自動化怎麼加？我沒寫過 YAML，一步一步帶我。</pre>
+          <p>這一句在做兩件事：（1）告訴 AI 你的程度（沒寫過 YAML），（2）明確要求它換一種輸出方式（步驟而不是程式碼）。AI 會回一段「設定 → 自動化 → 新增自動化」的圖形介面步驟，你照著點就好。</p>
+        </li>
+        <li>
+          <b>再追一句：問缺點</b>
+          <pre class="code-block">這個方案有什麼缺點？漸變過程如果我在用電視會不會被打斷？</pre>
+          <p>這句在示範「反問」。任何 AI 給的建議，都要習慣性問一次「缺點是什麼」、「什麼情況下會失效」——這是判斷答案品質的關鍵動作。AI 通常會誠實承認，例如「漸變 30 分鐘期間如果你手動調整了亮度，自動化不會停，會繼續往目標值走；如果要避免這狀況要加一個 <code>condition</code>」等等。</p>
+        </li>
+      </ol>
+      <div class="callout">
+        <b>做完你會發現：</b>整個過程你沒有點過 HA 的任何一個開關，AI 只是在跟你「討論」怎麼做。這一章刻意讓你先體驗<b>顧問模式</b>——真正讓 AI 動手改 HA 是後面幾章（自動化生成、entity 操作）的事，先不用擔心它會亂動你的家。
+      </div>
+    </section>
+
+    <section id="topics" data-nav="三個範例家庭問題">
+      <h2 data-icon="ai">三個範例：AI 當你的家庭顧問</h2>
+      <p>剛剛那題是「HA 相關」的，很技術。下面三題完全不需要 HA 知識，是最能感受到「AI 真的能幫忙」的入門題。挑一題複製到你的 Pi Agent 玩玩看。</p>
+
+      <h3>例 A：買冷氣建議</h3>
+      <p><b>你打字：</b></p>
+      <pre class="code-block">我家客廳要換冷氣，坪數 6 坪、樓高 3 米、朝西下午西曬很嚴重、天花板沒做隔熱。預算 3 萬台幣以內。有小孩會在客廳睡午覺所以噪音要低。變頻定頻怎麼選？大概要幾噸？推薦幾個型號讓我去比。</pre>
+      <p><b>AI 大概會怎麼回：</b></p>
+      <ul>
+        <li>幫你算一下所需的冷房能力：6 坪 × 500 kcal/坪，西曬加成 20%，估 3600-3800 kcal 也就是<b>1.2-1.4 噸</b>（約 3.5-4.0 kW）</li>
+        <li>強烈建議變頻：省電、噪音低、可以慢慢降溫不會嚇醒小孩。定頻只在「一天開不到 2 小時」才會回本，你的用法不符合</li>
+        <li>列出 2-3 個台幣 3 萬內的候選型號（大金、日立、國際等），標出<b>室外機噪音 dB 值</b>跟第 1 級能效標章</li>
+        <li>最後提醒：「這是 2026 年模型知識，實際型號和價格請去比價網再確認一次」</li>
+      </ul>
+      <p><b>可以追問：</b>「為什麼西曬要加成 20% 這個數字？」→ AI 會解釋負載計算原理。或者：「這幾台哪一台的變頻壓縮機比較不會抽風？」→ 進到更細的技術比較。</p>
+
+      <h3>例 B：判斷 Wi-Fi 慢的原因</h3>
+      <p><b>你打字：</b></p>
+      <pre class="code-block">我家 Wi-Fi 訊號在客廳滿格但在主臥剩 1 格，主臥網速實測只有 5 Mbps。路由器擺在客廳玄關的鞋櫃上，主臥在對角，中間隔一道混凝土牆。用的是三年前的 ASUS AX3000。要怎麼判斷是路由器該換、還是位置該挪、還是要加 mesh？</pre>
+      <p><b>AI 大概會怎麼回：</b></p>
+      <ul>
+        <li>先幫你判斷這是<b>訊號穿透衰減</b>而不是路由器老化——「AX3000 三年還算堪用，5 Mbps 是訊號到不了不是機器算不動」</li>
+        <li>建議三個由便宜到貴的方案：（1）先試把路由器從鞋櫃搬出來放外面高處（金屬櫃是訊號黑洞），（2）換 5GHz 頻道到 149 以上避開鄰居，（3）都不行才加一台 mesh 節點放走廊當中繼</li>
+        <li>會提醒混凝土牆對 5GHz 衰減比 2.4GHz 嚴重，如果主臥設備支援 2.4GHz-only 可以先試強制連 2.4G 看看</li>
+      </ul>
+      <p><b>可以追問：</b>「怎麼查我現在連的是 2.4G 還是 5G？」/「Mesh 節點推薦什麼牌子？」/「換頻道怎麼換？」——AI 會分別給步驟。</p>
+
+      <h3>例 C：家事分配討論</h3>
+      <p><b>你打字：</b></p>
+      <pre class="code-block">家裡三個人：我（上班族，晚 7 點回家）、老婆（在家接案，時間彈性）、國二兒子。目前家事幾乎都我老婆一個人做，最近她說撐不住。要怎麼重新分配比較公平？兒子能做的事有哪些？</pre>
+      <p><b>AI 大概會怎麼回：</b></p>
+      <ul>
+        <li>先把家事拆成四類：每日類（洗碗、垃圾、掃地）、每週類（洗衣、拖地、採買）、每月類（大掃除、繳費）、彈性類（做飯、澆花）</li>
+        <li>建議按<b>時間成本</b>而不是「誰在家」分配——你老婆時間彈性不代表她的時間比較不值錢</li>
+        <li>國二兒子能做的：倒垃圾、收自己的衣服、洗自己的碗、每週吸一次自己房間、幫忙搬重物。都很合理，不要塞太高階的（例如做飯）避免抗拒</li>
+        <li>給一個具體分配表範例，還會提醒「先試兩週再檢討」不要一次到位</li>
+      </ul>
+      <p><b>可以追問：</b>「如果兒子擺爛怎麼辦？」/「有沒有 App 可以追蹤誰做了什麼？」/「這樣分我老婆還是佔六成，怎麼再減？」——AI 會給教育心理學角度、App 推薦、或建議外包某些項目。</p>
+
+      <div class="callout tip">
+        <b>為什麼推薦這三題當入門？</b>因為它們有三個共通點：（1）你已經有<b>自己的答案傾向</b>，可以檢驗 AI 有沒有講到位；（2）沒有標準答案，AI 給的建議你可以照單全收也可以只挑一部分；（3）錯了也沒關係——最壞就是你去比價、去挪路由器、去跟家人再談一次。低風險、高回饋，最適合建立信心。
+      </div>
+    </section>
+
+    <section id="tips" data-nav="問答的三個技巧">
+      <h2 data-icon="tips">問答的三個技巧：從新手到能用</h2>
+      <p>問 AI 這件事，練 20 次就會抓到節奏。三個關鍵技巧，記住就贏一半：</p>
+
+      <h3>技巧 1：提供背景 → 得到具體答案</h3>
+      <p><b>差的問法：</b>「我家客廳要換冷氣，推薦一下。」<br>
+      <b>好的問法：</b>「我家客廳<u>要換冷氣，坪數 6 坪、樓高 3 米、朝西下午西曬很嚴重、預算 3 萬</u>，推薦一下。」</p>
+      <p>差別在哪？差的問法 AI 只能給你一段「選變頻、看能效、注意噪音」的通用廢話——因為它不知道你家多大、預算多少、什麼問題最痛。好的問法給了 4 個具體參數，AI 才能算出來要幾噸、篩到你的預算範圍、把「西曬」這個變數考慮進去。</p>
+      <p><b>該給什麼背景？</b>可以問自己：「如果是家裡的長輩、鄰居、朋友來問我，我會先反問他哪些問題？」那些反問句對應的答案，就是你該<b>主動</b>先告訴 AI 的背景。</p>
+
+      <h3>技巧 2：一次問一件事 → 得到能用的答案</h3>
+      <p><b>差的問法：</b>「我家 Wi-Fi 慢、想加 mesh、順便問客廳燈自動化怎麼設、還有兒子沉迷手遊要不要斷網？」<br>
+      <b>好的問法：</b>先問一件——「Wi-Fi 慢怎麼判斷原因」——問到滿意，開新對話再問下一件。</p>
+      <p>AI 一次可以處理多題，但你自己會迷路——回答太長根本讀不完，也追問不下去。三題塞在一起，等於三題都只得到 30% 深度的答案。分開問，每題可以挖到 90%。</p>
+
+      <h3>技巧 3：追問！追問！追問！</h3>
+      <p>第一次的回答是「起點」不是「終點」。有 5 種追問語句幾乎萬用，記起來：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>追問句</th><th>拿到什麼</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>「這個方案有什麼缺點？」</td><td>逼 AI 誠實面對它剛剛的建議，通常會多出很有用的警告</td></tr>
+          <tr><td>「有沒有更便宜/簡單/快的做法？」</td><td>AI 傾向給「最佳解」，你要主動要「夠用就好的解」</td></tr>
+          <tr><td>「用小學生聽得懂的方式再講一次」</td><td>術語太多的時候超有效，AI 會整段重寫</td></tr>
+          <tr><td>「舉一個具體例子」</td><td>AI 講抽象概念時，一個例子勝過三段文字</td></tr>
+          <tr><td>「如果我做的是 XX 情境，你這建議還適用嗎？」</td><td>把 AI 拉回你的實際條件，避免它給教科書答案</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <b>觀念：</b>你不是在「問問題」，你是在跟一個顧問「討論」。討論就一定會來回，一問一答就結束的通常都是還沒討論到重點。
+      </div>
+    </section>
+
+    <section id="test" data-nav="判斷答案好壞">
+      <h2 data-icon="test">判斷答案好不好的四個問題</h2>
+      <p>AI 講話很順、中文又漂亮，很容易看了就信。以下四個問題是「照妖鏡」，每次拿到答案都用一次，就不會被騙。</p>
+      <ol class="steps">
+        <li>
+          <b>有沒有具體的數字、步驟、名詞？</b>
+          <p>好答案：「6 坪 × 500 kcal，估 1.2-1.4 噸」——你可以拿去查證。<br>
+          壞答案：「建議選擇適合坪數的變頻機型」——這句話什麼都沒說。<br>
+          <b>檢驗方法：</b>回答裡有沒有你可以照抄去 Google 的「關鍵詞」？沒有就是空話。</p>
+        </li>
+        <li>
+          <b>有沒有跟你給的條件對上？</b>
+          <p>你說「預算 3 萬」，AI 推 5 萬的機型 → 沒對上，要糾正。<br>
+          你說「家有小孩」，AI 沒提到噪音 → 沒對上，要追問。<br>
+          <b>檢驗方法：</b>把你原本問題裡的關鍵條件列出來，逐一去 AI 回答裡找有沒有回應到。</p>
+        </li>
+        <li>
+          <b>有沒有明顯偏頗？</b>
+          <p>AI 有它的訓練偏見。例如：問「哪個品牌好」它有時會偏歐美品牌（訓練資料裡討論比較多）；問「怎麼投資」它會偏保守（怕被告）；問「這個食物健不健康」它容易照搬美國營養學觀點。<br>
+          <b>檢驗方法：</b>如果答案聽起來太一面倒，反問：「反過來的觀點是什麼？有沒有人主張相反做法？」</p>
+        </li>
+        <li>
+          <b>跨模型問過一樣的問題比對嗎？</b>
+          <p>認真要決定的事（買貴的東西、健康、財務），值得換另一家 AI 再問一次。GLM 給的和 Claude 給的和 Gemini 給的，若三家講的方向差不多，那就八九不離十；若三家意見分歧，代表這題本來就沒共識，你要自己再研究。<br>
+          <b>檢驗方法：</b>ch13 會教怎麼在 Pi Agent 一鍵切換模型，同一句話問三次。</p>
+        </li>
+      </ol>
+      <div class="callout tip">
+        <b>學長經驗：</b>我把「有沒有具體數字」列第一名，是因為它最快。掃過去只要沒看到任何數字或型號名，這回答八成沒實質內容，直接追問「請給具體例子」——你會發現 AI 立刻換一副面孔。
+      </div>
+    </section>
+
+    <section id="warning" data-nav="AI 說錯話怎麼辦">
+      <h2 data-icon="warning">AI 說錯話怎麼辦：認識「幻覺」</h2>
+      <p>先說結論：<b>現在所有的 AI 都會一本正經地講錯</b>，包含 GLM、Claude、GPT、Gemini 全部——這叫「幻覺（hallucination）」。它不是騙你，它是<b>真的以為自己講的對</b>，就像你有時候會信心滿滿講一個你其實記錯的事實。</p>
+      <p>常見的幻覺類型：</p>
+      <ul>
+        <li><b>編造不存在的型號、書名、人名。</b>問「有沒有一款米家的窗簾馬達支援 Zigbee 3.0」，它可能給你一個型號叫「MJZC01-XXX」——查了根本沒這型號。</li>
+        <li><b>編造不存在的網址或指令。</b>問「HA 有沒有 <code>light.slow_dim</code> 這個服務」，它可能說「有，你可以呼叫 <code>light.slow_dim: entity_id: light.xxx</code>」——實際上 HA 沒這個服務，只有 <code>light.turn_on</code> 加 <code>transition</code>。</li>
+        <li><b>把兩件事情混在一起。</b>你問 A 品牌的功能，它把 B 品牌的功能寫成 A 的。</li>
+        <li><b>過期的資訊當現在的講。</b>模型 2024 年訓練，你 2026 年問——它可能還在講兩年前的方案，聽起來很篤定。</li>
+      </ul>
+
+      <h3>三個對策</h3>
+      <ol class="steps">
+        <li>
+          <b>查證「關鍵事實」，不是全部。</b>
+          <p>對話裡如果有一兩個「照做的話會影響結果」的關鍵事實（型號、指令、金額、法規），花 30 秒 Google 一下。其他敘述性的內容（判斷邏輯、優缺點分析）通常不需要每句查。</p>
+        </li>
+        <li>
+          <b>用另一家 AI 問一次。</b>
+          <p>如果三家 AI 都給你同一個「MJZC01-XXX」型號，那大概是真的；如果只有 GLM 講、Claude 和 Gemini 都說沒聽過，那就是 GLM 在幻覺。切換模型的步驟看 <a href="ch13_switch_model.html">ch13</a>。</p>
+        </li>
+        <li>
+          <b>當 AI 很篤定時，反而要更懷疑。</b>
+          <p>這個反直覺，但是真的：AI 幻覺出來的東西<b>語氣往往比真事實還篤定</b>——因為它不知道自己在幻覺。反之，如果 AI 說「我不確定，可能是⋯⋯」或「以我 2024 年的知識」，這種帶保留的話反而通常是真的。</p>
+        </li>
+      </ol>
+      <div class="callout warn">
+        <b>紅線：涉及健康、法律、財務、電力/瓦斯這類高風險的事情，AI 只能當「初步討論的夥伴」，不能當「最終決策」。</b>該找醫生、律師、水電師傅的還是要找。AI 幫你把問題想清楚、把該問的東西列出來，不是替代專業。
+      </div>
+      <div class="callout tip">
+        <b>好用的自我提示：</b>問完之後心裡默念「這是<u>草稿</u>不是<u>結論</u>」。用「校對草稿」的心態去看 AI 的回答，你就不會被騙。
+      </div>
+    </section>
+
+    <section id="done" data-nav="對話會留下來嗎">
+      <h2 data-icon="done">對話完就結束了嗎？Session 會留下來</h2>
+      <p>你剛剛開的那條對話，關掉 pi-web 分頁、明天再回來——<b>它還在左邊列表裡</b>。這在 Pi Agent 叫做 Session（工作階段），每一個新對話都是一個獨立的 session，永久保存（除非你主動刪）。</p>
+      <p>幾個實用行為，這章先讓你有印象，細節看下一章：</p>
+      <ul>
+        <li><b>找回舊對話：</b>左邊 session 列表點下去就跳回那條捲軸，捲到最下面繼續打字就好，AI 會讀完整條捲軸再回你。</li>
+        <li><b>重新命名：</b>對 session 名字按右鍵（或滑鼠 hover 出現的三點選單）→ Rename。整理起來比較好找。</li>
+        <li><b>刪除：</b>同一個選單裡有 Delete。刪掉就真的沒了，AI 也徹底忘記這場對話。</li>
+        <li><b>Fork（分岔）：</b>從一場對話的中間某一步「另開一條分支」——例如你的冷氣討論到「要不要加空氣清淨機」時想岔開研究一下清淨機，可以 fork 出一條新 session 專門討論清淨機，本來那條保留原樣。</li>
+      </ul>
+      <p>完整的 session 管理、清理策略、fork 的使用時機，去 <a href="ch8_session.html">ch8 Session 管理</a> 看。這章你只要知道「對話會自動保存」，就夠了。</p>
+      <div class="callout">
+        <b>觀念：</b>不要怕開新 session。GLM 免費額度很大方，session 也不佔多少空間，開 100 條也沒事。真正該避免的是「所有問題全塞在同一條」——那條 captain hook 就會膨脹到 AI 每次讀完都要花很多 token，又慢又貴。<b>一個題目、一條 session</b>是好習慣。
+      </div>
+    </section>
+
+    <section id="troubleshoot" data-nav="疑難排解">
+      <h2 data-icon="troubleshoot">疑難排解：第一次對話最常撞的 6 個問題</h2>
+
+      <details class="faq">
+        <summary>症狀：送出訊息之後畫面完全沒反應，訊息也沒跳到對話區</summary>
+        <p><b>依機率排序的原因：</b></p>
+        <ol class="steps">
+          <li>Composer 底下的<b>模型下拉還是「未設定」或空的</b>。回去 ch6 確認 Models 面板真的有一個 provider 而且已啟用，然後在 Composer 下拉裡選那個模型。</li>
+          <li>你選的 provider 沒填金鑰（或金鑰是空字串）。回 Models 面板點開那個 provider 檢查 API Key 欄位有沒有值。</li>
+          <li>瀏覽器 console 有 error。按 F12 → Console 分頁，如果紅字寫 <code>401 Unauthorized</code> → 金鑰無效或過期；<code>Network Error</code> → 網路連不到 provider；其他錯誤複製整段丟給 AI 問。</li>
+          <li>HA Ingress 掉線了。回 HA 側欄，Pi Agent 按鈕點一下重整；或者去 Add-ons → Pi Agent → 重啟。</li>
+        </ol>
+      </details>
+
+      <details class="faq">
+        <summary>症狀：訊息送出去了，AI 那邊就是「思考中」一直轉圈</summary>
+        <p>轉超過 30 秒不對勁：</p>
+        <ol class="steps">
+          <li><b>金鑰額度耗盡。</b>GLM 免費額度用完會回 <code>402 Payment Required</code>，Claude/OpenAI 額度用完會回 <code>429 Rate Limit</code> 或 <code>quota exceeded</code>。開 F12 → Network 看最後一個 request 的 response 就知道。解法是加值、切帳號、或換到別家 provider（ch13）。</li>
+          <li><b>網路擋 provider CDN。</b>GLM 的 endpoint 是 <code>open.bigmodel.cn</code>，某些國家/公司網路會擋。用手機開網頁貼 <code>https://open.bigmodel.cn</code> 看能不能開，開不了就是被擋。要走 proxy，這超出本章範圍。</li>
+          <li><b>模型服務端故障。</b>供應商偶爾會爆炸，等 5 分鐘再試。</li>
+          <li>如果你選的模型本來就慢（例如深度推理模型），30 秒是正常的，等就好。GLM-4.6 通常 5-15 秒。</li>
+        </ol>
+      </details>
+
+      <details class="faq">
+        <summary>症狀：AI 的回應中文變成亂碼「」或方塊字</summary>
+        <ol class="steps">
+          <li>先重整瀏覽器（Ctrl+R）。八成解決。</li>
+          <li>沒解決 → 檢查瀏覽器編碼是不是 UTF-8。Chrome/Edge 在網址列右邊 → 三點選單 → 設定 → 語言，最下面有編碼設定。</li>
+          <li>還是不行 → 是不是用某些「加速」擴充套件在改頁面內容？先開無痕視窗試一次，無痕正常的話就是擴充套件的鍋。</li>
+        </ol>
+      </details>
+
+      <details class="faq">
+        <summary>症狀：回應到一半突然停住，沒有句號、沒有繼續</summary>
+        <p>這是模型的<b>單次輸出上限（max tokens）</b>到了。GLM-4.6 預設約 4096 或 8192，寫長篇答案時可能會截。</p>
+        <ol class="steps">
+          <li>最簡單：追一句「<b>請繼續</b>」，AI 會從斷點接著寫。</li>
+          <li>如果常常截，去 ch12 學怎麼調 max_tokens 或改用「壓縮」模式，讓 AI 主動精簡輸出。</li>
+          <li>或者你的問題本來就要求太多輸出，改成一次問一部分（技巧 2）。</li>
+        </ol>
+      </details>
+
+      <details class="faq">
+        <summary>症狀：AI 回應開頭那塊「思考塊」灰底一直長，正式回答遲遲不出來</summary>
+        <p>思考塊（reasoning）是模型「打草稿」的階段。有些模型（例如 GLM-4.6 開推理模式、DeepSeek-R1、Claude Extended Thinking）會思考很久才回答，10-30 秒都算正常。</p>
+        <ol class="steps">
+          <li>先等，這是模型在認真想。<b>不要按停止</b>，你會失去整個回答。</li>
+          <li>如果你不想要它想這麼久，去 ch12 關掉推理模式（或降低 reasoning budget）。</li>
+          <li>如果超過 60 秒還在思考，可能是被截斷了——F12 看 Network 有沒有錯誤，若有就是連線問題。</li>
+        </ol>
+      </details>
+
+      <details class="faq">
+        <summary>症狀：追問之後 AI 好像忘了前面講過的東西，開始重複或講不對</summary>
+        <p>兩個可能：</p>
+        <ol class="steps">
+          <li><b>對話太長超過模型的 context 上限。</b>每個模型有能吃進去的最大 token 數（GLM-4.6 是 128K，Claude 是 200K）。當對話超過，最舊的訊息會被「忘掉」——不是模型出錯，是輸入被截了。解法：開新 session 從摘要重來，或者 fork 一條分支繼續（ch8）。</li>
+          <li><b>你追問時的用字太模糊。</b>例如追「那個怎麼辦」——AI 不知道你指的是剛剛哪一段的「那個」。追問時把「那個」換成具體的東西（「那個變頻方案的耗電」）就會好。</li>
+        </ol>
+      </details>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+
+      <details class="faq">
+        <summary>一次對話大概多久算「合理」？超過會很燒錢嗎？</summary>
+        <p>個人問答：<b>10-30 輪來回</b>是很常見的深度討論。技術類（AI 幫你寫自動化、改 dashboard）：<b>50-100 輪</b>也不誇張。這個範圍內 GLM 免費額度都撐得住。</p>
+        <p>會燒錢的不是「輪數」而是「累積 token 數」——一條對話越長，每次新訊息都要把整條捲軸重新送給 AI 讀。所以：</p>
+        <ul>
+          <li>對話開頭那 20 輪很便宜（每次幾百 token）。</li>
+          <li>到了第 100 輪，每次可能就要送 3 萬 token 進去（相當於一本小說的一章）。</li>
+          <li><b>超過 150 輪或明顯感覺 AI 變慢，就該開新 session 或 fork 分支</b>（ch8）。</li>
+        </ul>
+        <p>錢的細節看 ch12「reasoning 跟 token 是怎麼算錢的」。</p>
+      </details>
+
+      <details class="faq">
+        <summary>用中文問跟用英文問，AI 的答案品質會差很多嗎？</summary>
+        <p>2026 年的現況：<b>對主流模型來說中文答案品質已經很接近英文</b>，尤其是 GLM（中國訓練，中文本來就強）跟 Claude/Gemini（都做過多語言優化）。你不需要為了品質切英文。</p>
+        <p>幾個例外情境用英文可能會好一點：</p>
+        <ul>
+          <li>問<b>非常小眾的技術</b>（某個冷門開源專案、某個學術論文），英文資料多、中文資料少，切英文問可以避開翻譯損失。</li>
+          <li>要求 AI <b>產出程式碼註解</b>——很多開源社群習慣英文註解，你可能希望對齊。</li>
+          <li>你要用 AI 練英文寫作或口說（那當然要英文）。</li>
+        </ul>
+        <p>其他情況，包含所有生活類問題、HA 相關、家庭決策——直接中文就好，讀起來也順。</p>
+      </details>
+
+      <details class="faq">
+        <summary>AI 給的建議可以直接照做嗎？例如它給的 HA 自動化 YAML？</summary>
+        <p><b>照做前先過一次腦子。</b>三層檢查：</p>
+        <ol class="steps">
+          <li><b>看得懂 → 手動貼進去試。</b>YAML 你如果每一行大概知道在做什麼，先在 HA 的「開發者工具 → 樣板」測試，或用「檢查設定」按鈕驗證語法，再實際套用。</li>
+          <li><b>看不懂 → 請 AI 逐行解釋。</b>直接追問「這段 YAML 每一行分別在做什麼？用小學生聽得懂的方式」，看完你自己能複述就照做。看不懂就不要用——這是自我保護。</li>
+          <li><b>會影響安全的（例如控制電子鎖、瓦斯、警報）→ 先在<u>不重要的實體</u>上測。</b>把 <code>action</code> 裡的目標暫時換成一顆測試用的燈，看行為對再換回真的目標。</li>
+        </ol>
+        <p>Pi Agent 未來會有「一鍵套用到 HA」的功能（ch10 之後），但即使有，這個「先在腦裡走一遍」的習慣也要保留。</p>
+      </details>
+
+      <details class="faq">
+        <summary>刪掉對話 AI 是不是就會忘記？下次同一個問題再問它會不會記得？</summary>
+        <p>兩個層次要分清楚：</p>
+        <ul>
+          <li><b>刪掉這個 session：</b>是，這條捲軸不見了，你也再也讀不到——但 AI 本來就不會「跨 session 記憶」，所以刪不刪對 AI 沒差別。</li>
+          <li><b>不刪、開新 session 再問同一題：</b>AI 一樣<b>不記得你</b>。它每次都是從零開始讀當前這條 session 的內容。你昨天跟它講你家 6 坪，今天新 session 沒重講，它不會知道。</li>
+        </ul>
+        <p>這是<b>設計上的</b>——為了保護隱私、也為了避免上下文污染。如果你希望 AI「持久記得某些事」（例如你家坪數、家人習慣），有兩個做法：</p>
+        <ol class="steps">
+          <li>短期：<b>每次新對話開頭貼一段「我家背景」的自我介紹</b>。麻煩但可控。</li>
+          <li>長期：等未來 Pi Agent 上「使用者記憶（memory）」功能，或者 skills 系統可以綁定個人資料。這個 ch14 以後會提到。</li>
+        </ol>
+      </details>
+
+      <details class="faq">
+        <summary>對話中我可以貼圖片或檔案嗎？AI 看得懂嗎？</summary>
+        <p>看你選的模型支不支援。目前狀況：</p>
+        <ul>
+          <li><b>支援看圖的模型：</b>GLM-4V、Claude Sonnet 4.x、Gemini 2.x、GPT-4o——這些模型你直接把圖檔拖進 Composer 或貼上，AI 會看內容並回答。適用範例：拍一張你家路由器擺放位置，問 AI「這樣擺 Wi-Fi 訊號會不會被擋」。</li>
+          <li><b>純文字模型：</b>DeepSeek-Chat、Qwen（純文字版）、GLM-4-Air——貼圖進去會被忽略或報錯。</li>
+          <li><b>檔案（PDF、CSV、log）：</b>Pi Agent 支援拖檔進 Composer，會先讀成文字再送。適合用來讓 AI 分析你的 HA log、電費帳單 CSV 等。</li>
+        </ul>
+        <p>不確定當前模型支不支援？把小圖丟進去試，不行它會告訴你。</p>
+      </details>
+
+      <details class="faq">
+        <summary>AI 回答的時候我可以打斷嗎？打斷之後怎麼繼續？</summary>
+        <p>可以。回答期間 Composer 送出按鈕會變成「停止（Stop）」的圖示，按下去 AI 就停在當下那個字。</p>
+        <p>停下來之後：</p>
+        <ul>
+          <li>停止的那段話會<b>保留在對話裡</b>（沒被撤回），下一句你打字時 AI 會看到「上一段我講到一半被打斷」。</li>
+          <li>想接續：打「請繼續」或「從剛剛斷掉的地方接下去」。</li>
+          <li>想改方向：打「不要繼續了，換個方式回答：⋯⋯」——AI 會忽略上一段的方向重來。</li>
+          <li>想撤回那段：對那則訊息按 hover 出現的三點選單，Delete。這場 session 就會少那一則。</li>
+        </ul>
+        <p>什麼時候會需要打斷？（1）AI 明顯開始跑題了，（2）思考塊一直長你等不下去，（3）你打錯字送出了想中止。都很常見。</p>
+      </details>
+    </section>
+
+    <div class="pager">
+      <a class="prev" href="ch6_paste_key.html">
+        <span class="label">← 上一章</span>
+        <span class="title">06 · 貼金鑰到 Models</span>
+      </a>
+      <a class="next" href="ch8_session.html">
+        <span class="label">下一章 →</span>
+        <span class="title">08 · Session 概念</span>
+      </a>
+    </div>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</div>
+<script src="assets/js/toc.js"></script>
+</body>
+</html>
