@@ -1,11 +1,12 @@
 # Home Assistant 新居入住指南（從零到能用）
 
-7 章 zh-TW 教學靜態網站，帶你把剛裝好的 Home Assistant 從空白狀態設定到日常可用。
+12 章＋2 附錄的繁體中文 Home Assistant 教學靜態網站，帶你把剛裝好的 HA 從空白狀態設定到日常可用。
 
-- 目錄頁：[`index.html`](index.html)
-- 樣式：[`assets/css/style.css`](assets/css/style.css)
-- 側欄章節導覽 + 章內錨點 TOC：[`assets/js/toc.js`](assets/js/toc.js)
-- 全部截圖走過的活 HA：`https://woowtech-ha.woowtech.io`
+**線上閱讀：<https://woowtech.github.io/Woow_ha_tutorial_site/>**
+
+- 純靜態站，沒有框架、沒有打包工具，push 到 `main` 由 GitHub Pages 直接提供
+- 所有截圖都是 Playwright 從真實 HA 介面自動抓取並疊上紅框／箭頭／編號
+- 內容以 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.zh-hant) 授權釋出
 
 ## 內容
 
@@ -14,57 +15,120 @@
 | 1 | `ch1_login.html` | 登入 HA、記住我、網頁 vs. Companion App |
 | 2 | `ch2_system_settings.html` | 時區、語言、單位、地理位置 |
 | 3 | `ch3_floors_areas.html` | 樓層、區域、把設備放進區域 |
-| 4 | `ch4_naming_labels.html` | 命名 entity、實體 ID、標籤分類 |
-| 5 | `ch5_users.html` | Users vs. Persons、權限、位置追蹤 |
-| 6 | `ch6_dashboard.html` | 儀表板編輯、多分頁、條件顯示 |
+| 4 | `ch4_naming_labels.html` | 命名 entity、實體 ID、標籤與分類 |
+| 5 | `ch5_users.html` | Users vs. Persons、權限、MFA、位置追蹤 |
+| 6 | `ch6_dashboard.html` | 儀表板編輯、多分頁、四種檢視類型 |
 | 7 | `ch7_notifications.html` | Companion App、手機通知、動作按鈕 |
+| 8 | `ch8_first_automation.html` | 觸發／條件／動作、device_id 陷阱、Blueprint |
+| 9 | `ch9_backups.html` | 手動與自動備份、還原、備份存放位置 |
+| 10 | `ch10_scripts.html` | 腳本、Fields 參數、執行模式、四種呼叫入口 |
+| 11 | `ch11_devices.html` | 裝置頁、韌體更新、停用/隱藏/刪除、Repairs |
+| 12 | `ch12_domains.html` | 各 Domain 的常用服務、UI 卡片與常見坑 |
+| A | `appendix_hacs_addons.html` | Add-on 商店、HACS、四種遠端連線方案 |
+| B | `appendix_scenes_helpers_groups.html` | 場景、10 種 Helper、群組 |
+
+## 檔案結構
+
+```
+index.html               目錄頁             ← 卡片由 build_nav.js 產生
+404.html                 找不到頁面
+ch*.html / appendix_*    內容頁             ← head/側欄/pager/footer 由 build_nav.js 產生
+chapters.json            章節單一來源        ← 要改導覽就改這裡
+sitemap.xml              產生物，勿手改
+robots.txt
+assets/css/style.css     全站樣式
+assets/js/toc.js         章內錨點 scroll-spy＋手機版側欄收合
+assets/screenshots/      46 張標注過的截圖
+scripts/build_nav.js     導覽產生器
+scripts/check_links.js   站內連結／錨點健檢
+scripts/capture.js       截圖產生器
+scripts/annotations.json 截圖與標注定義
+```
 
 ## 本地檢視
 
 ```bash
-cd /tmp/ha_tutorial
-python3 -m http.server 8080
+git clone https://github.com/WOOWTECH/Woow_ha_tutorial_site.git
+cd Woow_ha_tutorial_site
+python3 -m http.server 8080     # 或 npx http-server -p 8080
 # 瀏覽器打開 http://localhost:8080
 ```
 
-或用 Node：
+## 改內容的規則（重要）
+
+導覽結構是**產生**出來的，不要手改。
+
+### 側欄、上下章、目錄卡片、SEO meta
+
+全部來自 `chapters.json` + 每個 `<section>` 上的 `data-nav`。改完跑：
 
 ```bash
-npx http-server -p 8080
+node scripts/build_nav.js
 ```
+
+它會覆寫每一頁的 `<head>`、`<aside class="sidebar">`、`<div class="pager">`、`<footer class="site-footer">`，重建 `index.html` 的卡片，並重新產生 `sitemap.xml`。
+
+- **改章節標題／順序／目錄文案** → 改 `chapters.json`，重跑
+- **改章內錨點文字** → 改該 `<section>` 的 `data-nav` 屬性，重跑
+- **新增一章** → `chapters.json` 加一筆 + 寫好該 HTML 的 `<main>` 內容，重跑。其他 15 個檔案的側欄會自動跟上
+
+每個 `<section>` 都必須有 `id` 與 `data-nav`：
+
+```html
+<section id="steps" data-nav="動手做：日落開燈">
+  <h2 data-icon="steps">動手做：當日落時打開客廳燈</h2>
+```
+
+`data-nav` 是側欄用的短標題，`<h2>` 是內文用的完整標題，兩者可以不同。
+
+### 檢查
+
+```bash
+node scripts/build_nav.js --check   # 導覽是否與 chapters.json 同步（CI 會擋）
+node scripts/check_links.js         # 站內連結、圖片、錨點、重複 id、sitemap 涵蓋率
+```
+
+`.github/workflows/checks.yml` 會：
+
+- **push 到 `main`**：跑一次 `build_nav.js`，有變動就由 `github-actions[bot]` 自動 commit 回來。所以就算忘了在本機跑產生器，線上站也不會跟 `chapters.json` 脫節
+- **PR**：只跑 `--check` 與連結檢查，不改檔，把「忘了跑產生器」擋在合併前
+- 另外有一個不擋合併的外部連結檢查（lychee）
+
+`sectionLabels`（`chapters.json` 最後一段）是 `data-nav` 的一次性遷移表：HTML 裡的 `<section>` 若還沒有 `data-nav`，`build_nav.js` 會照這張表補寫進去。全部遷移完之後可以整段刪掉。
 
 ## 截圖產生器（capture.js）
 
-所有章節內的截圖都是 Playwright 從活 HA 自動抓下來，並在 DOM 上疊紅色框／箭頭／編號氣泡後才存檔的。
+章節內的截圖都是 Playwright 從一台真實 HA 抓下來，並在 DOM 上疊紅色框／箭頭／編號氣泡後才存檔的。
 
 ### 需求
 
 - Node.js ≥ 18
 - Playwright（`npm i playwright` + `npx playwright install chromium`）
-- `.env` 檔（不入版控），內容：
+- 專案根目錄放一個 `.env`（不入版控）：
 
   ```
-  HA_URL=https://woowtech-ha.woowtech.io
-  HA_USER=admin
-  HA_PASS=您的密碼
+  HA_URL=https://your-ha.example.com
+  HA_USER=你的帳號
+  HA_PASS=你的密碼
   ```
+
+  請用**你自己的 HA**。建議另開一個只做示範用的管理員帳號，不要用擁有者帳號。
 
 ### 執行
 
-透過本專案內建的 playwright-skill runner：
-
 ```bash
-# 全部章節
-node ~/.claude/skills/playwright-skill/run.js /tmp/ha_tutorial/scripts/capture.js
-
-# 只跑一章（可逗號多章）
-node ~/.claude/skills/playwright-skill/run.js /tmp/ha_tutorial/scripts/capture.js --chapter=ch3
-
-# 只跑一張
-node ~/.claude/skills/playwright-skill/run.js /tmp/ha_tutorial/scripts/capture.js --shot=01_login_page.png
+node scripts/capture.js                            # 全部章節
+node scripts/capture.js --chapter=ch3              # 只跑一章（可逗號多章）
+node scripts/capture.js --shot=01_login_page.png   # 只跑一張
 ```
 
-第一次跑會出現 UI 登入並把 session 存到 `storage_state.json`，之後直接復用。要重新登入把該檔刪掉即可。
+第一次跑會做 UI 登入並把 session 存到 `storage_state.json`，之後直接復用。要重新登入把該檔刪掉即可。
+
+`scripts/probe_login.js` 是輔助工具，把 HA 登入頁（含 shadow DOM）裡的表單元素印出來，方便對選擇器：
+
+```bash
+HA_URL=https://your-ha.example.com node scripts/probe_login.js
+```
 
 ### 新增／修改截圖
 
@@ -106,22 +170,28 @@ node ~/.claude/skills/playwright-skill/run.js /tmp/ha_tutorial/scripts/capture.j
 
 ### 安全
 
-> **這是活的 HA。** capture.js 只做「開啟頁面 / 開啟對話框 / 截圖 / 關閉頁面」，關頁面 = 未儲存的 draft 丟掉，不會弄壞你家設定。**請絕對不要在 `actions[]` 裡加 `text=Save` / `text=Delete` / `text=Remove` 之類的 click。**
-
-## 部署
-
-這是一個純靜態站，把整個目錄丟到任何靜態託管都能跑。常見選擇：
-
-- **本專案 maintenance_portal**：把 `/tmp/ha_tutorial/` 全部搬進 `maintenance_portal/static/ha_tutorial/`，加一條 nginx location 就好。
-- **Zeabur / Cloudflare Pages / Netlify**：直接指向這個資料夾。
-- **內網 nginx**：`root /tmp/ha_tutorial;` + `try_files $uri $uri/ /index.html;`。
+> **這是活的 HA。** capture.js 只做「開啟頁面 / 開啟對話框 / 截圖 / 關閉頁面」，關頁面 = 未儲存的 draft 丟掉，不會弄壞設定。**請絕對不要在 `actions[]` 裡加 `text=Save` / `text=Delete` / `text=Remove` 之類的 click。**
+>
+> 這是公開站台 — 提交截圖前請確認畫面上沒有不想公開的資訊（真實姓名、住址、對外網址、Wi-Fi SSID、Token）。
 
 `.gitignore` 已排除 `.env`、`storage_state.json`、`node_modules/`。
 
-## 尚未截圖的 figure
+## 部署
 
-有些章節裡的 `<figure class="shot">` 目前指向還沒抓下來的檔案（例如某些對話框、進階步驟），會顯示斜線背景的佔位圖。要補上：在 `annotations.json` 加一筆對應的 shot 定義後重跑 capture.js。
+純靜態站，丟到任何靜態託管都能跑。
+
+- **GitHub Pages（現行）**：push 到 `main` 即生效，來源是 branch `main` / root
+- **Docker**：`docker build -t ha-tutorial . && docker run -p 8080:80 ha-tutorial`
+  image 只會包含實際對外的檔案 —— `scripts/`、`chapters.json`、`README.md` 都被 `.dockerignore` 擋掉
+- **Zeabur / Cloudflare Pages / Netlify**：直接指向這個資料夾
+- **內網 nginx**：`root <本目錄>;` + `error_page 404 /404.html;`
+
+站台網址寫在 `chapters.json` 的 `site.baseUrl`（canonical、Open Graph、sitemap 都吃這個值）。換網域時改它再重跑 `build_nav.js`，並同步更新 `robots.txt` 裡的 Sitemap 行。
 
 ## 授權
 
-供 WoowTech 內部教學使用。
+內容（文字與截圖）以 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.zh-hant) 授權：可自由分享、改作、商業使用，**請保留出處並註明 WoowTech**。完整條款見 [`LICENSE`](LICENSE)。
+
+`scripts/` 內的工具程式同樣以 CC BY 4.0 提供，如需其他授權請開 issue 詢問。
+
+Home Assistant 為 Open Home Foundation 的商標，本專案與其無隸屬關係。
