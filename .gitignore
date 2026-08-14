@@ -4,3 +4,7 @@ storage_state.json
 assets/screenshots/**/*.raw.png
 package.json
 package-lock.json
+
+# 除錯產物
+scripts/probe_login.png
+sitemap.xml.bak
