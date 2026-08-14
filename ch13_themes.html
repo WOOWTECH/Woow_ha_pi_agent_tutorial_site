@@ -14,11 +14,11 @@
   <meta property="og:title" content="第 13 章 · 主題與外觀個人化 · Home Assistant 新居入住指南" />
   <meta property="og:description" content="Home Assistant 主題與外觀教學：深色淺色模式、透過 HACS 安裝社群主題、每位使用者套用不同主題、儀表板單頁換主題，以及主題變數與品牌客製。" />
   <meta property="og:url" content="https://woowtech.github.io/Woow_ha_tutorial_site/ch13_themes.html" />
-  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch1/03_dashboard.png" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch13/01_profile_theme.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="第 13 章 · 主題與外觀個人化 · Home Assistant 新居入住指南" />
   <meta name="twitter:description" content="Home Assistant 主題與外觀教學：深色淺色模式、透過 HACS 安裝社群主題、每位使用者套用不同主題、儀表板單頁換主題，以及主題變數與品牌客製。" />
-  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch1/03_dashboard.png" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch13/01_profile_theme.png" />
   <meta name="theme-color" content="#6183FC" />
   <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -153,6 +153,10 @@
       </ol>
       <p>順帶一提，同一次改版也把「開發者工具」從側邊欄搬進了<strong>設定</strong>底下，官方說法是「工具已移至設定區域」。到了 2026.8 又進一步把名稱從「Developer tools」簡化成「Tools（工具）」。所以本章之後講到的路徑會寫成<strong>設定 → 工具</strong>；如果你的版本比較舊，那就是側邊欄的「開發者工具」，內容一樣。</p>
       <div class="callout tip"><strong>提示：</strong>找不到「工具」的話，用鍵盤快速搜尋最快。按 <kbd>Ctrl</kbd> + <kbd>K</kbd>（Mac 是 <kbd>Cmd</kbd> + <kbd>K</kbd>）叫出快速搜尋，直接打你要的東西。</div>
+      <figure class="shot">
+        <img src="assets/screenshots/ch13/01_profile_theme.png" alt="個人資料頁的主題選擇" />
+        <figcaption><strong>圖 13-1</strong>個人資料 → 一般分頁的「使用者偏好」區塊，主題選擇器與 Auto／Light／Dark 都在這裡。</figcaption>
+      </figure>
     </section>
 
     <section id="routes" data-nav="兩條風格路線">
@@ -201,6 +205,10 @@
           <h3>在 HACS 裡下載主題</h3>
           <p>打開 HACS，用搜尋框找你要的主題名稱，進去按下載。HACS 官方文件寫得很清楚：「任何透過 HACS 下載的主題，都會存放在你的 Home Assistant 設定資料夾底下的 <code>themes/</code> 資料夾裡。」也就是一般人講的 <code>/config/themes/</code>。</p>
           <p>HACS 的分類名稱是「Theme（主題）」。如果你的 HACS 沒看到主題分類，通常是因為系統還沒啟用主題功能，做完下一步就會出現。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch13/02_hacs_themes.png" alt="HACS 主題商店" />
+            <figcaption><strong>圖 13-2</strong>HACS → Themes 分類，社群主題會依下載數、星星數、更新時間排序。</figcaption>
+          </figure>
         </li>
         <li>
           <h3>在 configuration.yaml 加三行</h3>
@@ -221,6 +229,10 @@
           <pre class="code-block"><code>action: frontend.reload_themes</code></pre>
           <p>官方對它的描述是「從你的 configuration.yaml 重新載入主題設定」，不需要重啟。文件另外提醒：如果你目前用的主題在重新載入後不存在了，系統會退回標準主題。這個動作只有管理員能執行。</p>
           <p><strong>設定 → 工具 → YAML</strong> 這個分頁本身也能重新載入設定，官方的說法是：「快速重新載入（Quick reload）會重載全部設定，而 YAML 分頁讓你一次只重載某一項設定。」你的版本上如果那份清單裡剛好有主題，按它跟執行上面的動作是同一件事；沒有的話就用動作，不用糾結。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch13/03_reload_themes.png" alt="重新載入主題的位置" />
+            <figcaption><strong>圖 13-3</strong>設定 → 工具 → YAML 分頁，改完主題內容不用重啟，直接在這裡按重新載入即可。</figcaption>
+          </figure>
         </li>
         <li>
           <h3>回個人資料頁套用</h3>

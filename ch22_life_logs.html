@@ -14,11 +14,11 @@
   <meta property="og:title" content="第 22 章 · 生活紀錄與客製儀表板 · Home Assistant 新居入住指南" />
   <meta property="og:description" content="用 Home Assistant 輔助元件做生活紀錄：習慣追蹤、家庭收支、設備保養提醒與留言板，並用統計圖表、條件卡片與 Sections 版面做出客製儀表板。" />
   <meta property="og:url" content="https://woowtech.github.io/Woow_ha_tutorial_site/ch22_life_logs.html" />
-  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch1/03_dashboard.png" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch22/01_helpers.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="第 22 章 · 生活紀錄與客製儀表板 · Home Assistant 新居入住指南" />
   <meta name="twitter:description" content="用 Home Assistant 輔助元件做生活紀錄：習慣追蹤、家庭收支、設備保養提醒與留言板，並用統計圖表、條件卡片與 Sections 版面做出客製儀表板。" />
-  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch1/03_dashboard.png" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch22/01_helpers.png" />
   <meta name="theme-color" content="#6183FC" />
   <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -135,6 +135,11 @@
       <h2 data-icon="concept">五種輔助元件，各自適合記什麼</h2>
 
       <p>建立輔助元件的位置固定在：<strong>設定 → 裝置與服務 → 輔助工具</strong>（Settings → Devices &amp; services → Helpers），右下角<kbd>建立輔助工具</kbd>。以下五種是做紀錄最常用的。</p>
+
+      <figure class="shot">
+        <img src="assets/screenshots/ch22/01_helpers.png" alt="輔助工具頁面" />
+        <figcaption><strong>圖 22-1</strong>設定 → 裝置與服務 → 輔助工具：計數器、輸入布林、數字、日期、下拉等所有 helper 都列在這，右下角是建立入口。</figcaption>
+      </figure>
 
       <table class="data-table">
         <thead>
@@ -526,6 +531,11 @@ mode: single</code></pre>
 
       <p>四張卡片就能覆蓋 90% 的需求，重點是知道它們各自吃什麼資料。</p>
 
+      <figure class="shot">
+        <img src="assets/screenshots/ch22/02_history_chart.png" alt="歷史頁的時間序列圖" />
+        <figcaption><strong>圖 22-2</strong>側欄「歷史」頁能直接把選好的實體畫成時間序列圖，這種樣式也能用 <code>history-graph</code> 卡片直接嵌到儀表板。</figcaption>
+      </figure>
+
       <table class="data-table">
         <thead>
           <tr><th>卡片</th><th>看什麼</th><th>資料來源</th><th>常用參數</th></tr>
@@ -670,6 +680,11 @@ entities:
       <h2 data-icon="tabs">客製儀表板：把紀錄排成你想看的樣子</h2>
 
       <p>資料都有了，接下來是排版。新建的儀表板檢視預設就是 <strong>Sections（區塊）</strong> 版面，這也是目前最好用的排法。</p>
+
+      <figure class="shot">
+        <img src="assets/screenshots/ch22/03_dashboard.png" alt="Sections 版面的儀表板" />
+        <figcaption><strong>圖 22-3</strong>首頁儀表板：Sections 版面把 Favorites、房間、Summaries（更新／裝置探索／燈光／溫度／安全）自然分成幾塊，這正是紀錄卡片最適合的排法。</figcaption>
+      </figure>
 
       <h3>Sections 版面怎麼想</h3>
 

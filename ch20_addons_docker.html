@@ -14,11 +14,11 @@
   <meta property="og:title" content="第 20 章 · Add-on 與 Docker 架構 · Home Assistant 新居入住指南" />
   <meta property="og:description" content="Home Assistant Add-on 與 Docker 架構教學：四種安裝方式的差別、Supervisor 的角色、必裝附加元件巡禮、備份自動上傳雲端，以及容器核心觀念白話版。" />
   <meta property="og:url" content="https://woowtech.github.io/Woow_ha_tutorial_site/ch20_addons_docker.html" />
-  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch1/03_dashboard.png" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch20/02_supervisor_dashboard.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="第 20 章 · Add-on 與 Docker 架構 · Home Assistant 新居入住指南" />
   <meta name="twitter:description" content="Home Assistant Add-on 與 Docker 架構教學：四種安裝方式的差別、Supervisor 的角色、必裝附加元件巡禮、備份自動上傳雲端，以及容器核心觀念白話版。" />
-  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch1/03_dashboard.png" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch20/02_supervisor_dashboard.png" />
   <meta name="theme-color" content="#6183FC" />
   <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -263,6 +263,14 @@
         <li>
           <h3>打開商店</h3>
           <p>左下角<strong>設定</strong> → 找到 <strong>Apps</strong>（2026.2 之前叫 <strong>Add-ons</strong>）。進去之後按<strong>安裝 App（Install app）</strong>按鈕，就會看到整排可以裝的東西。舊版上這顆按鈕寫的是「ADD-ON STORE」。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch20/02_supervisor_dashboard.png" alt="Apps 首頁：已裝的 Add-on" />
+            <figcaption><strong>圖 20-1</strong>Apps 首頁（Supervisor）：已經裝過的 Add-on 都列在這，右下角的「Add-on store」是進商店的入口。</figcaption>
+          </figure>
+          <figure class="shot">
+            <img src="assets/screenshots/ch20/01_addon_store.png" alt="Add-on 商店" />
+            <figcaption><strong>圖 20-2</strong>Add-on store：分成 Local apps（自建）／Official apps（官方）／社群 repository。</figcaption>
+          </figure>
         </li>
         <li>
           <h3>找到「File editor」並安裝</h3>
@@ -581,6 +589,10 @@
         <li>
           <h3>更新之後起不來了</h3>
           <p>先看記錄檔最後幾行，作者常常會直接寫「這版設定格式改了，請把某某選項改成某某」。如果看不懂，最快的路是<strong>用更新前的備份還原</strong>（第 9 章）—— 這就是為什麼「更新前先備份」那個開關要打開。另外去<strong>設定 → 系統 → 修復（Repairs）</strong>看看，重大變更常常會在那裡留一張說明卡。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch20/03_system_health.png" alt="設定 → 修復 頁面" />
+            <figcaption><strong>圖 20-3</strong>設定 → 修復（Repairs）：整合異常、統計錯誤、重大版本變更都會列在這，沒問題時會顯示 no repairs pending。</figcaption>
+          </figure>
         </li>
         <li>
           <h3>磁碟空間不足</h3>

@@ -14,11 +14,11 @@
   <meta property="og:title" content="第 16 章 · 待辦清單與行事曆 · Home Assistant 新居入住指南" />
   <meta property="og:description" content="Home Assistant 待辦清單與行事曆教學：Local To-do 與購物清單、本地行事曆與 Google 行事曆串接、儀表板卡片，以及用行事曆事件觸發自動化。" />
   <meta property="og:url" content="https://woowtech.github.io/Woow_ha_tutorial_site/ch16_todo_calendar.html" />
-  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch1/03_dashboard.png" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch16/03_add_local_todo.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="第 16 章 · 待辦清單與行事曆 · Home Assistant 新居入住指南" />
   <meta name="twitter:description" content="Home Assistant 待辦清單與行事曆教學：Local To-do 與購物清單、本地行事曆與 Google 行事曆串接、儀表板卡片，以及用行事曆事件觸發自動化。" />
-  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch1/03_dashboard.png" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch16/03_add_local_todo.png" />
   <meta name="theme-color" content="#6183FC" />
   <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -150,6 +150,10 @@
         <li>
           <h3>新增整合</h3>
           <p>右下角的 <strong>「+ 新增整合」</strong>按鈕按下去，在搜尋框打「Local」或「待辦」，選 <strong>Local to-do</strong>（本地待辦清單）。這個整合是 Home Assistant 2023.11 加進來的，版本太舊會找不到。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch16/03_add_local_todo.png" alt="從整合頁新增 Local To-do" />
+            <figcaption><strong>圖 16-1</strong>設定 → 裝置與服務 → 右下角「新增整合」，搜尋 Local To-do 即可。</figcaption>
+          </figure>
         </li>
         <li>
           <h3>只要填一個欄位：清單名稱</h3>
@@ -162,6 +166,10 @@
         <li>
           <h3>去側欄找「待辦清單」面板</h3>
           <p>建好之後，HA 左邊側欄會出現一個<strong>待辦清單</strong>的專屬面板。點進去就能直接打字新增項目、打勾完成、設到期日。這個面板是 HA 內建的，不用你自己做儀表板。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch16/01_todo_panel.png" alt="待辦清單面板" />
+            <figcaption><strong>圖 16-2</strong>側欄的「待辦清單」面板：左欄列出所有清單，右邊直接打字新增項目、打勾完成。</figcaption>
+          </figure>
         </li>
         <li>
           <h3>確認實體 ID</h3>
@@ -341,6 +349,10 @@ actions:
         <li>
           <h3>去側欄的「行事曆」面板加事件</h3>
           <p>建好之後左邊側欄會有<strong>行事曆</strong>面板。點某一天就能新增事件，可以設全天事件、設起訖時間，也可以設<strong>重複</strong>（每週、每月之類）。倒垃圾這種每週固定的，就設成重複事件，設一次用一整年。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch16/02_calendar_panel.png" alt="行事曆面板" />
+            <figcaption><strong>圖 16-3</strong>側欄的「行事曆」面板：左欄勾選要顯示哪些行事曆，右邊點某一天即可新增／編輯事件。</figcaption>
+          </figure>
         </li>
         <li>
           <h3>確認實體 ID 與狀態</h3>

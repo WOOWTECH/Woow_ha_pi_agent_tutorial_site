@@ -14,11 +14,11 @@
   <meta property="og:title" content="第 18 章 · 歷史數據、Recorder 與資料導出 · Home Assistant 新居入住指南" />
   <meta property="og:description" content="Home Assistant 歷史數據教學：History 與 Logbook 的差別、Recorder 保留天數與排除設定、長期統計、下載 CSV，以及 MariaDB 與 InfluxDB Grafana 進階做法。" />
   <meta property="og:url" content="https://woowtech.github.io/Woow_ha_tutorial_site/ch18_history_data.html" />
-  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch1/03_dashboard.png" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch18/01_history.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="第 18 章 · 歷史數據、Recorder 與資料導出 · Home Assistant 新居入住指南" />
   <meta name="twitter:description" content="Home Assistant 歷史數據教學：History 與 Logbook 的差別、Recorder 保留天數與排除設定、長期統計、下載 CSV，以及 MariaDB 與 InfluxDB Grafana 進階做法。" />
-  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch1/03_dashboard.png" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch18/01_history.png" />
   <meta name="theme-color" content="#6183FC" />
   <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -280,6 +280,10 @@
         <li>
           <h3>按右上角的「下載資料（Download data）」</h3>
           <p>按鈕就在頁面右上角，英文介面寫 <strong>Download data</strong>，中文介面是「下載資料」之類的字樣。按下去瀏覽器就直接存一個 CSV 檔到你的下載資料夾，不會跳出什麼設定視窗。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch18/01_history.png" alt="歷史頁的下載入口" />
+            <figcaption><strong>圖 18-1</strong>側欄的「歷史（History）」頁：先在左側「Add target」加入區域／裝置／實體，右上角就會出現「下載資料」鍵。</figcaption>
+          </figure>
         </li>
         <li>
           <h3>丟進試算表</h3>
@@ -306,6 +310,11 @@
       </table>
 
       <div class="callout warn"><strong>注意：</strong>官方釋出說明只提到活動頁多了「清空並重置」這個動作，沒有細講它到底清掉什麼，按之前務必看清楚畫面上的確認提示。想清資料庫請優先用本章後面講的 <code>recorder.purge</code>，那條路你會很清楚自己刪掉了哪些東西。</div>
+
+      <figure class="shot">
+        <img src="assets/screenshots/ch18/02_logbook.png" alt="活動頁的事件流水帳" />
+        <figcaption><strong>圖 18-2</strong>側欄的「活動（Logbook）」頁：文字化的事件流水，包含誰、什麼時候、觸發了什麼。</figcaption>
+      </figure>
     </section>
 
     <section id="dev_statistics" data-nav="統計除錯頁">
@@ -314,6 +323,11 @@
       <p>從側欄進 <strong>設定 → 工具（Tools）</strong>，裡面有好幾個分頁：YAML、狀態（States）、動作（Actions）、範本（Template）、事件（Events）、<strong>統計（Statistics）</strong>、Assist。</p>
 
       <div class="callout warn"><strong>注意：</strong>這個頁面改過兩次名字跟位置。它本來叫「開發者工具（Developer tools）」，而且直接掛在側欄上；Home Assistant 2026.2 把它搬進<strong>設定</strong>底下，2026.8 又把名字縮短成<strong>工具（Tools）</strong>。所以網路上舊教學叫你「點側欄的開發者工具」時，現在要走 設定 → 工具。內容完全一樣，只是搬家加改名。</div>
+
+      <figure class="shot">
+        <img src="assets/screenshots/ch18/03_statistics.png" alt="工具下的統計分頁" />
+        <figcaption><strong>圖 18-3</strong>設定 → 工具 → 統計：有問題的長期統計實體會直接列出來，每一列右邊都有「Fix issue」連結。</figcaption>
+      </figure>
 
       <p>統計這一頁只做兩件事，但兩件都很關鍵。</p>
 

@@ -14,11 +14,11 @@
   <meta property="og:title" content="第 14 章 · 整合服務串接 Integrations · Home Assistant 新居入住指南" />
   <meta property="og:description" content="Home Assistant 整合（Integration）教學：新增整合的完整流程、天氣與音樂與定位與行事曆等雲端服務串接、本地整合與雲端整合的取捨，以及診斷與移除。" />
   <meta property="og:url" content="https://woowtech.github.io/Woow_ha_tutorial_site/ch14_integrations.html" />
-  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch1/03_dashboard.png" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch14/03_devices.png" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="第 14 章 · 整合服務串接 Integrations · Home Assistant 新居入住指南" />
   <meta name="twitter:description" content="Home Assistant 整合（Integration）教學：新增整合的完整流程、天氣與音樂與定位與行事曆等雲端服務串接、本地整合與雲端整合的取捨，以及診斷與移除。" />
-  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch1/03_dashboard.png" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch14/03_devices.png" />
   <meta name="theme-color" content="#6183FC" />
   <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -128,6 +128,16 @@
 
       <div class="callout warn"><strong>注意：</strong>不是每個整合都會生出裝置。像「Workday（工作日）」這種純資訊型的整合，設定完只會多出實體（一個判斷今天上不上班的 <code>binary_sensor</code>，加一個 <code>calendar</code>），裝置頁完全找不到它——因為它背後根本沒有一台機器。這不是壞掉，是正常的，要去實體列表找。</div>
 
+      <figure class="shot">
+        <img src="assets/screenshots/ch14/03_devices.png" alt="裝置頁面" />
+        <figcaption><strong>圖 14-3</strong>裝置頁：整合底下每一台實體或邏輯裝置都列在這，附區域、整合、廠牌、型號欄位可排序。</figcaption>
+      </figure>
+
+      <figure class="shot">
+        <img src="assets/screenshots/ch14/04_entities.png" alt="實體頁面" />
+        <figcaption><strong>圖 14-4</strong>實體頁：一個裝置底下的多個實體，實體 ID、區域、平台都能過濾——寫自動化前先來這裡確認名稱。</figcaption>
+      </figure>
+
       <h3>Config Flow 是什麼？為什麼你不用改 YAML 了</h3>
       <p>早年加整合要手動編輯 <code>configuration.yaml</code>，打錯一個縮排整個 HA 起不來。現在絕大多數整合都改用 <strong>Config Flow（設定流程）</strong>：整合自己定義好「要問使用者哪幾個問題」，HA 就把它渲染成一頁一頁的視窗，你照著填、按下一步就好，填完的結果存成一筆 <strong>Config Entry（設定項）</strong>。</p>
       <p>Config Flow 有好幾種觸發方式，看懂了你就知道畫面為什麼會自己跳出來：</p>
@@ -174,10 +184,18 @@
         <li>
           <h3>打開整合頁</h3>
           <p>左側欄 <strong>設定（Settings）→ 裝置與服務（Devices &amp; services）</strong>。這頁上方有幾個分頁：整合、裝置、實體、助手（Helpers）。預設停在「整合」。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch14/01_integrations_dashboard.png" alt="整合頁面總覽" />
+            <figcaption><strong>圖 14-1</strong>整合頁上方分頁：整合／裝置／實體／助手。右下角的「新增整合」是主要入口。</figcaption>
+          </figure>
         </li>
         <li>
           <h3>先看「已探索」區塊</h3>
           <p>如果頁面最上面有「已探索（Discovered）」的卡片，那是 HA 自己在你網路上聞到的設備。這裡出現的東西按一下「新增」通常兩三步就完成，比自己搜尋快很多。先看這裡，沒有再往下走。</p>
+          <figure class="shot">
+            <img src="assets/screenshots/ch14/02_integrations_discovered.png" alt="已探索的整合卡片" />
+            <figcaption><strong>圖 14-2</strong>「已探索」卡片：HA 透過 mDNS／SSDP／DHCP／藍牙自己聞到的裝置，按 Add 就直接進入設定流程。</figcaption>
+          </figure>
         </li>
         <li>
           <h3>按右下角的「新增整合」</h3>
