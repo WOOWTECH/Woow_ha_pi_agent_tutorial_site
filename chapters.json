@@ -68,7 +68,7 @@
       "title": "儀表板",
       "pagerTitle": "06 · 儀表板",
       "card": "把最常用的燈、窗簾、冷氣拉到首頁，家人一打開就會用。",
-      "description": "Home Assistant 儀表板編輯教學：新增卡片、多分頁配置、四種 View Type 怎麼選，以及讓家人一打開就會用的排版訣竊。"
+      "description": "Home Assistant 儀表板編輯教學：新增卡片、多分頁配置、四種 View Type 怎麼選，以及讓家人一打開就會用的排版訣竅。"
     },
     {
       "file": "ch7_notifications.html",
@@ -200,7 +200,7 @@
       "steps": "排出「首頁」",
       "tabs": "多分頁與檢視",
       "viewtypes": "四種檢視類型",
-      "tips": "3 個小訣竊",
+      "tips": "3 個小訣竅",
       "faq": "常見問題",
       "troubleshoot": "常見卡關"
     },

@@ -4,6 +4,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>第 9 章 · 備份 · Home Assistant 新居入住指南</title>
+  <meta name="description" content="Home Assistant 備份教學：手動建立備份、開啟自動備份排程、備份該存哪裡，以及兩種還原情境的操作步驟。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_tutorial_site/ch9_backups.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Home Assistant 新居入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 9 章 · 備份 · Home Assistant 新居入住指南" />
+  <meta property="og:description" content="Home Assistant 備份教學：手動建立備份、開啟自動備份排程、備份該存哪裡，以及兩種還原情境的操作步驟。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_tutorial_site/ch9_backups.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch9/01_step.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 9 章 · 備份 · Home Assistant 新居入住指南" />
+  <meta name="twitter:description" content="Home Assistant 備份教學：手動建立備份、開啟自動備份排程、備份該存哪裡，以及兩種還原情境的操作步驟。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch9/01_step.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
@@ -55,7 +72,7 @@
       <p class="lead">SD 卡損壞、更新失敗、誤刪整合都可能一次歸零。這一章教你 3 分鐘設定自動備份，讓你之後可以放心亂試。</p>
     </div>
 
-    <section id="why">
+    <section id="why" data-nav="為什麼要學這個">
       <h2 data-icon="why">為什麼要學這個</h2>
       <p>「沒設備份」是 HA 社群公認的<strong>新手第一大血淚教訓</strong>。Reddit 的 r/homeassistant 幾乎每週都有人發文哭訴：SD 卡壞了、更新後起不來、誤刪 Zigbee 整合結果整個 Zigbee 網要重配對。</p>
       <p>這些痛苦全部都可以用一句話解決：<strong>只要有前一天的備份，還原一下就好</strong>。</p>
@@ -67,7 +84,7 @@
       <p>建議先看完<a href="ch2_system_settings.html">第 2 章的系統設定</a>——先確定基本設定對了再備份會比較乾淨，還原的時候也比較不會帶回一堆奇怪的舊值。</p>
     </section>
 
-    <section id="what">
+    <section id="what" data-nav="備份包含什麼">
       <h2 data-icon="what">備份包含什麼</h2>
       <p>HA 的完整備份是一份 <code>.tar</code> 壓縮檔，展開後主要有兩塊：</p>
       <ul>
@@ -90,7 +107,7 @@
       <div class="callout warn"><strong>不包含：</strong>媒體庫（<code>media/</code>，例如攝影機錄影、TTS 語音檔）預設會被排除，因為通常很大。歷史資料（Recorder DB）預設<em>會</em>備份，但可以在建立時取消勾選以縮小檔案。</div>
     </section>
 
-    <section id="steps">
+    <section id="steps" data-nav="手動建立備份">
       <h2 data-icon="steps">手動建立第一份備份</h2>
       <ol class="steps">
         <li>
@@ -129,7 +146,7 @@
       <div class="callout tip"><strong>驗證：</strong>備份完成後，「設定 → 系統 → 備份」列表會多一筆，時間戳為現在。點下載到電腦一次做為離機備份。</div>
     </section>
 
-    <section id="auto">
+    <section id="auto" data-nav="自動備份排程">
       <h2 data-icon="auto">開啟自動備份排程</h2>
       <p>HA OS 2024.10 之後內建了完整的自動備份排程功能，不再需要裝額外的自動備份 add-on。</p>
       <p>到「設定 → 系統 → 備份 → 自動備份（右上角）」，可以設定：</p>
@@ -149,7 +166,7 @@
       <div class="callout"><strong>推薦組合：</strong>每天凌晨備份到 NAS + 每週備份上 Google Drive。前者救日常誤操作，後者救整台主機損毀。</div>
     </section>
 
-    <section id="restore">
+    <section id="restore" data-nav="還原備份">
       <h2 data-icon="restore">還原備份的兩種情境</h2>
       <p><strong>情境 1：在同一台 HA 選擇性還原某項</strong></p>
       <p>誤刪了某個自動化、或某個整合被搞壞。到「設定 → 系統 → 備份 → 選一份備份 → 還原」，可以勾選<em>只還原這一部分</em>（例如只還原 Zigbee2MQTT 的配置、其他不動）。這是最常見的救火場景。</p>
@@ -158,7 +175,7 @@
       <div class="callout warn"><strong>提醒：</strong>還原後，<a href="ch5_users.html">第 5 章</a>設定的使用者密碼可能會失效（依 HA 版本而定），請準備好管理員的密碼或 SSH 進去重設。第一次登入還原後的系統，建議先讓每個家人測試一次登入。</div>
     </section>
 
-    <section id="location">
+    <section id="location" data-nav="備份存哪裡">
       <h2 data-icon="location">備份存哪裡（重要）</h2>
       <p>HA OS 預設把備份存在主機的 <code>/backup</code> 目錄。這個目錄跟你的 HA 本體<strong>在同一顆 SD 卡 / 同一個硬碟上</strong>。</p>
       <div class="callout danger"><strong>致命誤區：</strong>只備份到本機的 <code>/backup</code>，等於沒備份。SD 卡一壞、硬碟一掛，備份跟本體一起沒了。</div>
@@ -171,7 +188,7 @@
       <p>3-2-1 備份守則：<em>3 份備份，2 種媒體，1 份離站</em>。用在 HA 上就是「本機 + NAS + 雲端」。</p>
     </section>
 
-    <section id="troubleshoot">
+    <section id="troubleshoot" data-nav="常見問題排除">
       <h2 data-icon="troubleshoot">常見問題排除</h2>
       <p><strong>問題 1：備份檔案太大。</strong></p>
       <p>檢查「開發者工具 → 統計」，看 Recorder 資料庫多大。可以縮短保留天數（<code>recorder.purge_keep_days</code>，預設 10 天）或排除高頻感應器（如電力儀、CPU 溫度）。媒體庫確認沒被勾進去。</p>
@@ -181,7 +198,7 @@
       <p>這就是為什麼要有離機備份。如果連上一份可用備份都沒有，只能從零重建。這也是為什麼強烈建議用 <strong>SSD + USB 轉接</strong>取代 SD 卡跑 HA OS，可用性差很多。</p>
     </section>
 
-    <section id="faq">
+    <section id="faq" data-nav="常見問題">
       <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>備份密碼忘了怎麼辦？</summary>
@@ -211,6 +228,11 @@
         <span class="title">10 · 腳本 Scripts</span>
       </a>
     </div>
+
+    <footer class="site-footer">
+      <p>《Home Assistant 新居入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
   </main>
 </div>
 <script src="assets/js/toc.js"></script>

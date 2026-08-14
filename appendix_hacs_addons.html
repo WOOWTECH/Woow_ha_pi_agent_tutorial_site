@@ -3,7 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>附錄 · 生態圈：HACS、附加元件與遠端連線 · Home Assistant 新居入住指南</title>
+  <title>附錄 A · 生態圈：HACS、Add-ons、遠端連線 · Home Assistant 新居入住指南</title>
+  <meta name="description" content="Home Assistant 生態圈：官方 Add-on 商店、HACS 社群套件商店，以及 Nabu Casa、DDNS、VPN、Cloudflare Tunnel 四種遠端連線方案的比較。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_tutorial_site/appendix_hacs_addons.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Home Assistant 新居入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="附錄 A · 生態圈：HACS、Add-ons、遠端連線 · Home Assistant 新居入住指南" />
+  <meta property="og:description" content="Home Assistant 生態圈：官方 Add-on 商店、HACS 社群套件商店，以及 Nabu Casa、DDNS、VPN、Cloudflare Tunnel 四種遠端連線方案的比較。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_tutorial_site/appendix_hacs_addons.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch1/03_dashboard.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="附錄 A · 生態圈：HACS、Add-ons、遠端連線 · Home Assistant 新居入住指南" />
+  <meta name="twitter:description" content="Home Assistant 生態圈：官方 Add-on 商店、HACS 社群套件商店，以及 Nabu Casa、DDNS、VPN、Cloudflare Tunnel 四種遠端連線方案的比較。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch1/03_dashboard.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
@@ -39,7 +56,8 @@
     </div>
     <div class="toc-in-chapter">
       <h2>附錄</h2>
-      <a href="appendix_hacs_addons.html" class="active">生態圈：HACS/Add-ons/遠端</a>
+      <a href="appendix_hacs_addons.html" class="active">A · 生態圈：HACS/Add-ons/遠端</a>
+      <a href="appendix_scenes_helpers_groups.html">B · 場景/輔助元件/群組</a>
     </div>
   </aside>
 
@@ -50,7 +68,7 @@
       <p class="lead">這三個題目不屬於「從零到能用」的必修課，但幾乎每個 HA 玩家最後都會碰到。這裡給你一份可以按需要跳讀的地圖。</p>
     </div>
 
-    <section id="addons">
+    <section id="addons" data-nav="官方附加元件商店">
       <h2 data-icon="addons">官方附加元件商店（Add-on Store）</h2>
       <p>附加元件（Add-on）是跑在 HA OS 上的<strong>獨立容器程式</strong>，可以想成 HA 主機順便幫你開的一台小伺服器。<em>只有 HA OS 和 HA Supervised 有 Add-on Store</em>，HA Container / HA Core 沒有。</p>
       <p>路徑：「設定 → 附加元件 → 附加元件商店」。</p>
@@ -74,7 +92,7 @@
       <div class="callout tip"><strong>建議做法：</strong>先確定你有明確需求再裝。每裝一個 add-on 就多一份要維護、要更新、要占資源的服務。</div>
     </section>
 
-    <section id="hacs">
+    <section id="hacs" data-nav="HACS 社群商店">
       <h2 data-icon="hacs">HACS（Home Assistant Community Store）</h2>
       <p>HACS 是<strong>社群維護</strong>的第三方套件商店，跟官方 Add-on Store 是<em>兩件不同的事</em>：</p>
       <ul>
@@ -98,7 +116,7 @@
       <div class="callout warn"><strong>提醒：</strong>HACS 套件是<em>無審核</em>的第三方程式碼，選 star 數多、最近有更新（3 個月內）的作者。不要一次裝一大堆，HA 更新時容易一起壞。</div>
     </section>
 
-    <section id="remote">
+    <section id="remote" data-nav="遠端連線四條路">
       <h2 data-icon="remote">遠端連線的四條路</h2>
       <p>在家連 HA 用區網 IP 就夠了，但一旦出門想遠端看攝影機、關燈、收通知，就需要外網連線。有四種主流方案：</p>
       <table style="width:100%; border-collapse:collapse; margin:16px 0;">
@@ -152,7 +170,7 @@
       <p><strong>4. Cloudflare Tunnel</strong>——Cloudflare 幫你在 HA 和它的 CDN 之間建立一條加密隧道，你不用有公網 IP、不用開路由器 port，Cloudflare 會提供一個網址讓你連進來。適合家裡是電信業者 CGNAT（沒公網 IP）的環境，還能順便用 Cloudflare 的 WAF 防護。</p>
     </section>
 
-    <section id="warning">
+    <section id="warning" data-nav="資安警告">
       <h2 data-icon="warning">資安警告</h2>
       <div class="callout danger">
         <strong>絕對不要</strong>直接把 HA 的 8123 port 轉發（port forward）到公網、也不套用 HTTPS 憑證。
@@ -172,6 +190,11 @@
         <span class="title">B · 場景/輔助元件/群組</span>
       </a>
     </div>
+
+    <footer class="site-footer">
+      <p>《Home Assistant 新居入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
   </main>
 </div>
 <script src="assets/js/toc.js"></script>

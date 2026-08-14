@@ -4,6 +4,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>第 10 章 · 腳本 Scripts · Home Assistant 新居入住指南</title>
+  <meta name="description" content="Home Assistant Script 腳本教學：與自動化的差別、Fields 參數化、Single/Restart/Queued/Parallel 執行模式，以及四種呼叫腳本的入口。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_tutorial_site/ch10_scripts.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Home Assistant 新居入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 10 章 · 腳本 Scripts · Home Assistant 新居入住指南" />
+  <meta property="og:description" content="Home Assistant Script 腳本教學：與自動化的差別、Fields 參數化、Single/Restart/Queued/Parallel 執行模式，以及四種呼叫腳本的入口。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_tutorial_site/ch10_scripts.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch10/01_scripts_page.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 10 章 · 腳本 Scripts · Home Assistant 新居入住指南" />
+  <meta name="twitter:description" content="Home Assistant Script 腳本教學：與自動化的差別、Fields 參數化、Single/Restart/Queued/Parallel 執行模式，以及四種呼叫腳本的入口。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch10/01_scripts_page.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
@@ -56,7 +73,7 @@
       <p class="lead">把「一連串動作」打包起來取名字。之後自動化、按鈕、語音都能一句話喚起它。第 8 章的自動化是「一個獨立完整運作的東西」；腳本則是「一段被叫的動作」。</p>
     </div>
 
-    <section id="why">
+    <section id="why" data-nav="為什麼需要腳本">
       <h2 data-icon="why">為什麼需要腳本</h2>
       <p>當你發現自己在很多個自動化裡重複貼同一段動作，例如：</p>
       <ul>
@@ -74,7 +91,7 @@
       <p>之後你想改「出門要不要順便關飲水機」，只改腳本這一個地方，四個入口全部同步。<strong>這就是把邏輯集中的價值。</strong></p>
     </section>
 
-    <section id="vs">
+    <section id="vs" data-nav="腳本 vs 自動化 vs 場景">
       <h2 data-icon="concept">腳本 vs 自動化 vs 場景</h2>
       <p>三個名詞新手常混淆，先分清楚：</p>
       <ul>
@@ -91,7 +108,7 @@
       場景常被腳本「呼叫」— 場景是磚塊，腳本是砌牆的方法。</div>
     </section>
 
-    <section id="steps">
+    <section id="steps" data-nav="動手做：第一個腳本">
       <h2 data-icon="steps">動手做：第一個腳本「離家模式」</h2>
       <ol class="steps">
         <li>
@@ -138,7 +155,7 @@
       </ol>
     </section>
 
-    <section id="fields">
+    <section id="fields" data-nav="加參數（Fields）">
       <h2 data-icon="steps">加參數（Fields）— 讓腳本可被客製</h2>
       <p>剛才的腳本寫死了「30 秒延遲」，如果晚上想 60 秒、白天想 15 秒怎麼辦？加一個 <strong>Field（欄位）</strong>：</p>
       <ol class="steps">
@@ -170,7 +187,7 @@
       <div class="callout"><strong>常用 selector：</strong> <code>number</code>（數字）、<code>text</code>（文字）、<code>boolean</code>（開關）、<code>entity</code>（選實體）、<code>area</code>（選區域）、<code>time</code>（選時間）。有 selector UI 就會渲染成對應元件，比純文字友善。</div>
     </section>
 
-    <section id="modes">
+    <section id="modes" data-nav="執行模式">
       <h2 data-icon="steps">執行模式 Single / Restart / Queued / Parallel</h2>
       <p>當腳本正在跑，又被叫一次會怎樣？這由「模式」決定，跟自動化一樣：</p>
       <table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:14px;">
@@ -207,7 +224,7 @@
       <div class="callout warn"><strong>坑：</strong>離家腳本如果留 <code>single</code>，你在門口不小心連按兩下按鈕，第二次會被丟掉（正確）；但如果是「客廳燈慢慢淡出」的腳本用 <code>single</code>，你按第二次想「再淡一次」就不會動。這種場景改成 <code>restart</code>。</div>
     </section>
 
-    <section id="patterns">
+    <section id="patterns" data-nav="實用範例集">
       <h2 data-icon="tips">實用範例集</h2>
 
       <h3>1. 睡覺淡出（restart 模式）</h3>
@@ -287,7 +304,7 @@ sequence:
       <p><strong>差別</strong>：用 <code>script.turn_on</code> 呼叫是「發射後不管」，主腳本繼續往下跑；直接寫 <code>service: script.其他腳本</code>（不加 turn_on）則是「等它跑完再繼續」。想同步等就用後者。</p>
     </section>
 
-    <section id="call">
+    <section id="call" data-nav="如何呼叫腳本">
       <h2 data-icon="steps">如何呼叫腳本（4 種入口）</h2>
       <ol class="steps">
         <li>
@@ -309,7 +326,7 @@ sequence:
       </ol>
     </section>
 
-    <section id="troubleshoot">
+    <section id="troubleshoot" data-nav="常見卡關">
       <h2 data-icon="advanced">常見卡關</h2>
       <details class="faq">
         <summary>腳本執行到一半停住不繼續？</summary>
@@ -335,7 +352,7 @@ sequence:
       </details>
     </section>
 
-    <section id="faq">
+    <section id="faq" data-nav="常見問題">
       <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>腳本可以自己觸發嗎？</summary>
@@ -365,6 +382,11 @@ sequence:
         <span class="title">11 · 裝置詳細設定</span>
       </a>
     </div>
+
+    <footer class="site-footer">
+      <p>《Home Assistant 新居入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
   </main>
 </div>
 <script src="assets/js/toc.js"></script>

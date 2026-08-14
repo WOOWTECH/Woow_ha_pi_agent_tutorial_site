@@ -4,6 +4,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>附錄 B · 場景 / 輔助元件 / 群組 · Home Assistant 新居入住指南</title>
+  <meta name="description" content="Home Assistant 進階三件套：Scene 場景、10 種 Helper 輔助元件與 Group 群組的用法與搭配範例，把智慧家庭寫得像小程式。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_tutorial_site/appendix_scenes_helpers_groups.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Home Assistant 新居入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="附錄 B · 場景 / 輔助元件 / 群組 · Home Assistant 新居入住指南" />
+  <meta property="og:description" content="Home Assistant 進階三件套：Scene 場景、10 種 Helper 輔助元件與 Group 群組的用法與搭配範例，把智慧家庭寫得像小程式。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_tutorial_site/appendix_scenes_helpers_groups.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/appx_b/01_scene_create.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="附錄 B · 場景 / 輔助元件 / 群組 · Home Assistant 新居入住指南" />
+  <meta name="twitter:description" content="Home Assistant 進階三件套：Scene 場景、10 種 Helper 輔助元件與 Group 群組的用法與搭配範例，把智慧家庭寫得像小程式。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/appx_b/01_scene_create.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
@@ -54,7 +71,7 @@
     </div>
 
     <!-- ============= SCENES ============= -->
-    <section id="scenes">
+    <section id="scenes" data-nav="場景 Scenes">
       <h2 data-icon="concept">場景 Scenes — 一鍵回到某個狀態</h2>
       <p>場景 = 一組實體的「狀態快照」。呼叫時，所有實體瞬間回到你設定的狀態。</p>
       <h3>建立方式一：從當下狀態錄</h3>
@@ -96,7 +113,7 @@ data:
     </section>
 
     <!-- ============= HELPERS ============= -->
-    <section id="helpers">
+    <section id="helpers" data-nav="輔助元件 Helpers">
       <h2 data-icon="concept">輔助元件 Helpers — 給邏輯一個記憶體</h2>
       <p>Helper 是 HA 內建的「假實體」— 沒有實體硬體，但表現得像實體，有 state、可以被儀表板顯示、可以當觸發/條件。</p>
       <p><strong>為什麼需要？</strong>自動化本身是「無記憶」的：每次觸發都獨立。想要跨自動化共享狀態（例如「訪客模式是開的嗎？」），就需要 helper 當共用變數。</p>
@@ -108,7 +125,7 @@ data:
     </section>
 
     <!-- ============= HELPER TYPES ============= -->
-    <section id="helper_types">
+    <section id="helper_types" data-nav="Helper 類型速查">
       <h2 data-icon="steps">Helper 類型速查</h2>
 
       <h3>1. <code>input_boolean</code> — 開/關</h3>
@@ -171,7 +188,7 @@ data:
     </section>
 
     <!-- ============= GROUPS ============= -->
-    <section id="groups">
+    <section id="groups" data-nav="群組 Groups">
       <h2 data-icon="concept">群組 Groups — 把多個實體綁成一個</h2>
       <p>Group 是把同 domain 的多個實體綁成<em>一個新的實體</em>。這個新實體的狀態是「所有成員的聚合」。</p>
       <h3>常見用途</h3>
@@ -214,7 +231,7 @@ data:
     </section>
 
     <!-- ============= COMBINED ============= -->
-    <section id="combined">
+    <section id="combined" data-nav="三者搭配範例">
       <h2 data-icon="tips">三者搭配範例：智能夜燈系統</h2>
       <p>把場景 + helper + group 三個湊起來，做一個「浴室動作觸發夜燈」的完整系統。需求：</p>
       <ul>
@@ -266,7 +283,7 @@ action:
       <div class="callout tip"><strong>檢視這套設計</strong>：4 個 helper + 1 個群組 + 1 個場景 + 2 條自動化。所有邏輯白話、家人看得懂、要改「延長成 10 分鐘」直接改 timer 預設，不用碰自動化。這就是「用 helper 取代 template」的價值。</div>
     </section>
 
-    <section id="faq">
+    <section id="faq" data-nav="常見問題">
       <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>場景可以動態變化嗎（例如根據時段改亮度）？</summary>
@@ -291,15 +308,20 @@ action:
     </section>
 
     <div class="pager">
-      <a class="prev" href="ch12_domains.html">
-        <span class="label">← 上一章</span>
-        <span class="title">12 · Domain 控制圖鑑</span>
+      <a class="prev" href="appendix_hacs_addons.html">
+        <span class="label">← 附錄 A</span>
+        <span class="title">生態圈：HACS/Add-ons/遠端</span>
       </a>
       <a class="next" href="index.html">
         <span class="label">回目錄 →</span>
         <span class="title">全套完成！</span>
       </a>
     </div>
+
+    <footer class="site-footer">
+      <p>《Home Assistant 新居入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
   </main>
 </div>
 <script src="assets/js/toc.js"></script>

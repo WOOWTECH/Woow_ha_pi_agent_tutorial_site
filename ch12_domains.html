@@ -4,6 +4,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>第 12 章 · Domain 控制圖鑑 · Home Assistant 新居入住指南</title>
+  <meta name="description" content="Home Assistant 各 Domain 控制圖鑑：light、switch、climate、cover、media_player、lock、vacuum、fan、camera、sensor、notify 的常用服務、UI 卡片與常見坑。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_tutorial_site/ch12_domains.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Home Assistant 新居入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 12 章 · Domain 控制圖鑑 · Home Assistant 新居入住指南" />
+  <meta property="og:description" content="Home Assistant 各 Domain 控制圖鑑：light、switch、climate、cover、media_player、lock、vacuum、fan、camera、sensor、notify 的常用服務、UI 卡片與常見坑。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_tutorial_site/ch12_domains.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch12/01_dev_services.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 12 章 · Domain 控制圖鑑 · Home Assistant 新居入住指南" />
+  <meta name="twitter:description" content="Home Assistant 各 Domain 控制圖鑑：light、switch、climate、cover、media_player、lock、vacuum、fan、camera、sensor、notify 的常用服務、UI 卡片與常見坑。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch12/01_dev_services.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
@@ -61,7 +78,7 @@
       <p class="lead">HA 把所有東西按「類別（Domain）」歸類：燈是 <code>light</code>、冷氣是 <code>climate</code>、窗簾是 <code>cover</code>。同一 domain 的所有裝置<em>接受同一套服務</em>，學會一個就會全部。這一章是每個常用 domain 的速查表。</p>
     </div>
 
-    <section id="concept">
+    <section id="concept" data-nav="Domain 是什麼">
       <h2 data-icon="concept">Domain 是什麼？為什麼要理解它</h2>
       <p>每個 entity_id 都長成 <code>domain.name</code>，前面那半就是 domain：</p>
       <ul>
@@ -74,7 +91,7 @@
     </section>
 
     <!-- ================ LIGHT ================ -->
-    <section id="light">
+    <section id="light" data-nav="light · 燈">
       <h2 data-icon="steps"><code>light</code> · 燈</h2>
       <p>可調亮度、色溫、顏色的照明設備。開關型（只有開/關）也可能被歸類到 light，端看整合。</p>
       <h3>常用服務</h3>
@@ -98,7 +115,7 @@
     </section>
 
     <!-- ================ SWITCH ================ -->
-    <section id="switch">
+    <section id="switch" data-nav="switch · 開關">
       <h2 data-icon="steps"><code>switch</code> · 開關 / 智慧插座</h2>
       <p>純粹的通斷電。插座、繼電器、簡單牆壁開關都是這一類。</p>
       <h3>常用服務</h3>
@@ -120,7 +137,7 @@
     </section>
 
     <!-- ================ CLIMATE ================ -->
-    <section id="climate">
+    <section id="climate" data-nav="climate · 冷暖氣">
       <h2 data-icon="steps"><code>climate</code> · 冷暖氣 / 空調 / 恆溫器</h2>
       <h3>常用服務</h3>
       <ul>
@@ -146,7 +163,7 @@
     </section>
 
     <!-- ================ COVER ================ -->
-    <section id="cover">
+    <section id="cover" data-nav="cover · 窗簾/車庫">
       <h2 data-icon="steps"><code>cover</code> · 窗簾 / 車庫門 / 百葉窗</h2>
       <h3>常用服務</h3>
       <ul>
@@ -164,7 +181,7 @@
     </section>
 
     <!-- ================ MEDIA_PLAYER ================ -->
-    <section id="media">
+    <section id="media" data-nav="media_player · 媒體">
       <h2 data-icon="steps"><code>media_player</code> · 電視 / 音響 / 串流盒</h2>
       <h3>常用服務</h3>
       <ul>
@@ -190,7 +207,7 @@
     </section>
 
     <!-- ================ LOCK ================ -->
-    <section id="lock">
+    <section id="lock" data-nav="lock · 智慧鎖">
       <h2 data-icon="steps"><code>lock</code> · 智慧門鎖</h2>
       <h3>常用服務</h3>
       <ul>
@@ -207,7 +224,7 @@
     </section>
 
     <!-- ================ VACUUM ================ -->
-    <section id="vacuum">
+    <section id="vacuum" data-nav="vacuum · 掃地機">
       <h2 data-icon="steps"><code>vacuum</code> · 掃地機器人</h2>
       <h3>常用服務</h3>
       <ul>
@@ -231,7 +248,7 @@
     </section>
 
     <!-- ================ FAN ================ -->
-    <section id="fan">
+    <section id="fan" data-nav="fan · 風扇">
       <h2 data-icon="steps"><code>fan</code> · 電風扇 / 天花板吊扇 / 空氣清淨機</h2>
       <h3>常用服務</h3>
       <ul>
@@ -249,7 +266,7 @@
     </section>
 
     <!-- ================ CAMERA ================ -->
-    <section id="camera">
+    <section id="camera" data-nav="camera · 攝影機">
       <h2 data-icon="steps"><code>camera</code> · 攝影機</h2>
       <h3>常用服務</h3>
       <ul>
@@ -272,7 +289,7 @@
     </section>
 
     <!-- ================ SENSOR ================ -->
-    <section id="sensor">
+    <section id="sensor" data-nav="sensor / binary_sensor">
       <h2 data-icon="steps"><code>sensor</code> / <code>binary_sensor</code> · 感測器</h2>
       <p><code>sensor</code> 是<em>有數值</em>的感測器（溫度 25.3、電量 87%），<code>binary_sensor</code> 是<em>只有兩態</em>的（門開/關、有人/沒人、下雨/沒雨）。</p>
       <h3>它們不接受控制服務</h3>
@@ -296,7 +313,7 @@
     </section>
 
     <!-- ================ NOTIFY ================ -->
-    <section id="notify">
+    <section id="notify" data-nav="notify · 通知">
       <h2 data-icon="steps"><code>notify</code> · 通知</h2>
       <p>第 7 章講過，這裡補充參數細節。</p>
       <h3>Companion App 推播完整參數</h3>
@@ -326,7 +343,7 @@ data:
     </section>
 
     <!-- ================ INPUT ================ -->
-    <section id="input">
+    <section id="input" data-nav="input_* · 輔助元件">
       <h2 data-icon="steps"><code>input_*</code> · 輔助元件 Helpers</h2>
       <p>Helpers 是 HA 內建的「假實體」，讓你在自動化裡有東西可以「翻」— 詳見附錄 B。這裡列 domain 對照：</p>
       <table style="width:100%; border-collapse:collapse; margin:16px 0; font-size:14px;">
@@ -352,7 +369,7 @@ data:
     </section>
 
     <!-- ================ COMMON TOOLS ================ -->
-    <section id="tools">
+    <section id="tools" data-nav="共通工具與心法">
       <h2 data-icon="tips">共通工具與心法</h2>
       <h3>用「開發者工具」試服務</h3>
       <p>設定側邊選單→「開發者工具」→「服務」頁籤。可以選任何服務、填參數、按執行。這是你學新 domain 最快的方式：不用寫自動化，直接試。</p>
@@ -376,6 +393,11 @@ data:
         <span class="title">生態圈：HACS/Add-ons/遠端</span>
       </a>
     </div>
+
+    <footer class="site-footer">
+      <p>《Home Assistant 新居入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
   </main>
 </div>
 <script src="assets/js/toc.js"></script>

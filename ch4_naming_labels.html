@@ -3,7 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>第 4 章 · 命名與標籤</title>
+  <title>第 4 章 · 命名與標籤 · Home Assistant 新居入住指南</title>
+  <meta name="description" content="Home Assistant 實體命名與 entity_id 規劃、Label 標籤與 Category 分類的差別，附可直接照抄的命名範例集。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_tutorial_site/ch4_naming_labels.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Home Assistant 新居入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 4 章 · 命名與標籤 · Home Assistant 新居入住指南" />
+  <meta property="og:description" content="Home Assistant 實體命名與 entity_id 規劃、Label 標籤與 Category 分類的差別，附可直接照抄的命名範例集。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_tutorial_site/ch4_naming_labels.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch4/01_entities_list.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 4 章 · 命名與標籤 · Home Assistant 新居入住指南" />
+  <meta name="twitter:description" content="Home Assistant 實體命名與 entity_id 規劃、Label 標籤與 Category 分類的差別，附可直接照抄的命名範例集。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch4/01_entities_list.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
@@ -37,7 +54,9 @@
       <a href="#rename">重新命名步驟</a>
       <a href="#labels">用標籤分類</a>
       <a href="#done">命名範例集</a>
+      <a href="#categories">Categories 分類</a>
       <a href="#faq">常見問題</a>
+      <a href="#troubleshoot">常見卡關</a>
     </div>
     <div class="toc-in-chapter">
       <h2>附錄</h2>
@@ -53,7 +72,7 @@
       <p class="lead">把 <code>switch.0x00abc123_2</code> 改成「客廳主燈」。改完之後語音助理、儀表板、自動化通通看得懂。再學會「標籤」把同類設備群起來，之後管理省時 10 倍。</p>
     </div>
 
-    <section id="why">
+    <section id="why" data-nav="為什麼要重新命名">
       <h2 data-icon="why">為什麼要重新命名</h2>
       <p>剛配對進來的設備，名字是廠商給的技術代號，例如：</p>
       <ul>
@@ -69,7 +88,7 @@
       <p>解法：全部改成「你會脫口而出的名字」。</p>
     </section>
 
-    <section id="concept">
+    <section id="concept" data-nav="實體 vs. 裝置 vs. 名字">
       <h2 data-icon="concept">先分清楚三個名字</h2>
       <p>HA 有三個層級的名字，容易搞混：</p>
       <ul>
@@ -80,7 +99,7 @@
       <div class="callout"><strong>好習慣：</strong>裝置名稱寫全稱（「客廳吸頂燈」），友善名稱寫短版（「主燈」）— 因為友善名稱前面已經會加上區域，變成「客廳 主燈」剛好。</div>
     </section>
 
-    <section id="rename">
+    <section id="rename" data-nav="重新命名步驟">
       <h2 data-icon="rename">重新命名步驟</h2>
       <ol class="steps">
         <li>
@@ -112,7 +131,7 @@
       <div class="callout"><strong>驗證</strong>：改完後，「開發者工具 → 狀態」搜尋新名字應該找得到；舊 entity_id 應該從清單消失。<strong>警告</strong>：如果這個實體有被自動化用到，改 entity_id 會讓自動化壞掉——第 8 章會講為什麼要一開始就想好命名。</div>
     </section>
 
-    <section id="labels">
+    <section id="labels" data-nav="用標籤分類">
       <h2 data-icon="labels">用標籤（Label）分類</h2>
       <p>區域回答「這個燈在哪裡」，標籤回答「這個燈是哪一類」。例如：</p>
       <ul>
@@ -140,7 +159,7 @@
       </ol>
     </section>
 
-    <section id="done">
+    <section id="done" data-nav="命名範例集">
       <h2 data-icon="done">命名範例集（直接抄）</h2>
       <table style="width:100%; border-collapse: collapse; font-size:14px; margin-top:12px;">
         <thead style="background: var(--surface-alt);">
@@ -161,7 +180,7 @@
       <div class="callout"><strong>下一步</strong>：命名想好了，第 6 章讓你把常用實體拉到儀表板；第 8 章教你用這些名字寫第一個自動化。</div>
     </section>
 
-    <section id="categories">
+    <section id="categories" data-nav="Categories 分類">
       <h2 data-icon="labels">Categories：第四種分類（進階）</h2>
       <p>2024.04 之後 HA 引入了 <strong>Categories</strong>（分類），跟 Labels 常常被搞混，這裡幫你分清楚：</p>
       <table style="width:100%; border-collapse:collapse; margin:12px 0; font-size:14px;">
@@ -181,7 +200,7 @@
       <div class="callout"><strong>一句話：</strong>要在自動化裡用就選 Labels，只是想在後台清單裡收好就選 Categories。</div>
     </section>
 
-    <section id="faq">
+    <section id="faq" data-nav="常見問題">
       <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>改了實體 ID，舊自動化都要重寫嗎？</summary>
@@ -197,7 +216,7 @@
       </details>
     </section>
 
-    <section id="troubleshoot">
+    <section id="troubleshoot" data-nav="常見卡關">
       <h2 data-icon="advanced">常見卡關</h2>
       <details class="faq">
         <summary>改了 entity_id 後某個自動化不動了？</summary>
@@ -223,6 +242,11 @@
         <span class="title">05 · 用戶管理</span>
       </a>
     </div>
+
+    <footer class="site-footer">
+      <p>《Home Assistant 新居入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
   </main>
 </div>
 <script src="assets/js/toc.js"></script>

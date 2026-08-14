@@ -4,6 +4,23 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>第 8 章 · 第一個自動化 · Home Assistant 新居入住指南</title>
+  <meta name="description" content="用觸發／條件／動作三段式寫出第一個 Home Assistant 自動化「日落開燈」，並解釋為什麼要避開 device_id、改用 entity_id，附執行模式與 Blueprint 說明。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://woowtech.github.io/Woow_ha_tutorial_site/ch8_first_automation.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Home Assistant 新居入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="第 8 章 · 第一個自動化 · Home Assistant 新居入住指南" />
+  <meta property="og:description" content="用觸發／條件／動作三段式寫出第一個 Home Assistant 自動化「日落開燈」，並解釋為什麼要避開 device_id、改用 entity_id，附執行模式與 Blueprint 說明。" />
+  <meta property="og:url" content="https://woowtech.github.io/Woow_ha_tutorial_site/ch8_first_automation.html" />
+  <meta property="og:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch8/01_step.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="第 8 章 · 第一個自動化 · Home Assistant 新居入住指南" />
+  <meta name="twitter:description" content="用觸發／條件／動作三段式寫出第一個 Home Assistant 自動化「日落開燈」，並解釋為什麼要避開 device_id、改用 entity_id，附執行模式與 Blueprint 說明。" />
+  <meta name="twitter:image" content="https://woowtech.github.io/Woow_ha_tutorial_site/assets/screenshots/ch8/01_step.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
@@ -55,7 +72,7 @@
       <p class="lead">前面 7 章把家的架構、命名、儀表板、通知都設好了。這一章帶你寫下第一個自動化，讓 HA 真的動起來。</p>
     </div>
 
-    <section id="why">
+    <section id="why" data-nav="為什麼要學這個">
       <h2 data-icon="why">為什麼要學這個</h2>
       <p>自動化（Automation）是 HA 的核心，也是它跟一般智慧插座 App 最大的差別。</p>
       <p>如果只把 HA 當成「一個能遠端開關燈的網頁」，那它其實不比小米 / Google Home 好用。真正讓 HA 值得裝的，是它能夠：</p>
@@ -67,7 +84,7 @@
       <p>不寫自動化，HA 只是一台比較貴的遙控器。從這一章開始，我們讓它變成家裡的自動管家。</p>
     </section>
 
-    <section id="concept">
+    <section id="concept" data-nav="三段式概念">
       <h2 data-icon="concept">三段式概念：觸發 / 條件 / 動作</h2>
       <p>HA 的每一個自動化，都由三個區塊組成，記住這三個字，之後看任何範例都不會迷路：</p>
       <ul>
@@ -78,7 +95,7 @@
       <div class="callout tip"><strong>心法：</strong>觸發是「什麼時候問」，條件是「要不要做」，動作是「做什麼」。這三段拆清楚，任何複雜自動化都能拼出來。</div>
     </section>
 
-    <section id="entity_id_trap">
+    <section id="entity_id_trap" data-nav="entity_id 陷阱">
       <h2 data-icon="entity_id_trap">device_id 與 entity_id 的陷阱</h2>
       <p>這是 HA 社群公認的第一大坑，也是很多人自動化「用一陣子就壞了」的原因。</p>
       <p>在 UI 建立自動化時，HA 預設會用<strong>裝置（device）</strong>作為觸發對象，例如「客廳燈這台裝置被打開」。看起來很直覺，但這樣寫的自動化是綁在<em>那顆實體硬體</em>上的識別碼（device_id）。一旦你把燈換一顆、重新配對 Zigbee、或整合被移除重加，device_id 就變了，自動化就整條壞掉，而且不會有錯誤訊息，它只是<strong>安靜地不動</strong>。</p>
@@ -88,7 +105,7 @@
       <p>延伸閱讀：<a href="https://community.home-assistant.io/t/why-and-how-to-avoid-device-ids-in-automations-and-scripts/605517" target="_blank" rel="noopener">HA 社群討論：為什麼要避開 device_id</a>。</p>
     </section>
 
-    <section id="steps">
+    <section id="steps" data-nav="動手做：日落開燈">
       <h2 data-icon="steps">動手做：當日落時打開客廳燈</h2>
       <p>我們用最經典的「日落開燈」來實作。目標：太陽下山後 30 分鐘，把客廳主燈打開，並發一則手機推播通知。</p>
       <ol class="steps">
@@ -144,7 +161,7 @@
       <div class="callout tip"><strong>驗證：</strong>把手機時間調到剛過日落 30 分鐘，燈應該亮起。或到「設定 → 自動化 → 你剛建的那個 → 執行」手動觸發。手機若收到「客廳燈已隨日落開啟」的推播，代表整條路徑（觸發 → 條件 → 動作 → 通知）都通了。</div>
     </section>
 
-    <section id="modes">
+    <section id="modes" data-nav="執行模式">
       <h2 data-icon="modes">執行模式：single / restart / queued / parallel</h2>
       <p>當自動化在「還在跑」時又被觸發了一次，該怎麼辦？這就是執行模式要決定的事。到自動化編輯頁最下方可以看到「模式」設定。</p>
       <table style="width:100%; border-collapse:collapse; margin:16px 0;">
@@ -181,7 +198,7 @@
       <p>不確定就留 <code>single</code>，這是最安全的預設值。</p>
     </section>
 
-    <section id="blueprints">
+    <section id="blueprints" data-nav="Blueprint 藍圖">
       <h2 data-icon="blueprints">Blueprint 藍圖：一鍵匯入別人寫好的自動化</h2>
       <p>Blueprint 是 HA 官方的「自動化樣板」機制。作者把邏輯寫好、把可調整的部份留成表單欄位，你只要填幾個下拉選單就有一條可用的自動化。</p>
       <p>常見用途：</p>
@@ -200,7 +217,7 @@
       <div class="callout"><strong>建議：</strong>先熟悉自己手寫一次自動化（也就是本章的範例），再開始用藍圖。這樣藍圖出問題你才知道怎麼看、怎麼改。</div>
     </section>
 
-    <section id="troubleshoot">
+    <section id="troubleshoot" data-nav="常見卡關">
       <h2 data-icon="troubleshoot">常見卡關</h2>
       <p><strong>問題 1：自動化沒跑，也沒錯誤訊息。</strong></p>
       <p>到自動化列表點那條進去，右上角有個「軌跡（Trace）」按鈕。這裡會顯示最近 5 次觸發的完整流程：哪個觸發器啟動、條件通過與否、動作跑到哪一步。看軌跡是排錯的第一步，比看 log 直接。</p>
@@ -210,7 +227,7 @@
       <p>如果你改了 entity_id，舊自動化不會自動跟著改，會安靜地跑不動。HA 2024 版之後新增了「未使用的實體」和「重新命名時提示更新」，但舊自動化建議手動用「開發者工具 → 檢查設定」跑一次驗證。</p>
     </section>
 
-    <section id="faq">
+    <section id="faq" data-nav="常見問題">
       <h2 data-icon="faq">常見問題</h2>
       <details class="faq">
         <summary>可以在自動化裡呼叫另一個自動化嗎？</summary>
@@ -240,6 +257,11 @@
         <span class="title">09 · 備份</span>
       </a>
     </div>
+
+    <footer class="site-footer">
+      <p>《Home Assistant 新居入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
   </main>
 </div>
 <script src="assets/js/toc.js"></script>
