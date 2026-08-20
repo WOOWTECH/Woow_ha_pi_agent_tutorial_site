@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Woow HA Pi Agent 入住指南 · 把家裡的 AI 工作站用起來</title>
+  <meta name="description" content="22 章＋3 附錄的繁體中文 Woow HA Pi Agent 教學：從裝好 add-on、加第一家 AI 大腦、開第一個對話，到裝 Skill、做影片、日常維護，把家裡的 AI 工作站用起來。" />
+  <meta name="author" content="WoowTech" />
+  <link rel="canonical" href="https://pi-agent-guide.woowtech.io/tutorial.html" />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <meta property="og:type" content="article" />
+  <meta property="og:site_name" content="Woow HA Pi Agent 入住指南" />
+  <meta property="og:locale" content="zh_TW" />
+  <meta property="og:title" content="Woow HA Pi Agent 入住指南 · 把家裡的 AI 工作站用起來" />
+  <meta property="og:description" content="22 章＋3 附錄的繁體中文 Woow HA Pi Agent 教學：從裝好 add-on、加第一家 AI 大腦、開第一個對話，到裝 Skill、做影片、日常維護，把家裡的 AI 工作站用起來。" />
+  <meta property="og:url" content="https://pi-agent-guide.woowtech.io/tutorial.html" />
+  <meta property="og:image" content="https://pi-agent-guide.woowtech.io/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Woow HA Pi Agent 入住指南 · 把家裡的 AI 工作站用起來" />
+  <meta name="twitter:description" content="22 章＋3 附錄的繁體中文 Woow HA Pi Agent 教學：從裝好 add-on、加第一家 AI 大腦、開第一個對話，到裝 Skill、做影片、日常維護，把家裡的 AI 工作站用起來。" />
+  <meta name="twitter:image" content="https://pi-agent-guide.woowtech.io/assets/screenshots/ch1/01_pi_agent_intro.png" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="license" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+  <main class="home">
+    <div class="hero">
+      <span class="kicker-script">make it yours</span>
+      <div class="kicker">Woow HA Pi Agent 入住指南</div>
+      <h1>把家裡的 AI 工作站用起來</h1>
+      <p>從裝好 add-on、加第一家 AI 大腦、開第一個對話，一路帶到裝 Skill、用 AI 做影片、日常備份與踩雷排查。22 章＋ 3 附錄，每章 10 分鐘。銷售手冊、提示詞庫與 Skill 手冊在 <a href="index.html">資源總覽</a>。</p>
+    </div>
+
+    <section class="chapter-index">
+      <h2 class="index-title">起步認識</h2>
+      <div class="chapter-grid">
+        <a class="chapter-card" href="ch1_intro.html">
+          <span class="num">01</span>
+          <h3>這個 AI 工作站是什麼</h3>
+          <p>Pi Agent 是家裡多一個 AI 工作站，附上 5 分鐘 HA 導覽，讓沒看過入住指南的人也接得住。</p>
+        </a>
+        <a class="chapter-card" href="ch2_install.html">
+          <span class="num">02</span>
+          <h3>裝好 Pi Agent</h3>
+          <p>加倉庫、按安裝、首次開機為什麼要等 3-8 分鐘，一次講完。</p>
+        </a>
+        <a class="chapter-card" href="ch3_open_it.html">
+          <span class="num">03</span>
+          <h3>從側邊欄打開它</h3>
+          <p>為什麼側邊欄自己就出現一顆按鈕、admin 才看得到、手機也能連。</p>
+        </a>
+        <a class="chapter-card" href="ch4_ui_tour.html">
+          <span class="num">04</span>
+          <h3>工作區長什麼樣</h3>
+          <p>打字區、模型下拉、Session 歷史、右上工具列，一次認完不再迷路。</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="chapter-index" style="margin-top:56px;">
+      <h2 class="index-title">先跟它聊起來</h2>
+      <div class="chapter-grid">
+        <a class="chapter-card" href="ch5_first_key.html">
+          <span class="num">05</span>
+          <h3>加第一個 AI 大腦：申請 GLM 金鑰</h3>
+          <p>從註冊帳號到拿到 API key，一步步截圖照著點就好。</p>
+        </a>
+        <a class="chapter-card" href="ch6_paste_key.html">
+          <span class="num">06</span>
+          <h3>把金鑰貼進 Models 面板</h3>
+          <p>打開 Models 面板、按 Add Provider、填 baseUrl 與 key、按 Test 綠燈。</p>
+        </a>
+        <a class="chapter-card" href="ch7_first_chat.html">
+          <span class="num">07</span>
+          <h3>開第一個對話</h3>
+          <p>問一個真實的家庭問題，看 AI 回什麼、學會怎麼繼續追問。</p>
+        </a>
+        <a class="chapter-card" href="ch8_session.html">
+          <span class="num">08</span>
+          <h3>Session 是什麼？跟聊天室有什麼不一樣</h3>
+          <p>為什麼要分很多個 Session、fork 是什麼、匯出跟清理怎麼做。</p>
+        </a>
+        <a class="chapter-card" href="ch9_thinking_diff.html">
+          <span class="num">09</span>
+          <h3>對話裡的思考塊、工具卡片、diff 是什麼</h3>
+          <p>AI 回答旁邊那些可以展開的方塊，各自是幹嘛的、什麼時候該讀。</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="chapter-index" style="margin-top:56px;">
+      <h2 class="index-title">多個 AI 一起用</h2>
+      <div class="chapter-grid">
+        <a class="chapter-card" href="ch10_why_multi.html">
+          <span class="num">10</span>
+          <h3>為什麼要接不只一家 AI</h3>
+          <p>便宜、快、想得深各挑一個，日常用起來會發現差很多。</p>
+        </a>
+        <a class="chapter-card" href="ch11_provider_map.html">
+          <span class="num">11</span>
+          <h3>六種主流 provider 各適合什麼場合</h3>
+          <p>GLM、OpenAI、Anthropic、DeepSeek、Groq、OpenRouter 一頁看懂。</p>
+        </a>
+        <a class="chapter-card" href="ch12_reasoning.html">
+          <span class="num">12</span>
+          <h3>有想的、沒想的：Reasoning 模型是什麼</h3>
+          <p>為什麼有些 AI 會先在心裡想一輪、什麼時候值得多花那個錢。</p>
+        </a>
+        <a class="chapter-card" href="ch13_switch_model.html">
+          <span class="num">13</span>
+          <h3>一句話切換 AI：模型下拉的正確用法</h3>
+          <p>同一個問題丟給不同 AI 對比，是最快看懂差別的辦法。</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="chapter-index" style="margin-top:56px;">
+      <h2 class="index-title">Skills 讓 AI 學新本事</h2>
+      <div class="chapter-grid">
+        <a class="chapter-card" href="ch14_skill_concept.html">
+          <span class="num">14</span>
+          <h3>Skill 是什麼？跟手機 App 有什麼不一樣</h3>
+          <p>把 Skill 想成教 AI 一項專門手藝，用類比一次講清楚。</p>
+        </a>
+        <a class="chapter-card" href="ch15_install_skill.html">
+          <span class="num">15</span>
+          <h3>從 GitHub 裝別人做好的 Skill</h3>
+          <p>Skills 面板實操：搜尋、貼 GitHub URL、按裝、看它出現在系統提示裡。</p>
+        </a>
+        <a class="chapter-card" href="ch16_write_skill.html">
+          <span class="num">16</span>
+          <h3>自己動手做第一個 Skill</h3>
+          <p>SKILL.md 骨架 + 家庭場景範例：教 AI 幫你算冰箱食材要不要補。</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="chapter-index" style="margin-top:56px;">
+      <h2 class="index-title">讓 AI 幫你做影片</h2>
+      <div class="chapter-grid">
+        <a class="chapter-card" href="ch17_video_pipeline.html">
+          <span class="num">17</span>
+          <h3>影片管線：從腳本到 YouTube 可上傳</h3>
+          <p>AI 幫你寫腳本、配音、抓畫面、剪接、燒字幕，一路做到能傳的 MP4。</p>
+        </a>
+        <a class="chapter-card" href="ch18_video_tools.html">
+          <span class="num">18</span>
+          <h3>為什麼首次要下載 720MB、之後就秒開</h3>
+          <p>video-tools-init 在裝什麼、放在哪、什麼時候會重新裝一次。</p>
+        </a>
+        <a class="chapter-card" href="ch19_rclone.html">
+          <span class="num">19</span>
+          <h3>成品自動傳 Google Drive：rclone 一次設好</h3>
+          <p>rclone 設定跑一次 OAuth，之後每支影片自動上傳到指定資料夾。</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="chapter-index" style="margin-top:56px;">
+      <h2 class="index-title">家常維護</h2>
+      <div class="chapter-grid">
+        <a class="chapter-card" href="ch20_backup.html">
+          <span class="num">20</span>
+          <h3>對話與金鑰的備份：跟 HA snapshot 一起走</h3>
+          <p>什麼會被備到 HA snapshot、什麼不會、還原後要補做什麼。</p>
+        </a>
+        <a class="chapter-card" href="ch21_upgrade.html">
+          <span class="num">21</span>
+          <h3>升級 Pi Agent：v0.13.0 API key 搬家踩雷筆記</h3>
+          <p>從舊版升上來會發現 API key 欄位不見了，是搬家不是遺失。</p>
+        </a>
+        <a class="chapter-card" href="ch22_troubleshoot.html">
+          <span class="num">22</span>
+          <h3>常見卡關手冊</h3>
+          <p>401／402／404、Ingress 掉、影片管線失敗、Skill 裝不起來，一頁找解法。</p>
+        </a>
+      </div>
+    </section>
+
+    <section class="chapter-index" style="margin-top:56px;">
+      <h2 class="index-title">附錄</h2>
+      <div class="chapter-grid">
+        <a class="chapter-card" href="appendix_config_ref.html">
+          <span class="num">A</span>
+          <h3>設定參數速查</h3>
+          <p>log_level / timezone / reset_video_tools / env_vars 四個開關的意義與踩雷。</p>
+        </a>
+        <a class="chapter-card" href="appendix_provider_keys.html">
+          <span class="num">B</span>
+          <h3>七家 provider 金鑰申請速查</h3>
+          <p>GLM／OpenAI／Anthropic／DeepSeek／Groq／MiniMax／OpenRouter 一家一頁。</p>
+        </a>
+        <a class="chapter-card" href="appendix_internals.html">
+          <span class="num">C</span>
+          <h3>底層架構好奇者向</h3>
+          <p>給想知道背後怎麼跑的人：s6-overlay、nginx shim、/data/pi-agent 目錄。</p>
+        </a>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <p>《Woow HA Pi Agent 入住指南》由 <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">WoowTech</a> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出 — 可自由分享與改作，請保留出處。</p>
+      <p class="footer-meta">截圖取自 Home Assistant 官方介面。Home Assistant 為 Open Home Foundation 的商標，本站與其無隸屬關係。 · <a href="https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site" rel="noopener">原始碼與勘誤</a></p>
+    </footer>
+  </main>
+</body>
+</html>

@@ -4,7 +4,7 @@
     "title": "Woow HA Pi Agent 入住指南",
     "brand": "Pi Agent 入住指南",
     "subtitle": "把家裡的 AI 工作站用起來",
-    "baseUrl": "https://woowtech.github.io/Woow_ha_pi_agent_tutorial_site",
+    "baseUrl": "https://pi-agent-guide.woowtech.io",
     "repoUrl": "https://github.com/WOOWTECH/Woow_ha_pi_agent_tutorial_site",
     "locale": "zh_TW",
     "description": "22 章＋3 附錄的繁體中文 Woow HA Pi Agent 教學：從裝好 add-on、加第一家 AI 大腦、開第一個對話，到裝 Skill、做影片、日常維護，把家裡的 AI 工作站用起來。",
@@ -14,6 +14,12 @@
       "url": "https://creativecommons.org/licenses/by/4.0/deed.zh-hant",
       "holder": "WoowTech"
     }
+  },
+  "hub": {
+    "_readme": "index.html 是四類資源總覽(hub),由人手維護、build_nav 不碰。教學目錄頁由 build_nav 產生到 catalog 指定的檔案。pages 是 hub 底下的獨立單檔手冊(自帶 head 與樣式),納入 sitemap 與 check_links 白名單。",
+    "catalog": "tutorial.html",
+    "navLabel": "資源總覽",
+    "pages": ["sales.html", "prompts.html", "skills.html"]
   },
   "chapters": [
     {
