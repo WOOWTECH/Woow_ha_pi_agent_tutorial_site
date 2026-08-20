@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Pi Agent Skill 手冊 · 精選技能與熱門集合型錄 · WoowTech</title>
+  <meta name="description" content="裝別人做好的技能，Pi Agent 立刻多會十件事：精選 10 顆實用 skill、8 大熱門開源 skill 集合，附 pi 安裝指令、相容性與安全須知（2026-08 調查）。" />
+  <meta name="author" content="WoowTech" />
+  <meta name="theme-color" content="#6183FC" />
+  <link rel="canonical" href="https://pi-agent-guide.woowtech.io/skills.html" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Yellowtail&display=swap" />
+  <style>
+/* pi agent 銷售手冊 — Woow_ha_tutorial_site 版型 × woowtech Brand Prompt Library v2 */
+:root {
+  /* Brand palette — blue is the ONLY spot color */
+  --ww-blue: #6183FC;
+  --ww-blue-600: #4A6DE8;
+  --ww-blue-700: #3A57C4;
+  --ww-blue-050: #EEF2FF;
+  --ww-blue-100: #DCE4FF;
+
+  --ink-900: #1B2033;
+  --ink-700: #3A4054;
+  --ink-500: #6B7186;
+  --ink-300: #A5AAB9;
+  --ink-100: #E7E9F0;
+
+  --paper: #F7F8FC;
+  --surface: #FFFFFF;
+  --surface-alt: #F1F3FA;
+  --hairline: #E2E5EF;
+
+  --info: var(--ww-blue);
+  --tip:  #8CD37F;
+  --warn: #E66D3E;
+  --danger: #F45D6D;
+
+  /* Radius — 20px hard rule; 12px chips; pill buttons */
+  --radius: 20px;
+  --radius-sm: 12px;
+  --radius-xs: 8px;
+  --radius-pill: 999px;
+
+  /* Soft diffuse shadows */
+  --shadow-sm: 0 2px 6px rgba(27, 32, 51, 0.05), 0 1px 2px rgba(27, 32, 51, 0.04);
+  --shadow-md: 0 8px 24px rgba(27, 32, 51, 0.08), 0 2px 6px rgba(27, 32, 51, 0.04);
+  --shadow-lg: 0 20px 48px rgba(27, 32, 51, 0.12), 0 4px 12px rgba(27, 32, 51, 0.06);
+  --shadow-float: 0 26px 60px -18px rgba(97, 131, 252, 0.28);
+
+  --font-display: "Outfit", "Poppins", -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --font-body: "Poppins", -apple-system, BlinkMacSystemFont, "Noto Sans TC", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  --font-script: "Yellowtail", cursive;
+  --font-mono: "SF Mono", Menlo, Consolas, "Fira Code", monospace;
+
+  --sidebar-w: 268px;
+  --max-content: 780px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0; padding: 0;
+  font-family: var(--font-body);
+  color: var(--ink-900);
+  background: var(--paper);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+html { scroll-behavior: smooth; }
+
+h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.005em; }
+
+a { color: var(--ww-blue-600); text-decoration: none; transition: color 0.15s; }
+a:hover { color: var(--ww-blue-700); text-decoration: underline; }
+
+/* ---------- Layout ---------- */
+.layout { display: grid; grid-template-columns: var(--sidebar-w) 1fr; min-height: 100vh; }
+
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--hairline);
+  padding: 28px 22px;
+  position: sticky; top: 0; height: 100vh; overflow-y: auto;
+}
+.sidebar h2 {
+  font-family: var(--font-body); font-size: 12px; color: var(--ink-500);
+  text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; margin: 0 0 12px;
+}
+.sidebar .brand {
+  display: block; font-family: var(--font-display); font-size: 20px; font-weight: 700;
+  color: var(--ink-900); margin-bottom: 4px; letter-spacing: -0.01em;
+}
+.sidebar .brand-sub { font-size: 13px; color: var(--ink-500); margin-bottom: 6px; }
+.sidebar .hub-link { display: inline-block; font-size: 12.5px; color: var(--ink-500); margin-bottom: 22px; }
+.sidebar .hub-link:hover { color: var(--ww-blue-700); text-decoration: none; }
+.sidebar .toc-in-chapter { border-top: 1px solid var(--hairline); padding-top: 16px; margin-top: 8px; }
+.sidebar .toc-in-chapter:first-of-type { border-top: 0; padding-top: 0; margin-top: 0; }
+.sidebar .toc-in-chapter a {
+  display: block; padding: 7px 12px; border-radius: var(--radius-xs);
+  color: var(--ink-700); font-size: 13.5px;
+}
+.sidebar .toc-in-chapter a:hover { background: var(--surface-alt); text-decoration: none; }
+.sidebar .toc-in-chapter a.active { background: var(--ww-blue-050); color: var(--ww-blue-700); font-weight: 600; }
+
+/* ---------- Content ---------- */
+.content { padding: 56px 64px 96px; max-width: calc(var(--max-content) + 128px); }
+
+.chapter-header { margin-bottom: 40px; }
+.chapter-header .kicker-script {
+  font-family: var(--font-script); font-size: 30px; color: var(--ww-blue);
+  line-height: 1; margin-bottom: 10px; display: block;
+}
+.chapter-header .kicker {
+  color: var(--ww-blue); font-family: var(--font-display); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 10px;
+}
+.chapter-header h1 {
+  font-family: "Noto Sans TC", var(--font-display); font-size: 38px; font-weight: 700;
+  margin: 0 0 14px; letter-spacing: -0.02em; line-height: 1.25;
+}
+.chapter-header .lead { font-size: 17px; color: var(--ink-700); margin: 0; max-width: var(--max-content); }
+
+/* KPI floating frame（品牌規範：floating frame 必帶 shadow-float） */
+.kpi-frame {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0;
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: var(--radius); box-shadow: var(--shadow-float);
+  margin: 28px 0 8px; overflow: hidden;
+}
+.kpi { padding: 22px 20px; text-align: center; }
+.kpi + .kpi { border-left: 1px solid var(--hairline); }
+.kpi .num {
+  font-family: var(--font-display); font-size: 26px; font-weight: 700;
+  color: var(--ww-blue); line-height: 1.2;
+}
+.kpi .cap { font-size: 13px; color: var(--ink-500); margin-top: 4px; }
+
+/* Sections */
+section { margin-bottom: 56px; scroll-margin-top: 24px; }
+section h2 {
+  font-family: var(--font-display); font-size: 24px; font-weight: 700;
+  margin: 0 0 20px; padding: 0; border: 0;
+  display: flex; align-items: center; gap: 14px; color: var(--ink-900);
+}
+section h2[data-icon]::before {
+  content: ""; display: inline-flex; flex-shrink: 0;
+  width: 40px; height: 40px; border-radius: var(--radius-sm);
+  background-color: var(--ww-blue-050);
+  background-repeat: no-repeat; background-position: center; background-size: 22px 22px;
+}
+section h2[data-icon="why"]::before         { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M12,2A7,7 0 0,1 19,9C19,11.38 17.81,13.47 16,14.74V17A1,1 0 0,1 15,18H9A1,1 0 0,1 8,17V14.74C6.19,13.47 5,11.38 5,9A7,7 0 0,1 12,2M9,21V20H15V21A1,1 0 0,1 14,22H10A1,1 0 0,1 9,21M12,4A5,5 0 0,0 7,9C7,11.05 8.23,12.81 10,13.58V16H14V13.58C15.77,12.81 17,11.05 17,9A5,5 0 0,0 12,4Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="what"]::before        { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M6,2A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2H6M6,4H13V9H18V20H6V4M8,12V14H16V12H8M8,16V18H13V16H8Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="ai"]::before          { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M12,1L9,9L1,12L9,15L12,23L15,15L23,12L15,9L12,1Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="security"]::before    { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M11,13H13V16H16V11H18L12,6L6,11H8V16H11V13M12,1L21,5V11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="brain"]::before       { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M21.33,12.91C21.42,14.46 20.71,15.95 19.44,16.86L20.21,18.35C20.44,18.8 20.47,19.33 20.27,19.8C20.08,20.27 19.69,20.64 19.21,20.8L18.42,21.05C18.25,21.11 18.06,21.14 17.88,21.14C17.37,21.14 16.89,20.91 16.56,20.5L14.44,18C13.55,17.85 12.71,17.47 12,16.9C11.5,17.05 11,17.13 10.5,17.13C9.62,17.13 8.74,16.86 8,16.34C7.47,16.5 6.93,16.57 6.38,16.56C5.59,16.57 4.81,16.41 4.08,16.11C2.65,15.47 1.7,14.07 1.65,12.5C1.57,11.78 1.69,11.05 2,10.39C1.71,9.64 1.68,8.82 1.93,8.06C2.3,7.11 3,6.32 3.87,5.82C4.45,4.13 6.08,3 7.87,3.12C9.47,1.62 11.92,1.46 13.7,2.75C14.12,2.64 14.56,2.58 15,2.58C16.36,2.55 17.65,3.15 18.5,4.22C20.54,4.75 22,6.57 22.08,8.69C22.13,9.8 21.83,10.89 21.22,11.82C21.29,12.18 21.33,12.54 21.33,12.91M16.33,11.5C16.9,11.57 17.35,12 17.35,12.57A1,1 0 0,1 16.35,13.57H15.72C15.4,14.47 14.84,15.26 14.1,15.86C14.35,15.95 14.61,16 14.87,16.07C20,16 19.4,12.87 19.4,12.82C19.34,11.39 18.14,10.27 16.71,10.33A1,1 0 0,1 15.71,9.33A1,1 0 0,1 16.71,8.33C17.94,8.36 19.12,8.82 20.04,9.63C20.09,9.34 20.12,9.04 20.12,8.74C20.06,7.5 19.5,6.42 17.25,6.21C16,3.25 12.85,4.89 12.85,5.81V5.81C12.82,6.04 13.06,6.53 13.1,6.56A1,1 0 0,1 14.1,7.56C14.1,8.11 13.65,8.56 13.1,8.56V8.56C12.57,8.54 12.07,8.34 11.67,8C11.19,8.31 10.64,8.5 10.07,8.56V8.56C9.5,8.61 9.03,8.21 9,7.66C8.92,7.1 9.33,6.61 9.88,6.56C10.04,6.54 10.82,6.42 10.82,5.79V5.79C10.82,5.13 11.07,4.5 11.5,4C10.58,3.75 9.59,4.08 8.59,5.29C6.75,5 6,5.25 5.45,7.2C4.5,7.67 4,8 3.78,9C4.86,8.78 5.97,8.87 7,9.25C7.5,9.44 7.78,10 7.59,10.54C7.4,11.06 6.82,11.32 6.3,11.13C5.57,10.81 4.75,10.79 4,11.07C3.68,11.34 3.68,11.9 3.68,12.34C3.68,13.08 4.05,13.77 4.68,14.17C5.21,14.44 5.8,14.58 6.39,14.57C6.24,14.31 6.11,14.04 6,13.76C5.81,13.22 6.1,12.63 6.64,12.44C7.18,12.25 7.77,12.54 7.96,13.08C8.36,14.22 9.38,15 10.58,15.13C11.95,15.06 13.17,14.25 13.77,13C14,11.62 15.11,11.5 16.33,11.5M18.33,18.97L17.71,17.67L17,17.83L18,19.08L18.33,18.97M13.68,10.36C13.7,9.83 13.3,9.38 12.77,9.33C12.06,9.29 11.37,9.53 10.84,10C10.27,10.58 9.97,11.38 10,12.19A1,1 0 0,0 11,13.19C11.57,13.19 12,12.74 12,12.19C12,11.92 12.07,11.65 12.23,11.43C12.35,11.33 12.5,11.28 12.66,11.28C13.21,11.31 13.68,10.9 13.68,10.36Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="integration"]::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M10.59,13.41C11,13.8 11,14.44 10.59,14.83C10.2,15.22 9.56,15.22 9.17,14.83C7.22,12.88 7.22,9.71 9.17,7.76V7.76L12.71,4.22C14.66,2.27 17.83,2.27 19.78,4.22C21.73,6.17 21.73,9.34 19.78,11.29L18.29,12.78C18.3,11.96 18.17,11.14 17.89,10.36L18.36,9.88C19.54,8.71 19.54,6.81 18.36,5.64C17.19,4.46 15.29,4.46 14.12,5.64L10.59,9.17C9.41,10.34 9.41,12.24 10.59,13.41M13.41,9.17C13.8,8.78 14.44,8.78 14.83,9.17C16.78,11.12 16.78,14.29 14.83,16.24V16.24L11.29,19.78C9.34,21.73 6.17,21.73 4.22,19.78C2.27,17.83 2.27,14.66 4.22,12.71L5.71,11.22C5.7,12.04 5.83,12.86 6.11,13.65L5.64,14.12C4.46,15.29 4.46,17.19 5.64,18.36C6.81,19.54 8.71,19.54 9.88,18.36L13.41,14.83C14.59,13.66 14.59,11.76 13.41,10.59C13,10.2 13,9.56 13.41,9.17Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="persons"]::before     { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M12,5.5A3.5,3.5 0 0,1 15.5,9A3.5,3.5 0 0,1 12,12.5A3.5,3.5 0 0,1 8.5,9A3.5,3.5 0 0,1 12,5.5M5,8C5.56,8 6.08,8.15 6.53,8.42C6.38,9.85 6.8,11.27 7.66,12.38C7.16,13.34 6.16,14 5,14A3,3 0 0,1 2,11A3,3 0 0,1 5,8M19,8A3,3 0 0,1 22,11A3,3 0 0,1 19,14C17.84,14 16.84,13.34 16.34,12.38C17.2,11.27 17.62,9.85 17.47,8.42C17.92,8.15 18.44,8 19,8M5.5,18.25C5.5,16.18 8.41,14.5 12,14.5C15.59,14.5 18.5,16.18 18.5,18.25V20H5.5V18.25M0,20V18.5C0,17.11 1.89,15.94 4.45,15.6C3.86,16.28 3.5,17.22 3.5,18.25V20H0M24,20H20.5V18.25C20.5,17.22 20.14,16.28 19.55,15.6C22.11,15.94 24,17.11 24,18.5V20Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="clock"]::before       { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="compare"]::before     { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M12,3C10.73,3 9.6,3.8 9.18,5H3V7H4.95L2,14C1.53,16 3,17 5.5,17C8,17 9.56,16 9,14L6.05,7H9.17C9.5,7.85 10.15,8.5 11,8.83V20H2V22H22V20H13V8.82C13.85,8.5 14.5,7.85 14.82,7H17.95L15,14C14.53,16 16,17 18.5,17C21,17 22.56,16 22,14L19.05,7H21V5H14.83C14.4,3.8 13.27,3 12,3M12,5A1,1 0 0,1 13,6A1,1 0 0,1 12,7A1,1 0 0,1 11,6A1,1 0 0,1 12,5M5.5,10.25L7,14H4L5.5,10.25M18.5,10.25L20,14H17L18.5,10.25Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="faq"]::before         { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M4,2A2,2 0 0,0 2,4V16A2,2 0 0,0 4,18H8V21A1,1 0 0,0 9,22H9.5V22C9.75,22 10,21.9 10.2,21.71L13.9,18H20A2,2 0 0,0 22,16V4C22,2.89 21.1,2 20,2H4M4,4H20V16H13.08L10,19.08V16H4V4M12.19,5.5C11.3,5.5 10.59,5.68 10.05,6.04C9.5,6.4 9.22,7 9.27,7.69C0.21,7.69 6.57,7.69 11.24,7.69C11.24,7.41 11.34,7.2 11.5,7.06C11.7,6.92 11.92,6.85 12.19,6.85C12.5,6.85 12.77,6.93 12.95,7.11C13.13,7.28 13.22,7.5 13.22,7.8C13.22,8.08 13.14,8.33 13,8.54C12.83,8.76 12.62,8.94 12.36,9.08C11.84,9.4 11.5,9.68 11.29,9.92C11.1,10.16 11,10.5 11,11H13C13,10.72 13.05,10.5 13.14,10.32C13.23,10.15 13.4,10 13.66,9.85C14.12,9.64 14.5,9.36 14.79,9C15.08,8.63 15.23,8.24 15.23,7.8C15.23,7.1 14.96,6.54 14.42,6.12C13.88,5.71 13.13,5.5 12.19,5.5M11,12V14H13V12H11Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="handshake"]::before   { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M11 6H14L17.29 2.7A1 1 0 0 1 18.71 2.7L21.29 5.29A1 1 0 0 1 21.29 6.7L19 9H11V11A1 1 0 0 1 10 12A1 1 0 0 1 9 11V8A2 2 0 0 1 11 6M5 11V15L2.71 17.29A1 1 0 0 0 2.71 18.7L5.29 21.29A1 1 0 0 0 6.71 21.29L11 17H15A1 1 0 0 0 16 16V15H17A1 1 0 0 0 18 14V13H19A1 1 0 0 0 20 12V11H13V12A2 2 0 0 1 11 14H9A2 2 0 0 1 7 12V9Z'/%3E%3C/svg%3E"); }
+
+section h3 {
+  font-family: var(--font-display); font-size: 17px; font-weight: 600;
+  margin: 28px 0 12px; color: var(--ink-900);
+}
+section p, section li { color: var(--ink-700); max-width: var(--max-content); }
+
+/* 功能卡（沿用目錄頁 chapter-card 視覺） */
+.feature-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.feature-card {
+  padding: 26px 24px; border: 1px solid var(--hairline); border-radius: var(--radius);
+  background: var(--surface); box-shadow: var(--shadow-sm);
+}
+.feature-card .tile {
+  display: inline-flex; width: 48px; height: 48px; border-radius: 16px;
+  background: var(--ww-blue-050); align-items: center; justify-content: center;
+  margin-bottom: 14px;
+}
+.feature-card .tile svg { display: block; }
+.feature-card h3 { margin: 0 0 8px; font-size: 18px; }
+.feature-card > p { margin: 0 0 14px; color: var(--ink-700); font-size: 14.5px; }
+
+/* 對話範例 chips（12px 圓角 = 品牌 chip 規則） */
+.chips { display: flex; flex-direction: column; gap: 8px; margin: 12px 0 0; max-width: var(--max-content); }
+.chip {
+  background: var(--surface-alt); border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm); padding: 10px 14px;
+  font-size: 14px; line-height: 1.6; color: var(--ink-700);
+}
+.chip.say { background: var(--ww-blue-050); border-color: rgba(97, 131, 252, 0.22); }
+.chip .who {
+  font-family: var(--font-display); font-weight: 600; font-size: 12.5px;
+  color: var(--ww-blue-700); margin-right: 6px;
+}
+.chip .who.ai { color: #4E9C42; }
+.chip .who::before {
+  content: ""; display: inline-block; width: 13px; height: 13px; margin-right: 4px;
+  vertical-align: -1.5px; background-repeat: no-repeat; background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M12,4A4,4 0 0,1 16,8A4,4 0 0,1 12,12A4,4 0 0,1 8,8A4,4 0 0,1 12,4M12,14C16.42,14 20,15.79 20,18V20H4V18C4,15.79 7.58,14 12,14Z'/%3E%3C/svg%3E");
+}
+.chip .who.ai::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%234E9C42' d='M10.5 15.5C10.5 15.87 10.4 16.2 10.22 16.5C9.88 15.91 9.24 15.5 8.5 15.5S7.12 15.91 6.78 16.5C6.61 16.2 6.5 15.87 6.5 15.5C6.5 14.4 7.4 13.5 8.5 13.5S10.5 14.4 10.5 15.5M23 15V18C23 18.55 22.55 19 22 19H21V20C21 21.11 20.11 22 19 22H5C3.9 22 3 21.11 3 20V19H2C1.45 19 1 18.55 1 18V15C1 14.45 1.45 14 2 14H3C3 10.13 6.13 7 10 7H11V5.73C10.4 5.39 10 4.74 10 4C10 2.9 10.9 2 12 2S14 2.9 14 4C14 4.74 13.6 5.39 13 5.73V7H14C17.87 7 21 10.13 21 14H22C22.55 14 23 14.45 23 15M21 16H19V14C19 11.24 16.76 9 14 9H10C7.24 9 5 11.24 5 14V16H3V17H5V20H19V17H21V16M15.5 13.5C14.4 13.5 13.5 14.4 13.5 15.5C13.5 15.87 13.61 16.2 13.78 16.5C14.12 15.91 14.76 15.5 15.5 15.5S16.88 15.91 17.22 16.5C17.4 16.2 17.5 15.87 17.5 15.5C17.5 14.4 16.61 13.5 15.5 13.5Z'/%3E%3C/svg%3E"); }
+.chip-legend { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 4px; max-width: var(--max-content); }
+.chip-legend .chip { flex: 0 0 auto; font-size: 13px; padding: 7px 12px; }
+
+/* Steps（一天的生活也用它） */
+.steps { list-style: none; padding: 0; margin: 0; counter-reset: step; }
+.steps > li {
+  counter-increment: step; position: relative;
+  padding: 22px 22px 22px 72px; margin-bottom: 14px;
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: var(--radius); box-shadow: var(--shadow-sm);
+}
+.steps > li::before {
+  content: counter(step);
+  position: absolute; left: 20px; top: 20px; width: 36px; height: 36px; border-radius: 50%;
+  background: var(--ww-blue); color: #fff;
+  font-family: var(--font-display); font-weight: 700; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 2px 8px rgba(97, 131, 252, 0.35);
+}
+.steps > li h3 { margin: 0 0 8px; font-size: 16px; }
+.steps > li p:last-child { margin-bottom: 0; }
+.steps > li .time {
+  font-family: var(--font-display); font-size: 12px; font-weight: 600;
+  letter-spacing: 0.08em; color: var(--ww-blue); text-transform: uppercase;
+  display: block; margin-bottom: 4px;
+}
+.steps.timeline > li::before {
+  content: "";
+  background: var(--ww-blue-050) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M12,20A8,8 0 0,0 20,12A8,8 0 0,0 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20M12,2A10,10 0 0,1 22,12A10,10 0 0,1 12,22C6.47,22 2,17.5 2,12A10,10 0 0,1 12,2M12.5,7V12.25L17,14.92L16.25,16.15L11,13V7H12.5Z'/%3E%3C/svg%3E") no-repeat center / 20px 20px;
+  box-shadow: none;
+}
+
+/* Callout — info/tip/warn/danger */
+.callout {
+  padding: 14px 18px 14px 44px; border-radius: var(--radius-sm);
+  background: var(--ww-blue-050); margin: 16px 0; font-size: 14px; color: var(--ink-700);
+  position: relative; border: 1px solid rgba(97, 131, 252, 0.18);
+  max-width: var(--max-content);
+}
+.callout::before {
+  content: ""; position: absolute; left: 14px; top: 15px; width: 18px; height: 18px;
+  background-repeat: no-repeat; background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%236183FC' d='M13,9H11V7H13M13,17H11V11H13M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z'/%3E%3C/svg%3E");
+}
+.callout.tip { background: rgba(140, 211, 127, 0.14); border-color: rgba(140, 211, 127, 0.32); }
+.callout.tip::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%234E9C42' d='M12,2A7,7 0 0,0 5,9C5,11.38 6.19,13.47 8,14.74V17A1,1 0 0,0 9,18H15A1,1 0 0,0 16,17V14.74C17.81,13.47 19,11.38 19,9A7,7 0 0,0 12,2M9,21A1,1 0 0,0 10,22H14A1,1 0 0,0 15,21V20H9V21Z'/%3E%3C/svg%3E"); }
+.callout.warn { background: rgba(230, 109, 62, 0.10); border-color: rgba(230, 109, 62, 0.28); }
+.callout.warn::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23B94D22' d='M13 14H11V9H13M13 18H11V16H13M1 21H23L12 2L1 21Z'/%3E%3C/svg%3E"); }
+.callout strong { color: var(--ink-900); }
+
+/* 資料表格 */
+.data-table {
+  width: 100%; border-collapse: separate; border-spacing: 0; margin: 20px 0;
+  font-size: 14px; background: var(--surface);
+  border: 1px solid var(--hairline); border-radius: var(--radius-sm);
+  overflow: hidden; box-shadow: var(--shadow-sm);
+}
+.data-table thead th {
+  text-align: left; padding: 12px 14px; background: var(--surface-alt); color: var(--ink-900);
+  font-family: var(--font-display); font-weight: 600; font-size: 13px;
+  border-bottom: 1px solid var(--hairline); white-space: nowrap;
+}
+.data-table thead th.pi-col { color: var(--ww-blue-700); }
+.data-table tbody td, .data-table tbody th {
+  padding: 11px 14px; border-bottom: 1px solid var(--hairline);
+  color: var(--ink-700); vertical-align: top; text-align: left;
+}
+.data-table tbody th { font-weight: 600; color: var(--ink-900); white-space: nowrap; }
+.data-table tbody td.pi-col { background: var(--ww-blue-050); color: var(--ink-900); font-weight: 500; }
+.data-table tbody tr:last-child td, .data-table tbody tr:last-child th { border-bottom: 0; }
+
+/* FAQ */
+details.faq {
+  margin-bottom: 10px; border: 1px solid var(--hairline); border-radius: var(--radius-sm);
+  background: var(--surface); overflow: hidden; box-shadow: var(--shadow-sm);
+  max-width: var(--max-content);
+}
+details.faq summary {
+  cursor: pointer; padding: 16px 48px 16px 20px;
+  font-family: var(--font-display); font-weight: 600; color: var(--ink-900);
+  list-style: none; position: relative;
+}
+details.faq summary::-webkit-details-marker { display: none; }
+details.faq summary::after {
+  content: ""; position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+  width: 20px; height: 20px; background-repeat: no-repeat; background-size: contain;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%236183FC' d='M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z'/%3E%3C/svg%3E");
+}
+details.faq[open] summary::after { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%236183FC' d='M19,13H5V11H19V13Z'/%3E%3C/svg%3E"); }
+details.faq[open] summary { border-bottom: 1px solid var(--hairline); }
+details.faq .body { padding: 16px 20px; color: var(--ink-700); font-size: 14px; }
+
+/* CTA band */
+.cta-band {
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: var(--radius); box-shadow: var(--shadow-float);
+  padding: 40px 36px; text-align: center; max-width: var(--max-content);
+}
+.cta-band .script { font-family: var(--font-script); font-size: 26px; color: var(--ww-blue); display: block; margin-bottom: 6px; }
+.cta-band h3 { margin: 0 0 10px; font-size: 22px; }
+.cta-band p { color: var(--ink-700); margin: 0 auto 22px; max-width: 520px; font-size: 15px; }
+.btn-pill {
+  display: inline-block; font-family: var(--font-display); font-weight: 600; font-size: 15px;
+  background: var(--ww-blue); color: #fff; padding: 13px 32px;
+  border-radius: var(--radius-pill); transition: background 0.15s, transform 0.15s;
+}
+.btn-pill:hover { background: var(--ww-blue-600); color: #fff; text-decoration: none; transform: translateY(-1px); }
+
+/* Footer */
+.site-footer {
+  margin-top: 56px; padding-top: 24px; border-top: 1px solid var(--hairline);
+  color: var(--ink-700); font-size: 13.5px; line-height: 1.75;
+}
+.site-footer p { margin: 0 0 6px; }
+.site-footer .footer-meta { color: var(--ink-500); font-size: 12.5px; }
+
+/* 手機版側欄收合 */
+.nav-toggle {
+  display: none; width: 100%; align-items: center; justify-content: space-between; gap: 8px;
+  margin: 4px 0 0; padding: 12px 16px;
+  font-family: var(--font-body); font-size: 15px; font-weight: 600; color: var(--ink-900);
+  background: var(--surface); border: 1px solid var(--hairline);
+  border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); cursor: pointer;
+}
+.nav-toggle-caret {
+  width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent;
+  border-top: 6px solid var(--ink-500); transition: transform 0.15s ease;
+}
+.sidebar.is-collapsed .nav-toggle-caret { transform: rotate(-90deg); }
+
+.layout > * { min-width: 0; }
+.content .data-table { max-width: 100%; }
+
+@media (max-width: 960px) {
+  .layout { grid-template-columns: 1fr; }
+  .sidebar { position: relative; height: auto; border-right: none; border-bottom: 1px solid var(--hairline); }
+  .content { padding: 32px 20px 64px; }
+  .chapter-header h1 { font-size: 30px; }
+  .chapter-header .kicker-script { font-size: 26px; }
+  section h2 { font-size: 20px; }
+  section h2[data-icon]::before { width: 36px; height: 36px; background-size: 20px 20px; }
+  .feature-grid { grid-template-columns: 1fr; }
+  .kpi-frame { grid-template-columns: 1fr; }
+  .kpi + .kpi { border-left: 0; border-top: 1px solid var(--hairline); }
+  .data-table { display: block; overflow-x: auto; }
+  .data-table tbody td, .data-table thead th { min-width: 120px; }
+  .sidebar .nav-toggle { display: flex; }
+  .sidebar.is-collapsed .toc-in-chapter { display: none; }
+  .sidebar.is-collapsed > h2 { display: none; }
+}
+/* —— 本頁擴充圖示 —— */
+section h2[data-icon="steps"]::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M7,13V11H21V13H7M7,19V17H21V19H7M7,7V5H21V7H7M3,8V5H2V4H4V8H3M2,17V16H5V20H2V19H4V18.5H3V17.5H4V17H2M4.25,10A0.75,0.75 0 0,1 5,10.75C5,10.95 4.92,11.14 4.79,11.27L3.12,13H5V14H2V13.08L4,11H2V10H4.25Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="auto"]::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M17.5 15.5C17.5 16.61 16.61 17.5 15.5 17.5S13.5 16.61 13.5 15.5 14.4 13.5 15.5 13.5 17.5 14.4 17.5 15.5M8.5 13.5C7.4 13.5 6.5 14.4 6.5 15.5S7.4 17.5 8.5 17.5 10.5 16.61 10.5 15.5 9.61 13.5 8.5 13.5M23 15V18C23 18.55 22.55 19 22 19H21V20C21 21.11 20.11 22 19 22H5C3.9 22 3 21.11 3 20V19H2C1.45 19 1 18.55 1 18V15C1 14.45 1.45 14 2 14H3C3 10.13 6.13 7 10 7H11V5.73C10.4 5.39 10 4.74 10 4C10 2.9 10.9 2 12 2S14 2.9 14 4C14 4.74 13.6 5.39 13 5.73V7H14C17.87 7 21 10.13 21 14H22C22.55 14 23 14.45 23 15M21 16H19V14C19 11.24 16.76 9 14 9H10C7.24 9 5 11.24 5 14V16H3V17H5V20H19V17H21V16Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="dash"]::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M19,5V7H15V5H19M9,5V11H5V5H9M19,13V19H15V13H19M9,17V19H5V17H9M21,3H13V9H21V3M11,3H3V13H11V3M21,11H13V21H21V11M11,15H3V21H11V15Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="analyze"]::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M16,11.78L20.24,4.45L21.97,5.45L16.74,14.5L10.23,10.75L5.46,19H22V21H2V3H4V17.54L9.5,8L16,11.78Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="infoserv"]::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M16.5,4V8.25L19.36,9.94L18.61,11.16L15,9V4H16.5M16,13C17.36,13 18.54,12.5 19.5,11.53C20.5,10.56 21,9.39 21,8C21,6.64 20.5,5.46 19.5,4.5C18.54,3.5 17.36,3 16,3C14.61,3 13.44,3.5 12.47,4.5C11.5,5.46 11,6.64 11,8C11,9.39 11.5,10.56 12.47,11.53C13.44,12.5 14.61,13 16,13M13.5,19C13.94,19 14.3,18.84 14.58,18.54C14.86,18.24 15,17.89 15,17.5C15,17.08 14.86,16.73 14.58,16.43C14.3,16.13 13.94,16 13.5,16C13.06,16 12.7,16.13 12.42,16.43C12.14,16.73 12,17.08 12,17.5C12,17.89 12.14,18.24 12.42,18.54C12.7,18.84 13.06,19 13.5,19M3,13H11.11C9.7,11.64 9,10 9,8H3V13M4.5,19C4.94,19 5.3,18.84 5.58,18.54C5.86,18.24 6,17.89 6,17.5C6,17.08 5.86,16.73 5.58,16.43C5.3,16.13 4.94,16 4.5,16C4.06,16 3.7,16.13 3.42,16.43C3.14,16.73 3,17.08 3,17.5C3,17.89 3.14,18.24 3.42,18.54C3.7,18.84 4.06,19 4.5,19M16,1C17.92,1 19.58,1.67 20.95,3.05C22.33,4.42 23,6.08 23,8C23,9.77 22.44,11.29 21.28,12.59C20.13,13.88 18.7,14.66 17,14.91V18C17,18.84 16.67,19.58 16,20.2V22C16,22.27 15.89,22.5 15.7,22.71C15.5,22.91 15.28,23 15,23H14C13.73,23 13.5,22.91 13.29,22.71C13.09,22.5 13,22.27 13,22V21H5V22C5,22.27 4.91,22.5 4.71,22.71C4.5,22.91 4.27,23 4,23H3C2.72,23 2.5,22.91 2.3,22.71C2.11,22.5 2,22.27 2,22V20.2C1.33,19.58 1,18.84 1,18V8C1,6.42 1.67,5.35 3.05,4.8C4.42,4.26 6.41,4 9,4C9.13,4 9.33,4 9.61,4C9.89,4 10.09,4.03 10.22,4.03C11.63,2 13.55,1 16,1Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="know"]::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M17,4V10L15,8L13,10V4H9V20H19V4H17M3,7V5H5V4C5,2.89 5.9,2 7,2H19C20.05,2 21,2.95 21,4V20C21,21.05 20.05,22 19,22H7C5.95,22 5,21.05 5,20V19H3V17H5V13H3V11H5V7H3M5,5V7H7V5H5M5,19H7V17H5V19M5,13H7V11H5V13Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="ops"]::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M22.61,19L13.53,9.91C14.46,7.57 14,4.81 12.09,2.91C9.79,0.61 6.21,0.4 3.66,2.26L7.5,6.11L6.08,7.5L2.25,3.69C0.39,6.23 0.6,9.82 2.9,12.11C4.76,13.97 7.47,14.46 9.79,13.59L18.9,22.7C19.29,23.09 19.92,23.09 20.31,22.7L22.61,20.4C23,20 23,19.39 22.61,19M19.61,20.59L10.15,11.13C9.54,11.58 8.86,11.85 8.15,11.95C6.79,12.15 5.36,11.74 4.32,10.7C3.37,9.76 2.93,8.5 3,7.26L6.09,10.35L10.33,6.11L7.24,3C8.5,2.95 9.73,3.39 10.68,4.33C11.76,5.41 12.17,6.9 11.92,8.29C11.8,9 11.5,9.66 11.04,10.25L20.5,19.7L19.61,20.59Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="skill"]::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M22,13.5C22,15.26 20.7,16.72 19,16.96V20A2,2 0 0,1 17,22H13.2V21.7A2.7,2.7 0 0,0 10.5,19C9,19 7.8,20.21 7.8,21.7V22H4A2,2 0 0,1 2,20V16.2H2.3C3.79,16.2 5,15 5,13.5C5,12 3.79,10.8 2.3,10.8H2V7A2,2 0 0,1 4,5H7.04C7.28,3.3 8.74,2 10.5,2C12.26,2 13.72,3.3 13.96,5H17A2,2 0 0,1 19,7V10.04C20.7,10.28 22,11.74 22,13.5M17,15H18.5A1.5,1.5 0 0,0 20,13.5A1.5,1.5 0 0,0 18.5,12H17V7H12V5.5A1.5,1.5 0 0,0 10.5,4A1.5,1.5 0 0,0 9,5.5V7H4V9.12C5.76,9.8 7,11.5 7,13.5C7,15.5 5.75,17.2 4,17.88V20H6.12C6.8,18.25 8.5,17 10.5,17C12.5,17 14.2,18.25 14.88,20H17V15Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="collections"]::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M21,16.5C21,16.88 20.79,17.21 20.47,17.38L12.57,21.82C12.41,21.94 12.21,22 12,22C11.79,22 11.59,21.94 11.43,21.82L3.53,17.38C3.21,17.21 3,16.88 3,16.5V7.5C3,7.12 3.21,6.79 3.53,6.62L11.43,2.18C11.59,2.06 11.79,2 12,2C12.21,2 12.41,2.06 12.57,2.18L20.47,6.62C20.79,6.79 21,7.12 21,7.5V16.5M12,4.15L10.11,5.22L16,8.61L17.96,7.5L12,4.15M6.04,7.5L12,10.85L13.96,9.75L8.08,6.35L6.04,7.5M5,15.91L11,19.29V12.58L5,9.21V15.91M19,15.91V9.21L13,12.58V19.29L19,15.91Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="safety"]::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M21,11C21,16.55 17.16,21.74 12,23C6.84,21.74 3,16.55 3,11V5L12,1L21,5V11M12,21C15.75,20 19,15.54 19,11.22V6.3L12,3.18L5,6.3V11.22C5,15.54 8.25,20 12,21M11,7H13V13H11V7M11,15H13V17H11V15Z'/%3E%3C/svg%3E"); }
+section h2[data-icon="download"]::before { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%233A57C4' d='M5,20H19V18H5M19,9H15V3H9V9H5L12,16L19,9Z'/%3E%3C/svg%3E"); }
+
+/* —— 程式碼區塊 —— */
+pre.code-block {
+  background: var(--surface-alt); color: var(--ink-900);
+  padding: 14px 16px; border-radius: var(--radius-sm); border: 1px solid var(--hairline);
+  font-family: var(--font-mono); font-size: 13px; line-height: 1.6;
+  overflow-x: auto; margin: 12px 0; max-width: var(--max-content);
+}
+code {
+  font-family: var(--font-mono); font-size: 13px;
+  background: var(--surface-alt); padding: 2px 8px; border-radius: var(--radius-xs);
+  color: var(--ww-blue-700);
+}
+pre.code-block code { background: none; padding: 0; color: inherit; }
+
+/* —— 提示詞卡 —— */
+.prompt-card {
+  position: relative; background: var(--surface);
+  border: 1px solid var(--hairline); border-radius: var(--radius-sm);
+  padding: 16px 96px 16px 18px; margin: 10px 0;
+  box-shadow: var(--shadow-sm); max-width: var(--max-content);
+}
+.prompt-card .ptext { margin: 0; font-size: 14.5px; color: var(--ink-900); }
+.prompt-card .pnote, .pnote { margin: 8px 0 0; font-size: 13px; color: var(--ink-500); }
+.prompt-card .copy {
+  position: absolute; right: 12px; top: 12px;
+  font-family: var(--font-display); font-weight: 600; font-size: 12.5px;
+  color: var(--ww-blue-700); background: var(--ww-blue-050);
+  border: 1px solid rgba(97, 131, 252, 0.25); border-radius: 999px;
+  padding: 6px 14px; cursor: pointer; transition: background 0.15s;
+}
+.prompt-card .copy:hover { background: var(--ww-blue-100); }
+.prompt-card .copy.ok { background: rgba(140, 211, 127, 0.2); color: #3d7a34; border-color: rgba(140, 211, 127, 0.5); }
+@media (max-width: 720px) { .prompt-card { padding-right: 18px; padding-top: 46px; } }
+
+/* —— ghost 按鈕 —— */
+.btn-ghost {
+  display: inline-block; font-family: var(--font-display); font-weight: 600; font-size: 15px;
+  background: var(--surface); color: var(--ink-900);
+  border: 1.5px solid var(--hairline); padding: 12px 30px; border-radius: 999px;
+  text-decoration: none; transition: border-color 0.15s;
+}
+.btn-ghost:hover { border-color: var(--ww-blue); color: var(--ww-blue-700); text-decoration: none; }
+  </style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="#top">Pi Agent Skill 手冊</a>
+    <div class="brand-sub">WoowTech · 技能型錄與速查</div>
+    <a class="hub-link" href="index.html">◂ Pi Agent 資源總覽</a>
+    <button class="nav-toggle" id="navToggle" type="button">本冊內容<span class="nav-toggle-caret"></span></button>
+    <div class="toc-in-chapter">
+      <h2>本冊內容</h2>
+      <a href="#why">Skill 是什麼</a>
+      <a href="#install">怎麼裝</a>
+      <a href="#picks">精選十顆</a>
+      <a href="#collections">熱門集合</a>
+      <a href="#compat">相容性須知</a>
+      <a href="#safety">安全守則</a>
+      <a href="#spec">規格速查</a>
+      <a href="#faq">常見問題</a>
+      <a href="#download">下載</a>
+    </div>
+  </aside>
+
+  <main class="content" id="top">
+    <div class="chapter-header">
+      <span class="kicker-script">teach it new tricks</span>
+      <div class="kicker">WoowTech Skill 手冊</div>
+      <h1>裝一顆 Skill，Pi Agent 立刻多會一件事</h1>
+      <p class="lead">Skill 是給 AI 看的「工作手冊」：一個資料夾、一份 SKILL.md，裝進去它就會照著做。這本手冊幫你把網路上最熱門的開源 skill 挑好、講清楚、附上安裝指令——先裝別人做好的，再學著寫自己的。</p>
+      <div class="callout"><strong>調查基準：</strong>本冊的集合規模與維護狀態為 2026-08-20 調查當日的 GitHub 公開數據，會隨時間變動；安裝前建議點進原始 repo 再確認一次。</div>
+    </div>
+
+    <section id="why" data-nav="Skill 是什麼">
+      <h2 data-icon="why">Skill 是什麼，為什麼要裝</h2>
+      <p>把 Pi Agent 想成一位很聰明的萬事通助理：什麼都能聊，但「你家的做事方法」它不會通靈。Skill 就是<strong>教鐘點阿姨的工作手冊</strong>——把「遇到什麼情況、照什麼步驟做」寫成一份 Markdown，放進技能資料夾，它遇到對應情況就會翻出來照做。</p>
+      <ul>
+        <li><strong>裝別人寫好的</strong>：文件處理、簡報、研究、設計……開源社群已經寫好上千顆，裝了就會。</li>
+        <li><strong>之後寫自己的</strong>：家裡的獨門流程（出週報、冰箱盤點）也能包成 skill，做法見<a href="ch16_write_skill.html">第 16 章</a>。</li>
+      </ul>
+      <p>Skill 的原理（怎麼被掃描、怎麼進 system prompt、AI 怎麼決定用不用）在<a href="ch14_skill_concept.html">第 14 章</a>有完整說明，這本手冊專注在「挑哪些、怎麼裝」。</p>
+    </section>
+
+    <section id="install" data-nav="怎麼裝">
+      <h2 data-icon="steps">怎麼裝（3 分鐘版）</h2>
+      <p>完整圖解在<a href="ch15_install_skill.html">第 15 章</a>，這裡是速查版：</p>
+      <ol class="steps">
+        <li>
+          <h3>打開 pi-web 的 Skills 面板</h3>
+          <p>HA 側邊欄 → Pi Agent 工作區 → 切到 Skills 面板。</p>
+        </li>
+        <li>
+          <h3>貼上 package spec，按 Install</h3>
+          <p>本冊每個項目都附好可以直接貼的 spec。合法寫法：</p>
+          <pre class="code-block"><code># GitHub repo（最常用）
+git:github.com/anthropics/skills
+# 釘住版本（tag 或 commit，建議正式環境用）
+git:github.com/anthropics/skills@v1.2.0
+# npm 套件
+npm:@scope/some-skill
+# 本地路徑（自己寫的 skill）
+/data/pi-agent/skills/my-skill</code></pre>
+        </li>
+        <li>
+          <h3>Reload session 驗證</h3>
+          <p>裝完按 Reload session（或開新 session），問它「目前載入了哪些 skill？」確認有進到清單。</p>
+        </li>
+        <li>
+          <h3>用一句話觸發測試</h3>
+          <p>照該 skill 的 description 講一個對應需求，確認它真的會拿出來用。</p>
+        </li>
+      </ol>
+      <div class="callout tip"><strong>提示：</strong>多 skill 的 monorepo（例如 anthropics/skills）整包裝進去，Pi 會遞迴掃描全部 SKILL.md。只想要其中一顆時，實務做法是 clone 下來後用本地路徑指向那個子資料夾——git spec 目前沒有「只裝子目錄」的語法。</div>
+    </section>
+
+    <section id="picks" data-nav="精選十顆">
+      <h2 data-icon="ai">精選十顆（家庭視角）</h2>
+      <p>從熱門集合裡替家庭用戶挑出來的實用款，由「最對口」往下排：</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>Skill</th><th>它幫你做什麼</th><th>安裝 spec</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><a href="https://github.com/komal-SkyNET/claude-skill-homeassistant" rel="noopener">home-assistant-manager</a></td>
+            <td>讓 agent 直接管理 HA：寫自動化、看 log、做儀表板。<strong>最對口也最高風險</strong>——會動線上設定，先在測試環境驗證。</td>
+            <td><code>git:github.com/komal-SkyNET/claude-skill-homeassistant</code></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/anthropics/skills" rel="noopener">docx / pdf / pptx / xlsx</a></td>
+            <td>官方文件四件套：家庭記帳表、掃描 PDF 抽字、產 Word、做簡報。</td>
+            <td><code>git:github.com/anthropics/skills</code></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/anthropics/skills" rel="noopener">skill-creator</a></td>
+            <td>讓 AI 幫你把家裡的流程寫成新 skill（搭配<a href="ch16_write_skill.html">第 16 章</a>）。</td>
+            <td><code>git:github.com/anthropics/skills</code></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/mvanhorn/last30days-skill" rel="noopener">last30days</a></td>
+            <td>給一個主題，橫掃近 30 天的 Reddit／X／YouTube 整理成報告——家庭採購、旅遊研究神器。</td>
+            <td><code>git:github.com/mvanhorn/last30days-skill</code></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/kepano/obsidian-skills" rel="noopener">defuddle</a></td>
+            <td>把網頁擷取成乾淨 Markdown，省 token——食譜、文章存進家庭筆記最好用。</td>
+            <td><code>git:github.com/kepano/obsidian-skills</code></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/zarazhangrui/frontend-slides" rel="noopener">frontend-slides</a></td>
+            <td>用網頁技術做漂亮簡報，不吃 Office 工具鏈，add-on 容器內好跑。</td>
+            <td><code>git:github.com/zarazhangrui/frontend-slides</code></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/nextlevelbuilder/ui-ux-pro-max-skill" rel="noopener">ui-ux-pro-max</a></td>
+            <td>給 agent 專業 UI/UX 知識，自訂儀表板、家庭頁面更好看。注意：skill 放在 <code>.claude/skills/</code> 非標準位置，掃不到就 clone 後用本地路徑裝。</td>
+            <td><code>git:github.com/nextlevelbuilder/ui-ux-pro-max-skill</code></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/OthmanAdi/planning-with-files" rel="noopener">planning-with-files</a></td>
+            <td>長期專案用檔案持久化計畫，session 斷了也不失憶——慢慢做的家庭工程適用。</td>
+            <td><code>git:github.com/OthmanAdi/planning-with-files</code></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/Nutlope/hallmark" rel="noopener">hallmark</a></td>
+            <td>反「AI 味」設計守則，讓產出的頁面、圖卡不像模板垃圾。</td>
+            <td><code>git:github.com/Nutlope/hallmark</code></td>
+          </tr>
+          <tr>
+            <td><a href="https://github.com/mattpocock/skills" rel="noopener">grill-me</a></td>
+            <td>動工前被 AI 連環拷問，把需求問到清楚才開工——裝修、旅行等大計畫都適用。</td>
+            <td><code>git:github.com/mattpocock/skills</code></td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section id="collections" data-nav="熱門集合">
+      <h2 data-icon="collections">八大熱門集合</h2>
+      <p>想一次裝一整包、或自己逛著挑，從這八個入口開始：</p>
+      <div class="feature-grid">
+
+        <div class="feature-card">
+          <h3>anthropics/skills</h3>
+          <div class="pnote">官方示範＋規格所在地 · ≈17 萬★ · 活躍</div>
+          <p>Agent Skills 規格與官方 template 的家。19 顆 skill 含文件四件套（docx/pdf/pptx/xlsx）、canvas-design、mcp-builder、skill-creator。<strong>家庭用戶第一包就裝這個。</strong></p>
+          <pre class="code-block"><code>git:github.com/anthropics/skills</code></pre>
+          <p class="pnote">注意：文件四件套為 source-available 非開源；部分 skill 附 scripts 需要 Python／JS 環境。</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>obra/superpowers</h3>
+          <div class="pnote">開發方法論框架 · ≈27 萬★ · README 明列支援 Pi</div>
+          <p>14 顆紀律型 skill：brainstorming、TDD、systematic-debugging、writing-plans。適合會寫點程式、想把開發流程紀律化的人。</p>
+          <pre class="code-block"><code>git:github.com/obra/superpowers</code></pre>
+          <p class="pnote">注意：完整體驗依賴 hooks（pi 上可能退化）；內建遙測可用環境變數關閉。</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>mattpocock/skills</h3>
+          <div class="pnote">Skills For Real Engineers · ≈22 萬★ · 極活躍</div>
+          <p>grill-me、tdd、diagnosing-bugs、handoff、teach——工程向為主，但 grill-me／handoff 對任何規劃型任務都好用。純 Markdown、標榜跨模型可用。</p>
+          <pre class="code-block"><code>git:github.com/mattpocock/skills</code></pre>
+          <p class="pnote">skill 分放在 skills/engineering 與 skills/productivity 兩層，Pi 遞迴掃描抓得到。</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>kepano/obsidian-skills</h3>
+          <div class="pnote">筆記／生活紀錄 · ≈4.7 萬★ · Obsidian CEO 出品</div>
+          <p>5 顆：obsidian-markdown、bases、json-canvas、obsidian-cli、defuddle。<strong>用 Obsidian 做家庭知識庫的人必裝</strong>；defuddle 不用 Obsidian 也好用。</p>
+          <pre class="code-block"><code>git:github.com/kepano/obsidian-skills</code></pre>
+          <p class="pnote">obsidian-cli 需本機裝 CLI，add-on 容器內以 vault 資料夾操作為主。</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>tonylofgren/aurora-smart-home</h3>
+          <div class="pnote">智慧家庭專門 · ≈102★ · 小眾但最對口</div>
+          <p>目前唯一找到的智慧家庭多 skill 集合：home-assistant、esphome、node-red、ha-dashboard-design、ha-integration-dev。</p>
+          <pre class="code-block"><code>git:github.com/tonylofgren/aurora-smart-home</code></pre>
+          <p class="pnote">注意：星數少＝審閱的人少，它會指導 agent 改你的 HA 設定——匯入前自己把 SKILL.md 讀一遍。</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>coreyhaines31/marketingskills</h3>
+          <div class="pnote">行銷／文案 · ≈4.5 萬★ · 49 顆</div>
+          <p>copywriting、seo-audit、emails、social、launch、pricing。小生意、自媒體、接案族的垂直包；寫社群貼文、二手拍賣文案也用得上。</p>
+          <pre class="code-block"><code>git:github.com/coreyhaines31/marketingskills</code></pre>
+        </div>
+
+        <div class="feature-card">
+          <h3>ComposioHQ/awesome-claude-skills</h3>
+          <div class="pnote">策展清單＋自帶部分 skill · ≈7.3 萬★</div>
+          <p>1000+ 條目的入口站：文件處理、資料視覺化、發票整理、履歷客製、會議逐字稿。當目錄逛，點進去裝各原始 repo。</p>
+          <pre class="code-block"><code># 當清單用，不建議整包安裝
+https://github.com/ComposioHQ/awesome-claude-skills</code></pre>
+          <p class="pnote">品質參差、不少條目綁 SaaS 帳號，逐顆檢視再裝。</p>
+        </div>
+
+        <div class="feature-card">
+          <h3>VoltAgent/awesome-agent-skills</h3>
+          <div class="pnote">跨 agent 純索引 · ≈3.1 萬★</div>
+          <p>只收官方團隊出品：Anthropic 全系列、openai/slides、Google Workspace、remotion（程式化影片）、cloudflare。想找「有品牌背書」的 skill 從這裡查。</p>
+          <pre class="code-block"><code># 純索引，照連結裝各原始 repo
+https://github.com/VoltAgent/awesome-agent-skills</code></pre>
+        </div>
+
+      </div>
+      <p class="pnote" style="margin-top:14px">備查：影片產製系統 calesthio/OpenMontage（≈4.9 萬★，AGPL、依賴重，add-on 容器多半跑不動）、科研向 K-Dense-AI/scientific-agent-skills、資安向 mukul975/Anthropic-Cybersecurity-Skills。</p>
+    </section>
+
+    <section id="compat" data-nav="相容性須知">
+      <h2 data-icon="integration">相容性須知</h2>
+      <p>SKILL.md 規格已被 Claude Code、Codex、Gemini CLI、Cursor、OpenCode 與 <strong>Pi</strong> 等採用，純 Markdown 的 skill 幾乎到處能跑。會「退化」的只有三種情況：</p>
+      <ul>
+        <li><strong>依賴 Claude Code 專屬機制</strong>（hooks、plugin 指令、subagent 派工）——skill 本文仍可讀，但自動觸發行為可能不完整。</li>
+        <li><strong>依賴特定 MCP／SaaS 帳號</strong>——沒接那個服務就沒用，裝前看清楚前置需求。</li>
+        <li><strong><code>scripts/</code> 需要容器內沒有的 runtime</strong>——Woow HA Pi Agent 的容器環境要特別注意這條；純 Markdown skill 相容性最好。</li>
+      </ul>
+      <div class="callout"><strong>觀念：</strong>挑 skill 的第一準則不是星數，是「它假設的環境你有沒有」。</div>
+    </section>
+
+    <section id="safety" data-nav="安全守則">
+      <h2 data-icon="safety">安全守則</h2>
+      <div class="callout warn"><strong>注意：</strong>Skill 的本質是「餵給 agent 的指令」。裝第三方 skill＝讓一段陌生文字指揮你家的 AI。</div>
+      <ul>
+        <li><strong>先讀後裝</strong>：安裝前把 SKILL.md 打開讀一遍，或叫 Pi Agent 先讀給你聽：「先讀這顆 skill 的內容，告訴我它會做什麼、有沒有風險，我同意再裝。」</li>
+        <li><strong>會動 HA 的先進測試機</strong>：像 home-assistant-manager 這類會改線上設定的，先在測試實例驗證。</li>
+        <li><strong>正式環境釘版本</strong>：用 <code>@tag</code> 或 <code>@commit</code> 釘住，避免上游改內容你無感升級。</li>
+        <li><strong>星數＝人氣，不＝安全</strong>：熱門集合一樣要看它拿什麼權限做什麼事。</li>
+      </ul>
+    </section>
+
+    <section id="spec" data-nav="規格速查">
+      <h2 data-icon="what">SKILL.md 規格速查</h2>
+      <p>一顆 skill 的最小骨架（寫自己的 skill 看<a href="ch16_write_skill.html">第 16 章</a>）：</p>
+      <pre class="code-block"><code>fridge-check/
+└── SKILL.md          ← 唯一必要檔案
+
+# SKILL.md 內容
+---
+name: fridge-check
+description: 使用者傳冰箱照片時，列出食材、找出臨期的、建議晚餐菜色。
+  也在使用者問「今天煮什麼」「冰箱還有什麼」時觸發。
+---
+
+# 冰箱盤點
+（給 agent 看的做法說明，寫得像教新同事）</code></pre>
+      <table class="data-table">
+        <thead>
+          <tr><th>欄位</th><th>必填</th><th>說明</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>name</code></td><td>是</td><td>小寫英數與連字號，1–64 字元。</td></tr>
+          <tr><td><code>description</code></td><td>是</td><td>做什麼＋何時用。<strong>AI 靠這行決定要不要載入</strong>，把使用者會講的話寫進去。</td></tr>
+          <tr><td><code>license</code> / <code>compatibility</code> / <code>allowed-tools</code></td><td>否</td><td>授權、相容性標注、工具白名單等選填欄位。</td></tr>
+        </tbody>
+      </table>
+      <p>慣例：SKILL.md 保持精簡，附件放 <code>references/</code>、<code>scripts/</code>、<code>assets/</code>，用到才讀，避免吃爆 context。</p>
+    </section>
+
+    <section id="faq" data-nav="常見問題">
+      <h2 data-icon="faq">常見問題</h2>
+      <details class="faq">
+        <summary>裝了但完全沒反應？</summary>
+        <div class="body">先 Reload session 或開新 session（skill 是 session 開始時載入的）。再問它「目前載入了哪些 skill？」確認有進清單；有進但不觸發，多半是 description 沒涵蓋你的講法——直接點名：「用 ○○ skill 幫我做這件事」。</div>
+      </details>
+      <details class="faq">
+        <summary>skill 裝太多會怎樣？</summary>
+        <div class="body">每顆 skill 的名稱與描述都會佔 system prompt 的 context，裝幾十包會讓 AI 分心也變貴。原則：常用的留著，試玩過不用的就移除。</div>
+      </details>
+      <details class="faq">
+        <summary>怎麼更新、怎麼移除？</summary>
+        <div class="body">Skills 面板可直接移除；git 來源沒釘版本時重新安裝會抓最新，正式環境建議 <code>@tag</code> 釘住、要升級時自己改 tag。詳見<a href="ch15_install_skill.html">第 15 章</a>。</div>
+      </details>
+      <details class="faq">
+        <summary>附 scripts 的 skill 在 add-on 容器跑不動？</summary>
+        <div class="body">先確認容器內有沒有該 runtime（Python 套件、Node 等）。跑不動不代表 skill 全廢——Markdown 部分的知識還是會被 AI 用上；真的需要 scripts 的，挑純 Markdown 的替代品通常更省事。</div>
+      </details>
+      <details class="faq">
+        <summary>可以只裝 monorepo 裡的其中一顆嗎？</summary>
+        <div class="body">git spec 目前沒有子目錄語法。實務做法：clone 到本機，把想要的那顆 skill 資料夾放到 <code>/data/pi-agent/skills/</code>，或用本地路徑安裝。</div>
+      </details>
+    </section>
+
+    <section id="download" data-nav="下載">
+      <h2 data-icon="download">把這本帶走</h2>
+      <p>整本是自包含單檔 HTML，下載後離線可開。集合資訊會過期，重要決定前回<a href="index.html">資源總覽</a>看線上版。</p>
+      <p>
+        <a class="btn-pill" href="skills.html" download="pi-agent-skill手冊.html">下載本冊 HTML</a>
+        <a class="btn-ghost" href="index.html">回資源總覽</a>
+      </p>
+    </section>
+
+    <footer class="site-footer">
+      <p>《Pi Agent Skill 手冊》由 <strong>WoowTech 渥屋科技</strong> 製作，以 <a rel="license noopener" href="https://creativecommons.org/licenses/by/4.0/deed.zh-hant">CC BY 4.0</a> 授權釋出。集合規模為 2026-08-20 調查數據。</p>
+      <p class="footer-meta">The Smart Space Solution · 智慧空間解決方案 · <a href="index.html">Pi Agent 資源總覽</a></p>
+    </footer>
+  </main>
+</div>
+
+<script>
+(function () {
+  // 手機版側欄收合
+  var sidebar = document.getElementById('sidebar');
+  var toggle = document.getElementById('navToggle');
+  var mq = window.matchMedia('(max-width: 960px)');
+  function applyCollapse(e) {
+    if (e.matches) { sidebar.classList.add('is-collapsed'); }
+    else { sidebar.classList.remove('is-collapsed'); }
+  }
+  applyCollapse(mq);
+  mq.addEventListener ? mq.addEventListener('change', applyCollapse) : mq.addListener(applyCollapse);
+  toggle.addEventListener('click', function () { sidebar.classList.toggle('is-collapsed'); });
+  sidebar.querySelectorAll('.toc-in-chapter a').forEach(function (a) {
+    a.addEventListener('click', function () { if (mq.matches) sidebar.classList.add('is-collapsed'); });
+  });
+
+  // 章內錨點 scroll-spy
+  var links = Array.prototype.slice.call(sidebar.querySelectorAll('.toc-in-chapter a[href^="#"]'));
+  var map = {};
+  links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main section[id]'));
+  function onScroll() {
+    var current = null;
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].getBoundingClientRect().top <= 120) current = sections[i].id;
+    }
+    links.forEach(function (a) { a.classList.remove('active'); });
+    if (current && map[current]) map[current].classList.add('active');
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
+</script>
+</body>
+</html>
